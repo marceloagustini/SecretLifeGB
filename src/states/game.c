@@ -244,6 +244,14 @@ void game_update(void) {
         load_map(&world_map_info);
         return;
       }
+      if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
+        // Return from Level 2 to top of World Map
+        player_x = 124;
+        player_y = 32;
+        player_dir = 0;
+        load_map(&world_map_info);
+        return;
+      }
 
       if (++anim_timer > 6) {
         anim_frame = !anim_frame;
@@ -311,8 +319,9 @@ void game_update(void) {
     if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
       if (has_key) {
         text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
-        player_x = 120;
-        player_y = 230; // Level 2 entrance
+        player_x = 124;
+        player_y = 230; // Level 2 entrance (bottom)
+        player_dir = 1;
         load_map(&level2_map_info);
         return;
       } else {
