@@ -7,6 +7,7 @@
 ;--------------------------------------------------------
 ; Public variables in this module
 ;--------------------------------------------------------
+	.globl _clear_dialog_buf
 	.globl _get_tile_for_char
 	.globl _set_win_tiles
 	.globl _set_win_data
@@ -25,7 +26,7 @@
 ;--------------------------------------------------------
 	.area _DATA
 _dialog_buf::
-	.ds 80
+	.ds 120
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -50,12 +51,12 @@ _dialog_buf::
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src/utils/text.c:9: void text_init(void) {
+;src/utils/text.c:13: void text_init(void) {
 ;	---------------------------------
 ; Function text_init
 ; ---------------------------------
 _text_init::
-;src/utils/text.c:11: set_win_data(FONT_BASE_TILE, 35, font_data);
+;src/utils/text.c:15: set_win_data(FONT_BASE_TILE, 35, font_data);
 	ld	de, #_font_data
 	push	de
 	ld	hl, #0x2380
@@ -67,18 +68,22 @@ _text_init::
 	ldh	(_WX_REG + 0), a
 	ld	a, #0x90
 	ldh	(_WY_REG + 0), a
-;src/utils/text.c:14: move_win(7, 144);
-;src/utils/text.c:15: }
+;src/utils/text.c:16: move_win(7, 144);
+;src/utils/text.c:17: }
 	ret
-;src/utils/text.c:18: uint8_t get_tile_for_char(char c) {
+;src/utils/text.c:19: uint8_t get_tile_for_char(char c) {
 ;	---------------------------------
 ; Function get_tile_for_char
 ; ---------------------------------
 _get_tile_for_char::
-;src/utils/text.c:20: if (c == ' ')
+;src/utils/text.c:20: if (c == ' ' || c == '\n')
 	ld	c, a
 	sub	a, #0x20
+	jr	Z, 00101$
+	ld	a, c
+	sub	a, #0x0a
 	jr	NZ, 00102$
+00101$:
 ;src/utils/text.c:21: return (uint8_t)(FONT_BASE_TILE + 0);
 	ld	a, #0x80
 	ret
@@ -87,148 +92,369 @@ _get_tile_for_char::
 	ld	a, c
 	xor	a, #0x80
 	sub	a, #0xc1
-	jr	C, 00104$
+	jr	C, 00105$
 	ld	e, c
 	ld	a,#0x5a
 	ld	d,a
 	sub	a, c
 	bit	7, e
-	jr	Z, 00203$
+	jr	Z, 00222$
 	bit	7, d
-	jr	NZ, 00204$
+	jr	NZ, 00223$
 	cp	a, a
-	jr	00204$
-00203$:
+	jr	00223$
+00222$:
 	bit	7, d
-	jr	Z, 00204$
+	jr	Z, 00223$
 	scf
-00204$:
-	jr	C, 00104$
+00223$:
+	jr	C, 00105$
 ;src/utils/text.c:23: return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'A'));
 	ld	a, c
 	add	a, #0x40
 	ret
-00104$:
-;src/utils/text.c:24: if (c == ',')
+00105$:
+;src/utils/text.c:24: if (c >= 'a' && c <= 'z')
+	ld	a, c
+	xor	a, #0x80
+	sub	a, #0xe1
+	jr	C, 00108$
+	ld	e, c
+	ld	a,#0x7a
+	ld	d,a
+	sub	a, c
+	bit	7, e
+	jr	Z, 00224$
+	bit	7, d
+	jr	NZ, 00225$
+	cp	a, a
+	jr	00225$
+00224$:
+	bit	7, d
+	jr	Z, 00225$
+	scf
+00225$:
+	jr	C, 00108$
+;src/utils/text.c:26: (c - 'a')); // Map lowercase to uppercase font
+	ld	a, c
+	add	a, #0x20
+	ret
+00108$:
+;src/utils/text.c:27: if (c == ',')
 	ld	a, c
 	sub	a, #0x2c
-	jr	NZ, 00107$
-;src/utils/text.c:25: return (uint8_t)(FONT_BASE_TILE + 27);
+	jr	NZ, 00111$
+;src/utils/text.c:28: return (uint8_t)(FONT_BASE_TILE + 27);
 	ld	a, #0x9b
 	ret
-00107$:
-;src/utils/text.c:26: if (c == '?')
+00111$:
+;src/utils/text.c:29: if (c == '?')
 	ld	a, c
 	sub	a, #0x3f
-	jr	NZ, 00109$
-;src/utils/text.c:27: return (uint8_t)(FONT_BASE_TILE + 28);
+	jr	NZ, 00113$
+;src/utils/text.c:30: return (uint8_t)(FONT_BASE_TILE + 28);
 	ld	a, #0x9c
 	ret
-00109$:
-;src/utils/text.c:30: if (c == 1)
+00113$:
+;src/utils/text.c:33: if (c == 1)
 	ld	a, c
 	dec	a
-	jr	NZ, 00111$
-;src/utils/text.c:31: return (uint8_t)(FONT_BASE_TILE + 29); // ┌
+	jr	NZ, 00115$
+;src/utils/text.c:34: return (uint8_t)(FONT_BASE_TILE + 29);
 	ld	a, #0x9d
 	ret
-00111$:
-;src/utils/text.c:32: if (c == 2)
+00115$:
+;src/utils/text.c:35: if (c == 2)
 	ld	a, c
 	sub	a, #0x02
-	jr	NZ, 00113$
-;src/utils/text.c:33: return (uint8_t)(FONT_BASE_TILE + 30); // ─
+	jr	NZ, 00117$
+;src/utils/text.c:36: return (uint8_t)(FONT_BASE_TILE + 30);
 	ld	a, #0x9e
 	ret
-00113$:
-;src/utils/text.c:34: if (c == 3)
+00117$:
+;src/utils/text.c:37: if (c == 3)
 	ld	a, c
 	sub	a, #0x03
-	jr	NZ, 00115$
-;src/utils/text.c:35: return (uint8_t)(FONT_BASE_TILE + 31); // ┐
+	jr	NZ, 00119$
+;src/utils/text.c:38: return (uint8_t)(FONT_BASE_TILE + 31);
 	ld	a, #0x9f
 	ret
-00115$:
-;src/utils/text.c:36: if (c == 4)
+00119$:
+;src/utils/text.c:39: if (c == 4)
 	ld	a, c
 	sub	a, #0x04
-	jr	NZ, 00117$
-;src/utils/text.c:37: return (uint8_t)(FONT_BASE_TILE + 32); // │
+	jr	NZ, 00121$
+;src/utils/text.c:40: return (uint8_t)(FONT_BASE_TILE + 32);
 	ld	a, #0xa0
 	ret
-00117$:
-;src/utils/text.c:38: if (c == 5)
+00121$:
+;src/utils/text.c:41: if (c == 5)
 	ld	a, c
 	sub	a, #0x05
-	jr	NZ, 00119$
-;src/utils/text.c:39: return (uint8_t)(FONT_BASE_TILE + 33); // └
+	jr	NZ, 00123$
+;src/utils/text.c:42: return (uint8_t)(FONT_BASE_TILE + 33);
 	ld	a, #0xa1
 	ret
-00119$:
-;src/utils/text.c:40: if (c == 6)
+00123$:
+;src/utils/text.c:43: if (c == 6)
 	ld	a, c
 	sub	a, #0x06
-;src/utils/text.c:41: return (uint8_t)(FONT_BASE_TILE + 34); // ┘
-;src/utils/text.c:43: return (uint8_t)(FONT_BASE_TILE + 0);
+;src/utils/text.c:44: return (uint8_t)(FONT_BASE_TILE + 34);
+;src/utils/text.c:46: return (uint8_t)(FONT_BASE_TILE + 0);
 	ld	a, #0xa2
 	ret	Z
 	ld	a, #0x80
-;src/utils/text.c:44: }
+;src/utils/text.c:47: }
 	ret
-;src/utils/text.c:48: void text_dialogue(const char *str) {
+;src/utils/text.c:51: void clear_dialog_buf() {
+;	---------------------------------
+; Function clear_dialog_buf
+; ---------------------------------
+_clear_dialog_buf::
+;src/utils/text.c:52: for (int i = 0; i < 120; i++)
+	ld	c, #0x00
+00106$:
+	ld	a, c
+	sub	a, #0x78
+	jr	NC, 00101$
+;src/utils/text.c:53: dialog_buf[i] = (uint8_t)FONT_BASE_TILE;
+	ld	hl, #_dialog_buf
+	ld	b, #0x00
+	add	hl, bc
+	ld	(hl), #0x80
+;src/utils/text.c:52: for (int i = 0; i < 120; i++)
+	inc	c
+	jr	00106$
+00101$:
+;src/utils/text.c:56: dialog_buf[0] = get_tile_for_char(1);
+	ld	a, #0x01
+	call	_get_tile_for_char
+	ld	(#_dialog_buf),a
+;src/utils/text.c:57: for (int i = 1; i < 19; i++)
+	ld	c, #0x01
+00109$:
+	ld	a, c
+	sub	a, #0x13
+	jr	NC, 00102$
+;src/utils/text.c:58: dialog_buf[i] = get_tile_for_char(2);
+	ld	hl, #_dialog_buf
+	ld	b, #0x00
+	add	hl, bc
+	push	hl
+	push	bc
+	ld	a, #0x02
+	call	_get_tile_for_char
+	pop	bc
+	pop	hl
+	ld	(hl), a
+;src/utils/text.c:57: for (int i = 1; i < 19; i++)
+	inc	c
+	jr	00109$
+00102$:
+;src/utils/text.c:59: dialog_buf[19] = get_tile_for_char(3);
+	ld	a, #0x03
+	call	_get_tile_for_char
+	ld	(#(_dialog_buf + 19)),a
+;src/utils/text.c:61: for (int y = 1; y < 5; y++) {
+	ld	c, #0x01
+00112$:
+;src/utils/text.c:62: dialog_buf[y * 20] = get_tile_for_char(4);
+	ld	a,c
+	cp	a,#0x05
+	jr	NC, 00103$
+	ld	e, a
+	add	a, a
+	add	a, a
+	add	a, e
+	add	a, a
+	add	a, a
+	ld	b, a
+	ld	l, b
+	ld	h, #0x00
+	ld	de, #_dialog_buf
+	add	hl, de
+	push	hl
+	push	bc
+	ld	a, #0x04
+	call	_get_tile_for_char
+	pop	bc
+	pop	hl
+	ld	(hl), a
+;src/utils/text.c:63: dialog_buf[y * 20 + 19] = get_tile_for_char(4);
+	ld	a, b
+	add	a, #0x13
+	ld	l, a
+	ld	h, #0x00
+	ld	de, #_dialog_buf
+	add	hl, de
+	push	hl
+	push	bc
+	ld	a, #0x04
+	call	_get_tile_for_char
+	pop	bc
+	pop	hl
+	ld	(hl), a
+;src/utils/text.c:61: for (int y = 1; y < 5; y++) {
+	inc	c
+	jr	00112$
+00103$:
+;src/utils/text.c:66: dialog_buf[100] = get_tile_for_char(5);
+	ld	a, #0x05
+	call	_get_tile_for_char
+	ld	(#(_dialog_buf + 100)),a
+;src/utils/text.c:67: for (int i = 101; i < 119; i++)
+	ld	c, #0x65
+00115$:
+	ld	a, c
+	sub	a, #0x77
+	jr	NC, 00104$
+;src/utils/text.c:68: dialog_buf[i] = get_tile_for_char(2);
+	ld	hl, #_dialog_buf
+	ld	b, #0x00
+	add	hl, bc
+	push	hl
+	push	bc
+	ld	a, #0x02
+	call	_get_tile_for_char
+	pop	bc
+	pop	hl
+	ld	(hl), a
+;src/utils/text.c:67: for (int i = 101; i < 119; i++)
+	inc	c
+	jr	00115$
+00104$:
+;src/utils/text.c:69: dialog_buf[119] = get_tile_for_char(6);
+	ld	a, #0x06
+	call	_get_tile_for_char
+	ld	(#(_dialog_buf + 119)),a
+;src/utils/text.c:70: }
+	ret
+;src/utils/text.c:72: void text_dialogue(const char *str) {
 ;	---------------------------------
 ; Function text_dialogue
 ; ---------------------------------
 _text_dialogue::
-	add	sp, #-7
-;src/utils/text.c:51: waitpadup();
+	add	sp, #-17
+;src/utils/text.c:73: waitpadup();
 	call	_waitpadup
-;src/utils/text.c:53: const char *ptr = str;
-	ldhl	sp,	#1
+;src/utils/text.c:75: const char *ptr = str;
+	ldhl	sp,	#15
 	ld	a, e
 	ld	(hl+), a
 	ld	(hl), d
-;src/utils/text.c:55: while (*ptr != '\0') {
-00116$:
-	ldhl	sp,#1
+;src/utils/text.c:76: while (*ptr != '\0') {
+00121$:
+	ldhl	sp,#15
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
 	ld	a, (de)
 	or	a, a
-	jp	Z, 00118$
-;src/utils/text.c:57: for (int i = 0; i < 80; i++)
-	ld	c, #0x00
-00122$:
-	ld	a, c
-	sub	a, #0x50
-	jr	NC, 00101$
-;src/utils/text.c:58: dialog_buf[i] = (uint8_t)FONT_BASE_TILE;
-	ld	hl, #_dialog_buf
-	ld	b, #0x00
-	add	hl, bc
-	ld	(hl), #0x80
-;src/utils/text.c:57: for (int i = 0; i < 80; i++)
-	inc	c
-	jr	00122$
-00101$:
-;src/utils/text.c:61: dialog_buf[0] = get_tile_for_char(1);
-	ld	a, #0x01
-	call	_get_tile_for_char
-	ld	(#_dialog_buf),a
-;src/utils/text.c:62: for (int i = 1; i < 19; i++)
-	ldhl	sp,	#6
-	ld	(hl), #0x01
-00125$:
-	ldhl	sp,	#6
+	jp	Z, 00123$
+;src/utils/text.c:77: clear_dialog_buf();
+	call	_clear_dialog_buf
+;src/utils/text.c:79: int cur_line = 0;
+	xor	a, a
+	ldhl	sp,	#11
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/text.c:80: int cur_col = 0;
+	xor	a, a
+	ldhl	sp,	#0
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/text.c:82: while (*ptr != '\0' && cur_line < TEXT_LINES) {
+00118$:
+	ldhl	sp,#15
+	ld	a, (hl+)
+	ld	e, a
+	ld	a, (hl-)
+	dec	hl
+	ld	d, a
+	ld	a, (de)
+	ld	(hl), a
 	ld	a, (hl)
-	sub	a, #0x13
-	jr	NC, 00102$
-;src/utils/text.c:63: dialog_buf[i] = get_tile_for_char(2);
-	ld	de, #_dialog_buf
-	ld	l, (hl)
-	ld	h, #0x00
-	add	hl, de
+	or	a, a
+	jp	Z, 00120$
+	ldhl	sp,	#11
+	ld	a, (hl+)
+	sub	a, #0x04
+	ld	a, (hl)
+	sbc	a, #0x00
+	jp	NC, 00120$
+;src/utils/text.c:86: while (*word_end != '\0' && *word_end != ' ' && *word_end != '\n') {
+	ld	bc, #0x0000
+	ldhl	sp,	#15
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+00103$:
+	ld	a, (de)
+	or	a, a
+	jr	Z, 00145$
+	cp	a, #0x20
+	jr	Z, 00145$
+	sub	a, #0x0a
+	jr	Z, 00145$
+;src/utils/text.c:87: word_len++;
+	inc	bc
+;src/utils/text.c:88: word_end++;
+	inc	de
+	jr	00103$
+00145$:
+	ldhl	sp,	#2
+	ld	a, c
+	ld	(hl+), a
+	ld	(hl), b
+;src/utils/text.c:92: if (cur_col + word_len > TEXT_WIDTH) {
+	pop	hl
+	push	hl
+	add	hl, bc
+	ld	c, l
+	ld	b, h
+	ld	e, b
+	ld	d, #0x00
+	ld	a, #0x12
+	cp	a, c
+	ld	a, #0x00
+	sbc	a, b
+	bit	7, e
+	jr	Z, 00233$
+	bit	7, d
+	jr	NZ, 00234$
+	cp	a, a
+	jr	00234$
+00233$:
+	bit	7, d
+	jr	Z, 00234$
+	scf
+00234$:
+	jr	NC, 00140$
+;src/utils/text.c:93: cur_line++;
+	ldhl	sp,	#11
+	inc	(hl)
+;src/utils/text.c:94: cur_col = 0;
+	xor	a, a
+	ldhl	sp,	#0
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/text.c:95: if (cur_line >= TEXT_LINES)
+	ldhl	sp,	#11
+	ld	a, (hl+)
+	sub	a, #0x04
+	ld	a, (hl)
+	sbc	a, #0x00
+	jp	NC, 00120$
+;src/utils/text.c:100: for (int i = 0; i < word_len; i++) {
+00140$:
+;src/utils/text.c:93: cur_line++;
+	ldhl	sp,#11
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	inc	hl
 	push	hl
 	ld	a, l
 	ldhl	sp,	#6
@@ -236,200 +462,188 @@ _text_dialogue::
 	pop	hl
 	ld	a, h
 	ldhl	sp,	#5
+;src/utils/text.c:100: for (int i = 0; i < word_len; i++) {
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	c, a
+	ld	b, (hl)
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+	add	hl, hl
+	add	hl, hl
+	push	hl
+	ld	a, l
+	ldhl	sp,	#8
 	ld	(hl), a
-	ld	a, #0x02
-	call	_get_tile_for_char
-	ldhl	sp,	#4
-	ld	e, (hl)
-	inc	hl
-	ld	h, (hl)
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#7
+	ld	(hl), a
+	ldhl	sp,	#15
+	ld	a, (hl-)
+	dec	hl
+	ld	(hl), a
+	ldhl	sp,	#16
+	ld	a, (hl-)
+	dec	hl
+	ld	(hl+), a
+	xor	a, a
+	ld	(hl+), a
+	ld	(hl), a
+00127$:
+;src/utils/text.c:101: int pos = (cur_line + 1) * 20 + (cur_col + 1);
+	pop	de
+	push	de
 	ld	l, e
+	ld	h, d
+	inc	hl
+	push	hl
+	ld	a, l
+	ldhl	sp,	#10
 	ld	(hl), a
-;src/utils/text.c:62: for (int i = 1; i < 19; i++)
-	ldhl	sp,	#6
-	inc	(hl)
-	jr	00125$
-00102$:
-;src/utils/text.c:64: dialog_buf[19] = get_tile_for_char(3);
-	ld	a, #0x03
-	call	_get_tile_for_char
-	ld	(#(_dialog_buf + 19)),a
-;src/utils/text.c:66: dialog_buf[20] = get_tile_for_char(4);
-	ld	a, #0x04
-	call	_get_tile_for_char
-	ld	(#(_dialog_buf + 20)),a
-;src/utils/text.c:67: dialog_buf[39] = get_tile_for_char(4);
-	ld	a, #0x04
-	call	_get_tile_for_char
-	ld	(#(_dialog_buf + 39)),a
-;src/utils/text.c:68: dialog_buf[40] = get_tile_for_char(4);
-	ld	a, #0x04
-	call	_get_tile_for_char
-	ld	(#(_dialog_buf + 40)),a
-;src/utils/text.c:69: dialog_buf[59] = get_tile_for_char(4);
-	ld	a, #0x04
-	call	_get_tile_for_char
-	ld	(#(_dialog_buf + 59)),a
-;src/utils/text.c:71: dialog_buf[60] = get_tile_for_char(5);
-	ld	a, #0x05
-	call	_get_tile_for_char
-	ld	(#(_dialog_buf + 60)),a
-;src/utils/text.c:72: for (int i = 61; i < 79; i++)
-	ld	c, #0x3d
-00128$:
-	ld	a, c
-	sub	a, #0x4f
-	jr	NC, 00103$
-;src/utils/text.c:73: dialog_buf[i] = get_tile_for_char(2);
-	ld	hl, #_dialog_buf
-	ld	b, #0x00
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#9
+	ld	(hl), a
+;src/utils/text.c:102: dialog_buf[pos] = get_tile_for_char(*ptr);
+	ldhl	sp,#13
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ldhl	sp,	#10
+	ld	(hl), a
+;src/utils/text.c:100: for (int i = 0; i < word_len; i++) {
+	ldhl	sp,	#15
+	ld	e, l
+	ld	d, h
+	ldhl	sp,	#2
+	ld	a, (de)
+	inc	de
+	sub	a, (hl)
+	inc	hl
+	ld	a, (de)
+	sbc	a, (hl)
+	ld	a, (de)
+	ld	d, a
+	bit	7, (hl)
+	jr	Z, 00236$
+	bit	7, d
+	jr	NZ, 00237$
+	cp	a, a
+	jr	00237$
+00236$:
+	bit	7, d
+	jr	Z, 00237$
+	scf
+00237$:
+	jr	NC, 00146$
+;src/utils/text.c:101: int pos = (cur_line + 1) * 20 + (cur_col + 1);
+	ldhl	sp,#6
+	ld	a, (hl+)
+	ld	e, a
+	ld	a, (hl+)
+	ld	d, a
+	ld	a,	(hl+)
+	ld	h, (hl)
+	ld	l, a
+	add	hl, de
+;src/utils/text.c:102: dialog_buf[pos] = get_tile_for_char(*ptr);
+	ld	bc, #_dialog_buf
 	add	hl, bc
 	push	hl
-	push	bc
-	ld	a, #0x02
+	ldhl	sp,	#12
+	ld	a, (hl)
 	call	_get_tile_for_char
 	pop	bc
-	pop	hl
-	ld	(hl), a
-;src/utils/text.c:72: for (int i = 61; i < 79; i++)
-	inc	c
-	jr	00128$
-00103$:
-;src/utils/text.c:74: dialog_buf[79] = get_tile_for_char(6);
-	ld	a, #0x06
-	call	_get_tile_for_char
-	ld	(#(_dialog_buf + 79)),a
-;src/utils/text.c:78: int col = 0;
-	ldhl	sp,	#3
-;src/utils/text.c:80: while (*ptr != '\0' && count < 32) {
-	xor	a, a
-	ld	(hl+), a
-	ld	bc, #0x0000
-	ld	(hl), c
-	ldhl	sp,	#1
+	ld	(bc), a
+;src/utils/text.c:103: ptr++;
+	ldhl	sp,	#13
+	inc	(hl)
+	jr	NZ, 00238$
+	inc	hl
+	inc	(hl)
+00238$:
+;src/utils/text.c:104: cur_col++;
+	ldhl	sp,	#8
 	ld	a, (hl)
-	ldhl	sp,	#5
-	ld	(hl), a
-	ldhl	sp,	#2
-	ld	a, (hl)
-	ldhl	sp,	#6
-	ld	(hl), a
-00113$:
-	ldhl	sp,#5
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
-	ld	a, (de)
 	ldhl	sp,	#0
 	ld	(hl), a
+	ldhl	sp,	#9
 	ld	a, (hl)
-	or	a, a
-	jr	Z, 00115$
-	ld	a, c
-	sub	a, #0x20
-	ld	a, b
-	rla
-	ccf
-	rra
-	sbc	a, #0x80
-	jr	NC, 00115$
-;src/utils/text.c:81: if (*ptr == ',') {
-	ld	a, (hl)
-	sub	a, #0x2c
-	jr	NZ, 00107$
-;src/utils/text.c:82: ptr++;
 	ldhl	sp,	#1
+	ld	(hl), a
+;src/utils/text.c:100: for (int i = 0; i < word_len; i++) {
+	ldhl	sp,	#15
 	inc	(hl)
-	jr	NZ, 00244$
+	jr	NZ, 00127$
 	inc	hl
 	inc	(hl)
-00244$:
-;src/utils/text.c:83: if (*ptr == ' ')
-	ldhl	sp,#1
+	jr	00127$
+00146$:
+	ldhl	sp,	#13
+	ld	a, (hl+)
+	inc	hl
+	ld	(hl-), a
+	ld	a, (hl+)
+	inc	hl
+	ld	(hl), a
+;src/utils/text.c:108: if (*ptr == ' ' || *ptr == '\n') {
+	ldhl	sp,	#10
+	ld	a, (hl)
+	sub	a, #0x20
+	jr	Z, 00114$
+	ldhl	sp,	#10
+	ld	a, (hl)
+	sub	a, #0x0a
+	jp	NZ, 00118$
+00114$:
+;src/utils/text.c:109: if (*ptr == '\n') {
+	ldhl	sp,#15
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
 	ld	a, (de)
-	sub	a, #0x20
-	jr	NZ, 00115$
-;src/utils/text.c:84: ptr++;
-	dec	hl
-	inc	(hl)
-	jr	NZ, 00115$
-	inc	hl
-	inc	(hl)
-;src/utils/text.c:85: break;
-	jr	00115$
-00107$:
-;src/utils/text.c:88: int pos = (line == 0) ? (22 + col) : (42 + col);
+	sub	a, #0x0a
+	jr	NZ, 00112$
+;src/utils/text.c:110: cur_line++;
 	ldhl	sp,	#4
 	ld	a, (hl)
-	or	a, a
-	jr	NZ, 00132$
-	dec	hl
-	ld	a, (hl)
-	add	a, #0x16
-	jr	00133$
-00132$:
-	ldhl	sp,	#3
-	ld	a, (hl)
-	add	a, #0x2a
-00133$:
-;src/utils/text.c:89: dialog_buf[pos] = get_tile_for_char(*ptr);
-	add	a, #<(_dialog_buf)
-	ld	e, a
-	ld	a, #0x00
-	adc	a, #>(_dialog_buf)
-	ld	d, a
-	push	bc
-	push	de
-	ldhl	sp,	#4
-	ld	a, (hl)
-	call	_get_tile_for_char
-	pop	de
-	pop	bc
-	ld	(de), a
-;src/utils/text.c:91: col++;
-	ldhl	sp,	#3
-	inc	(hl)
-;src/utils/text.c:92: count++;
-	inc	bc
-;src/utils/text.c:93: if (col >= 16) {
-	ld	a, (hl)
-	sub	a, #0x10
-	jr	C, 00111$
-;src/utils/text.c:94: col = 0;
-;src/utils/text.c:95: line++;
-	xor	a, a
+	ldhl	sp,	#11
 	ld	(hl+), a
-	inc	(hl)
-;src/utils/text.c:96: if (line >= 2)
+	ld	(hl), #0x00
+;src/utils/text.c:111: cur_col = 0;
+	xor	a, a
+	ldhl	sp,	#0
+	ld	(hl+), a
+	ld	(hl), a
+	jr	00113$
+00112$:
+;src/utils/text.c:113: cur_col++;
+	ldhl	sp,	#8
 	ld	a, (hl)
-	sub	a, #0x02
-	jr	NC, 00115$
-;src/utils/text.c:97: break;
-00111$:
-;src/utils/text.c:99: ptr++;
-	ldhl	sp,	#5
-	inc	(hl)
-	jr	NZ, 00248$
-	inc	hl
-	inc	(hl)
-00248$:
-	ldhl	sp,	#5
+	ldhl	sp,	#0
+	ld	(hl), a
+	ldhl	sp,	#9
 	ld	a, (hl)
 	ldhl	sp,	#1
 	ld	(hl), a
-	ldhl	sp,	#6
-	ld	a, (hl)
-	ldhl	sp,	#2
-	ld	(hl), a
-	jp	00113$
-00115$:
-;src/utils/text.c:104: set_win_tiles(0, 0, 20, 4, dialog_buf);
+00113$:
+;src/utils/text.c:115: ptr++;
+	ldhl	sp,	#15
+	inc	(hl)
+	jp	NZ, 00118$
+	inc	hl
+	inc	(hl)
+	jp	00118$
+00120$:
+;src/utils/text.c:119: set_win_tiles(0, 0, 20, 6, dialog_buf);
 	ld	de, #_dialog_buf
 	push	de
-	ld	hl, #0x414
+	ld	hl, #0x614
 	push	hl
 	xor	a, a
 	rrca
@@ -439,23 +653,23 @@ _text_dialogue::
 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
 	ld	a, #0x07
 	ldh	(_WX_REG + 0), a
-	ld	a, #0x70
+	ld	a, #0x60
 	ldh	(_WY_REG + 0), a
-;src/utils/text.c:106: SHOW_WIN;
+;src/utils/text.c:121: SHOW_WIN;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x20
 	ldh	(_LCDC_REG + 0), a
-;src/utils/text.c:109: waitpad(J_A);
+;src/utils/text.c:123: waitpad(J_A);
 	ld	a, #0x10
 	call	_waitpad
-;src/utils/text.c:110: delay(100); // Debounce
+;src/utils/text.c:124: delay(100);
 	ld	de, #0x0064
 	call	_delay
-;src/utils/text.c:111: waitpadup();
+;src/utils/text.c:125: waitpadup();
 	call	_waitpadup
-	jp	00116$
-00118$:
-;src/utils/text.c:114: HIDE_WIN;
+	jp	00121$
+00123$:
+;src/utils/text.c:128: HIDE_WIN;
 	ldh	a, (_LCDC_REG + 0)
 	and	a, #0xdf
 	ldh	(_LCDC_REG + 0), a
@@ -464,9 +678,9 @@ _text_dialogue::
 	ldh	(_WX_REG + 0), a
 	ld	a, #0x90
 	ldh	(_WY_REG + 0), a
-;src/utils/text.c:115: move_win(7, 144);
-;src/utils/text.c:116: }
-	add	sp, #7
+;src/utils/text.c:129: move_win(7, 144);
+;src/utils/text.c:130: }
+	add	sp, #17
 	ret
 	.area _CODE
 	.area _INITIALIZER

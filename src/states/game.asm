@@ -67,7 +67,7 @@ _camera_y::
 	.area _GSINIT
 	.area _GSFINAL
 	.area _GSINIT
-;src/states/game.c:252: static uint8_t last_dir = 0;
+;src/states/game.c:250: static uint8_t last_dir = 0;
 	xor	a, a
 	ld	hl, #_game_update_last_dir_10001_261
 	ld	(hl), a
@@ -347,26 +347,26 @@ _update_player_sprite::
 ;src/states/game.c:94: }
 	add	sp, #3
 	ret
-;src/states/game.c:100: uint8_t is_solid(uint16_t x, uint16_t y) {
+;src/states/game.c:98: uint8_t is_solid(uint16_t x, uint16_t y) {
 ;	---------------------------------
 ; Function is_solid
 ; ---------------------------------
 _is_solid::
-;src/states/game.c:101: uint16_t tile_x = x / 8;
+;src/states/game.c:99: uint16_t tile_x = x / 8;
 	srl	d
 	rr	e
 	srl	d
 	rr	e
 	srl	d
 	rr	e
-;src/states/game.c:102: uint16_t tile_y = y / 8;
+;src/states/game.c:100: uint16_t tile_y = y / 8;
 	srl	b
 	rr	c
 	srl	b
 	rr	c
 	srl	b
 	rr	c
-;src/states/game.c:104: if (tile_x >= MAP_WIDTH || tile_y >= MAP_HEIGHT)
+;src/states/game.c:102: if (tile_x >= MAP_WIDTH || tile_y >= MAP_HEIGHT)
 	ld	l, e
 	ld	h, d
 	ld	a, l
@@ -382,45 +382,48 @@ _is_solid::
 	sbc	a, #0x00
 	jr	C, 00102$
 00101$:
-;src/states/game.c:105: return 1;
+;src/states/game.c:103: return 1;
 	ld	a, #0x01
 	ret
 00102$:
-;src/states/game.c:107: uint16_t tile_index = tile_y * MAP_WIDTH + tile_x;
+;src/states/game.c:105: uint16_t tile_index = tile_y * MAP_WIDTH + tile_x;
 	add	hl, hl
 	add	hl, hl
 	add	hl, hl
 	add	hl, hl
 	add	hl, hl
 	add	hl, de
-;src/states/game.c:108: uint8_t tile_id = map_data[tile_index];
+;src/states/game.c:106: uint8_t tile_id = map_data[tile_index];
 	ld	bc, #_map_data
 	add	hl, bc
 	ld	a, (hl)
-;src/states/game.c:112: if (tile_id == 0 || tile_id == 2 || tile_id == 3 || tile_id == 4) {
+;src/states/game.c:109: if (tile_id == 0 || tile_id == 2 || tile_id == 3 || tile_id == 4 ||
 	or	a, a
 	jr	Z, 00104$
 	cp	a, #0x02
 	jr	Z, 00104$
 	cp	a, #0x03
 	jr	Z, 00104$
-	sub	a, #0x04
+	cp	a, #0x04
+	jr	Z, 00104$
+;src/states/game.c:110: tile_id == 5) {
+	sub	a, #0x05
 	jr	NZ, 00105$
 00104$:
-;src/states/game.c:113: return 0;
+;src/states/game.c:111: return 0;
 	xor	a, a
 	ret
 00105$:
-;src/states/game.c:115: return 1;
+;src/states/game.c:113: return 1;
 	ld	a, #0x01
-;src/states/game.c:116: }
+;src/states/game.c:114: }
 	ret
-;src/states/game.c:119: uint8_t can_move(uint16_t new_x, uint16_t new_y) {
+;src/states/game.c:117: uint8_t can_move(uint16_t new_x, uint16_t new_y) {
 ;	---------------------------------
 ; Function can_move
 ; ---------------------------------
 _can_move::
-;src/states/game.c:121: if (new_x < 8)
+;src/states/game.c:119: if (new_x < 8)
 	add	sp, #-4
 	push	de
 	ldhl	sp,	#0
@@ -429,21 +432,21 @@ _can_move::
 	ld	a, (hl)
 	sbc	a, #0x00
 	jr	NC, 00102$
-;src/states/game.c:122: return 0;
+;src/states/game.c:120: return 0;
 	xor	a, a
 	jp	00117$
 00102$:
-;src/states/game.c:123: if (new_x > WORLD_WIDTH - 24)
+;src/states/game.c:121: if (new_x > WORLD_WIDTH - 24)
 	ld	a, #0xe8
 	cp	a, e
 	ld	a, #0x00
 	sbc	a, d
 	jr	NC, 00104$
-;src/states/game.c:124: return 0;
+;src/states/game.c:122: return 0;
 	xor	a, a
 	jp	00117$
 00104$:
-;src/states/game.c:125: if (new_y < 16)
+;src/states/game.c:123: if (new_y < 16)
 	ldhl	sp,	#2
 	ld	a, c
 	ld	(hl+), a
@@ -454,21 +457,21 @@ _can_move::
 	ld	a, (hl)
 	sbc	a, #0x00
 	jr	NC, 00106$
-;src/states/game.c:126: return 0;
+;src/states/game.c:124: return 0;
 	xor	a, a
 	jr	00117$
 00106$:
-;src/states/game.c:127: if (new_y > WORLD_HEIGHT - 24)
+;src/states/game.c:125: if (new_y > WORLD_HEIGHT - 24)
 	ld	a, #0xe8
 	cp	a, c
 	ld	a, #0x00
 	sbc	a, b
 	jr	NC, 00108$
-;src/states/game.c:128: return 0;
+;src/states/game.c:126: return 0;
 	xor	a, a
 	jr	00117$
 00108$:
-;src/states/game.c:132: if (is_solid(new_x + 4, new_y + 8))
+;src/states/game.c:130: if (is_solid(new_x + 4, new_y + 8))
 	ldhl	sp,#2
 	ld	a, (hl+)
 	ld	e, a
@@ -495,11 +498,11 @@ _can_move::
 	pop	bc
 	or	a, a
 	jr	Z, 00110$
-;src/states/game.c:133: return 0;
+;src/states/game.c:131: return 0;
 	xor	a, a
 	jr	00117$
 00110$:
-;src/states/game.c:135: if (is_solid(new_x + 11, new_y + 8))
+;src/states/game.c:133: if (is_solid(new_x + 11, new_y + 8))
 	pop	de
 	push	de
 	ld	hl, #0x000b
@@ -511,11 +514,11 @@ _can_move::
 	pop	de
 	or	a, a
 	jr	Z, 00112$
-;src/states/game.c:136: return 0;
+;src/states/game.c:134: return 0;
 	xor	a, a
 	jr	00117$
 00112$:
-;src/states/game.c:138: if (is_solid(new_x + 4, new_y + 15))
+;src/states/game.c:136: if (is_solid(new_x + 4, new_y + 15))
 	push	de
 	ldhl	sp,#4
 	ld	a, (hl+)
@@ -537,39 +540,39 @@ _can_move::
 	pop	bc
 	or	a, a
 	jr	Z, 00114$
-;src/states/game.c:139: return 0;
+;src/states/game.c:137: return 0;
 	xor	a, a
 	jr	00117$
 00114$:
-;src/states/game.c:141: if (is_solid(new_x + 11, new_y + 15))
+;src/states/game.c:139: if (is_solid(new_x + 11, new_y + 15))
 	call	_is_solid
 	or	a, a
 	jr	Z, 00116$
-;src/states/game.c:142: return 0;
+;src/states/game.c:140: return 0;
 	xor	a, a
 	jr	00117$
 00116$:
-;src/states/game.c:144: return 1;
+;src/states/game.c:142: return 1;
 	ld	a, #0x01
 00117$:
-;src/states/game.c:145: }
+;src/states/game.c:143: }
 	add	sp, #6
 	ret
-;src/states/game.c:147: void game_init(void) {
+;src/states/game.c:145: void game_init(void) {
 ;	---------------------------------
 ; Function game_init
 ; ---------------------------------
 _game_init::
-;src/states/game.c:148: DISPLAY_OFF;
+;src/states/game.c:146: DISPLAY_OFF;
 	call	_display_off
-;src/states/game.c:151: set_bkg_data(0, 12, tiles_data);
+;src/states/game.c:149: set_bkg_data(0, 25, tiles_data);
 	ld	de, #_tiles_data
 	push	de
-	ld	hl, #0xc00
+	ld	hl, #0x1900
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:152: set_bkg_tiles(0, 0, MAP_WIDTH, MAP_HEIGHT, map_data);
+;src/states/game.c:150: set_bkg_tiles(0, 0, MAP_WIDTH, MAP_HEIGHT, map_data);
 	ld	de, #_map_data
 	push	de
 	ld	hl, #0x2020
@@ -579,36 +582,36 @@ _game_init::
 	push	af
 	call	_set_bkg_tiles
 	add	sp, #6
-;src/states/game.c:155: BGP_REG = 0xE4;
+;src/states/game.c:153: BGP_REG = 0xE4;
 	ld	a, #0xe4
 	ldh	(_BGP_REG + 0), a
-;src/states/game.c:156: OBP0_REG = 0xE4;
+;src/states/game.c:154: OBP0_REG = 0xE4;
 	ld	a, #0xe4
 	ldh	(_OBP0_REG + 0), a
-;src/states/game.c:157: OBP1_REG = 0xE4;
+;src/states/game.c:155: OBP1_REG = 0xE4;
 	ld	a, #0xe4
 	ldh	(_OBP1_REG + 0), a
-;src/states/game.c:160: SPRITES_8x8;
+;src/states/game.c:158: SPRITES_8x8;
 	ldh	a, (_LCDC_REG + 0)
 	and	a, #0xfb
 	ldh	(_LCDC_REG + 0), a
-;src/states/game.c:161: set_sprite_data(0, 24, player_sprites);
+;src/states/game.c:159: set_sprite_data(0, 24, player_sprites);
 	ld	de, #_player_sprites
 	push	de
 	ld	hl, #0x1800
 	push	hl
 	call	_set_sprite_data
 	add	sp, #4
-;src/states/game.c:162: set_sprite_data(24, 4, npc_dog_sprite); // NPC dog at tiles 24-27
-	ld	de, #_npc_dog_sprite
+;src/states/game.c:160: set_sprite_data(24, 4, npc_child_sprite); // NPC child at tiles 24-27
+	ld	de, #_npc_child_sprite
 	push	de
 	ld	hl, #0x418
 	push	hl
 	call	_set_sprite_data
 	add	sp, #4
-;src/states/game.c:167: update_camera();
+;src/states/game.c:165: update_camera();
 	call	_update_camera
-;src/states/game.c:168: move_sprite(0, player_x - camera_x + 8, player_y - camera_y + 16);
+;src/states/game.c:166: move_sprite(0, player_x - camera_x + 8, player_y - camera_y + 16);
 	ld	a, (_player_y)
 	ld	hl, #_camera_y
 	ld	c, (hl)
@@ -627,7 +630,7 @@ _game_init::
 	ld	a, b
 	ld	(hl+), a
 	ld	(hl), c
-;src/states/game.c:169: move_sprite(1, player_x - camera_x + 16, player_y - camera_y + 16);
+;src/states/game.c:167: move_sprite(1, player_x - camera_x + 16, player_y - camera_y + 16);
 	ld	a, (_player_y)
 	ld	hl, #_camera_y
 	ld	c, (hl)
@@ -646,7 +649,7 @@ _game_init::
 	ld	a, b
 	ld	(hl+), a
 	ld	(hl), c
-;src/states/game.c:170: move_sprite(2, player_x - camera_x + 8, player_y - camera_y + 24);
+;src/states/game.c:168: move_sprite(2, player_x - camera_x + 8, player_y - camera_y + 24);
 	ld	a, (_player_y)
 	ld	hl, #_camera_y
 	ld	c, (hl)
@@ -665,7 +668,7 @@ _game_init::
 	ld	a, b
 	ld	(hl+), a
 	ld	(hl), c
-;src/states/game.c:171: move_sprite(3, player_x - camera_x + 16, player_y - camera_y + 24);
+;src/states/game.c:169: move_sprite(3, player_x - camera_x + 16, player_y - camera_y + 24);
 	ld	a, (_player_y)
 	ld	hl, #_camera_y
 	ld	c, (hl)
@@ -684,44 +687,44 @@ _game_init::
 	ld	a, b
 	ld	(hl+), a
 	ld	(hl), c
-;src/states/game.c:174: update_player_sprite();
+;src/states/game.c:172: update_player_sprite();
 	call	_update_player_sprite
-;src/states/game.c:177: text_init();
+;src/states/game.c:175: text_init();
 	call	_text_init
-;src/states/game.c:179: SHOW_BKG;
+;src/states/game.c:177: SHOW_BKG;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x01
 	ldh	(_LCDC_REG + 0), a
-;src/states/game.c:180: SHOW_SPRITES;
+;src/states/game.c:178: SHOW_SPRITES;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x02
 	ldh	(_LCDC_REG + 0), a
-;src/states/game.c:181: DISPLAY_ON;
+;src/states/game.c:179: DISPLAY_ON;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x80
 	ldh	(_LCDC_REG + 0), a
-;src/states/game.c:182: }
+;src/states/game.c:180: }
 	ret
-;src/states/game.c:184: void game_update(void) {
+;src/states/game.c:182: void game_update(void) {
 ;	---------------------------------
 ; Function game_update
 ; ---------------------------------
 _game_update::
 	add	sp, #-4
-;src/states/game.c:185: uint8_t moved = 0;
+;src/states/game.c:183: uint8_t moved = 0;
 	ldhl	sp,	#3
 	ld	(hl), #0x00
-;src/states/game.c:186: uint16_t new_x = player_x;
+;src/states/game.c:184: uint16_t new_x = player_x;
 	ld	a, (_player_x)
 	ld	e, a
 	ld	hl, #_player_x + 1
 	ld	d, (hl)
-;src/states/game.c:187: uint16_t new_y = player_y;
+;src/states/game.c:185: uint16_t new_y = player_y;
 	ld	a, (_player_y)
 	ld	c, a
 	ld	hl, #_player_y + 1
 	ld	b, (hl)
-;src/states/game.c:189: if (input_held(J_UP)) {
+;src/states/game.c:187: if (input_held(J_UP)) {
 	push	bc
 	push	de
 	ld	a, #0x04
@@ -730,17 +733,17 @@ _game_update::
 	pop	bc
 	or	a, a
 	jr	Z, 00110$
-;src/states/game.c:190: new_y--;
+;src/states/game.c:188: new_y--;
 	dec	bc
-;src/states/game.c:191: player_dir = 1;
+;src/states/game.c:189: player_dir = 1;
 	ld	hl, #_player_dir
 	ld	(hl), #0x01
-;src/states/game.c:192: moved = 1;
+;src/states/game.c:190: moved = 1;
 	ldhl	sp,	#3
 	ld	(hl), #0x01
 	jr	00111$
 00110$:
-;src/states/game.c:193: } else if (input_held(J_DOWN)) {
+;src/states/game.c:191: } else if (input_held(J_DOWN)) {
 	push	bc
 	push	de
 	ld	a, #0x08
@@ -749,17 +752,17 @@ _game_update::
 	pop	bc
 	or	a, a
 	jr	Z, 00107$
-;src/states/game.c:194: new_y++;
+;src/states/game.c:192: new_y++;
 	inc	bc
-;src/states/game.c:195: player_dir = 0;
+;src/states/game.c:193: player_dir = 0;
 	xor	a, a
 	ld	(#_player_dir),a
-;src/states/game.c:196: moved = 1;
+;src/states/game.c:194: moved = 1;
 	ldhl	sp,	#3
 	ld	(hl), #0x01
 	jr	00111$
 00107$:
-;src/states/game.c:197: } else if (input_held(J_LEFT)) {
+;src/states/game.c:195: } else if (input_held(J_LEFT)) {
 	push	bc
 	push	de
 	ld	a, #0x02
@@ -768,17 +771,17 @@ _game_update::
 	pop	bc
 	or	a, a
 	jr	Z, 00104$
-;src/states/game.c:198: new_x--;
+;src/states/game.c:196: new_x--;
 	dec	de
-;src/states/game.c:199: player_dir = 2;
+;src/states/game.c:197: player_dir = 2;
 	ld	hl, #_player_dir
 	ld	(hl), #0x02
-;src/states/game.c:200: moved = 1;
+;src/states/game.c:198: moved = 1;
 	ldhl	sp,	#3
 	ld	(hl), #0x01
 	jr	00111$
 00104$:
-;src/states/game.c:201: } else if (input_held(J_RIGHT)) {
+;src/states/game.c:199: } else if (input_held(J_RIGHT)) {
 	push	bc
 	push	de
 	ld	a, #0x01
@@ -787,21 +790,21 @@ _game_update::
 	pop	bc
 	or	a, a
 	jr	Z, 00111$
-;src/states/game.c:202: new_x++;
+;src/states/game.c:200: new_x++;
 	inc	de
-;src/states/game.c:203: player_dir = 3;
+;src/states/game.c:201: player_dir = 3;
 	ld	hl, #_player_dir
 	ld	(hl), #0x03
-;src/states/game.c:204: moved = 1;
+;src/states/game.c:202: moved = 1;
 	ldhl	sp,	#3
 	ld	(hl), #0x01
 00111$:
-;src/states/game.c:207: if (moved) {
+;src/states/game.c:205: if (moved) {
 	ldhl	sp,	#3
 	ld	a, (hl)
 	or	a, a
 	jp	Z, 00124$
-;src/states/game.c:209: uint8_t can_walk = can_move(new_x, new_y);
+;src/states/game.c:207: uint8_t can_walk = can_move(new_x, new_y);
 	push	bc
 	push	de
 	call	_can_move
@@ -812,25 +815,25 @@ _game_update::
 	ldhl	sp,	#3
 	ld	a, (hl-)
 	dec	hl
-;src/states/game.c:210: if (can_walk) {
+;src/states/game.c:208: if (can_walk) {
 	ld	(hl+), a
 	inc	hl
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00113$
-;src/states/game.c:211: player_x = new_x;
+;src/states/game.c:209: player_x = new_x;
 	ld	hl, #_player_x
 	ld	a, e
 	ld	(hl+), a
 	ld	(hl), d
-;src/states/game.c:212: player_y = new_y;
+;src/states/game.c:210: player_y = new_y;
 	ld	hl, #_player_y
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/states/game.c:214: update_camera();
+;src/states/game.c:212: update_camera();
 	call	_update_camera
-;src/states/game.c:218: uint16_t screen_x = player_x - camera_x + 8;
+;src/states/game.c:216: uint16_t screen_x = player_x - camera_x + 8;
 	ld	a, (#_player_x)
 	ld	hl, #_camera_x
 	sub	a, (hl)
@@ -842,7 +845,7 @@ _game_update::
 	ld	hl, #0x0008
 	add	hl, bc
 	ld	e, l
-;src/states/game.c:219: uint16_t screen_y = player_y - camera_y + 16;
+;src/states/game.c:217: uint16_t screen_y = player_y - camera_y + 16;
 	ld	a, (#_player_y)
 	ld	hl, #_camera_y
 	sub	a, (hl)
@@ -858,7 +861,7 @@ _game_update::
 	ldhl	sp,	#2
 	ld	(hl), c
 	inc	hl
-;src/states/game.c:221: move_sprite(0, screen_x, screen_y);
+;src/states/game.c:219: move_sprite(0, screen_x, screen_y);
 	ld	(hl-), a
 	ld	b, (hl)
 	ld	c, e
@@ -868,7 +871,7 @@ _game_update::
 	ld	a, b
 	ld	(hl+), a
 	ld	(hl), c
-;src/states/game.c:222: move_sprite(1, screen_x + 8, screen_y);
+;src/states/game.c:220: move_sprite(1, screen_x + 8, screen_y);
 	ldhl	sp,	#2
 	ld	c, (hl)
 	ld	a, c
@@ -890,7 +893,7 @@ _game_update::
 	ld	a, (hl)
 	pop	hl
 	ld	(hl), a
-;src/states/game.c:223: move_sprite(2, screen_x, screen_y + 8);
+;src/states/game.c:221: move_sprite(2, screen_x, screen_y + 8);
 	ld	a, c
 	add	a, #0x08
 	ld	c, a
@@ -911,71 +914,71 @@ _game_update::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/states/game.c:224: move_sprite(3, screen_x + 8, screen_y + 8);
+;src/states/game.c:222: move_sprite(3, screen_x + 8, screen_y + 8);
 00113$:
-;src/states/game.c:228: if (can_walk) {
+;src/states/game.c:226: if (can_walk) {
 	ldhl	sp,	#1
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00119$
-;src/states/game.c:229: anim_timer++;
+;src/states/game.c:227: anim_timer++;
 	ld	hl, #_anim_timer
 	inc	(hl)
-;src/states/game.c:230: if (anim_timer > 6) {
+;src/states/game.c:228: if (anim_timer > 6) {
 	ld	a, #0x06
 	sub	a, (hl)
 	jr	NC, 00125$
-;src/states/game.c:231: anim_frame = !anim_frame;
+;src/states/game.c:229: anim_frame = !anim_frame;
 	ld	hl, #_anim_frame
 	ld	a, (hl)
 	sub	a, #0x01
 	ld	a, #0x00
 	rla
 	ld	(hl), a
-;src/states/game.c:232: anim_timer = 0;
+;src/states/game.c:230: anim_timer = 0;
 	xor	a, a
 	ld	(#_anim_timer),a
-;src/states/game.c:233: update_player_sprite();
+;src/states/game.c:231: update_player_sprite();
 	call	_update_player_sprite
 	jr	00125$
 00119$:
-;src/states/game.c:237: if (anim_frame != 0) {
+;src/states/game.c:235: if (anim_frame != 0) {
 	ld	hl, #_anim_frame
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00125$
-;src/states/game.c:238: anim_frame = 0;
+;src/states/game.c:236: anim_frame = 0;
 	ld	(hl), #0x00
-;src/states/game.c:239: update_player_sprite();
+;src/states/game.c:237: update_player_sprite();
 	call	_update_player_sprite
 	jr	00125$
 00124$:
-;src/states/game.c:244: if (anim_frame != 0) {
+;src/states/game.c:242: if (anim_frame != 0) {
 	ld	hl, #_anim_frame
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00122$
-;src/states/game.c:245: anim_frame = 0;
+;src/states/game.c:243: anim_frame = 0;
 	ld	(hl), #0x00
-;src/states/game.c:246: update_player_sprite();
+;src/states/game.c:244: update_player_sprite();
 	call	_update_player_sprite
 00122$:
-;src/states/game.c:248: anim_timer = 0;
+;src/states/game.c:246: anim_timer = 0;
 	xor	a, a
 	ld	(#_anim_timer),a
 00125$:
-;src/states/game.c:253: if (last_dir != player_dir) {
+;src/states/game.c:251: if (last_dir != player_dir) {
 	ld	a, (#_game_update_last_dir_10001_261)
 	ld	hl, #_player_dir
 	sub	a, (hl)
 	jr	Z, 00127$
-;src/states/game.c:254: update_player_sprite();
+;src/states/game.c:252: update_player_sprite();
 	call	_update_player_sprite
-;src/states/game.c:255: last_dir = player_dir;
+;src/states/game.c:253: last_dir = player_dir;
 	ld	a, (#_player_dir)
 	ld	(#_game_update_last_dir_10001_261),a
 00127$:
-;src/states/game.c:264: uint16_t npc_screen_x = npc_x - camera_x + 8;
+;src/states/game.c:262: uint16_t npc_screen_x = npc_x - camera_x + 8;
 	ld	a, #0x78
 	ld	hl, #_camera_x
 	sub	a, (hl)
@@ -992,7 +995,7 @@ _game_update::
 	ld	(hl), c
 	inc	hl
 	ld	(hl), a
-;src/states/game.c:265: uint16_t npc_screen_y = npc_y - camera_y + 16;
+;src/states/game.c:263: uint16_t npc_screen_y = npc_y - camera_y + 16;
 	ld	a, #0x48
 	ld	hl, #_camera_y
 	sub	a, (hl)
@@ -1009,7 +1012,7 @@ _game_update::
 	ld	(hl), c
 	inc	hl
 	ld	(hl), a
-;src/states/game.c:268: if (npc_screen_x < 168 && npc_screen_y < 160) {
+;src/states/game.c:266: if (npc_screen_x < 168 && npc_screen_y < 160) {
 	pop	bc
 	push	bc
 	ld	a, c
@@ -1026,7 +1029,7 @@ _game_update::
 	ld	a, b
 	sbc	a, #0x00
 	jr	NC, 00129$
-;src/states/game.c:269: move_sprite(4, npc_screen_x, npc_screen_y);
+;src/states/game.c:267: move_sprite(4, npc_screen_x, npc_screen_y);
 	dec	hl
 	ld	a, (hl-)
 	dec	hl
@@ -1038,7 +1041,7 @@ _game_update::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/states/game.c:270: move_sprite(5, npc_screen_x + 8, npc_screen_y);
+;src/states/game.c:268: move_sprite(5, npc_screen_x + 8, npc_screen_y);
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	ld	(hl), a
@@ -1056,7 +1059,7 @@ _game_update::
 	ld	a, b
 	ld	(hl+), a
 	ld	(hl), e
-;src/states/game.c:271: move_sprite(6, npc_screen_x, npc_screen_y + 8);
+;src/states/game.c:269: move_sprite(6, npc_screen_x, npc_screen_y + 8);
 	ldhl	sp,	#3
 	ld	a, (hl)
 	add	a, #0x08
@@ -1085,7 +1088,7 @@ _game_update::
 	ld	(hl), #0x1a
 	ld	hl, #(_shadow_OAM + 30)
 	ld	(hl), #0x1b
-;src/states/game.c:278: set_sprite_tile(7, 27);
+;src/states/game.c:276: set_sprite_tile(7, 27);
 	jr	00130$
 00129$:
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
@@ -1112,15 +1115,15 @@ _game_update::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/states/game.c:283: move_sprite(7, 0, 0);
+;src/states/game.c:281: move_sprite(7, 0, 0);
 00130$:
-;src/states/game.c:287: if (input_pressed(J_A)) {
+;src/states/game.c:285: if (input_pressed(J_A)) {
 	ld	a, #0x10
 	call	_input_pressed
 	ld	c, a
 	or	a, a
 	jr	Z, 00157$
-;src/states/game.c:289: int16_t dx = (int16_t)player_x - npc_x;
+;src/states/game.c:287: int16_t dx = (int16_t)player_x - npc_x;
 	ld	a, (_player_x)
 	ld	hl, #_player_x + 1
 	ld	c, (hl)
@@ -1129,7 +1132,7 @@ _game_update::
 	ld	a, c
 	adc	a, #0xff
 	ld	c, a
-;src/states/game.c:290: int16_t dy = (int16_t)player_y - npc_y;
+;src/states/game.c:288: int16_t dy = (int16_t)player_y - npc_y;
 	ld	a, (_player_y)
 	ld	hl, #_player_y + 1
 	ld	e, (hl)
@@ -1147,11 +1150,11 @@ _game_update::
 	ldhl	sp,	#3
 	ld	(hl-), a
 	ld	(hl), e
-;src/states/game.c:291: if (dx < 0)
+;src/states/game.c:289: if (dx < 0)
 	ld	h, c
 	bit	7, h
 	jr	Z, 00133$
-;src/states/game.c:292: dx = -dx;
+;src/states/game.c:290: dx = -dx;
 	xor	a, a
 	sub	a, b
 	ld	b, a
@@ -1159,7 +1162,7 @@ _game_update::
 	sub	a, c
 	ld	c, a
 00133$:
-;src/states/game.c:293: if (dy < 0)
+;src/states/game.c:291: if (dy < 0)
 	ldhl	sp,	#2
 	ld	a, (hl-)
 	dec	hl
@@ -1170,7 +1173,7 @@ _game_update::
 	ld	(hl), a
 	bit	7, (hl)
 	jr	Z, 00135$
-;src/states/game.c:294: dy = -dy;
+;src/states/game.c:292: dy = -dy;
 	inc	hl
 	ld	de, #0x0000
 	ld	a,	(hl+)
@@ -1185,7 +1188,7 @@ _game_update::
 	ld	(hl-), a
 	ld	(hl), e
 00135$:
-;src/states/game.c:297: if (dx < 24 && dy < 24) {
+;src/states/game.c:295: if (dx < 24 && dy < 24) {
 	ld	a, b
 	sub	a, #0x18
 	ld	a, c
@@ -1206,15 +1209,21 @@ _game_update::
 	rra
 	sbc	a, #0x80
 	jr	NC, 00157$
-;src/states/game.c:298: text_dialogue("HOLA AMIGO, QUE NECESITAS?");
+;src/states/game.c:297: "ALGUN\nLADO DEBE ESTAR");
 	ld	de, #___str_0
 	call	_text_dialogue
 00157$:
-;src/states/game.c:301: }
+;src/states/game.c:300: }
 	add	sp, #4
 	ret
 ___str_0:
-	.ascii "HOLA AMIGO, QUE NECESITAS?"
+	.ascii "HOLA AMIGO,"
+	.db 0x0a
+	.ascii "TIENES QUE CONSEGUIR"
+	.db 0x0a
+	.ascii "LA LLAVE EN ALGUN"
+	.db 0x0a
+	.ascii "LADO DEBE ESTAR"
 	.db 0x00
 	.area _CODE
 	.area _INITIALIZER

@@ -157,7 +157,7 @@ void game_init(void) {
   // Load sprites (24 tiles for player + 4 for NPC)
   SPRITES_8x8;
   set_sprite_data(0, 24, player_sprites);
-  set_sprite_data(24, 4, npc_dog_sprite); // NPC dog at tiles 24-27
+  set_sprite_data(24, 4, npc_child_sprite); // NPC child at tiles 24-27
 
   // Initial sprite position
   // Initial sprite position (relative to screen)
@@ -293,7 +293,8 @@ void game_update(void) {
 
     // If close (within 24 pixels)
     if (dx < 24 && dy < 24) {
-      text_dialogue("HOLA AMIGO, QUE NECESITAS?");
+      text_dialogue("HOLA AMIGO,\nTIENES QUE CONSEGUIR\nLA LLAVE EN "
+                    "ALGUN\nLADO DEBE ESTAR");
     }
   }
 }

@@ -3,9 +3,9 @@
 def pixel_grid_to_hex(grid):
     """Convert a 16-line pixel grid (each 16 chars wide) to GB 2bpp hex.
     0 = Transparent
-    1 = Light (Skin/Light Brown)
-    2 = Dark (Brown/Dark)
-    3 = Black
+    1 = Light (Skin)
+    2 = Dark (Clothes)
+    3 = Black (Outline)
     """
     hex_data = []
     
@@ -33,30 +33,31 @@ def pixel_grid_to_hex(grid):
     
     return hex_data
 
-# DOG NPC - Standing (Down-facing)
-dog_down = [
-    "0000000000000000",
-    "0001111111100000",
-    "0011222222110000",
-    "0112222222211000",
-    "0122333333221000",
-    "0122333333221000",
-    "0122222222221000",
-    "0012222222100000",
-    "0001222221000000",
-    "0001222221000000",
-    "0011222222110000",
-    "0112222222211000",
-    "0122000000221000",
-    "0120000000021000",
-    "0110000000011000",
+# CHILD NPC - Standing
+child_npc = [
+    "0000333333000000",
+    "0033111111330000",
+    "0311111111113000",
+    "3111111111111300",
+    "3113111113111300", # Eyes
+    "3111112211111300", # Mouth
+    "0311111111113000",
+    "0033333333330000",
+    "0003222222300000", # Shirt
+    "0032222222230000",
+    "0032222222230000",
+    "0032222222230000",
+    "0003300003300000", # Legs
+    "0031130031130000", # Feet
+    "0033330033330000",
     "0000000000000000",
 ]
 
-print("const unsigned char npc_dog_sprite[] = {")
-print("    // DOG NPC")
-data = pixel_grid_to_hex(dog_down)
-for i in range(0, len(data), 16):
-    chunk = data[i:i+16]
-    print("    " + ", ".join([f"0x{b:02X}" for b in chunk]) + ",")
-print("};")
+if __name__ == "__main__":
+    print("const unsigned char npc_child_sprite[] = {")
+    print("    // CHILD NPC")
+    data = pixel_grid_to_hex(child_npc)
+    for i in range(0, len(data), 16):
+        chunk = data[i:i+16]
+        print("    " + ", ".join([f"0x{b:02X}" for b in chunk]) + ",")
+    print("};")

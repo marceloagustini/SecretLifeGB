@@ -13,7 +13,7 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        0000057D R
+  0 ___str_0                                                        00000581 R
   8 __xinit__anim_frame                                             00000005 R
   8 __xinit__anim_timer                                             00000006 R
   8 __xinit__camera_x                                               00000007 R
@@ -25,16 +25,16 @@ Symbol Table
   3 _anim_timer                                                     00000006 GR
   3 _camera_x                                                       00000007 GR
   3 _camera_y                                                       00000009 GR
-  0 _can_move                                                       0000018B GR
+  0 _can_move                                                       0000018F GR
     _display_off                                                    ******** GX
-  0 _game_init                                                      0000022A GR
-  0 _game_update                                                    00000302 GR
+  0 _game_init                                                      0000022E GR
+  0 _game_update                                                    00000306 GR
   2 _game_update_last_dir_10001_261                                 00000000 R
     _input_held                                                     ******** GX
     _input_pressed                                                  ******** GX
   0 _is_solid                                                       0000013D GR
     _map_data                                                       ******** GX
-    _npc_dog_sprite                                                 ******** GX
+    _npc_child_sprite                                               ******** GX
   3 _player_dir                                                     00000004 GR
     _player_sprites                                                 ******** GX
   3 _player_x                                                       00000000 GR
@@ -54,7 +54,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      598   flags    0
+   0 _CODE                                      size      5C4   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        1   flags    0
    3 _INITIALIZED                               size        B   flags    0
