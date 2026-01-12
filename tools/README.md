@@ -7,19 +7,15 @@ Este directorio contiene una colección de herramientas en Python diseñadas par
 ## 🛠️ Herramientas Disponibles
 
 ### 1. `gen_map.py`
-Genera un mapa de 32x32 tiles con elementos predefinidos como caminos, casas, árboles y rocas.
-- **Función**: Crea una matriz de datos de mapa (`map_data`) y sus dimensiones.
+Genera un mapa de 32x32 tiles con un diseño de **pueblo/ciudad**.
+- **Novedad**: Incluye caminos de adoquines (cobblestone), casas grandes de 4x4 y árboles decorativos de 2x2.
+- **Función**: Crea una matriz de datos de mapa (`map_data`) con lógica de zonificación urbana.
 - **Uso**: `python3 gen_map.py > output_map.c`
 
 ### 2. `gen_npc.py`
 Genera los datos de tiles para un sprite de NPC (actualmente un perro).
 - **Función**: Convierte una cuadrícula de píxeles (formato de texto) a un array 2bpp de GameBoy.
 - **Uso**: `python3 gen_npc.py > npc_data.c`
-
-### 3. `gen_player.py`
-Genera los sprites del jugador (Link) con sus respectivas animaciones de movimiento (arriba, abajo, lateral).
-- **Función**: Convierte múltiples frames de 16x16 píxeles a arrays de tiles para GBDK.
-- **Uso**: `python3 gen_player.py > player_data.c`
 
 ### 4. `gen_text_tiles.py`
 Genera los datos de fuente y caracteres de dibujo de cajas (border decor).
@@ -36,6 +32,12 @@ Convertidor genérico de imágenes PNG a arrays de C compatibles con GameBoy.
 - **Función**: Mapea colores RGB a la paleta de 4 grises de GameBoy y organiza los datos en formato 2bpp (2 bytes por fila de 8 píxeles).
 - **Uso**: `python3 img_to_c.py <imagen.png> <nombre_variable> > output.c`
 - **Requisito**: Requiere la librería `Pillow` (`pip install Pillow`).
+
+### 7. `gen_tileset_img.py`
+Genera una imagen visual de todos los tiles actuales.
+- **Función**: Crea un archivo `res/tileset.bmp` que contiene todos los tiles definidos en `gen_tiles.py`. Esta imagen es perfecta para cargarla como "Tileset" en editores externos como **Tiled Map Editor**.
+- **Uso**: `python3 gen_tileset_img.py`
+- **Nota**: No requiere librerías externas.
 
 ---
 

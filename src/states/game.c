@@ -94,9 +94,7 @@ void update_player_sprite() {
 }
 
 // Check if a pixel coordinate is valid to walk on
-// The map is 8x8 tiles.
-// We check the tile index at the given coordinate.
-// Solid tiles are: 1 (Wall), 4/5 (Tree), 6 (Rock), 7-11 (House)
+// Passable: 0(Cobblestone), 2(Grass), 3(Flower), 4, 5 (Tree Top)
 uint8_t is_solid(uint16_t x, uint16_t y) {
   uint16_t tile_x = x / 8;
   uint16_t tile_y = y / 8;
@@ -107,9 +105,9 @@ uint8_t is_solid(uint16_t x, uint16_t y) {
   uint16_t tile_index = tile_y * MAP_WIDTH + tile_x;
   uint8_t tile_id = map_data[tile_index];
 
-  // Passable: 0(Empty), 2(Grass), 3(Flower)
-  // Also make Tree Top (4) passable for depth effect (walk behind)
-  if (tile_id == 0 || tile_id == 2 || tile_id == 3 || tile_id == 4) {
+  // Passable
+  if (tile_id == 0 || tile_id == 2 || tile_id == 3 || tile_id == 4 ||
+      tile_id == 5) {
     return 0;
   }
   return 1;
@@ -147,8 +145,8 @@ uint8_t can_move(uint16_t new_x, uint16_t new_y) {
 void game_init(void) {
   DISPLAY_OFF;
 
-  // Load tiles
-  set_bkg_data(0, 12, tiles_data);
+  // Load tiles (25 tiles total)
+  set_bkg_data(0, 25, tiles_data);
   set_bkg_tiles(0, 0, MAP_WIDTH, MAP_HEIGHT, map_data);
 
   // Set Palettes
