@@ -10,1242 +10,1847 @@
                                      10 	.globl _can_move
                                      11 	.globl _is_solid
                                      12 	.globl _update_player_sprite
-                                     13 	.globl _update_camera
-                                     14 	.globl _text_dialogue
-                                     15 	.globl _text_init
-                                     16 	.globl _input_held
-                                     17 	.globl _input_pressed
-                                     18 	.globl _set_sprite_data
-                                     19 	.globl _set_bkg_tiles
-                                     20 	.globl _set_bkg_data
-                                     21 	.globl _display_off
-                                     22 	.globl _camera_y
-                                     23 	.globl _camera_x
-                                     24 	.globl _anim_timer
-                                     25 	.globl _anim_frame
-                                     26 	.globl _player_dir
-                                     27 	.globl _player_y
-                                     28 	.globl _player_x
-                                     29 	.globl _game_init
-                                     30 	.globl _game_update
-                                     31 ;--------------------------------------------------------
-                                     32 ; special function registers
-                                     33 ;--------------------------------------------------------
-                                     34 	.area _HRAM
-                                     35 ;--------------------------------------------------------
-                                     36 ; ram data
-                                     37 ;--------------------------------------------------------
-                                     38 	.area _DATA
-    00000000                         39 _game_update_last_dir_10001_261:
-    00000000                         40 	.ds 1
+                                     13 	.globl _load_location
+                                     14 	.globl _update_camera
+                                     15 	.globl _get_tile_at
+                                     16 	.globl _text_dialogue
+                                     17 	.globl _text_init
+                                     18 	.globl _input_held
+                                     19 	.globl _input_pressed
+                                     20 	.globl _fill_bkg_rect
+                                     21 	.globl _set_sprite_data
+                                     22 	.globl _set_bkg_tiles
+                                     23 	.globl _set_bkg_data
+                                     24 	.globl _display_off
+                                     25 	.globl _env_anim_frame
+                                     26 	.globl _env_anim_timer
+                                     27 	.globl _camera_y
+                                     28 	.globl _camera_x
+                                     29 	.globl _anim_timer
+                                     30 	.globl _anim_frame
+                                     31 	.globl _player_dir
+                                     32 	.globl _world_saved_y
+                                     33 	.globl _world_saved_x
+                                     34 	.globl _player_y
+                                     35 	.globl _player_x
+                                     36 	.globl _current_loc
+                                     37 	.globl _game_init
+                                     38 	.globl _game_update
+                                     39 ;--------------------------------------------------------
+                                     40 ; special function registers
                                      41 ;--------------------------------------------------------
-                                     42 ; ram data
+                                     42 	.area _HRAM
                                      43 ;--------------------------------------------------------
-                                     44 	.area _INITIALIZED
-    00000000                         45 _player_x::
-    00000000                         46 	.ds 2
-    00000002                         47 _player_y::
-    00000002                         48 	.ds 2
-    00000004                         49 _player_dir::
-    00000004                         50 	.ds 1
-    00000005                         51 _anim_frame::
-    00000005                         52 	.ds 1
-    00000006                         53 _anim_timer::
-    00000006                         54 	.ds 1
-    00000007                         55 _camera_x::
-    00000007                         56 	.ds 2
-    00000009                         57 _camera_y::
-    00000009                         58 	.ds 2
-                                     59 ;--------------------------------------------------------
-                                     60 ; absolute external ram data
-                                     61 ;--------------------------------------------------------
-                                     62 	.area _DABS (ABS)
-                                     63 ;--------------------------------------------------------
-                                     64 ; global & static initialisations
-                                     65 ;--------------------------------------------------------
-                                     66 	.area _HOME
-                                     67 	.area _GSINIT
-                                     68 	.area _GSFINAL
-                                     69 	.area _GSINIT
-                                     70 ;src/states/game.c:250: static uint8_t last_dir = 0;
-    00000000 AF               [ 4]   71 	xor	a, a
-    00000001 21r00r00         [12]   72 	ld	hl, #_game_update_last_dir_10001_261
-    00000004 77               [ 8]   73 	ld	(hl), a
-                                     74 ;--------------------------------------------------------
-                                     75 ; Home
-                                     76 ;--------------------------------------------------------
-                                     77 	.area _HOME
-                                     78 	.area _HOME
+                                     44 ; ram data
+                                     45 ;--------------------------------------------------------
+                                     46 	.area _DATA
+                                     47 ;--------------------------------------------------------
+                                     48 ; ram data
+                                     49 ;--------------------------------------------------------
+                                     50 	.area _INITIALIZED
+    00000000                         51 _current_loc::
+    00000000                         52 	.ds 1
+    00000001                         53 _player_x::
+    00000001                         54 	.ds 2
+    00000003                         55 _player_y::
+    00000003                         56 	.ds 2
+    00000005                         57 _world_saved_x::
+    00000005                         58 	.ds 2
+    00000007                         59 _world_saved_y::
+    00000007                         60 	.ds 2
+    00000009                         61 _player_dir::
+    00000009                         62 	.ds 1
+    0000000A                         63 _anim_frame::
+    0000000A                         64 	.ds 1
+    0000000B                         65 _anim_timer::
+    0000000B                         66 	.ds 1
+    0000000C                         67 _camera_x::
+    0000000C                         68 	.ds 2
+    0000000E                         69 _camera_y::
+    0000000E                         70 	.ds 2
+    00000010                         71 _env_anim_timer::
+    00000010                         72 	.ds 1
+    00000011                         73 _env_anim_frame::
+    00000011                         74 	.ds 1
+                                     75 ;--------------------------------------------------------
+                                     76 ; absolute external ram data
+                                     77 ;--------------------------------------------------------
+                                     78 	.area _DABS (ABS)
                                      79 ;--------------------------------------------------------
-                                     80 ; code
+                                     80 ; global & static initialisations
                                      81 ;--------------------------------------------------------
-                                     82 	.area _CODE
-                                     83 ;src/states/game.c:27: void update_camera() {
-                                     84 ;	---------------------------------
-                                     85 ; Function update_camera
-                                     86 ; ---------------------------------
-    00000000                         87 _update_camera::
-                                     88 ;src/states/game.c:29: if (player_x > SCREEN_WIDTH / 2) {
-    00000000 21r00r00         [12]   89 	ld	hl, #_player_x
-    00000003 3E 50            [ 8]   90 	ld	a, #0x50
-    00000005 96               [ 8]   91 	sub	a, (hl)
-    00000006 23               [ 8]   92 	inc	hl
-    00000007 3E 00            [ 8]   93 	ld	a, #0x00
-    00000009 9E               [ 8]   94 	sbc	a, (hl)
-    0000000A 30 15            [12]   95 	jr	NC, 00102$
-                                     96 ;src/states/game.c:30: camera_x = player_x - SCREEN_WIDTH / 2;
-    0000000C FAr00r00         [16]   97 	ld	a, (_player_x)
-    0000000F 21r01r00         [12]   98 	ld	hl, #_player_x + 1
-    00000012 46               [ 8]   99 	ld	b, (hl)
-    00000013 C6 B0            [ 8]  100 	add	a, #0xb0
-    00000015 4F               [ 4]  101 	ld	c, a
-    00000016 78               [ 4]  102 	ld	a, b
-    00000017 CE FF            [ 8]  103 	adc	a, #0xff
-    00000019 21r07r00         [12]  104 	ld	hl, #_camera_x
-    0000001C 71               [ 8]  105 	ld	(hl), c
-    0000001D 23               [ 8]  106 	inc	hl
-    0000001E 77               [ 8]  107 	ld	(hl), a
-    0000001F 18 06            [12]  108 	jr	00103$
-    00000021                        109 00102$:
-                                    110 ;src/states/game.c:32: camera_x = 0;
-    00000021 AF               [ 4]  111 	xor	a, a
-    00000022 21r07r00         [12]  112 	ld	hl, #_camera_x
-    00000025 22               [ 8]  113 	ld	(hl+), a
-    00000026 77               [ 8]  114 	ld	(hl), a
-    00000027                        115 00103$:
-                                    116 ;src/states/game.c:35: if (player_y > SCREEN_HEIGHT / 2) {
-    00000027 21r02r00         [12]  117 	ld	hl, #_player_y
-    0000002A 3E 48            [ 8]  118 	ld	a, #0x48
-    0000002C 96               [ 8]  119 	sub	a, (hl)
-    0000002D 23               [ 8]  120 	inc	hl
-    0000002E 3E 00            [ 8]  121 	ld	a, #0x00
-    00000030 9E               [ 8]  122 	sbc	a, (hl)
-    00000031 30 15            [12]  123 	jr	NC, 00105$
-                                    124 ;src/states/game.c:36: camera_y = player_y - SCREEN_HEIGHT / 2;
-    00000033 FAr02r00         [16]  125 	ld	a, (_player_y)
-    00000036 21r03r00         [12]  126 	ld	hl, #_player_y + 1
-    00000039 4E               [ 8]  127 	ld	c, (hl)
-    0000003A C6 B8            [ 8]  128 	add	a, #0xb8
-    0000003C 47               [ 4]  129 	ld	b, a
-    0000003D 79               [ 4]  130 	ld	a, c
-    0000003E CE FF            [ 8]  131 	adc	a, #0xff
-    00000040 21r09r00         [12]  132 	ld	hl, #_camera_y
-    00000043 70               [ 8]  133 	ld	(hl), b
-    00000044 23               [ 8]  134 	inc	hl
-    00000045 77               [ 8]  135 	ld	(hl), a
-    00000046 18 06            [12]  136 	jr	00106$
-    00000048                        137 00105$:
-                                    138 ;src/states/game.c:38: camera_y = 0;
-    00000048 AF               [ 4]  139 	xor	a, a
-    00000049 21r09r00         [12]  140 	ld	hl, #_camera_y
-    0000004C 22               [ 8]  141 	ld	(hl+), a
-    0000004D 77               [ 8]  142 	ld	(hl), a
-    0000004E                        143 00106$:
-                                    144 ;src/states/game.c:42: if (camera_x > WORLD_WIDTH - SCREEN_WIDTH) {
-    0000004E 21r07r00         [12]  145 	ld	hl, #_camera_x
-    00000051 3E 60            [ 8]  146 	ld	a, #0x60
-    00000053 96               [ 8]  147 	sub	a, (hl)
-    00000054 23               [ 8]  148 	inc	hl
-    00000055 3E 00            [ 8]  149 	ld	a, #0x00
-    00000057 9E               [ 8]  150 	sbc	a, (hl)
-    00000058 30 08            [12]  151 	jr	NC, 00108$
-                                    152 ;src/states/game.c:43: camera_x = WORLD_WIDTH - SCREEN_WIDTH;
-    0000005A 21r07r00         [12]  153 	ld	hl, #_camera_x
-    0000005D 3E 60            [ 8]  154 	ld	a, #0x60
-    0000005F 22               [ 8]  155 	ld	(hl+), a
-    00000060 AF               [ 4]  156 	xor	a, a
-    00000061 77               [ 8]  157 	ld	(hl), a
-    00000062                        158 00108$:
-                                    159 ;src/states/game.c:45: if (camera_y > WORLD_HEIGHT - SCREEN_HEIGHT) {
-    00000062 21r09r00         [12]  160 	ld	hl, #_camera_y
-    00000065 3E 70            [ 8]  161 	ld	a, #0x70
-    00000067 96               [ 8]  162 	sub	a, (hl)
-    00000068 23               [ 8]  163 	inc	hl
-    00000069 3E 00            [ 8]  164 	ld	a, #0x00
-    0000006B 9E               [ 8]  165 	sbc	a, (hl)
-    0000006C 30 08            [12]  166 	jr	NC, 00110$
-                                    167 ;src/states/game.c:46: camera_y = WORLD_HEIGHT - SCREEN_HEIGHT;
-    0000006E 21r09r00         [12]  168 	ld	hl, #_camera_y
-    00000071 3E 70            [ 8]  169 	ld	a, #0x70
-    00000073 22               [ 8]  170 	ld	(hl+), a
-    00000074 AF               [ 4]  171 	xor	a, a
-    00000075 77               [ 8]  172 	ld	(hl), a
-    00000076                        173 00110$:
-                                    174 ;src/states/game.c:49: move_bkg(camera_x, camera_y);
-    00000076 FAr09r00         [16]  175 	ld	a, (_camera_y)
-    00000079 4F               [ 4]  176 	ld	c, a
-    0000007A FAr07r00         [16]  177 	ld	a, (#_camera_x)
-    0000007D E0r00            [12]  178 	ldh	(_SCX_REG + 0), a
-                                    179 ;./gbdk/include/gb/gb.h:1461: SCX_REG=x, SCY_REG=y;
-    0000007F 79               [ 4]  180 	ld	a, c
-    00000080 E0r00            [12]  181 	ldh	(_SCY_REG + 0), a
-                                    182 ;src/states/game.c:49: move_bkg(camera_x, camera_y);
-                                    183 ;src/states/game.c:50: }
-    00000082 C9               [16]  184 	ret
-                                    185 ;src/states/game.c:52: void update_player_sprite() {
-                                    186 ;	---------------------------------
-                                    187 ; Function update_player_sprite
-                                    188 ; ---------------------------------
-    00000083                        189 _update_player_sprite::
-    00000083 E8 FD            [16]  190 	add	sp, #-3
-                                    191 ;src/states/game.c:53: uint8_t base_tile = 0;
-    00000085 F8 00            [12]  192 	ldhl	sp,	#0
-                                    193 ;src/states/game.c:54: uint8_t prop = 0; // 0 or S_FLIPX
-    00000087 AF               [ 4]  194 	xor	a, a
-    00000088 22               [ 8]  195 	ld	(hl+), a
-    00000089 23               [ 8]  196 	inc	hl
-    0000008A 36 00            [12]  197 	ld	(hl), #0x00
-                                    198 ;src/states/game.c:56: switch (player_dir) {
-    0000008C 3E 03            [ 8]  199 	ld	a, #0x03
-    0000008E 21r04r00         [12]  200 	ld	hl, #_player_dir
-    00000091 96               [ 8]  201 	sub	a, (hl)
-    00000092 38 37            [12]  202 	jr	C, 00105$
-                                    203 ;src/states/game.c:58: base_tile = 0 + (anim_frame * 4);
-    00000094 FAr05r00         [16]  204 	ld	a, (_anim_frame)
-    00000097 87               [ 4]  205 	add	a, a
-    00000098 87               [ 4]  206 	add	a, a
-                                    207 ;src/states/game.c:64: base_tile = 16 + (anim_frame * 4);
-    00000099 47               [ 4]  208 	ld	b, a
-    0000009A C6 10            [ 8]  209 	add	a, #0x10
-    0000009C 4F               [ 4]  210 	ld	c, a
-                                    211 ;src/states/game.c:56: switch (player_dir) {
-    0000009D 5E               [ 8]  212 	ld	e, (hl)
-    0000009E 16 00            [ 8]  213 	ld	d, #0x00
-    000000A0 21rAAr00         [12]  214 	ld	hl, #00141$
-    000000A3 19               [ 8]  215 	add	hl, de
-    000000A4 19               [ 8]  216 	add	hl, de
-    000000A5 5E               [ 8]  217 	ld	e, (hl)
-    000000A6 23               [ 8]  218 	inc	hl
-    000000A7 66               [ 8]  219 	ld	h, (hl)
-    000000A8 6B               [ 4]  220 	ld	l, e
-    000000A9 E9               [ 4]  221 	jp	(hl)
-    000000AA                        222 00141$:
-    000000AArB2r00                  223 	.dw	00101$
-    000000ACrB7r00                  224 	.dw	00102$
-    000000AErBFr00                  225 	.dw	00103$
-    000000B0rC4r00                  226 	.dw	00104$
-                                    227 ;src/states/game.c:57: case 0: // Down
-    000000B2                        228 00101$:
-                                    229 ;src/states/game.c:58: base_tile = 0 + (anim_frame * 4);
-    000000B2 F8 00            [12]  230 	ldhl	sp,	#0
-    000000B4 70               [ 8]  231 	ld	(hl), b
-                                    232 ;src/states/game.c:59: break;
-    000000B5 18 14            [12]  233 	jr	00105$
-                                    234 ;src/states/game.c:60: case 1: // Up
-    000000B7                        235 00102$:
-                                    236 ;src/states/game.c:61: base_tile = 8 + (anim_frame * 4);
-    000000B7 78               [ 4]  237 	ld	a, b
-    000000B8 C6 08            [ 8]  238 	add	a, #0x08
-    000000BA F8 00            [12]  239 	ldhl	sp,	#0
-    000000BC 77               [ 8]  240 	ld	(hl), a
-                                    241 ;src/states/game.c:62: break;
-    000000BD 18 0C            [12]  242 	jr	00105$
-                                    243 ;src/states/game.c:63: case 2: // Left
-    000000BF                        244 00103$:
-                                    245 ;src/states/game.c:64: base_tile = 16 + (anim_frame * 4);
-    000000BF F8 00            [12]  246 	ldhl	sp,	#0
-    000000C1 71               [ 8]  247 	ld	(hl), c
-                                    248 ;src/states/game.c:65: break;
-    000000C2 18 07            [12]  249 	jr	00105$
-                                    250 ;src/states/game.c:66: case 3: // Right
-    000000C4                        251 00104$:
-                                    252 ;src/states/game.c:67: base_tile = 16 + (anim_frame * 4);
-    000000C4 F8 00            [12]  253 	ldhl	sp,	#0
-                                    254 ;src/states/game.c:68: prop = S_FLIPX;
-    000000C6 79               [ 4]  255 	ld	a, c
-    000000C7 22               [ 8]  256 	ld	(hl+), a
-    000000C8 23               [ 8]  257 	inc	hl
-    000000C9 36 20            [12]  258 	ld	(hl), #0x20
-                                    259 ;src/states/game.c:70: }
-    000000CB                        260 00105$:
-                                    261 ;src/states/game.c:72: if (prop == 0) {
-    000000CB F8 02            [12]  262 	ldhl	sp,	#2
-    000000CD 7E               [ 8]  263 	ld	a, (hl)
-    000000CE B7               [ 4]  264 	or	a, a
-    000000CF 20 32            [12]  265 	jr	NZ, 00107$
-                                    266 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    000000D1 2B               [ 8]  267 	dec	hl
-    000000D2 2B               [ 8]  268 	dec	hl
-    000000D3 11r02r00         [12]  269 	ld	de, #(_shadow_OAM + 2)
-    000000D6 7E               [ 8]  270 	ld	a, (hl)
-    000000D7 12               [ 8]  271 	ld	(de), a
-                                    272 ;src/states/game.c:74: set_sprite_tile(1, base_tile + 1); // TR
-    000000D8 4E               [ 8]  273 	ld	c, (hl)
-    000000D9 41               [ 4]  274 	ld	b, c
-    000000DA 04               [ 4]  275 	inc	b
-                                    276 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    000000DB 21r06r00         [12]  277 	ld	hl, #(_shadow_OAM + 6)
-    000000DE 70               [ 8]  278 	ld	(hl), b
-                                    279 ;src/states/game.c:75: set_sprite_tile(2, base_tile + 2); // BL
-    000000DF 41               [ 4]  280 	ld	b, c
-    000000E0 04               [ 4]  281 	inc	b
-    000000E1 04               [ 4]  282 	inc	b
-                                    283 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    000000E2 21r0Ar00         [12]  284 	ld	hl, #(_shadow_OAM + 10)
-    000000E5 70               [ 8]  285 	ld	(hl), b
-                                    286 ;src/states/game.c:76: set_sprite_tile(3, base_tile + 3); // BR
-    000000E6 0C               [ 4]  287 	inc	c
-    000000E7 0C               [ 4]  288 	inc	c
-    000000E8 0C               [ 4]  289 	inc	c
-                                    290 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    000000E9 21r0Er00         [12]  291 	ld	hl, #(_shadow_OAM + 14)
-    000000EC 71               [ 8]  292 	ld	(hl), c
-                                    293 ;./gbdk/include/gb/gb.h:1946: shadow_OAM[nb].prop=prop;
-    000000ED 21r03r00         [12]  294 	ld	hl, #(_shadow_OAM + 3)
-    000000F0 36 00            [12]  295 	ld	(hl), #0x00
-    000000F2 21r07r00         [12]  296 	ld	hl, #(_shadow_OAM + 7)
-    000000F5 36 00            [12]  297 	ld	(hl), #0x00
-    000000F7 21r0Br00         [12]  298 	ld	hl, #(_shadow_OAM + 11)
-    000000FA 36 00            [12]  299 	ld	(hl), #0x00
-    000000FC 21r0Fr00         [12]  300 	ld	hl, #(_shadow_OAM + 15)
-    000000FF 36 00            [12]  301 	ld	(hl), #0x00
-                                    302 ;src/states/game.c:81: set_sprite_prop(3, 0);
-    00000101 18 37            [12]  303 	jr	00125$
-    00000103                        304 00107$:
-                                    305 ;src/states/game.c:84: set_sprite_tile(0, base_tile + 1); // TR of Left -> TL of Right
-    00000103 F8 00            [12]  306 	ldhl	sp,	#0
-    00000105 2A               [ 8]  307 	ld	a, (hl+)
-    00000106 77               [ 8]  308 	ld	(hl), a
-    00000107 2A               [ 8]  309 	ld	a, (hl+)
-    00000108 3C               [ 4]  310 	inc	a
-    00000109 77               [ 8]  311 	ld	(hl), a
-                                    312 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    0000010A 11r02r00         [12]  313 	ld	de, #(_shadow_OAM + 2)
-    0000010D 3A               [ 8]  314 	ld	a, (hl-)
-    0000010E 2B               [ 8]  315 	dec	hl
-    0000010F 12               [ 8]  316 	ld	(de), a
-    00000110 11r06r00         [12]  317 	ld	de, #(_shadow_OAM + 6)
-                                    318 ;src/states/game.c:86: set_sprite_tile(2, base_tile + 3); // BR of Left -> BL of Right
-    00000113 2A               [ 8]  319 	ld	a, (hl+)
-    00000114 12               [ 8]  320 	ld	(de), a
-    00000115 4E               [ 8]  321 	ld	c, (hl)
-    00000116 0C               [ 4]  322 	inc	c
-    00000117 0C               [ 4]  323 	inc	c
-    00000118 0C               [ 4]  324 	inc	c
-                                    325 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    00000119 21r0Ar00         [12]  326 	ld	hl, #(_shadow_OAM + 10)
-    0000011C 71               [ 8]  327 	ld	(hl), c
-                                    328 ;src/states/game.c:87: set_sprite_tile(3, base_tile + 2); // BL of Left -> BR of Right
-    0000011D F8 01            [12]  329 	ldhl	sp,	#1
-    0000011F 4E               [ 8]  330 	ld	c, (hl)
-    00000120 0C               [ 4]  331 	inc	c
-    00000121 0C               [ 4]  332 	inc	c
-                                    333 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    00000122 21r0Er00         [12]  334 	ld	hl, #(_shadow_OAM + 14)
-    00000125 71               [ 8]  335 	ld	(hl), c
-                                    336 ;./gbdk/include/gb/gb.h:1946: shadow_OAM[nb].prop=prop;
-    00000126 21r03r00         [12]  337 	ld	hl, #(_shadow_OAM + 3)
-    00000129 36 20            [12]  338 	ld	(hl), #0x20
-    0000012B 21r07r00         [12]  339 	ld	hl, #(_shadow_OAM + 7)
-    0000012E 36 20            [12]  340 	ld	(hl), #0x20
-    00000130 21r0Br00         [12]  341 	ld	hl, #(_shadow_OAM + 11)
-    00000133 36 20            [12]  342 	ld	(hl), #0x20
-    00000135 21r0Fr00         [12]  343 	ld	hl, #(_shadow_OAM + 15)
-    00000138 36 20            [12]  344 	ld	(hl), #0x20
-                                    345 ;src/states/game.c:92: set_sprite_prop(3, S_FLIPX);
-    0000013A                        346 00125$:
-                                    347 ;src/states/game.c:94: }
-    0000013A E8 03            [16]  348 	add	sp, #3
-    0000013C C9               [16]  349 	ret
-                                    350 ;src/states/game.c:98: uint8_t is_solid(uint16_t x, uint16_t y) {
-                                    351 ;	---------------------------------
-                                    352 ; Function is_solid
-                                    353 ; ---------------------------------
-    0000013D                        354 _is_solid::
-                                    355 ;src/states/game.c:99: uint16_t tile_x = x / 8;
-    0000013D CB 3A            [ 8]  356 	srl	d
-    0000013F CB 1B            [ 8]  357 	rr	e
-    00000141 CB 3A            [ 8]  358 	srl	d
-    00000143 CB 1B            [ 8]  359 	rr	e
-    00000145 CB 3A            [ 8]  360 	srl	d
-    00000147 CB 1B            [ 8]  361 	rr	e
-                                    362 ;src/states/game.c:100: uint16_t tile_y = y / 8;
-    00000149 CB 38            [ 8]  363 	srl	b
-    0000014B CB 19            [ 8]  364 	rr	c
-    0000014D CB 38            [ 8]  365 	srl	b
-    0000014F CB 19            [ 8]  366 	rr	c
-    00000151 CB 38            [ 8]  367 	srl	b
-    00000153 CB 19            [ 8]  368 	rr	c
-                                    369 ;src/states/game.c:102: if (tile_x >= MAP_WIDTH || tile_y >= MAP_HEIGHT)
-    00000155 6B               [ 4]  370 	ld	l, e
-    00000156 62               [ 4]  371 	ld	h, d
-    00000157 7D               [ 4]  372 	ld	a, l
-    00000158 D6 20            [ 8]  373 	sub	a, #0x20
-    0000015A 7C               [ 4]  374 	ld	a, h
-    0000015B DE 00            [ 8]  375 	sbc	a, #0x00
-    0000015D 30 0A            [12]  376 	jr	NC, 00101$
-    0000015F 69               [ 4]  377 	ld	l, c
-    00000160 60               [ 4]  378 	ld	h, b
-    00000161 7D               [ 4]  379 	ld	a, l
-    00000162 D6 20            [ 8]  380 	sub	a, #0x20
-    00000164 7C               [ 4]  381 	ld	a, h
-    00000165 DE 00            [ 8]  382 	sbc	a, #0x00
-    00000167 38 03            [12]  383 	jr	C, 00102$
-    00000169                        384 00101$:
-                                    385 ;src/states/game.c:103: return 1;
-    00000169 3E 01            [ 8]  386 	ld	a, #0x01
-    0000016B C9               [16]  387 	ret
-    0000016C                        388 00102$:
-                                    389 ;src/states/game.c:105: uint16_t tile_index = tile_y * MAP_WIDTH + tile_x;
-    0000016C 29               [ 8]  390 	add	hl, hl
-    0000016D 29               [ 8]  391 	add	hl, hl
-    0000016E 29               [ 8]  392 	add	hl, hl
-    0000016F 29               [ 8]  393 	add	hl, hl
-    00000170 29               [ 8]  394 	add	hl, hl
-    00000171 19               [ 8]  395 	add	hl, de
-                                    396 ;src/states/game.c:106: uint8_t tile_id = map_data[tile_index];
-    00000172 01r00r00         [12]  397 	ld	bc, #_map_data
-    00000175 09               [ 8]  398 	add	hl, bc
-    00000176 7E               [ 8]  399 	ld	a, (hl)
-                                    400 ;src/states/game.c:109: if (tile_id == 0 || tile_id == 2 || tile_id == 3 || tile_id == 4 ||
-    00000177 B7               [ 4]  401 	or	a, a
-    00000178 28 10            [12]  402 	jr	Z, 00104$
-    0000017A FE 02            [ 8]  403 	cp	a, #0x02
-    0000017C 28 0C            [12]  404 	jr	Z, 00104$
-    0000017E FE 03            [ 8]  405 	cp	a, #0x03
-    00000180 28 08            [12]  406 	jr	Z, 00104$
-    00000182 FE 04            [ 8]  407 	cp	a, #0x04
-    00000184 28 04            [12]  408 	jr	Z, 00104$
-                                    409 ;src/states/game.c:110: tile_id == 5) {
-    00000186 D6 05            [ 8]  410 	sub	a, #0x05
-    00000188 20 02            [12]  411 	jr	NZ, 00105$
-    0000018A                        412 00104$:
-                                    413 ;src/states/game.c:111: return 0;
-    0000018A AF               [ 4]  414 	xor	a, a
-    0000018B C9               [16]  415 	ret
-    0000018C                        416 00105$:
-                                    417 ;src/states/game.c:113: return 1;
-    0000018C 3E 01            [ 8]  418 	ld	a, #0x01
-                                    419 ;src/states/game.c:114: }
-    0000018E C9               [16]  420 	ret
-                                    421 ;src/states/game.c:117: uint8_t can_move(uint16_t new_x, uint16_t new_y) {
-                                    422 ;	---------------------------------
-                                    423 ; Function can_move
-                                    424 ; ---------------------------------
-    0000018F                        425 _can_move::
-                                    426 ;src/states/game.c:119: if (new_x < 8)
-    0000018F E8 FC            [16]  427 	add	sp, #-4
-    00000191 D5               [16]  428 	push	de
-    00000192 F8 00            [12]  429 	ldhl	sp,	#0
-    00000194 2A               [ 8]  430 	ld	a, (hl+)
-    00000195 D6 08            [ 8]  431 	sub	a, #0x08
-    00000197 7E               [ 8]  432 	ld	a, (hl)
-    00000198 DE 00            [ 8]  433 	sbc	a, #0x00
-    0000019A 30 04            [12]  434 	jr	NC, 00102$
-                                    435 ;src/states/game.c:120: return 0;
-    0000019C AF               [ 4]  436 	xor	a, a
-    0000019D C3r2Br02         [16]  437 	jp	00117$
-    000001A0                        438 00102$:
-                                    439 ;src/states/game.c:121: if (new_x > WORLD_WIDTH - 24)
-    000001A0 3E E8            [ 8]  440 	ld	a, #0xe8
-    000001A2 BB               [ 4]  441 	cp	a, e
-    000001A3 3E 00            [ 8]  442 	ld	a, #0x00
-    000001A5 9A               [ 4]  443 	sbc	a, d
-    000001A6 30 04            [12]  444 	jr	NC, 00104$
-                                    445 ;src/states/game.c:122: return 0;
-    000001A8 AF               [ 4]  446 	xor	a, a
-    000001A9 C3r2Br02         [16]  447 	jp	00117$
-    000001AC                        448 00104$:
-                                    449 ;src/states/game.c:123: if (new_y < 16)
-    000001AC F8 02            [12]  450 	ldhl	sp,	#2
-    000001AE 79               [ 4]  451 	ld	a, c
-    000001AF 22               [ 8]  452 	ld	(hl+), a
-    000001B0 78               [ 4]  453 	ld	a, b
-    000001B1 32               [ 8]  454 	ld	(hl-), a
-    000001B2 2A               [ 8]  455 	ld	a, (hl+)
-    000001B3 D6 10            [ 8]  456 	sub	a, #0x10
-    000001B5 7E               [ 8]  457 	ld	a, (hl)
-    000001B6 DE 00            [ 8]  458 	sbc	a, #0x00
-    000001B8 30 03            [12]  459 	jr	NC, 00106$
-                                    460 ;src/states/game.c:124: return 0;
-    000001BA AF               [ 4]  461 	xor	a, a
-    000001BB 18 6E            [12]  462 	jr	00117$
-    000001BD                        463 00106$:
-                                    464 ;src/states/game.c:125: if (new_y > WORLD_HEIGHT - 24)
-    000001BD 3E E8            [ 8]  465 	ld	a, #0xe8
-    000001BF B9               [ 4]  466 	cp	a, c
-    000001C0 3E 00            [ 8]  467 	ld	a, #0x00
-    000001C2 98               [ 4]  468 	sbc	a, b
-    000001C3 30 03            [12]  469 	jr	NC, 00108$
-                                    470 ;src/states/game.c:126: return 0;
-    000001C5 AF               [ 4]  471 	xor	a, a
-    000001C6 18 63            [12]  472 	jr	00117$
-    000001C8                        473 00108$:
-                                    474 ;src/states/game.c:130: if (is_solid(new_x + 4, new_y + 8))
-    000001C8 F8 02            [12]  475 	ldhl	sp,#2
-    000001CA 2A               [ 8]  476 	ld	a, (hl+)
-    000001CB 5F               [ 4]  477 	ld	e, a
-    000001CC 56               [ 8]  478 	ld	d, (hl)
-    000001CD 21 08 00         [12]  479 	ld	hl, #0x0008
-    000001D0 19               [ 8]  480 	add	hl, de
-    000001D1 4D               [ 4]  481 	ld	c, l
-    000001D2 44               [ 4]  482 	ld	b, h
-    000001D3 D1               [12]  483 	pop	de
-    000001D4 D5               [16]  484 	push	de
-    000001D5 21 04 00         [12]  485 	ld	hl, #0x0004
-    000001D8 19               [ 8]  486 	add	hl, de
-    000001D9 5D               [ 4]  487 	ld	e, l
-    000001DA 7C               [ 4]  488 	ld	a, h
-    000001DB F8 04            [12]  489 	ldhl	sp,	#4
-    000001DD 73               [ 8]  490 	ld	(hl), e
-    000001DE 23               [ 8]  491 	inc	hl
-    000001DF 32               [ 8]  492 	ld	(hl-), a
-    000001E0 C5               [16]  493 	push	bc
-    000001E1 2A               [ 8]  494 	ld	a, (hl+)
-    000001E2 5F               [ 4]  495 	ld	e, a
-    000001E3 56               [ 8]  496 	ld	d, (hl)
-    000001E4 CDr3Dr01         [24]  497 	call	_is_solid
-    000001E7 C1               [12]  498 	pop	bc
-    000001E8 B7               [ 4]  499 	or	a, a
-    000001E9 28 03            [12]  500 	jr	Z, 00110$
-                                    501 ;src/states/game.c:131: return 0;
-    000001EB AF               [ 4]  502 	xor	a, a
-    000001EC 18 3D            [12]  503 	jr	00117$
-    000001EE                        504 00110$:
-                                    505 ;src/states/game.c:133: if (is_solid(new_x + 11, new_y + 8))
-    000001EE D1               [12]  506 	pop	de
-    000001EF D5               [16]  507 	push	de
-    000001F0 21 0B 00         [12]  508 	ld	hl, #0x000b
-    000001F3 19               [ 8]  509 	add	hl, de
-    000001F4 5D               [ 4]  510 	ld	e, l
-    000001F5 54               [ 4]  511 	ld	d, h
-    000001F6 D5               [16]  512 	push	de
-    000001F7 CDr3Dr01         [24]  513 	call	_is_solid
-    000001FA D1               [12]  514 	pop	de
-    000001FB B7               [ 4]  515 	or	a, a
-    000001FC 28 03            [12]  516 	jr	Z, 00112$
-                                    517 ;src/states/game.c:134: return 0;
-    000001FE AF               [ 4]  518 	xor	a, a
-    000001FF 18 2A            [12]  519 	jr	00117$
-    00000201                        520 00112$:
-                                    521 ;src/states/game.c:136: if (is_solid(new_x + 4, new_y + 15))
-    00000201 D5               [16]  522 	push	de
-    00000202 F8 04            [12]  523 	ldhl	sp,#4
-    00000204 2A               [ 8]  524 	ld	a, (hl+)
-    00000205 5F               [ 4]  525 	ld	e, a
-    00000206 56               [ 8]  526 	ld	d, (hl)
-    00000207 21 0F 00         [12]  527 	ld	hl, #0x000f
-    0000020A 19               [ 8]  528 	add	hl, de
-    0000020B D1               [12]  529 	pop	de
-    0000020C 4D               [ 4]  530 	ld	c, l
-    0000020D 44               [ 4]  531 	ld	b, h
-    0000020E C5               [16]  532 	push	bc
-    0000020F D5               [16]  533 	push	de
-    00000210 F8 08            [12]  534 	ldhl	sp,	#8
-    00000212 2A               [ 8]  535 	ld	a, (hl+)
-    00000213 5F               [ 4]  536 	ld	e, a
-    00000214 56               [ 8]  537 	ld	d, (hl)
-    00000215 CDr3Dr01         [24]  538 	call	_is_solid
-    00000218 D1               [12]  539 	pop	de
-    00000219 C1               [12]  540 	pop	bc
-    0000021A B7               [ 4]  541 	or	a, a
-    0000021B 28 03            [12]  542 	jr	Z, 00114$
-                                    543 ;src/states/game.c:137: return 0;
-    0000021D AF               [ 4]  544 	xor	a, a
-    0000021E 18 0B            [12]  545 	jr	00117$
-    00000220                        546 00114$:
-                                    547 ;src/states/game.c:139: if (is_solid(new_x + 11, new_y + 15))
-    00000220 CDr3Dr01         [24]  548 	call	_is_solid
-    00000223 B7               [ 4]  549 	or	a, a
-    00000224 28 03            [12]  550 	jr	Z, 00116$
-                                    551 ;src/states/game.c:140: return 0;
-    00000226 AF               [ 4]  552 	xor	a, a
-    00000227 18 02            [12]  553 	jr	00117$
-    00000229                        554 00116$:
-                                    555 ;src/states/game.c:142: return 1;
-    00000229 3E 01            [ 8]  556 	ld	a, #0x01
-    0000022B                        557 00117$:
-                                    558 ;src/states/game.c:143: }
-    0000022B E8 06            [16]  559 	add	sp, #6
-    0000022D C9               [16]  560 	ret
-                                    561 ;src/states/game.c:145: void game_init(void) {
-                                    562 ;	---------------------------------
-                                    563 ; Function game_init
-                                    564 ; ---------------------------------
-    0000022E                        565 _game_init::
-                                    566 ;src/states/game.c:146: DISPLAY_OFF;
-    0000022E CDr00r00         [24]  567 	call	_display_off
-                                    568 ;src/states/game.c:149: set_bkg_data(0, 25, tiles_data);
-    00000231 11r00r00         [12]  569 	ld	de, #_tiles_data
-    00000234 D5               [16]  570 	push	de
-    00000235 21 00 19         [12]  571 	ld	hl, #0x1900
-    00000238 E5               [16]  572 	push	hl
-    00000239 CDr00r00         [24]  573 	call	_set_bkg_data
-    0000023C E8 04            [16]  574 	add	sp, #4
-                                    575 ;src/states/game.c:150: set_bkg_tiles(0, 0, MAP_WIDTH, MAP_HEIGHT, map_data);
-    0000023E 11r00r00         [12]  576 	ld	de, #_map_data
-    00000241 D5               [16]  577 	push	de
-    00000242 21 20 20         [12]  578 	ld	hl, #0x2020
-    00000245 E5               [16]  579 	push	hl
-    00000246 AF               [ 4]  580 	xor	a, a
-    00000247 0F               [ 4]  581 	rrca
-    00000248 F5               [16]  582 	push	af
-    00000249 CDr00r00         [24]  583 	call	_set_bkg_tiles
-    0000024C E8 06            [16]  584 	add	sp, #6
-                                    585 ;src/states/game.c:153: BGP_REG = 0xE4;
-    0000024E 3E E4            [ 8]  586 	ld	a, #0xe4
-    00000250 E0r00            [12]  587 	ldh	(_BGP_REG + 0), a
-                                    588 ;src/states/game.c:154: OBP0_REG = 0xE4;
-    00000252 3E E4            [ 8]  589 	ld	a, #0xe4
-    00000254 E0r00            [12]  590 	ldh	(_OBP0_REG + 0), a
-                                    591 ;src/states/game.c:155: OBP1_REG = 0xE4;
-    00000256 3E E4            [ 8]  592 	ld	a, #0xe4
-    00000258 E0r00            [12]  593 	ldh	(_OBP1_REG + 0), a
-                                    594 ;src/states/game.c:158: SPRITES_8x8;
-    0000025A F0r00            [12]  595 	ldh	a, (_LCDC_REG + 0)
-    0000025C E6 FB            [ 8]  596 	and	a, #0xfb
-    0000025E E0r00            [12]  597 	ldh	(_LCDC_REG + 0), a
-                                    598 ;src/states/game.c:159: set_sprite_data(0, 24, player_sprites);
-    00000260 11r00r00         [12]  599 	ld	de, #_player_sprites
-    00000263 D5               [16]  600 	push	de
-    00000264 21 00 18         [12]  601 	ld	hl, #0x1800
-    00000267 E5               [16]  602 	push	hl
-    00000268 CDr00r00         [24]  603 	call	_set_sprite_data
-    0000026B E8 04            [16]  604 	add	sp, #4
-                                    605 ;src/states/game.c:160: set_sprite_data(24, 4, npc_child_sprite); // NPC child at tiles 24-27
-    0000026D 11r00r00         [12]  606 	ld	de, #_npc_child_sprite
-    00000270 D5               [16]  607 	push	de
-    00000271 21 18 04         [12]  608 	ld	hl, #0x418
-    00000274 E5               [16]  609 	push	hl
-    00000275 CDr00r00         [24]  610 	call	_set_sprite_data
-    00000278 E8 04            [16]  611 	add	sp, #4
-                                    612 ;src/states/game.c:165: update_camera();
-    0000027A CDr00r00         [24]  613 	call	_update_camera
-                                    614 ;src/states/game.c:166: move_sprite(0, player_x - camera_x + 8, player_y - camera_y + 16);
-    0000027D FAr02r00         [16]  615 	ld	a, (_player_y)
-    00000280 21r09r00         [12]  616 	ld	hl, #_camera_y
-    00000283 4E               [ 8]  617 	ld	c, (hl)
-    00000284 91               [ 4]  618 	sub	a, c
-    00000285 C6 10            [ 8]  619 	add	a, #0x10
-    00000287 47               [ 4]  620 	ld	b, a
-    00000288 FAr00r00         [16]  621 	ld	a, (_player_x)
-    0000028B 21r07r00         [12]  622 	ld	hl, #_camera_x
-    0000028E 4E               [ 8]  623 	ld	c, (hl)
-    0000028F 91               [ 4]  624 	sub	a, c
-    00000290 C6 08            [ 8]  625 	add	a, #0x08
-    00000292 4F               [ 4]  626 	ld	c, a
-                                    627 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    00000293 21r00r00         [12]  628 	ld	hl, #_shadow_OAM
-                                    629 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    00000296 78               [ 4]  630 	ld	a, b
-    00000297 22               [ 8]  631 	ld	(hl+), a
-    00000298 71               [ 8]  632 	ld	(hl), c
-                                    633 ;src/states/game.c:167: move_sprite(1, player_x - camera_x + 16, player_y - camera_y + 16);
-    00000299 FAr02r00         [16]  634 	ld	a, (_player_y)
-    0000029C 21r09r00         [12]  635 	ld	hl, #_camera_y
-    0000029F 4E               [ 8]  636 	ld	c, (hl)
-    000002A0 91               [ 4]  637 	sub	a, c
-    000002A1 C6 10            [ 8]  638 	add	a, #0x10
-    000002A3 47               [ 4]  639 	ld	b, a
-    000002A4 FAr00r00         [16]  640 	ld	a, (_player_x)
-    000002A7 21r07r00         [12]  641 	ld	hl, #_camera_x
-    000002AA 4E               [ 8]  642 	ld	c, (hl)
-    000002AB 91               [ 4]  643 	sub	a, c
-    000002AC C6 10            [ 8]  644 	add	a, #0x10
-    000002AE 4F               [ 4]  645 	ld	c, a
-                                    646 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000002AF 21r04r00         [12]  647 	ld	hl, #(_shadow_OAM + 4)
-                                    648 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000002B2 78               [ 4]  649 	ld	a, b
-    000002B3 22               [ 8]  650 	ld	(hl+), a
-    000002B4 71               [ 8]  651 	ld	(hl), c
-                                    652 ;src/states/game.c:168: move_sprite(2, player_x - camera_x + 8, player_y - camera_y + 24);
-    000002B5 FAr02r00         [16]  653 	ld	a, (_player_y)
-    000002B8 21r09r00         [12]  654 	ld	hl, #_camera_y
-    000002BB 4E               [ 8]  655 	ld	c, (hl)
-    000002BC 91               [ 4]  656 	sub	a, c
-    000002BD C6 18            [ 8]  657 	add	a, #0x18
-    000002BF 47               [ 4]  658 	ld	b, a
-    000002C0 FAr00r00         [16]  659 	ld	a, (_player_x)
-    000002C3 21r07r00         [12]  660 	ld	hl, #_camera_x
-    000002C6 4E               [ 8]  661 	ld	c, (hl)
-    000002C7 91               [ 4]  662 	sub	a, c
-    000002C8 C6 08            [ 8]  663 	add	a, #0x08
-    000002CA 4F               [ 4]  664 	ld	c, a
-                                    665 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000002CB 21r08r00         [12]  666 	ld	hl, #(_shadow_OAM + 8)
-                                    667 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000002CE 78               [ 4]  668 	ld	a, b
-    000002CF 22               [ 8]  669 	ld	(hl+), a
-    000002D0 71               [ 8]  670 	ld	(hl), c
-                                    671 ;src/states/game.c:169: move_sprite(3, player_x - camera_x + 16, player_y - camera_y + 24);
-    000002D1 FAr02r00         [16]  672 	ld	a, (_player_y)
-    000002D4 21r09r00         [12]  673 	ld	hl, #_camera_y
-    000002D7 4E               [ 8]  674 	ld	c, (hl)
-    000002D8 91               [ 4]  675 	sub	a, c
-    000002D9 C6 18            [ 8]  676 	add	a, #0x18
-    000002DB 47               [ 4]  677 	ld	b, a
-    000002DC FAr00r00         [16]  678 	ld	a, (_player_x)
-    000002DF 21r07r00         [12]  679 	ld	hl, #_camera_x
-    000002E2 4E               [ 8]  680 	ld	c, (hl)
-    000002E3 91               [ 4]  681 	sub	a, c
-    000002E4 C6 10            [ 8]  682 	add	a, #0x10
-    000002E6 4F               [ 4]  683 	ld	c, a
-                                    684 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000002E7 21r0Cr00         [12]  685 	ld	hl, #(_shadow_OAM + 12)
-                                    686 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000002EA 78               [ 4]  687 	ld	a, b
-    000002EB 22               [ 8]  688 	ld	(hl+), a
-    000002EC 71               [ 8]  689 	ld	(hl), c
-                                    690 ;src/states/game.c:172: update_player_sprite();
-    000002ED CDr83r00         [24]  691 	call	_update_player_sprite
-                                    692 ;src/states/game.c:175: text_init();
-    000002F0 CDr00r00         [24]  693 	call	_text_init
-                                    694 ;src/states/game.c:177: SHOW_BKG;
-    000002F3 F0r00            [12]  695 	ldh	a, (_LCDC_REG + 0)
-    000002F5 F6 01            [ 8]  696 	or	a, #0x01
-    000002F7 E0r00            [12]  697 	ldh	(_LCDC_REG + 0), a
-                                    698 ;src/states/game.c:178: SHOW_SPRITES;
-    000002F9 F0r00            [12]  699 	ldh	a, (_LCDC_REG + 0)
-    000002FB F6 02            [ 8]  700 	or	a, #0x02
-    000002FD E0r00            [12]  701 	ldh	(_LCDC_REG + 0), a
-                                    702 ;src/states/game.c:179: DISPLAY_ON;
-    000002FF F0r00            [12]  703 	ldh	a, (_LCDC_REG + 0)
-    00000301 F6 80            [ 8]  704 	or	a, #0x80
-    00000303 E0r00            [12]  705 	ldh	(_LCDC_REG + 0), a
-                                    706 ;src/states/game.c:180: }
-    00000305 C9               [16]  707 	ret
-                                    708 ;src/states/game.c:182: void game_update(void) {
-                                    709 ;	---------------------------------
-                                    710 ; Function game_update
-                                    711 ; ---------------------------------
-    00000306                        712 _game_update::
-    00000306 E8 FC            [16]  713 	add	sp, #-4
-                                    714 ;src/states/game.c:183: uint8_t moved = 0;
-    00000308 F8 03            [12]  715 	ldhl	sp,	#3
-    0000030A 36 00            [12]  716 	ld	(hl), #0x00
-                                    717 ;src/states/game.c:184: uint16_t new_x = player_x;
-    0000030C FAr00r00         [16]  718 	ld	a, (_player_x)
-    0000030F 5F               [ 4]  719 	ld	e, a
-    00000310 21r01r00         [12]  720 	ld	hl, #_player_x + 1
-    00000313 56               [ 8]  721 	ld	d, (hl)
-                                    722 ;src/states/game.c:185: uint16_t new_y = player_y;
-    00000314 FAr02r00         [16]  723 	ld	a, (_player_y)
-    00000317 4F               [ 4]  724 	ld	c, a
-    00000318 21r03r00         [12]  725 	ld	hl, #_player_y + 1
-    0000031B 46               [ 8]  726 	ld	b, (hl)
-                                    727 ;src/states/game.c:187: if (input_held(J_UP)) {
-    0000031C C5               [16]  728 	push	bc
-    0000031D D5               [16]  729 	push	de
-    0000031E 3E 04            [ 8]  730 	ld	a, #0x04
-    00000320 CDr00r00         [24]  731 	call	_input_held
-    00000323 D1               [12]  732 	pop	de
-    00000324 C1               [12]  733 	pop	bc
-    00000325 B7               [ 4]  734 	or	a, a
-    00000326 28 0C            [12]  735 	jr	Z, 00110$
-                                    736 ;src/states/game.c:188: new_y--;
-    00000328 0B               [ 8]  737 	dec	bc
-                                    738 ;src/states/game.c:189: player_dir = 1;
-    00000329 21r04r00         [12]  739 	ld	hl, #_player_dir
-    0000032C 36 01            [12]  740 	ld	(hl), #0x01
-                                    741 ;src/states/game.c:190: moved = 1;
-    0000032E F8 03            [12]  742 	ldhl	sp,	#3
-    00000330 36 01            [12]  743 	ld	(hl), #0x01
-    00000332 18 45            [12]  744 	jr	00111$
-    00000334                        745 00110$:
-                                    746 ;src/states/game.c:191: } else if (input_held(J_DOWN)) {
-    00000334 C5               [16]  747 	push	bc
-    00000335 D5               [16]  748 	push	de
-    00000336 3E 08            [ 8]  749 	ld	a, #0x08
-    00000338 CDr00r00         [24]  750 	call	_input_held
-    0000033B D1               [12]  751 	pop	de
-    0000033C C1               [12]  752 	pop	bc
-    0000033D B7               [ 4]  753 	or	a, a
-    0000033E 28 0B            [12]  754 	jr	Z, 00107$
-                                    755 ;src/states/game.c:192: new_y++;
-    00000340 03               [ 8]  756 	inc	bc
-                                    757 ;src/states/game.c:193: player_dir = 0;
-    00000341 AF               [ 4]  758 	xor	a, a
-    00000342 EAr04r00         [16]  759 	ld	(#_player_dir),a
-                                    760 ;src/states/game.c:194: moved = 1;
-    00000345 F8 03            [12]  761 	ldhl	sp,	#3
-    00000347 36 01            [12]  762 	ld	(hl), #0x01
-    00000349 18 2E            [12]  763 	jr	00111$
-    0000034B                        764 00107$:
-                                    765 ;src/states/game.c:195: } else if (input_held(J_LEFT)) {
-    0000034B C5               [16]  766 	push	bc
-    0000034C D5               [16]  767 	push	de
-    0000034D 3E 02            [ 8]  768 	ld	a, #0x02
-    0000034F CDr00r00         [24]  769 	call	_input_held
-    00000352 D1               [12]  770 	pop	de
-    00000353 C1               [12]  771 	pop	bc
-    00000354 B7               [ 4]  772 	or	a, a
-    00000355 28 0C            [12]  773 	jr	Z, 00104$
-                                    774 ;src/states/game.c:196: new_x--;
-    00000357 1B               [ 8]  775 	dec	de
-                                    776 ;src/states/game.c:197: player_dir = 2;
-    00000358 21r04r00         [12]  777 	ld	hl, #_player_dir
-    0000035B 36 02            [12]  778 	ld	(hl), #0x02
-                                    779 ;src/states/game.c:198: moved = 1;
-    0000035D F8 03            [12]  780 	ldhl	sp,	#3
-    0000035F 36 01            [12]  781 	ld	(hl), #0x01
-    00000361 18 16            [12]  782 	jr	00111$
-    00000363                        783 00104$:
-                                    784 ;src/states/game.c:199: } else if (input_held(J_RIGHT)) {
-    00000363 C5               [16]  785 	push	bc
-    00000364 D5               [16]  786 	push	de
-    00000365 3E 01            [ 8]  787 	ld	a, #0x01
-    00000367 CDr00r00         [24]  788 	call	_input_held
-    0000036A D1               [12]  789 	pop	de
-    0000036B C1               [12]  790 	pop	bc
-    0000036C B7               [ 4]  791 	or	a, a
-    0000036D 28 0A            [12]  792 	jr	Z, 00111$
-                                    793 ;src/states/game.c:200: new_x++;
-    0000036F 13               [ 8]  794 	inc	de
-                                    795 ;src/states/game.c:201: player_dir = 3;
-    00000370 21r04r00         [12]  796 	ld	hl, #_player_dir
-    00000373 36 03            [12]  797 	ld	(hl), #0x03
-                                    798 ;src/states/game.c:202: moved = 1;
-    00000375 F8 03            [12]  799 	ldhl	sp,	#3
-    00000377 36 01            [12]  800 	ld	(hl), #0x01
-    00000379                        801 00111$:
-                                    802 ;src/states/game.c:205: if (moved) {
-    00000379 F8 03            [12]  803 	ldhl	sp,	#3
-    0000037B 7E               [ 8]  804 	ld	a, (hl)
-    0000037C B7               [ 4]  805 	or	a, a
-    0000037D CAr3Br04         [16]  806 	jp	Z, 00124$
-                                    807 ;src/states/game.c:207: uint8_t can_walk = can_move(new_x, new_y);
-    00000380 C5               [16]  808 	push	bc
-    00000381 D5               [16]  809 	push	de
-    00000382 CDr8Fr01         [24]  810 	call	_can_move
-    00000385 F8 07            [12]  811 	ldhl	sp,	#7
-    00000387 77               [ 8]  812 	ld	(hl), a
-    00000388 D1               [12]  813 	pop	de
-    00000389 C1               [12]  814 	pop	bc
-    0000038A F8 03            [12]  815 	ldhl	sp,	#3
-    0000038C 3A               [ 8]  816 	ld	a, (hl-)
-    0000038D 2B               [ 8]  817 	dec	hl
-                                    818 ;src/states/game.c:208: if (can_walk) {
-    0000038E 22               [ 8]  819 	ld	(hl+), a
-    0000038F 23               [ 8]  820 	inc	hl
-    00000390 7E               [ 8]  821 	ld	a, (hl)
-    00000391 B7               [ 4]  822 	or	a, a
-    00000392 28 77            [12]  823 	jr	Z, 00113$
-                                    824 ;src/states/game.c:209: player_x = new_x;
-    00000394 21r00r00         [12]  825 	ld	hl, #_player_x
-    00000397 7B               [ 4]  826 	ld	a, e
-    00000398 22               [ 8]  827 	ld	(hl+), a
-    00000399 72               [ 8]  828 	ld	(hl), d
-                                    829 ;src/states/game.c:210: player_y = new_y;
-    0000039A 21r02r00         [12]  830 	ld	hl, #_player_y
-    0000039D 79               [ 4]  831 	ld	a, c
-    0000039E 22               [ 8]  832 	ld	(hl+), a
-    0000039F 70               [ 8]  833 	ld	(hl), b
-                                    834 ;src/states/game.c:212: update_camera();
-    000003A0 CDr00r00         [24]  835 	call	_update_camera
-                                    836 ;src/states/game.c:216: uint16_t screen_x = player_x - camera_x + 8;
-    000003A3 FAr00r00         [16]  837 	ld	a, (#_player_x)
-    000003A6 21r07r00         [12]  838 	ld	hl, #_camera_x
-    000003A9 96               [ 8]  839 	sub	a, (hl)
-    000003AA 4F               [ 4]  840 	ld	c, a
-    000003AB FAr01r00         [16]  841 	ld	a, (#_player_x + 1)
-    000003AE 21r08r00         [12]  842 	ld	hl, #_camera_x + 1
-    000003B1 9E               [ 8]  843 	sbc	a, (hl)
-    000003B2 47               [ 4]  844 	ld	b, a
-    000003B3 21 08 00         [12]  845 	ld	hl, #0x0008
-    000003B6 09               [ 8]  846 	add	hl, bc
-    000003B7 5D               [ 4]  847 	ld	e, l
-                                    848 ;src/states/game.c:217: uint16_t screen_y = player_y - camera_y + 16;
-    000003B8 FAr02r00         [16]  849 	ld	a, (#_player_y)
-    000003BB 21r09r00         [12]  850 	ld	hl, #_camera_y
-    000003BE 96               [ 8]  851 	sub	a, (hl)
-    000003BF 4F               [ 4]  852 	ld	c, a
-    000003C0 FAr03r00         [16]  853 	ld	a, (#_player_y + 1)
-    000003C3 21r0Ar00         [12]  854 	ld	hl, #_camera_y + 1
-    000003C6 9E               [ 8]  855 	sbc	a, (hl)
-    000003C7 47               [ 4]  856 	ld	b, a
-    000003C8 21 10 00         [12]  857 	ld	hl, #0x0010
-    000003CB 09               [ 8]  858 	add	hl, bc
-    000003CC 4D               [ 4]  859 	ld	c, l
-    000003CD 7C               [ 4]  860 	ld	a, h
-    000003CE F8 02            [12]  861 	ldhl	sp,	#2
-    000003D0 71               [ 8]  862 	ld	(hl), c
-    000003D1 23               [ 8]  863 	inc	hl
-                                    864 ;src/states/game.c:219: move_sprite(0, screen_x, screen_y);
-    000003D2 32               [ 8]  865 	ld	(hl-), a
-    000003D3 46               [ 8]  866 	ld	b, (hl)
-    000003D4 4B               [ 4]  867 	ld	c, e
-                                    868 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000003D5 21r00r00         [12]  869 	ld	hl, #_shadow_OAM
-                                    870 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000003D8 78               [ 4]  871 	ld	a, b
-    000003D9 22               [ 8]  872 	ld	(hl+), a
-    000003DA 71               [ 8]  873 	ld	(hl), c
-                                    874 ;src/states/game.c:220: move_sprite(1, screen_x + 8, screen_y);
-    000003DB F8 02            [12]  875 	ldhl	sp,	#2
-    000003DD 4E               [ 8]  876 	ld	c, (hl)
-    000003DE 79               [ 4]  877 	ld	a, c
-    000003DF 22               [ 8]  878 	ld	(hl+), a
-    000003E0 7B               [ 4]  879 	ld	a, e
-    000003E1 C6 08            [ 8]  880 	add	a, #0x08
-    000003E3 47               [ 4]  881 	ld	b, a
-    000003E4 70               [ 8]  882 	ld	(hl), b
-                                    883 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000003E5 21r04r00         [12]  884 	ld	hl, #(_shadow_OAM + 4)
-                                    885 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000003E8 E5               [16]  886 	push	hl
-    000003E9 F8 04            [12]  887 	ldhl	sp,	#4
-    000003EB 7E               [ 8]  888 	ld	a, (hl)
-    000003EC E1               [12]  889 	pop	hl
-    000003ED 22               [ 8]  890 	ld	(hl+), a
-    000003EE E5               [16]  891 	push	hl
-    000003EF F8 05            [12]  892 	ldhl	sp,	#5
-    000003F1 7E               [ 8]  893 	ld	a, (hl)
-    000003F2 E1               [12]  894 	pop	hl
-    000003F3 77               [ 8]  895 	ld	(hl), a
-                                    896 ;src/states/game.c:221: move_sprite(2, screen_x, screen_y + 8);
-    000003F4 79               [ 4]  897 	ld	a, c
-    000003F5 C6 08            [ 8]  898 	add	a, #0x08
-    000003F7 4F               [ 4]  899 	ld	c, a
-    000003F8 F8 03            [12]  900 	ldhl	sp,	#3
-    000003FA 71               [ 8]  901 	ld	(hl), c
-                                    902 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000003FB 21r08r00         [12]  903 	ld	hl, #(_shadow_OAM + 8)
-                                    904 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000003FE E5               [16]  905 	push	hl
-    000003FF F8 05            [12]  906 	ldhl	sp,	#5
-    00000401 7E               [ 8]  907 	ld	a, (hl)
-    00000402 E1               [12]  908 	pop	hl
-    00000403 22               [ 8]  909 	ld	(hl+), a
-    00000404 73               [ 8]  910 	ld	(hl), e
-                                    911 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    00000405 21r0Cr00         [12]  912 	ld	hl, #(_shadow_OAM + 12)
-                                    913 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    00000408 79               [ 4]  914 	ld	a, c
-    00000409 22               [ 8]  915 	ld	(hl+), a
-    0000040A 70               [ 8]  916 	ld	(hl), b
-                                    917 ;src/states/game.c:222: move_sprite(3, screen_x + 8, screen_y + 8);
-    0000040B                        918 00113$:
-                                    919 ;src/states/game.c:226: if (can_walk) {
-    0000040B F8 01            [12]  920 	ldhl	sp,	#1
-    0000040D 7E               [ 8]  921 	ld	a, (hl)
-    0000040E B7               [ 4]  922 	or	a, a
-    0000040F 28 1C            [12]  923 	jr	Z, 00119$
-                                    924 ;src/states/game.c:227: anim_timer++;
-    00000411 21r06r00         [12]  925 	ld	hl, #_anim_timer
-    00000414 34               [12]  926 	inc	(hl)
-                                    927 ;src/states/game.c:228: if (anim_timer > 6) {
-    00000415 3E 06            [ 8]  928 	ld	a, #0x06
-    00000417 96               [ 8]  929 	sub	a, (hl)
-    00000418 30 31            [12]  930 	jr	NC, 00125$
-                                    931 ;src/states/game.c:229: anim_frame = !anim_frame;
-    0000041A 21r05r00         [12]  932 	ld	hl, #_anim_frame
-    0000041D 7E               [ 8]  933 	ld	a, (hl)
-    0000041E D6 01            [ 8]  934 	sub	a, #0x01
-    00000420 3E 00            [ 8]  935 	ld	a, #0x00
-    00000422 17               [ 4]  936 	rla
-    00000423 77               [ 8]  937 	ld	(hl), a
-                                    938 ;src/states/game.c:230: anim_timer = 0;
-    00000424 AF               [ 4]  939 	xor	a, a
-    00000425 EAr06r00         [16]  940 	ld	(#_anim_timer),a
-                                    941 ;src/states/game.c:231: update_player_sprite();
-    00000428 CDr83r00         [24]  942 	call	_update_player_sprite
-    0000042B 18 1E            [12]  943 	jr	00125$
-    0000042D                        944 00119$:
-                                    945 ;src/states/game.c:235: if (anim_frame != 0) {
-    0000042D 21r05r00         [12]  946 	ld	hl, #_anim_frame
-    00000430 7E               [ 8]  947 	ld	a, (hl)
-    00000431 B7               [ 4]  948 	or	a, a
-    00000432 28 17            [12]  949 	jr	Z, 00125$
-                                    950 ;src/states/game.c:236: anim_frame = 0;
-    00000434 36 00            [12]  951 	ld	(hl), #0x00
-                                    952 ;src/states/game.c:237: update_player_sprite();
-    00000436 CDr83r00         [24]  953 	call	_update_player_sprite
-    00000439 18 10            [12]  954 	jr	00125$
-    0000043B                        955 00124$:
-                                    956 ;src/states/game.c:242: if (anim_frame != 0) {
-    0000043B 21r05r00         [12]  957 	ld	hl, #_anim_frame
-    0000043E 7E               [ 8]  958 	ld	a, (hl)
-    0000043F B7               [ 4]  959 	or	a, a
-    00000440 28 05            [12]  960 	jr	Z, 00122$
-                                    961 ;src/states/game.c:243: anim_frame = 0;
-    00000442 36 00            [12]  962 	ld	(hl), #0x00
-                                    963 ;src/states/game.c:244: update_player_sprite();
-    00000444 CDr83r00         [24]  964 	call	_update_player_sprite
-    00000447                        965 00122$:
-                                    966 ;src/states/game.c:246: anim_timer = 0;
-    00000447 AF               [ 4]  967 	xor	a, a
-    00000448 EAr06r00         [16]  968 	ld	(#_anim_timer),a
-    0000044B                        969 00125$:
-                                    970 ;src/states/game.c:251: if (last_dir != player_dir) {
-    0000044B FAr00r00         [16]  971 	ld	a, (#_game_update_last_dir_10001_261)
-    0000044E 21r04r00         [12]  972 	ld	hl, #_player_dir
-    00000451 96               [ 8]  973 	sub	a, (hl)
-    00000452 28 09            [12]  974 	jr	Z, 00127$
-                                    975 ;src/states/game.c:252: update_player_sprite();
-    00000454 CDr83r00         [24]  976 	call	_update_player_sprite
-                                    977 ;src/states/game.c:253: last_dir = player_dir;
-    00000457 FAr04r00         [16]  978 	ld	a, (#_player_dir)
-    0000045A EAr00r00         [16]  979 	ld	(#_game_update_last_dir_10001_261),a
-    0000045D                        980 00127$:
-                                    981 ;src/states/game.c:262: uint16_t npc_screen_x = npc_x - camera_x + 8;
-    0000045D 3E 78            [ 8]  982 	ld	a, #0x78
-    0000045F 21r07r00         [12]  983 	ld	hl, #_camera_x
-    00000462 96               [ 8]  984 	sub	a, (hl)
-    00000463 23               [ 8]  985 	inc	hl
-    00000464 4F               [ 4]  986 	ld	c, a
-    00000465 9F               [ 4]  987 	sbc	a, a
-    00000466 96               [ 8]  988 	sub	a, (hl)
-    00000467 47               [ 4]  989 	ld	b, a
-    00000468 21 08 00         [12]  990 	ld	hl, #0x0008
-    0000046B 09               [ 8]  991 	add	hl, bc
-    0000046C 4D               [ 4]  992 	ld	c, l
-    0000046D 7C               [ 4]  993 	ld	a, h
-    0000046E F8 00            [12]  994 	ldhl	sp,	#0
-    00000470 71               [ 8]  995 	ld	(hl), c
-    00000471 23               [ 8]  996 	inc	hl
-    00000472 77               [ 8]  997 	ld	(hl), a
-                                    998 ;src/states/game.c:263: uint16_t npc_screen_y = npc_y - camera_y + 16;
-    00000473 3E 48            [ 8]  999 	ld	a, #0x48
-    00000475 21r09r00         [12] 1000 	ld	hl, #_camera_y
-    00000478 96               [ 8] 1001 	sub	a, (hl)
-    00000479 23               [ 8] 1002 	inc	hl
-    0000047A 4F               [ 4] 1003 	ld	c, a
-    0000047B 9F               [ 4] 1004 	sbc	a, a
-    0000047C 96               [ 8] 1005 	sub	a, (hl)
-    0000047D 47               [ 4] 1006 	ld	b, a
-    0000047E 21 10 00         [12] 1007 	ld	hl, #0x0010
-    00000481 09               [ 8] 1008 	add	hl, bc
-    00000482 4D               [ 4] 1009 	ld	c, l
-    00000483 7C               [ 4] 1010 	ld	a, h
-    00000484 F8 02            [12] 1011 	ldhl	sp,	#2
-    00000486 71               [ 8] 1012 	ld	(hl), c
-    00000487 23               [ 8] 1013 	inc	hl
-    00000488 77               [ 8] 1014 	ld	(hl), a
-                                   1015 ;src/states/game.c:266: if (npc_screen_x < 168 && npc_screen_y < 160) {
-    00000489 C1               [12] 1016 	pop	bc
-    0000048A C5               [16] 1017 	push	bc
-    0000048B 79               [ 4] 1018 	ld	a, c
-    0000048C D6 A8            [ 8] 1019 	sub	a, #0xa8
-    0000048E 78               [ 4] 1020 	ld	a, b
-    0000048F DE 00            [ 8] 1021 	sbc	a, #0x00
-    00000491 30 59            [12] 1022 	jr	NC, 00129$
-    00000493 2B               [ 8] 1023 	dec	hl
-    00000494 2A               [ 8] 1024 	ld	a, (hl+)
-    00000495 4F               [ 4] 1025 	ld	c, a
-    00000496 46               [ 8] 1026 	ld	b, (hl)
-    00000497 79               [ 4] 1027 	ld	a, c
-    00000498 D6 A0            [ 8] 1028 	sub	a, #0xa0
-    0000049A 78               [ 4] 1029 	ld	a, b
-    0000049B DE 00            [ 8] 1030 	sbc	a, #0x00
-    0000049D 30 4D            [12] 1031 	jr	NC, 00129$
-                                   1032 ;src/states/game.c:267: move_sprite(4, npc_screen_x, npc_screen_y);
-    0000049F 2B               [ 8] 1033 	dec	hl
-    000004A0 3A               [ 8] 1034 	ld	a, (hl-)
-    000004A1 2B               [ 8] 1035 	dec	hl
-    000004A2 4F               [ 4] 1036 	ld	c, a
-    000004A3 46               [ 8] 1037 	ld	b, (hl)
-                                   1038 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000004A4 21r10r00         [12] 1039 	ld	hl, #(_shadow_OAM + 16)
-                                   1040 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000004A7 79               [ 4] 1041 	ld	a, c
-    000004A8 22               [ 8] 1042 	ld	(hl+), a
-    000004A9 70               [ 8] 1043 	ld	(hl), b
-                                   1044 ;src/states/game.c:268: move_sprite(5, npc_screen_x + 8, npc_screen_y);
-    000004AA F8 02            [12] 1045 	ldhl	sp,	#2
-    000004AC 2A               [ 8] 1046 	ld	a, (hl+)
-    000004AD 77               [ 8] 1047 	ld	(hl), a
-    000004AE 46               [ 8] 1048 	ld	b, (hl)
-    000004AF F8 00            [12] 1049 	ldhl	sp,	#0
-    000004B1 2A               [ 8] 1050 	ld	a, (hl+)
-    000004B2 23               [ 8] 1051 	inc	hl
-    000004B3 4F               [ 4] 1052 	ld	c, a
-    000004B4 C6 08            [ 8] 1053 	add	a, #0x08
-    000004B6 77               [ 8] 1054 	ld	(hl), a
-    000004B7 5E               [ 8] 1055 	ld	e, (hl)
-                                   1056 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000004B8 21r14r00         [12] 1057 	ld	hl, #(_shadow_OAM + 20)
-                                   1058 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000004BB 78               [ 4] 1059 	ld	a, b
-    000004BC 22               [ 8] 1060 	ld	(hl+), a
-    000004BD 73               [ 8] 1061 	ld	(hl), e
-                                   1062 ;src/states/game.c:269: move_sprite(6, npc_screen_x, npc_screen_y + 8);
-    000004BE F8 03            [12] 1063 	ldhl	sp,	#3
-    000004C0 7E               [ 8] 1064 	ld	a, (hl)
-    000004C1 C6 08            [ 8] 1065 	add	a, #0x08
-    000004C3 77               [ 8] 1066 	ld	(hl), a
-                                   1067 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-                                   1068 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000004C4 7E               [ 8] 1069 	ld	a, (hl)
-    000004C5 21r18r00         [12] 1070 	ld	hl, #(_shadow_OAM + 24)
-    000004C8 22               [ 8] 1071 	ld	(hl+), a
-    000004C9 71               [ 8] 1072 	ld	(hl), c
-                                   1073 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-                                   1074 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000004CA 11r1Cr00         [12] 1075 	ld	de, #(_shadow_OAM + 28)
-    000004CD F8 03            [12] 1076 	ldhl	sp,	#3
-    000004CF 3A               [ 8] 1077 	ld	a, (hl-)
-    000004D0 12               [ 8] 1078 	ld	(de), a
-    000004D1 11r1Dr00         [12] 1079 	ld	de, #(_shadow_OAM + 29)
-    000004D4 7E               [ 8] 1080 	ld	a, (hl)
-    000004D5 12               [ 8] 1081 	ld	(de), a
-                                   1082 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    000004D6 21r12r00         [12] 1083 	ld	hl, #(_shadow_OAM + 18)
-    000004D9 36 18            [12] 1084 	ld	(hl), #0x18
-    000004DB 21r16r00         [12] 1085 	ld	hl, #(_shadow_OAM + 22)
-    000004DE 36 19            [12] 1086 	ld	(hl), #0x19
-    000004E0 21r1Ar00         [12] 1087 	ld	hl, #(_shadow_OAM + 26)
-    000004E3 36 1A            [12] 1088 	ld	(hl), #0x1a
-    000004E5 21r1Er00         [12] 1089 	ld	hl, #(_shadow_OAM + 30)
-    000004E8 36 1B            [12] 1090 	ld	(hl), #0x1b
-                                   1091 ;src/states/game.c:276: set_sprite_tile(7, 27);
-    000004EA 18 18            [12] 1092 	jr	00130$
-    000004EC                       1093 00129$:
-                                   1094 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000004EC 21r10r00         [12] 1095 	ld	hl, #(_shadow_OAM + 16)
-                                   1096 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000004EF AF               [ 4] 1097 	xor	a, a
-    000004F0 22               [ 8] 1098 	ld	(hl+), a
-    000004F1 77               [ 8] 1099 	ld	(hl), a
+                                     82 	.area _HOME
+                                     83 	.area _GSINIT
+                                     84 	.area _GSFINAL
+                                     85 	.area _GSINIT
+                                     86 ;--------------------------------------------------------
+                                     87 ; Home
+                                     88 ;--------------------------------------------------------
+                                     89 	.area _HOME
+                                     90 	.area _HOME
+                                     91 ;--------------------------------------------------------
+                                     92 ; code
+                                     93 ;--------------------------------------------------------
+                                     94 	.area _CODE
+                                     95 ;src/states/game.c:33: uint8_t get_tile_at(uint16_t x, uint16_t y) {
+                                     96 ;	---------------------------------
+                                     97 ; Function get_tile_at
+                                     98 ; ---------------------------------
+    00000000                         99 _get_tile_at::
+    00000000 E8 FA            [16]  100 	add	sp, #-6
+                                    101 ;src/states/game.c:34: uint16_t tx = x / 8;
+    00000002 CB 3A            [ 8]  102 	srl	d
+    00000004 CB 1B            [ 8]  103 	rr	e
+    00000006 CB 3A            [ 8]  104 	srl	d
+    00000008 CB 1B            [ 8]  105 	rr	e
+    0000000A CB 3A            [ 8]  106 	srl	d
+    0000000C CB 1B            [ 8]  107 	rr	e
+    0000000E 33               [ 8]  108 	inc	sp
+    0000000F 33               [ 8]  109 	inc	sp
+    00000010 D5               [16]  110 	push	de
+                                    111 ;src/states/game.c:35: uint16_t ty = y / 8;
+    00000011 CB 38            [ 8]  112 	srl	b
+    00000013 CB 19            [ 8]  113 	rr	c
+    00000015 CB 38            [ 8]  114 	srl	b
+    00000017 CB 19            [ 8]  115 	rr	c
+    00000019 CB 38            [ 8]  116 	srl	b
+    0000001B CB 19            [ 8]  117 	rr	c
+                                    118 ;src/states/game.c:37: if (tx >= MAP_WIDTH || ty >= MAP_HEIGHT)
+    0000001D F8 00            [12]  119 	ldhl	sp,	#0
+    0000001F 2A               [ 8]  120 	ld	a, (hl+)
+    00000020 23               [ 8]  121 	inc	hl
+    00000021 32               [ 8]  122 	ld	(hl-), a
+    00000022 2A               [ 8]  123 	ld	a, (hl+)
+    00000023 23               [ 8]  124 	inc	hl
+    00000024 22               [ 8]  125 	ld	(hl+), a
+    00000025 79               [ 4]  126 	ld	a, c
+    00000026 22               [ 8]  127 	ld	(hl+), a
+    00000027 70               [ 8]  128 	ld	(hl), b
+                                    129 ;src/states/game.c:36: if (current_loc == LOC_WORLD) {
+    00000028 21r00r00         [12]  130 	ld	hl, #_current_loc
+    0000002B CB 46            [12]  131 	bit	0, (hl)
+    0000002D 20 53            [12]  132 	jr	NZ, 00108$
+                                    133 ;src/states/game.c:37: if (tx >= MAP_WIDTH || ty >= MAP_HEIGHT)
+    0000002F F8 02            [12]  134 	ldhl	sp,	#2
+    00000031 2A               [ 8]  135 	ld	a, (hl+)
+    00000032 D6 20            [ 8]  136 	sub	a, #0x20
+    00000034 7E               [ 8]  137 	ld	a, (hl)
+    00000035 DE 00            [ 8]  138 	sbc	a, #0x00
+    00000037 30 09            [12]  139 	jr	NC, 00101$
+    00000039 23               [ 8]  140 	inc	hl
+    0000003A 2A               [ 8]  141 	ld	a, (hl+)
+    0000003B D6 20            [ 8]  142 	sub	a, #0x20
+    0000003D 7E               [ 8]  143 	ld	a, (hl)
+    0000003E DE 00            [ 8]  144 	sbc	a, #0x00
+    00000040 38 04            [12]  145 	jr	C, 00102$
+    00000042                        146 00101$:
+                                    147 ;src/states/game.c:38: return 1;
+    00000042 3E 01            [ 8]  148 	ld	a, #0x01
+    00000044 18 69            [12]  149 	jr	00110$
+    00000046                        150 00102$:
+                                    151 ;src/states/game.c:39: return map_data[ty * MAP_WIDTH + tx];
+    00000046 3E 05            [ 8]  152 	ld	a, #0x05
+    00000048                        153 00133$:
+    00000048 F8 04            [12]  154 	ldhl	sp,	#4
+    0000004A CB 26            [16]  155 	sla	(hl)
+    0000004C 23               [ 8]  156 	inc	hl
+    0000004D CB 16            [16]  157 	rl	(hl)
+    0000004F 3D               [ 4]  158 	dec	a
+    00000050 20 F6            [12]  159 	jr	NZ, 00133$
+    00000052 2B               [ 8]  160 	dec	hl
+    00000053 3A               [ 8]  161 	ld	a, (hl-)
+    00000054 2B               [ 8]  162 	dec	hl
+    00000055 77               [ 8]  163 	ld	(hl), a
+    00000056 F8 05            [12]  164 	ldhl	sp,	#5
+    00000058 3A               [ 8]  165 	ld	a, (hl-)
+    00000059 2B               [ 8]  166 	dec	hl
+    0000005A 32               [ 8]  167 	ld	(hl-), a
+    0000005B 2A               [ 8]  168 	ld	a, (hl+)
+    0000005C 5F               [ 4]  169 	ld	e, a
+    0000005D 56               [ 8]  170 	ld	d, (hl)
+    0000005E E1               [12]  171 	pop	hl
+    0000005F E5               [16]  172 	push	hl
+    00000060 19               [ 8]  173 	add	hl, de
+    00000061 E5               [16]  174 	push	hl
+    00000062 7D               [ 4]  175 	ld	a, l
+    00000063 F8 06            [12]  176 	ldhl	sp,	#6
+    00000065 77               [ 8]  177 	ld	(hl), a
+    00000066 E1               [12]  178 	pop	hl
+    00000067 7C               [ 4]  179 	ld	a, h
+    00000068 F8 05            [12]  180 	ldhl	sp,	#5
+    0000006A 77               [ 8]  181 	ld	(hl), a
+    0000006B 11r00r00         [12]  182 	ld	de, #_map_data
+    0000006E 3A               [ 8]  183 	ld	a, (hl-)
+    0000006F 6E               [ 8]  184 	ld	l, (hl)
+    00000070 67               [ 4]  185 	ld	h, a
+    00000071 19               [ 8]  186 	add	hl, de
+    00000072 E5               [16]  187 	push	hl
+    00000073 7D               [ 4]  188 	ld	a, l
+    00000074 F8 04            [12]  189 	ldhl	sp,	#4
+    00000076 77               [ 8]  190 	ld	(hl), a
+    00000077 E1               [12]  191 	pop	hl
+    00000078 7C               [ 4]  192 	ld	a, h
+    00000079 F8 03            [12]  193 	ldhl	sp,	#3
+    0000007B 32               [ 8]  194 	ld	(hl-), a
+    0000007C 2A               [ 8]  195 	ld	a, (hl+)
+    0000007D 5F               [ 4]  196 	ld	e, a
+    0000007E 56               [ 8]  197 	ld	d, (hl)
+    0000007F 1A               [ 8]  198 	ld	a, (de)
+    00000080 18 2D            [12]  199 	jr	00110$
+    00000082                        200 00108$:
+                                    201 ;src/states/game.c:41: if (tx >= HOUSE_WIDTH || ty >= HOUSE_HEIGHT)
+    00000082 F8 02            [12]  202 	ldhl	sp,	#2
+    00000084 2A               [ 8]  203 	ld	a, (hl+)
+    00000085 D6 14            [ 8]  204 	sub	a, #0x14
+    00000087 7E               [ 8]  205 	ld	a, (hl)
+    00000088 DE 00            [ 8]  206 	sbc	a, #0x00
+    0000008A 30 09            [12]  207 	jr	NC, 00104$
+    0000008C 23               [ 8]  208 	inc	hl
+    0000008D 2A               [ 8]  209 	ld	a, (hl+)
+    0000008E D6 12            [ 8]  210 	sub	a, #0x12
+    00000090 7E               [ 8]  211 	ld	a, (hl)
+    00000091 DE 00            [ 8]  212 	sbc	a, #0x00
+    00000093 38 04            [12]  213 	jr	C, 00105$
+    00000095                        214 00104$:
+                                    215 ;src/states/game.c:42: return 1;
+    00000095 3E 01            [ 8]  216 	ld	a, #0x01
+    00000097 18 16            [12]  217 	jr	00110$
+    00000099                        218 00105$:
+                                    219 ;src/states/game.c:43: return house_map[ty * HOUSE_WIDTH + tx];
+    00000099 F8 04            [12]  220 	ldhl	sp,#4
+    0000009B 2A               [ 8]  221 	ld	a, (hl+)
+    0000009C 4F               [ 4]  222 	ld	c, a
+    0000009D 46               [ 8]  223 	ld	b, (hl)
+    0000009E 69               [ 4]  224 	ld	l, c
+    0000009F 60               [ 4]  225 	ld	h, b
+    000000A0 29               [ 8]  226 	add	hl, hl
+    000000A1 29               [ 8]  227 	add	hl, hl
+    000000A2 09               [ 8]  228 	add	hl, bc
+    000000A3 29               [ 8]  229 	add	hl, hl
+    000000A4 29               [ 8]  230 	add	hl, hl
+    000000A5 4D               [ 4]  231 	ld	c, l
+    000000A6 44               [ 4]  232 	ld	b, h
+    000000A7 E1               [12]  233 	pop	hl
+    000000A8 E5               [16]  234 	push	hl
+    000000A9 09               [ 8]  235 	add	hl, bc
+    000000AA 01r00r00         [12]  236 	ld	bc, #_house_map
+    000000AD 09               [ 8]  237 	add	hl, bc
+    000000AE 7E               [ 8]  238 	ld	a, (hl)
+    000000AF                        239 00110$:
+                                    240 ;src/states/game.c:45: }
+    000000AF E8 06            [16]  241 	add	sp, #6
+    000000B1 C9               [16]  242 	ret
+                                    243 ;src/states/game.c:47: void update_camera() {
+                                    244 ;	---------------------------------
+                                    245 ; Function update_camera
+                                    246 ; ---------------------------------
+    000000B2                        247 _update_camera::
+    000000B2 E8 FC            [16]  248 	add	sp, #-4
+                                    249 ;src/states/game.c:48: uint16_t w = (current_loc == LOC_WORLD) ? (MAP_WIDTH * 8) : (HOUSE_WIDTH * 8);
+    000000B4 21r00r00         [12]  250 	ld	hl, #_current_loc
+    000000B7 CB 46            [12]  251 	bit	0, (hl)
+    000000B9 20 05            [12]  252 	jr	NZ, 00114$
+    000000BB 11 00 01         [12]  253 	ld	de, #0x0100
+    000000BE 18 03            [12]  254 	jr	00115$
+    000000C0                        255 00114$:
+    000000C0 11 A0 00         [12]  256 	ld	de, #0x00a0
+    000000C3                        257 00115$:
+                                    258 ;src/states/game.c:49: uint16_t h =
+    000000C3 21r00r00         [12]  259 	ld	hl, #_current_loc
+    000000C6 CB 46            [12]  260 	bit	0, (hl)
+    000000C8 20 05            [12]  261 	jr	NZ, 00116$
+    000000CA 01 00 01         [12]  262 	ld	bc, #0x0100
+    000000CD 18 03            [12]  263 	jr	00117$
+    000000CF                        264 00116$:
+    000000CF 01 90 00         [12]  265 	ld	bc, #0x0090
+    000000D2                        266 00117$:
+                                    267 ;src/states/game.c:52: if (player_x > SCREEN_WIDTH / 2)
+    000000D2 21r01r00         [12]  268 	ld	hl, #_player_x
+    000000D5 3E 50            [ 8]  269 	ld	a, #0x50
+    000000D7 96               [ 8]  270 	sub	a, (hl)
+    000000D8 23               [ 8]  271 	inc	hl
+    000000D9 3E 00            [ 8]  272 	ld	a, #0x00
+    000000DB 9E               [ 8]  273 	sbc	a, (hl)
+    000000DC 30 18            [12]  274 	jr	NC, 00102$
+                                    275 ;src/states/game.c:53: camera_x = player_x - SCREEN_WIDTH / 2;
+    000000DE FAr01r00         [16]  276 	ld	a, (_player_x)
+    000000E1 21r02r00         [12]  277 	ld	hl, #_player_x + 1
+    000000E4 66               [ 8]  278 	ld	h, (hl)
+    000000E5 C6 B0            [ 8]  279 	add	a, #0xb0
+    000000E7 6F               [ 4]  280 	ld	l, a
+    000000E8 7C               [ 4]  281 	ld	a, h
+    000000E9 CE FF            [ 8]  282 	adc	a, #0xff
+    000000EB 67               [ 4]  283 	ld	h, a
+    000000EC 7D               [ 4]  284 	ld	a, l
+    000000ED EAr0Cr00         [16]  285 	ld	(_camera_x), a
+    000000F0 7C               [ 4]  286 	ld	a, h
+    000000F1 EAr0Dr00         [16]  287 	ld	(_camera_x + 1), a
+    000000F4 18 06            [12]  288 	jr	00103$
+    000000F6                        289 00102$:
+                                    290 ;src/states/game.c:55: camera_x = 0;
+    000000F6 AF               [ 4]  291 	xor	a, a
+    000000F7 21r0Cr00         [12]  292 	ld	hl, #_camera_x
+    000000FA 22               [ 8]  293 	ld	(hl+), a
+    000000FB 77               [ 8]  294 	ld	(hl), a
+    000000FC                        295 00103$:
+                                    296 ;src/states/game.c:57: if (player_y > SCREEN_HEIGHT / 2)
+    000000FC 21r03r00         [12]  297 	ld	hl, #_player_y
+    000000FF 3E 48            [ 8]  298 	ld	a, #0x48
+    00000101 96               [ 8]  299 	sub	a, (hl)
+    00000102 23               [ 8]  300 	inc	hl
+    00000103 3E 00            [ 8]  301 	ld	a, #0x00
+    00000105 9E               [ 8]  302 	sbc	a, (hl)
+    00000106 30 18            [12]  303 	jr	NC, 00105$
+                                    304 ;src/states/game.c:58: camera_y = player_y - SCREEN_HEIGHT / 2;
+    00000108 FAr03r00         [16]  305 	ld	a, (_player_y)
+    0000010B 21r04r00         [12]  306 	ld	hl, #_player_y + 1
+    0000010E 66               [ 8]  307 	ld	h, (hl)
+    0000010F C6 B8            [ 8]  308 	add	a, #0xb8
+    00000111 6F               [ 4]  309 	ld	l, a
+    00000112 7C               [ 4]  310 	ld	a, h
+    00000113 CE FF            [ 8]  311 	adc	a, #0xff
+    00000115 67               [ 4]  312 	ld	h, a
+    00000116 7D               [ 4]  313 	ld	a, l
+    00000117 EAr0Er00         [16]  314 	ld	(_camera_y), a
+    0000011A 7C               [ 4]  315 	ld	a, h
+    0000011B EAr0Fr00         [16]  316 	ld	(_camera_y + 1), a
+    0000011E 18 06            [12]  317 	jr	00106$
+    00000120                        318 00105$:
+                                    319 ;src/states/game.c:60: camera_y = 0;
+    00000120 AF               [ 4]  320 	xor	a, a
+    00000121 21r0Er00         [12]  321 	ld	hl, #_camera_y
+    00000124 22               [ 8]  322 	ld	(hl+), a
+    00000125 77               [ 8]  323 	ld	(hl), a
+    00000126                        324 00106$:
+                                    325 ;src/states/game.c:62: if (camera_x > w - SCREEN_WIDTH)
+    00000126 33               [ 8]  326 	inc	sp
+    00000127 33               [ 8]  327 	inc	sp
+    00000128 D5               [16]  328 	push	de
+    00000129 21 A0 00         [12]  329 	ld	hl, #0x00a0
+    0000012C 7B               [ 4]  330 	ld	a, e
+    0000012D 95               [ 4]  331 	sub	a, l
+    0000012E 5F               [ 4]  332 	ld	e, a
+    0000012F 7A               [ 4]  333 	ld	a, d
+    00000130 9C               [ 4]  334 	sbc	a, h
+    00000131 F8 03            [12]  335 	ldhl	sp,	#3
+    00000133 32               [ 8]  336 	ld	(hl-), a
+    00000134 73               [ 8]  337 	ld	(hl), e
+    00000135 FAr0Cr00         [16]  338 	ld	a, (_camera_x)
+    00000138 5F               [ 4]  339 	ld	e, a
+    00000139 21r0Dr00         [12]  340 	ld	hl, #_camera_x + 1
+    0000013C 56               [ 8]  341 	ld	d, (hl)
+    0000013D F8 02            [12]  342 	ldhl	sp,	#2
+    0000013F 2A               [ 8]  343 	ld	a, (hl+)
+    00000140 93               [ 4]  344 	sub	a, e
+    00000141 7E               [ 8]  345 	ld	a, (hl)
+    00000142 9A               [ 4]  346 	sbc	a, d
+    00000143 30 17            [12]  347 	jr	NC, 00108$
+                                    348 ;src/states/game.c:63: camera_x = (w > SCREEN_WIDTH) ? (w - SCREEN_WIDTH) : 0;
+    00000145 F8 00            [12]  349 	ldhl	sp,	#0
+    00000147 3E A0            [ 8]  350 	ld	a, #0xa0
+    00000149 96               [ 8]  351 	sub	a, (hl)
+    0000014A 23               [ 8]  352 	inc	hl
+    0000014B 3E 00            [ 8]  353 	ld	a, #0x00
+    0000014D 9E               [ 8]  354 	sbc	a, (hl)
+    0000014E 30 05            [12]  355 	jr	NC, 00118$
+    00000150 F8 02            [12]  356 	ldhl	sp,	#2
+    00000152 7E               [ 8]  357 	ld	a, (hl)
+    00000153 18 01            [12]  358 	jr	00119$
+    00000155                        359 00118$:
+    00000155 AF               [ 4]  360 	xor	a, a
+    00000156                        361 00119$:
+    00000156 21r0Cr00         [12]  362 	ld	hl, #_camera_x
+    00000159 22               [ 8]  363 	ld	(hl+), a
+    0000015A 36 00            [12]  364 	ld	(hl), #0x00
+    0000015C                        365 00108$:
+                                    366 ;src/states/game.c:64: if (camera_y > h - SCREEN_HEIGHT)
+    0000015C 59               [ 4]  367 	ld	e, c
+    0000015D 50               [ 4]  368 	ld	d, b
+    0000015E 7B               [ 4]  369 	ld	a, e
+    0000015F C6 70            [ 8]  370 	add	a, #0x70
+    00000161 4F               [ 4]  371 	ld	c, a
+    00000162 7A               [ 4]  372 	ld	a, d
+    00000163 CE FF            [ 8]  373 	adc	a, #0xff
+    00000165 47               [ 4]  374 	ld	b, a
+    00000166 FAr0Er00         [16]  375 	ld	a, (_camera_y)
+    00000169 6F               [ 4]  376 	ld	l, a
+    0000016A FAr0Fr00         [16]  377 	ld	a, (_camera_y + 1)
+    0000016D 67               [ 4]  378 	ld	h, a
+    0000016E 79               [ 4]  379 	ld	a, c
+    0000016F 95               [ 4]  380 	sub	a, l
+    00000170 78               [ 4]  381 	ld	a, b
+    00000171 9C               [ 4]  382 	sbc	a, h
+    00000172 30 11            [12]  383 	jr	NC, 00110$
+                                    384 ;src/states/game.c:65: camera_y = (h > SCREEN_HEIGHT) ? (h - SCREEN_HEIGHT) : 0;
+    00000174 3E 90            [ 8]  385 	ld	a, #0x90
+    00000176 BB               [ 4]  386 	cp	a, e
+    00000177 3E 00            [ 8]  387 	ld	a, #0x00
+    00000179 9A               [ 4]  388 	sbc	a, d
+    0000017A 38 02            [12]  389 	jr	C, 00121$
+    0000017C 0E 00            [ 8]  390 	ld	c, #0x00
+    0000017E                        391 00121$:
+    0000017E 21r0Er00         [12]  392 	ld	hl, #_camera_y
+    00000181 79               [ 4]  393 	ld	a, c
+    00000182 22               [ 8]  394 	ld	(hl+), a
+    00000183 36 00            [12]  395 	ld	(hl), #0x00
+    00000185                        396 00110$:
+                                    397 ;src/states/game.c:67: move_bkg(camera_x, camera_y);
+    00000185 FAr0Er00         [16]  398 	ld	a, (_camera_y)
+    00000188 4F               [ 4]  399 	ld	c, a
+    00000189 FAr0Cr00         [16]  400 	ld	a, (#_camera_x)
+    0000018C E0r00            [12]  401 	ldh	(_SCX_REG + 0), a
+                                    402 ;./gbdk/include/gb/gb.h:1461: SCX_REG=x, SCY_REG=y;
+    0000018E 79               [ 4]  403 	ld	a, c
+    0000018F E0r00            [12]  404 	ldh	(_SCY_REG + 0), a
+                                    405 ;src/states/game.c:67: move_bkg(camera_x, camera_y);
+                                    406 ;src/states/game.c:68: }
+    00000191 E8 04            [16]  407 	add	sp, #4
+    00000193 C9               [16]  408 	ret
+                                    409 ;src/states/game.c:70: void load_location(location_t loc) {
+                                    410 ;	---------------------------------
+                                    411 ; Function load_location
+                                    412 ; ---------------------------------
+    00000194                        413 _load_location::
+    00000194 4F               [ 4]  414 	ld	c, a
+                                    415 ;src/states/game.c:71: HIDE_BKG;
+    00000195 F0r00            [12]  416 	ldh	a, (_LCDC_REG + 0)
+    00000197 E6 FE            [ 8]  417 	and	a, #0xfe
+    00000199 E0r00            [12]  418 	ldh	(_LCDC_REG + 0), a
+                                    419 ;src/states/game.c:72: current_loc = loc;
+    0000019B 21r00r00         [12]  420 	ld	hl, #_current_loc
+    0000019E 71               [ 8]  421 	ld	(hl), c
+                                    422 ;src/states/game.c:73: if (loc == LOC_WORLD) {
+    0000019F CB 41            [ 8]  423 	bit	0, c
+    000001A1 20 12            [12]  424 	jr	NZ, 00102$
+                                    425 ;src/states/game.c:74: set_bkg_tiles(0, 0, MAP_WIDTH, MAP_HEIGHT, map_data);
+    000001A3 11r00r00         [12]  426 	ld	de, #_map_data
+    000001A6 D5               [16]  427 	push	de
+    000001A7 21 20 20         [12]  428 	ld	hl, #0x2020
+    000001AA E5               [16]  429 	push	hl
+    000001AB AF               [ 4]  430 	xor	a, a
+    000001AC 0F               [ 4]  431 	rrca
+    000001AD F5               [16]  432 	push	af
+    000001AE CDr00r00         [24]  433 	call	_set_bkg_tiles
+    000001B1 E8 06            [16]  434 	add	sp, #6
+    000001B3 18 20            [12]  435 	jr	00103$
+    000001B5                        436 00102$:
+                                    437 ;src/states/game.c:76: fill_bkg_rect(0, 0, 32, 32, 26);
+    000001B5 21 20 1A         [12]  438 	ld	hl, #0x1a20
+    000001B8 E5               [16]  439 	push	hl
+    000001B9 3E 20            [ 8]  440 	ld	a, #0x20
+    000001BB F5               [16]  441 	push	af
+    000001BC 33               [ 8]  442 	inc	sp
+    000001BD AF               [ 4]  443 	xor	a, a
+    000001BE 0F               [ 4]  444 	rrca
+    000001BF F5               [16]  445 	push	af
+    000001C0 CDr00r00         [24]  446 	call	_fill_bkg_rect
+    000001C3 E8 05            [16]  447 	add	sp, #5
+                                    448 ;src/states/game.c:77: set_bkg_tiles(0, 0, HOUSE_WIDTH, HOUSE_HEIGHT, house_map);
+    000001C5 11r00r00         [12]  449 	ld	de, #_house_map
+    000001C8 D5               [16]  450 	push	de
+    000001C9 21 14 12         [12]  451 	ld	hl, #0x1214
+    000001CC E5               [16]  452 	push	hl
+    000001CD AF               [ 4]  453 	xor	a, a
+    000001CE 0F               [ 4]  454 	rrca
+    000001CF F5               [16]  455 	push	af
+    000001D0 CDr00r00         [24]  456 	call	_set_bkg_tiles
+    000001D3 E8 06            [16]  457 	add	sp, #6
+    000001D5                        458 00103$:
+                                    459 ;src/states/game.c:79: update_camera();
+    000001D5 CDrB2r00         [24]  460 	call	_update_camera
+                                    461 ;src/states/game.c:80: SHOW_BKG;
+    000001D8 F0r00            [12]  462 	ldh	a, (_LCDC_REG + 0)
+    000001DA F6 01            [ 8]  463 	or	a, #0x01
+    000001DC E0r00            [12]  464 	ldh	(_LCDC_REG + 0), a
+                                    465 ;src/states/game.c:81: }
+    000001DE C9               [16]  466 	ret
+                                    467 ;src/states/game.c:83: void update_player_sprite() {
+                                    468 ;	---------------------------------
+                                    469 ; Function update_player_sprite
+                                    470 ; ---------------------------------
+    000001DF                        471 _update_player_sprite::
+    000001DF E8 FD            [16]  472 	add	sp, #-3
+                                    473 ;src/states/game.c:84: uint8_t base_tile = 0;
+    000001E1 F8 00            [12]  474 	ldhl	sp,	#0
+                                    475 ;src/states/game.c:85: uint8_t prop = 0;
+    000001E3 AF               [ 4]  476 	xor	a, a
+    000001E4 22               [ 8]  477 	ld	(hl+), a
+    000001E5 23               [ 8]  478 	inc	hl
+    000001E6 36 00            [12]  479 	ld	(hl), #0x00
+                                    480 ;src/states/game.c:86: switch (player_dir) {
+    000001E8 3E 03            [ 8]  481 	ld	a, #0x03
+    000001EA 21r09r00         [12]  482 	ld	hl, #_player_dir
+    000001ED 96               [ 8]  483 	sub	a, (hl)
+    000001EE 38 37            [12]  484 	jr	C, 00105$
+                                    485 ;src/states/game.c:88: base_tile = 0 + (anim_frame * 4);
+    000001F0 FAr0Ar00         [16]  486 	ld	a, (_anim_frame)
+    000001F3 87               [ 4]  487 	add	a, a
+    000001F4 87               [ 4]  488 	add	a, a
+                                    489 ;src/states/game.c:94: base_tile = 16 + (anim_frame * 4);
+    000001F5 47               [ 4]  490 	ld	b, a
+    000001F6 C6 10            [ 8]  491 	add	a, #0x10
+    000001F8 4F               [ 4]  492 	ld	c, a
+                                    493 ;src/states/game.c:86: switch (player_dir) {
+    000001F9 5E               [ 8]  494 	ld	e, (hl)
+    000001FA 16 00            [ 8]  495 	ld	d, #0x00
+    000001FC 21r06r02         [12]  496 	ld	hl, #00173$
+    000001FF 19               [ 8]  497 	add	hl, de
+    00000200 19               [ 8]  498 	add	hl, de
+    00000201 5E               [ 8]  499 	ld	e, (hl)
+    00000202 23               [ 8]  500 	inc	hl
+    00000203 66               [ 8]  501 	ld	h, (hl)
+    00000204 6B               [ 4]  502 	ld	l, e
+    00000205 E9               [ 4]  503 	jp	(hl)
+    00000206                        504 00173$:
+    00000206r0Er02                  505 	.dw	00101$
+    00000208r13r02                  506 	.dw	00102$
+    0000020Ar1Br02                  507 	.dw	00103$
+    0000020Cr20r02                  508 	.dw	00104$
+                                    509 ;src/states/game.c:87: case 0:
+    0000020E                        510 00101$:
+                                    511 ;src/states/game.c:88: base_tile = 0 + (anim_frame * 4);
+    0000020E F8 00            [12]  512 	ldhl	sp,	#0
+    00000210 70               [ 8]  513 	ld	(hl), b
+                                    514 ;src/states/game.c:89: break;
+    00000211 18 14            [12]  515 	jr	00105$
+                                    516 ;src/states/game.c:90: case 1:
+    00000213                        517 00102$:
+                                    518 ;src/states/game.c:91: base_tile = 8 + (anim_frame * 4);
+    00000213 78               [ 4]  519 	ld	a, b
+    00000214 C6 08            [ 8]  520 	add	a, #0x08
+    00000216 F8 00            [12]  521 	ldhl	sp,	#0
+    00000218 77               [ 8]  522 	ld	(hl), a
+                                    523 ;src/states/game.c:92: break;
+    00000219 18 0C            [12]  524 	jr	00105$
+                                    525 ;src/states/game.c:93: case 2:
+    0000021B                        526 00103$:
+                                    527 ;src/states/game.c:94: base_tile = 16 + (anim_frame * 4);
+    0000021B F8 00            [12]  528 	ldhl	sp,	#0
+    0000021D 71               [ 8]  529 	ld	(hl), c
+                                    530 ;src/states/game.c:95: break;
+    0000021E 18 07            [12]  531 	jr	00105$
+                                    532 ;src/states/game.c:96: case 3:
+    00000220                        533 00104$:
+                                    534 ;src/states/game.c:97: base_tile = 16 + (anim_frame * 4);
+    00000220 F8 00            [12]  535 	ldhl	sp,	#0
+                                    536 ;src/states/game.c:98: prop = S_FLIPX;
+    00000222 79               [ 4]  537 	ld	a, c
+    00000223 22               [ 8]  538 	ld	(hl+), a
+    00000224 23               [ 8]  539 	inc	hl
+    00000225 36 20            [12]  540 	ld	(hl), #0x20
+                                    541 ;src/states/game.c:100: }
+    00000227                        542 00105$:
+                                    543 ;src/states/game.c:101: if (prop == 0) {
+    00000227 F8 02            [12]  544 	ldhl	sp,	#2
+    00000229 7E               [ 8]  545 	ld	a, (hl)
+    0000022A B7               [ 4]  546 	or	a, a
+    0000022B 20 34            [12]  547 	jr	NZ, 00109$
+                                    548 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    0000022D 2B               [ 8]  549 	dec	hl
+    0000022E 2B               [ 8]  550 	dec	hl
+    0000022F 11r02r00         [12]  551 	ld	de, #(_shadow_OAM + 2)
+    00000232 7E               [ 8]  552 	ld	a, (hl)
+    00000233 12               [ 8]  553 	ld	(de), a
+                                    554 ;src/states/game.c:103: set_sprite_tile(1, base_tile + 1);
+    00000234 4E               [ 8]  555 	ld	c, (hl)
+    00000235 41               [ 4]  556 	ld	b, c
+    00000236 04               [ 4]  557 	inc	b
+                                    558 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000237 21r06r00         [12]  559 	ld	hl, #(_shadow_OAM + 6)
+    0000023A 70               [ 8]  560 	ld	(hl), b
+                                    561 ;src/states/game.c:104: set_sprite_tile(2, base_tile + 2);
+    0000023B 41               [ 4]  562 	ld	b, c
+    0000023C 04               [ 4]  563 	inc	b
+    0000023D 04               [ 4]  564 	inc	b
+                                    565 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    0000023E 21r0Ar00         [12]  566 	ld	hl, #(_shadow_OAM + 10)
+    00000241 70               [ 8]  567 	ld	(hl), b
+                                    568 ;src/states/game.c:105: set_sprite_tile(3, base_tile + 3);
+    00000242 0C               [ 4]  569 	inc	c
+    00000243 0C               [ 4]  570 	inc	c
+    00000244 0C               [ 4]  571 	inc	c
+                                    572 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000245 21r0Er00         [12]  573 	ld	hl, #(_shadow_OAM + 14)
+    00000248 71               [ 8]  574 	ld	(hl), c
+                                    575 ;src/states/game.c:106: for (int i = 0; i < 4; i++)
+    00000249 0E 00            [ 8]  576 	ld	c, #0x00
+    0000024B                        577 00122$:
+    0000024B 79               [ 4]  578 	ld	a, c
+    0000024C D6 04            [ 8]  579 	sub	a, #0x04
+    0000024E 30 4C            [12]  580 	jr	NC, 00127$
+                                    581 ;src/states/game.c:107: set_sprite_prop(i, 0);
+                                    582 ;./gbdk/include/gb/gb.h:1946: shadow_OAM[nb].prop=prop;
+    00000250 69               [ 4]  583 	ld	l, c
+    00000251 11r00r00         [12]  584 	ld	de, #_shadow_OAM+0
+    00000254 26 00            [ 8]  585 	ld	h, #0x00
+    00000256 29               [ 8]  586 	add	hl, hl
+    00000257 29               [ 8]  587 	add	hl, hl
+    00000258 19               [ 8]  588 	add	hl, de
+    00000259 23               [ 8]  589 	inc	hl
+    0000025A 23               [ 8]  590 	inc	hl
+    0000025B 23               [ 8]  591 	inc	hl
+    0000025C 36 00            [12]  592 	ld	(hl), #0x00
+                                    593 ;src/states/game.c:106: for (int i = 0; i < 4; i++)
+    0000025E 0C               [ 4]  594 	inc	c
+    0000025F 18 EA            [12]  595 	jr	00122$
+    00000261                        596 00109$:
+                                    597 ;src/states/game.c:109: set_sprite_tile(0, base_tile + 1);
+    00000261 F8 00            [12]  598 	ldhl	sp,	#0
+    00000263 2A               [ 8]  599 	ld	a, (hl+)
+    00000264 77               [ 8]  600 	ld	(hl), a
+    00000265 2A               [ 8]  601 	ld	a, (hl+)
+    00000266 3C               [ 4]  602 	inc	a
+    00000267 77               [ 8]  603 	ld	(hl), a
+                                    604 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000268 11r02r00         [12]  605 	ld	de, #(_shadow_OAM + 2)
+    0000026B 3A               [ 8]  606 	ld	a, (hl-)
+    0000026C 2B               [ 8]  607 	dec	hl
+    0000026D 12               [ 8]  608 	ld	(de), a
+    0000026E 11r06r00         [12]  609 	ld	de, #(_shadow_OAM + 6)
+                                    610 ;src/states/game.c:111: set_sprite_tile(2, base_tile + 3);
+    00000271 2A               [ 8]  611 	ld	a, (hl+)
+    00000272 12               [ 8]  612 	ld	(de), a
+    00000273 4E               [ 8]  613 	ld	c, (hl)
+    00000274 0C               [ 4]  614 	inc	c
+    00000275 0C               [ 4]  615 	inc	c
+    00000276 0C               [ 4]  616 	inc	c
+                                    617 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000277 21r0Ar00         [12]  618 	ld	hl, #(_shadow_OAM + 10)
+    0000027A 71               [ 8]  619 	ld	(hl), c
+                                    620 ;src/states/game.c:112: set_sprite_tile(3, base_tile + 2);
+    0000027B F8 01            [12]  621 	ldhl	sp,	#1
+    0000027D 4E               [ 8]  622 	ld	c, (hl)
+    0000027E 0C               [ 4]  623 	inc	c
+    0000027F 0C               [ 4]  624 	inc	c
+                                    625 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000280 21r0Er00         [12]  626 	ld	hl, #(_shadow_OAM + 14)
+    00000283 71               [ 8]  627 	ld	(hl), c
+                                    628 ;src/states/game.c:113: for (int i = 0; i < 4; i++)
+    00000284 0E 00            [ 8]  629 	ld	c, #0x00
+    00000286                        630 00125$:
+    00000286 79               [ 4]  631 	ld	a, c
+    00000287 D6 04            [ 8]  632 	sub	a, #0x04
+    00000289 30 11            [12]  633 	jr	NC, 00127$
+                                    634 ;src/states/game.c:114: set_sprite_prop(i, S_FLIPX);
+                                    635 ;./gbdk/include/gb/gb.h:1946: shadow_OAM[nb].prop=prop;
+    0000028B 69               [ 4]  636 	ld	l, c
+    0000028C 11r00r00         [12]  637 	ld	de, #_shadow_OAM+0
+    0000028F 26 00            [ 8]  638 	ld	h, #0x00
+    00000291 29               [ 8]  639 	add	hl, hl
+    00000292 29               [ 8]  640 	add	hl, hl
+    00000293 19               [ 8]  641 	add	hl, de
+    00000294 23               [ 8]  642 	inc	hl
+    00000295 23               [ 8]  643 	inc	hl
+    00000296 23               [ 8]  644 	inc	hl
+    00000297 36 20            [12]  645 	ld	(hl), #0x20
+                                    646 ;src/states/game.c:113: for (int i = 0; i < 4; i++)
+    00000299 0C               [ 4]  647 	inc	c
+    0000029A 18 EA            [12]  648 	jr	00125$
+    0000029C                        649 00127$:
+                                    650 ;src/states/game.c:116: }
+    0000029C E8 03            [16]  651 	add	sp, #3
+    0000029E C9               [16]  652 	ret
+                                    653 ;src/states/game.c:118: uint8_t is_solid(uint16_t x, uint16_t y) {
+                                    654 ;	---------------------------------
+                                    655 ; Function is_solid
+                                    656 ; ---------------------------------
+    0000029F                        657 _is_solid::
+                                    658 ;src/states/game.c:119: uint8_t tid = get_tile_at(x, y);
+    0000029F CDr00r00         [24]  659 	call	_get_tile_at
+    000002A2 4F               [ 4]  660 	ld	c, a
+                                    661 ;src/states/game.c:120: if (current_loc == LOC_WORLD) {
+    000002A3 21r00r00         [12]  662 	ld	hl, #_current_loc
+    000002A6 CB 46            [12]  663 	bit	0, (hl)
+    000002A8 20 1F            [12]  664 	jr	NZ, 00113$
+                                    665 ;src/states/game.c:121: if (tid == 0 || tid == 2 || tid == 3 || tid == 4 || tid == 5 || tid == 21 ||
+    000002AA 79               [ 4]  666 	ld	a, c
+    000002AB B7               [ 4]  667 	or	a, a
+    000002AC 28 19            [12]  668 	jr	Z, 00101$
+    000002AE 79               [ 4]  669 	ld	a,c
+    000002AF FE 02            [ 8]  670 	cp	a,#0x02
+    000002B1 28 14            [12]  671 	jr	Z, 00101$
+    000002B3 FE 03            [ 8]  672 	cp	a,#0x03
+    000002B5 28 10            [12]  673 	jr	Z, 00101$
+    000002B7 FE 04            [ 8]  674 	cp	a,#0x04
+    000002B9 28 0C            [12]  675 	jr	Z, 00101$
+                                    676 ;src/states/game.c:122: tid == 22)
+    000002BB FE 05            [ 8]  677 	cp	a,#0x05
+    000002BD 28 08            [12]  678 	jr	Z, 00101$
+    000002BF FE 15            [ 8]  679 	cp	a,#0x15
+    000002C1 28 04            [12]  680 	jr	Z, 00101$
+    000002C3 D6 16            [ 8]  681 	sub	a, #0x16
+    000002C5 20 0D            [12]  682 	jr	NZ, 00114$
+    000002C7                        683 00101$:
+                                    684 ;src/states/game.c:123: return 0;
+    000002C7 AF               [ 4]  685 	xor	a, a
+    000002C8 C9               [16]  686 	ret
+    000002C9                        687 00113$:
+                                    688 ;src/states/game.c:125: if (tid == 25 || tid == 35)
+    000002C9 79               [ 4]  689 	ld	a,c
+    000002CA FE 19            [ 8]  690 	cp	a,#0x19
+    000002CC 28 04            [12]  691 	jr	Z, 00109$
+    000002CE D6 23            [ 8]  692 	sub	a, #0x23
+    000002D0 20 02            [12]  693 	jr	NZ, 00114$
+    000002D2                        694 00109$:
+                                    695 ;src/states/game.c:126: return 0;
+    000002D2 AF               [ 4]  696 	xor	a, a
+    000002D3 C9               [16]  697 	ret
+    000002D4                        698 00114$:
+                                    699 ;src/states/game.c:128: return 1;
+    000002D4 3E 01            [ 8]  700 	ld	a, #0x01
+                                    701 ;src/states/game.c:129: }
+    000002D6 C9               [16]  702 	ret
+                                    703 ;src/states/game.c:131: uint8_t can_move(uint16_t nx, uint16_t ny) {
+                                    704 ;	---------------------------------
+                                    705 ; Function can_move
+                                    706 ; ---------------------------------
+    000002D7                        707 _can_move::
+    000002D7 E8 F8            [16]  708 	add	sp, #-8
+    000002D9 F8 06            [12]  709 	ldhl	sp,	#6
+    000002DB 79               [ 4]  710 	ld	a, c
+    000002DC 22               [ 8]  711 	ld	(hl+), a
+    000002DD 70               [ 8]  712 	ld	(hl), b
+                                    713 ;src/states/game.c:132: uint16_t w = (current_loc == LOC_WORLD) ? (MAP_WIDTH * 8) : (HOUSE_WIDTH * 8);
+    000002DE 21r00r00         [12]  714 	ld	hl, #_current_loc
+    000002E1 CB 46            [12]  715 	bit	0, (hl)
+    000002E3 20 05            [12]  716 	jr	NZ, 00113$
+    000002E5 01 00 01         [12]  717 	ld	bc, #0x0100
+    000002E8 18 03            [12]  718 	jr	00114$
+    000002EA                        719 00113$:
+    000002EA 01 A0 00         [12]  720 	ld	bc, #0x00a0
+    000002ED                        721 00114$:
+    000002ED F8 04            [12]  722 	ldhl	sp,	#4
+    000002EF 79               [ 4]  723 	ld	a, c
+    000002F0 22               [ 8]  724 	ld	(hl+), a
+    000002F1 70               [ 8]  725 	ld	(hl), b
+                                    726 ;src/states/game.c:133: uint16_t h =
+    000002F2 21r00r00         [12]  727 	ld	hl, #_current_loc
+    000002F5 CB 46            [12]  728 	bit	0, (hl)
+    000002F7 20 05            [12]  729 	jr	NZ, 00115$
+    000002F9 01 00 01         [12]  730 	ld	bc, #0x0100
+    000002FC 18 03            [12]  731 	jr	00116$
+    000002FE                        732 00115$:
+    000002FE 01 90 00         [12]  733 	ld	bc, #0x0090
+    00000301                        734 00116$:
+                                    735 ;src/states/game.c:135: if (nx < 4 || nx > w - 20 || ny < 8 || ny > h - 20)
+    00000301 33               [ 8]  736 	inc	sp
+    00000302 33               [ 8]  737 	inc	sp
+    00000303 D5               [16]  738 	push	de
+    00000304 F8 00            [12]  739 	ldhl	sp,	#0
+    00000306 2A               [ 8]  740 	ld	a, (hl+)
+    00000307 D6 04            [ 8]  741 	sub	a, #0x04
+    00000309 7E               [ 8]  742 	ld	a, (hl)
+    0000030A DE 00            [ 8]  743 	sbc	a, #0x00
+    0000030C 38 38            [12]  744 	jr	C, 00101$
+    0000030E F8 04            [12]  745 	ldhl	sp,	#4
+    00000310 2A               [ 8]  746 	ld	a, (hl+)
+    00000311 56               [ 8]  747 	ld	d, (hl)
+    00000312 C6 EC            [ 8]  748 	add	a, #0xec
+    00000314 5F               [ 4]  749 	ld	e, a
+    00000315 7A               [ 4]  750 	ld	a, d
+    00000316 CE FF            [ 8]  751 	adc	a, #0xff
+    00000318 57               [ 4]  752 	ld	d, a
+    00000319 F8 00            [12]  753 	ldhl	sp,	#0
+    0000031B 7B               [ 4]  754 	ld	a, e
+    0000031C 96               [ 8]  755 	sub	a, (hl)
+    0000031D 23               [ 8]  756 	inc	hl
+    0000031E 7A               [ 4]  757 	ld	a, d
+    0000031F 9E               [ 8]  758 	sbc	a, (hl)
+    00000320 38 24            [12]  759 	jr	C, 00101$
+    00000322 F8 06            [12]  760 	ldhl	sp,	#6
+    00000324 7E               [ 8]  761 	ld	a, (hl)
+    00000325 F8 02            [12]  762 	ldhl	sp,	#2
+    00000327 77               [ 8]  763 	ld	(hl), a
+    00000328 F8 07            [12]  764 	ldhl	sp,	#7
+    0000032A 7E               [ 8]  765 	ld	a, (hl)
+    0000032B F8 03            [12]  766 	ldhl	sp,	#3
+    0000032D 32               [ 8]  767 	ld	(hl-), a
+    0000032E 2A               [ 8]  768 	ld	a, (hl+)
+    0000032F D6 08            [ 8]  769 	sub	a, #0x08
+    00000331 7E               [ 8]  770 	ld	a, (hl)
+    00000332 DE 00            [ 8]  771 	sbc	a, #0x00
+    00000334 38 10            [12]  772 	jr	C, 00101$
+    00000336 2B               [ 8]  773 	dec	hl
+    00000337 79               [ 4]  774 	ld	a, c
+    00000338 C6 EC            [ 8]  775 	add	a, #0xec
+    0000033A 4F               [ 4]  776 	ld	c, a
+    0000033B 78               [ 4]  777 	ld	a, b
+    0000033C CE FF            [ 8]  778 	adc	a, #0xff
+    0000033E 47               [ 4]  779 	ld	b, a
+    0000033F 79               [ 4]  780 	ld	a, c
+    00000340 96               [ 8]  781 	sub	a, (hl)
+    00000341 23               [ 8]  782 	inc	hl
+    00000342 78               [ 4]  783 	ld	a, b
+    00000343 9E               [ 8]  784 	sbc	a, (hl)
+    00000344 30 03            [12]  785 	jr	NC, 00102$
+    00000346                        786 00101$:
+                                    787 ;src/states/game.c:136: return 0;
+    00000346 AF               [ 4]  788 	xor	a, a
+    00000347 18 5A            [12]  789 	jr	00111$
+    00000349                        790 00102$:
+                                    791 ;src/states/game.c:137: if (is_solid(nx + 4, ny + 8) || is_solid(nx + 11, ny + 8) ||
+    00000349 F8 02            [12]  792 	ldhl	sp,#2
+    0000034B 2A               [ 8]  793 	ld	a, (hl+)
+    0000034C 5F               [ 4]  794 	ld	e, a
+    0000034D 56               [ 8]  795 	ld	d, (hl)
+    0000034E 21 08 00         [12]  796 	ld	hl, #0x0008
+    00000351 19               [ 8]  797 	add	hl, de
+    00000352 4D               [ 4]  798 	ld	c, l
+    00000353 44               [ 4]  799 	ld	b, h
+    00000354 D1               [12]  800 	pop	de
+    00000355 D5               [16]  801 	push	de
+    00000356 21 04 00         [12]  802 	ld	hl, #0x0004
+    00000359 19               [ 8]  803 	add	hl, de
+    0000035A 5D               [ 4]  804 	ld	e, l
+    0000035B 7C               [ 4]  805 	ld	a, h
+    0000035C F8 04            [12]  806 	ldhl	sp,	#4
+    0000035E 73               [ 8]  807 	ld	(hl), e
+    0000035F 23               [ 8]  808 	inc	hl
+    00000360 32               [ 8]  809 	ld	(hl-), a
+    00000361 C5               [16]  810 	push	bc
+    00000362 2A               [ 8]  811 	ld	a, (hl+)
+    00000363 5F               [ 4]  812 	ld	e, a
+    00000364 56               [ 8]  813 	ld	d, (hl)
+    00000365 CDr9Fr02         [24]  814 	call	_is_solid
+    00000368 C1               [12]  815 	pop	bc
+    00000369 B7               [ 4]  816 	or	a, a
+    0000036A 20 32            [12]  817 	jr	NZ, 00106$
+    0000036C D1               [12]  818 	pop	de
+    0000036D D5               [16]  819 	push	de
+    0000036E 21 0B 00         [12]  820 	ld	hl, #0x000b
+    00000371 19               [ 8]  821 	add	hl, de
+    00000372 5D               [ 4]  822 	ld	e, l
+    00000373 54               [ 4]  823 	ld	d, h
+    00000374 D5               [16]  824 	push	de
+    00000375 CDr9Fr02         [24]  825 	call	_is_solid
+    00000378 D1               [12]  826 	pop	de
+    00000379 B7               [ 4]  827 	or	a, a
+    0000037A 20 22            [12]  828 	jr	NZ, 00106$
+                                    829 ;src/states/game.c:138: is_solid(nx + 4, ny + 15) || is_solid(nx + 11, ny + 15))
+    0000037C D5               [16]  830 	push	de
+    0000037D F8 04            [12]  831 	ldhl	sp,#4
+    0000037F 2A               [ 8]  832 	ld	a, (hl+)
+    00000380 5F               [ 4]  833 	ld	e, a
+    00000381 56               [ 8]  834 	ld	d, (hl)
+    00000382 21 0F 00         [12]  835 	ld	hl, #0x000f
+    00000385 19               [ 8]  836 	add	hl, de
+    00000386 D1               [12]  837 	pop	de
+    00000387 4D               [ 4]  838 	ld	c, l
+    00000388 44               [ 4]  839 	ld	b, h
+    00000389 C5               [16]  840 	push	bc
+    0000038A D5               [16]  841 	push	de
+    0000038B F8 08            [12]  842 	ldhl	sp,	#8
+    0000038D 2A               [ 8]  843 	ld	a, (hl+)
+    0000038E 5F               [ 4]  844 	ld	e, a
+    0000038F 56               [ 8]  845 	ld	d, (hl)
+    00000390 CDr9Fr02         [24]  846 	call	_is_solid
+    00000393 D1               [12]  847 	pop	de
+    00000394 C1               [12]  848 	pop	bc
+    00000395 B7               [ 4]  849 	or	a, a
+    00000396 20 06            [12]  850 	jr	NZ, 00106$
+    00000398 CDr9Fr02         [24]  851 	call	_is_solid
+    0000039B B7               [ 4]  852 	or	a, a
+    0000039C 28 03            [12]  853 	jr	Z, 00107$
+    0000039E                        854 00106$:
+                                    855 ;src/states/game.c:139: return 0;
+    0000039E AF               [ 4]  856 	xor	a, a
+    0000039F 18 02            [12]  857 	jr	00111$
+    000003A1                        858 00107$:
+                                    859 ;src/states/game.c:140: return 1;
+    000003A1 3E 01            [ 8]  860 	ld	a, #0x01
+    000003A3                        861 00111$:
+                                    862 ;src/states/game.c:141: }
+    000003A3 E8 08            [16]  863 	add	sp, #8
+    000003A5 C9               [16]  864 	ret
+                                    865 ;src/states/game.c:143: void game_init(void) {
+                                    866 ;	---------------------------------
+                                    867 ; Function game_init
+                                    868 ; ---------------------------------
+    000003A6                        869 _game_init::
+                                    870 ;src/states/game.c:144: DISPLAY_OFF;
+    000003A6 CDr00r00         [24]  871 	call	_display_off
+                                    872 ;src/states/game.c:145: set_bkg_data(0, 36, tiles_data);
+    000003A9 11r00r00         [12]  873 	ld	de, #_tiles_data
+    000003AC D5               [16]  874 	push	de
+    000003AD 21 00 24         [12]  875 	ld	hl, #0x2400
+    000003B0 E5               [16]  876 	push	hl
+    000003B1 CDr00r00         [24]  877 	call	_set_bkg_data
+    000003B4 E8 04            [16]  878 	add	sp, #4
+                                    879 ;src/states/game.c:146: load_location(LOC_WORLD);
+    000003B6 AF               [ 4]  880 	xor	a, a
+    000003B7 CDr94r01         [24]  881 	call	_load_location
+                                    882 ;src/states/game.c:147: BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
+    000003BA 3E E4            [ 8]  883 	ld	a, #0xe4
+    000003BC E0r00            [12]  884 	ldh	(_OBP1_REG + 0), a
+    000003BE 3E E4            [ 8]  885 	ld	a, #0xe4
+    000003C0 E0r00            [12]  886 	ldh	(_OBP0_REG + 0), a
+    000003C2 3E E4            [ 8]  887 	ld	a, #0xe4
+    000003C4 E0r00            [12]  888 	ldh	(_BGP_REG + 0), a
+                                    889 ;src/states/game.c:148: SPRITES_8x8;
+    000003C6 F0r00            [12]  890 	ldh	a, (_LCDC_REG + 0)
+    000003C8 E6 FB            [ 8]  891 	and	a, #0xfb
+    000003CA E0r00            [12]  892 	ldh	(_LCDC_REG + 0), a
+                                    893 ;src/states/game.c:149: set_sprite_data(0, 24, player_sprites);
+    000003CC 11r00r00         [12]  894 	ld	de, #_player_sprites
+    000003CF D5               [16]  895 	push	de
+    000003D0 21 00 18         [12]  896 	ld	hl, #0x1800
+    000003D3 E5               [16]  897 	push	hl
+    000003D4 CDr00r00         [24]  898 	call	_set_sprite_data
+    000003D7 E8 04            [16]  899 	add	sp, #4
+                                    900 ;src/states/game.c:150: set_sprite_data(24, 4, npc_child_sprite);
+    000003D9 11r00r00         [12]  901 	ld	de, #_npc_child_sprite
+    000003DC D5               [16]  902 	push	de
+    000003DD 21 18 04         [12]  903 	ld	hl, #0x418
+    000003E0 E5               [16]  904 	push	hl
+    000003E1 CDr00r00         [24]  905 	call	_set_sprite_data
+    000003E4 E8 04            [16]  906 	add	sp, #4
+                                    907 ;src/states/game.c:151: update_player_sprite();
+    000003E6 CDrDFr01         [24]  908 	call	_update_player_sprite
+                                    909 ;src/states/game.c:152: text_init();
+    000003E9 CDr00r00         [24]  910 	call	_text_init
+                                    911 ;src/states/game.c:153: SHOW_BKG;
+    000003EC F0r00            [12]  912 	ldh	a, (_LCDC_REG + 0)
+    000003EE F6 01            [ 8]  913 	or	a, #0x01
+    000003F0 E0r00            [12]  914 	ldh	(_LCDC_REG + 0), a
+                                    915 ;src/states/game.c:154: SHOW_SPRITES;
+    000003F2 F0r00            [12]  916 	ldh	a, (_LCDC_REG + 0)
+    000003F4 F6 02            [ 8]  917 	or	a, #0x02
+    000003F6 E0r00            [12]  918 	ldh	(_LCDC_REG + 0), a
+                                    919 ;src/states/game.c:155: DISPLAY_ON;
+    000003F8 F0r00            [12]  920 	ldh	a, (_LCDC_REG + 0)
+    000003FA F6 80            [ 8]  921 	or	a, #0x80
+    000003FC E0r00            [12]  922 	ldh	(_LCDC_REG + 0), a
+                                    923 ;src/states/game.c:156: }
+    000003FE C9               [16]  924 	ret
+                                    925 ;src/states/game.c:158: void game_update(void) {
+                                    926 ;	---------------------------------
+                                    927 ; Function game_update
+                                    928 ; ---------------------------------
+    000003FF                        929 _game_update::
+    000003FF E8 F4            [16]  930 	add	sp, #-12
+                                    931 ;src/states/game.c:159: uint8_t moved = 0;
+    00000401 0E 00            [ 8]  932 	ld	c, #0x00
+                                    933 ;src/states/game.c:160: uint16_t nx = player_x;
+    00000403 FAr01r00         [16]  934 	ld	a, (#_player_x)
+    00000406 F8 08            [12]  935 	ldhl	sp,	#8
+    00000408 77               [ 8]  936 	ld	(hl), a
+    00000409 FAr02r00         [16]  937 	ld	a, (#_player_x + 1)
+    0000040C F8 09            [12]  938 	ldhl	sp,	#9
+    0000040E 77               [ 8]  939 	ld	(hl), a
+                                    940 ;src/states/game.c:161: uint16_t ny = player_y;
+    0000040F FAr03r00         [16]  941 	ld	a, (#_player_y)
+    00000412 F8 0A            [12]  942 	ldhl	sp,	#10
+    00000414 77               [ 8]  943 	ld	(hl), a
+    00000415 FAr04r00         [16]  944 	ld	a, (#_player_y + 1)
+    00000418 F8 0B            [12]  945 	ldhl	sp,	#11
+    0000041A 77               [ 8]  946 	ld	(hl), a
+                                    947 ;src/states/game.c:163: if (input_held(J_UP)) {
+    0000041B C5               [16]  948 	push	bc
+    0000041C 3E 04            [ 8]  949 	ld	a, #0x04
+    0000041E CDr00r00         [24]  950 	call	_input_held
+    00000421 C1               [12]  951 	pop	bc
+    00000422 B7               [ 4]  952 	or	a, a
+    00000423 28 13            [12]  953 	jr	Z, 00110$
+                                    954 ;src/states/game.c:164: ny--;
+    00000425 F8 0A            [12]  955 	ldhl	sp,#10
+    00000427 2A               [ 8]  956 	ld	a, (hl+)
+    00000428 5F               [ 4]  957 	ld	e, a
+    00000429 3A               [ 8]  958 	ld	a, (hl-)
+    0000042A 57               [ 4]  959 	ld	d, a
+    0000042B 1B               [ 8]  960 	dec	de
+    0000042C 7B               [ 4]  961 	ld	a, e
+    0000042D 22               [ 8]  962 	ld	(hl+), a
+    0000042E 72               [ 8]  963 	ld	(hl), d
+                                    964 ;src/states/game.c:165: player_dir = 1;
+    0000042F 21r09r00         [12]  965 	ld	hl, #_player_dir
+    00000432 36 01            [12]  966 	ld	(hl), #0x01
+                                    967 ;src/states/game.c:166: moved = 1;
+    00000434 0E 01            [ 8]  968 	ld	c, #0x01
+    00000436 18 4E            [12]  969 	jr	00111$
+    00000438                        970 00110$:
+                                    971 ;src/states/game.c:167: } else if (input_held(J_DOWN)) {
+    00000438 C5               [16]  972 	push	bc
+    00000439 3E 08            [ 8]  973 	ld	a, #0x08
+    0000043B CDr00r00         [24]  974 	call	_input_held
+    0000043E C1               [12]  975 	pop	bc
+    0000043F B7               [ 4]  976 	or	a, a
+    00000440 28 0F            [12]  977 	jr	Z, 00107$
+                                    978 ;src/states/game.c:168: ny++;
+    00000442 F8 0A            [12]  979 	ldhl	sp,	#10
+    00000444 34               [12]  980 	inc	(hl)
+    00000445 20 02            [12]  981 	jr	NZ, 00366$
+    00000447 23               [ 8]  982 	inc	hl
+    00000448 34               [12]  983 	inc	(hl)
+    00000449                        984 00366$:
+                                    985 ;src/states/game.c:169: player_dir = 0;
+    00000449 AF               [ 4]  986 	xor	a, a
+    0000044A EAr09r00         [16]  987 	ld	(#_player_dir),a
+                                    988 ;src/states/game.c:170: moved = 1;
+    0000044D 0E 01            [ 8]  989 	ld	c, #0x01
+    0000044F 18 35            [12]  990 	jr	00111$
+    00000451                        991 00107$:
+                                    992 ;src/states/game.c:171: } else if (input_held(J_LEFT)) {
+    00000451 C5               [16]  993 	push	bc
+    00000452 3E 02            [ 8]  994 	ld	a, #0x02
+    00000454 CDr00r00         [24]  995 	call	_input_held
+    00000457 C1               [12]  996 	pop	bc
+    00000458 B7               [ 4]  997 	or	a, a
+    00000459 28 13            [12]  998 	jr	Z, 00104$
+                                    999 ;src/states/game.c:172: nx--;
+    0000045B F8 08            [12] 1000 	ldhl	sp,#8
+    0000045D 2A               [ 8] 1001 	ld	a, (hl+)
+    0000045E 5F               [ 4] 1002 	ld	e, a
+    0000045F 3A               [ 8] 1003 	ld	a, (hl-)
+    00000460 57               [ 4] 1004 	ld	d, a
+    00000461 1B               [ 8] 1005 	dec	de
+    00000462 7B               [ 4] 1006 	ld	a, e
+    00000463 22               [ 8] 1007 	ld	(hl+), a
+    00000464 72               [ 8] 1008 	ld	(hl), d
+                                   1009 ;src/states/game.c:173: player_dir = 2;
+    00000465 21r09r00         [12] 1010 	ld	hl, #_player_dir
+    00000468 36 02            [12] 1011 	ld	(hl), #0x02
+                                   1012 ;src/states/game.c:174: moved = 1;
+    0000046A 0E 01            [ 8] 1013 	ld	c, #0x01
+    0000046C 18 18            [12] 1014 	jr	00111$
+    0000046E                       1015 00104$:
+                                   1016 ;src/states/game.c:175: } else if (input_held(J_RIGHT)) {
+    0000046E C5               [16] 1017 	push	bc
+    0000046F 3E 01            [ 8] 1018 	ld	a, #0x01
+    00000471 CDr00r00         [24] 1019 	call	_input_held
+    00000474 C1               [12] 1020 	pop	bc
+    00000475 B7               [ 4] 1021 	or	a, a
+    00000476 28 0E            [12] 1022 	jr	Z, 00111$
+                                   1023 ;src/states/game.c:176: nx++;
+    00000478 F8 08            [12] 1024 	ldhl	sp,	#8
+    0000047A 34               [12] 1025 	inc	(hl)
+    0000047B 20 02            [12] 1026 	jr	NZ, 00367$
+    0000047D 23               [ 8] 1027 	inc	hl
+    0000047E 34               [12] 1028 	inc	(hl)
+    0000047F                       1029 00367$:
+                                   1030 ;src/states/game.c:177: player_dir = 3;
+    0000047F 21r09r00         [12] 1031 	ld	hl, #_player_dir
+    00000482 36 03            [12] 1032 	ld	(hl), #0x03
+                                   1033 ;src/states/game.c:178: moved = 1;
+    00000484 0E 01            [ 8] 1034 	ld	c, #0x01
+    00000486                       1035 00111$:
+                                   1036 ;src/states/game.c:181: if (moved) {
+    00000486 79               [ 4] 1037 	ld	a, c
+    00000487 B7               [ 4] 1038 	or	a, a
+    00000488 CArDAr05         [16] 1039 	jp	Z, 00130$
+                                   1040 ;src/states/game.c:182: if (can_move(nx, ny)) {
+    0000048B F8 0A            [12] 1041 	ldhl	sp,	#10
+    0000048D 2A               [ 8] 1042 	ld	a, (hl+)
+    0000048E 4F               [ 4] 1043 	ld	c, a
+    0000048F 46               [ 8] 1044 	ld	b, (hl)
+    00000490 F8 08            [12] 1045 	ldhl	sp,	#8
+    00000492 2A               [ 8] 1046 	ld	a, (hl+)
+    00000493 5F               [ 4] 1047 	ld	e, a
+    00000494 56               [ 8] 1048 	ld	d, (hl)
+    00000495 CDrD7r02         [24] 1049 	call	_can_move
+    00000498 B7               [ 4] 1050 	or	a, a
+    00000499 CArCCr05         [16] 1051 	jp	Z, 00125$
+                                   1052 ;src/states/game.c:183: player_x = nx;
+    0000049C F8 08            [12] 1053 	ldhl	sp,	#8
+    0000049E 7E               [ 8] 1054 	ld	a, (hl)
+    0000049F EAr01r00         [16] 1055 	ld	(#_player_x),a
+    000004A2 F8 09            [12] 1056 	ldhl	sp,	#9
+    000004A4 7E               [ 8] 1057 	ld	a, (hl)
+    000004A5 EAr02r00         [16] 1058 	ld	(#_player_x + 1),a
+                                   1059 ;src/states/game.c:184: player_y = ny;
+    000004A8 F8 0A            [12] 1060 	ldhl	sp,	#10
+    000004AA 7E               [ 8] 1061 	ld	a, (hl)
+    000004AB EAr03r00         [16] 1062 	ld	(#_player_y),a
+    000004AE F8 0B            [12] 1063 	ldhl	sp,	#11
+    000004B0 7E               [ 8] 1064 	ld	a, (hl)
+    000004B1 EAr04r00         [16] 1065 	ld	(#_player_y + 1),a
+                                   1066 ;src/states/game.c:185: update_camera();
+    000004B4 CDrB2r00         [24] 1067 	call	_update_camera
+                                   1068 ;src/states/game.c:186: uint16_t sx = player_x - camera_x + 8;
+    000004B7 FAr01r00         [16] 1069 	ld	a, (#_player_x)
+    000004BA 21r0Cr00         [12] 1070 	ld	hl, #_camera_x
+    000004BD 96               [ 8] 1071 	sub	a, (hl)
+    000004BE 4F               [ 4] 1072 	ld	c, a
+    000004BF FAr02r00         [16] 1073 	ld	a, (#_player_x + 1)
+    000004C2 21r0Dr00         [12] 1074 	ld	hl, #_camera_x + 1
+    000004C5 9E               [ 8] 1075 	sbc	a, (hl)
+    000004C6 47               [ 4] 1076 	ld	b, a
+    000004C7 21 08 00         [12] 1077 	ld	hl, #0x0008
+    000004CA 09               [ 8] 1078 	add	hl, bc
+    000004CB 5D               [ 4] 1079 	ld	e, l
+                                   1080 ;src/states/game.c:187: uint16_t sy = player_y - camera_y + 16;
+    000004CC FAr03r00         [16] 1081 	ld	a, (#_player_y)
+    000004CF 21r0Er00         [12] 1082 	ld	hl, #_camera_y
+    000004D2 96               [ 8] 1083 	sub	a, (hl)
+    000004D3 4F               [ 4] 1084 	ld	c, a
+    000004D4 FAr04r00         [16] 1085 	ld	a, (#_player_y + 1)
+    000004D7 21r0Fr00         [12] 1086 	ld	hl, #_camera_y + 1
+    000004DA 9E               [ 8] 1087 	sbc	a, (hl)
+    000004DB 47               [ 4] 1088 	ld	b, a
+    000004DC 21 10 00         [12] 1089 	ld	hl, #0x0010
+    000004DF 09               [ 8] 1090 	add	hl, bc
+    000004E0 4D               [ 4] 1091 	ld	c, l
+    000004E1 7C               [ 4] 1092 	ld	a, h
+    000004E2 F8 0A            [12] 1093 	ldhl	sp,	#10
+    000004E4 71               [ 8] 1094 	ld	(hl), c
+    000004E5 23               [ 8] 1095 	inc	hl
+                                   1096 ;src/states/game.c:188: move_sprite(0, sx, sy);
+    000004E6 32               [ 8] 1097 	ld	(hl-), a
+    000004E7 46               [ 8] 1098 	ld	b, (hl)
+    000004E8 4B               [ 4] 1099 	ld	c, e
                                    1100 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000004F2 21r14r00         [12] 1101 	ld	hl, #(_shadow_OAM + 20)
+    000004E9 21r00r00         [12] 1101 	ld	hl, #_shadow_OAM
                                    1102 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000004F5 AF               [ 4] 1103 	xor	a, a
-    000004F6 22               [ 8] 1104 	ld	(hl+), a
-    000004F7 77               [ 8] 1105 	ld	(hl), a
-                                   1106 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000004F8 21r18r00         [12] 1107 	ld	hl, #(_shadow_OAM + 24)
-                                   1108 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    000004FB AF               [ 4] 1109 	xor	a, a
-    000004FC 22               [ 8] 1110 	ld	(hl+), a
-    000004FD 77               [ 8] 1111 	ld	(hl), a
-                                   1112 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    000004FE 21r1Cr00         [12] 1113 	ld	hl, #(_shadow_OAM + 28)
-                                   1114 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    00000501 AF               [ 4] 1115 	xor	a, a
-    00000502 22               [ 8] 1116 	ld	(hl+), a
-    00000503 77               [ 8] 1117 	ld	(hl), a
-                                   1118 ;src/states/game.c:281: move_sprite(7, 0, 0);
-    00000504                       1119 00130$:
-                                   1120 ;src/states/game.c:285: if (input_pressed(J_A)) {
-    00000504 3E 10            [ 8] 1121 	ld	a, #0x10
-    00000506 CDr00r00         [24] 1122 	call	_input_pressed
-    00000509 4F               [ 4] 1123 	ld	c, a
-    0000050A B7               [ 4] 1124 	or	a, a
-    0000050B 28 71            [12] 1125 	jr	Z, 00157$
-                                   1126 ;src/states/game.c:287: int16_t dx = (int16_t)player_x - npc_x;
-    0000050D FAr00r00         [16] 1127 	ld	a, (_player_x)
-    00000510 21r01r00         [12] 1128 	ld	hl, #_player_x + 1
-    00000513 4E               [ 8] 1129 	ld	c, (hl)
-    00000514 C6 88            [ 8] 1130 	add	a, #0x88
-    00000516 47               [ 4] 1131 	ld	b, a
-    00000517 79               [ 4] 1132 	ld	a, c
-    00000518 CE FF            [ 8] 1133 	adc	a, #0xff
-    0000051A 4F               [ 4] 1134 	ld	c, a
-                                   1135 ;src/states/game.c:288: int16_t dy = (int16_t)player_y - npc_y;
-    0000051B FAr02r00         [16] 1136 	ld	a, (_player_y)
-    0000051E 21r03r00         [12] 1137 	ld	hl, #_player_y + 1
-    00000521 5E               [ 8] 1138 	ld	e, (hl)
-    00000522 F8 00            [12] 1139 	ldhl	sp,	#0
-    00000524 22               [ 8] 1140 	ld	(hl+), a
-    00000525 73               [ 8] 1141 	ld	(hl), e
-    00000526 D1               [12] 1142 	pop	de
-    00000527 D5               [16] 1143 	push	de
-    00000528 21 48 00         [12] 1144 	ld	hl, #0x0048
-    0000052B 7B               [ 4] 1145 	ld	a, e
-    0000052C 95               [ 4] 1146 	sub	a, l
-    0000052D 5F               [ 4] 1147 	ld	e, a
-    0000052E 7A               [ 4] 1148 	ld	a, d
-    0000052F 9C               [ 4] 1149 	sbc	a, h
-    00000530 F8 03            [12] 1150 	ldhl	sp,	#3
-    00000532 32               [ 8] 1151 	ld	(hl-), a
-    00000533 73               [ 8] 1152 	ld	(hl), e
-                                   1153 ;src/states/game.c:289: if (dx < 0)
-    00000534 61               [ 4] 1154 	ld	h, c
-    00000535 CB 7C            [ 8] 1155 	bit	7, h
-    00000537 28 06            [12] 1156 	jr	Z, 00133$
-                                   1157 ;src/states/game.c:290: dx = -dx;
-    00000539 AF               [ 4] 1158 	xor	a, a
-    0000053A 90               [ 4] 1159 	sub	a, b
-    0000053B 47               [ 4] 1160 	ld	b, a
-    0000053C 9F               [ 4] 1161 	sbc	a, a
-    0000053D 91               [ 4] 1162 	sub	a, c
-    0000053E 4F               [ 4] 1163 	ld	c, a
-    0000053F                       1164 00133$:
-                                   1165 ;src/states/game.c:291: if (dy < 0)
-    0000053F F8 02            [12] 1166 	ldhl	sp,	#2
-    00000541 3A               [ 8] 1167 	ld	a, (hl-)
-    00000542 2B               [ 8] 1168 	dec	hl
-    00000543 77               [ 8] 1169 	ld	(hl), a
-    00000544 F8 03            [12] 1170 	ldhl	sp,	#3
-    00000546 3A               [ 8] 1171 	ld	a, (hl-)
-    00000547 2B               [ 8] 1172 	dec	hl
-    00000548 77               [ 8] 1173 	ld	(hl), a
-    00000549 CB 7E            [12] 1174 	bit	7, (hl)
-    0000054B 28 10            [12] 1175 	jr	Z, 00135$
-                                   1176 ;src/states/game.c:292: dy = -dy;
-    0000054D 23               [ 8] 1177 	inc	hl
-    0000054E 11 00 00         [12] 1178 	ld	de, #0x0000
-    00000551 2A               [ 8] 1179 	ld	a,	(hl+)
-    00000552 66               [ 8] 1180 	ld	h, (hl)
-    00000553 6F               [ 4] 1181 	ld	l, a
-    00000554 7B               [ 4] 1182 	ld	a, e
-    00000555 95               [ 4] 1183 	sub	a, l
-    00000556 5F               [ 4] 1184 	ld	e, a
-    00000557 7A               [ 4] 1185 	ld	a, d
-    00000558 9C               [ 4] 1186 	sbc	a, h
-    00000559 F8 03            [12] 1187 	ldhl	sp,	#3
-    0000055B 32               [ 8] 1188 	ld	(hl-), a
-    0000055C 73               [ 8] 1189 	ld	(hl), e
-    0000055D                       1190 00135$:
-                                   1191 ;src/states/game.c:295: if (dx < 24 && dy < 24) {
-    0000055D 78               [ 4] 1192 	ld	a, b
-    0000055E D6 18            [ 8] 1193 	sub	a, #0x18
-    00000560 79               [ 4] 1194 	ld	a, c
-    00000561 17               [ 4] 1195 	rla
-    00000562 3F               [ 4] 1196 	ccf
-    00000563 1F               [ 4] 1197 	rra
-    00000564 DE 80            [ 8] 1198 	sbc	a, #0x80
-    00000566 30 16            [12] 1199 	jr	NC, 00157$
-    00000568 F8 02            [12] 1200 	ldhl	sp,	#2
-    0000056A 2A               [ 8] 1201 	ld	a, (hl+)
-    0000056B 4F               [ 4] 1202 	ld	c, a
-    0000056C 46               [ 8] 1203 	ld	b, (hl)
-    0000056D 79               [ 4] 1204 	ld	a, c
-    0000056E D6 18            [ 8] 1205 	sub	a, #0x18
-    00000570 78               [ 4] 1206 	ld	a, b
-    00000571 17               [ 4] 1207 	rla
-    00000572 3F               [ 4] 1208 	ccf
-    00000573 1F               [ 4] 1209 	rra
-    00000574 DE 80            [ 8] 1210 	sbc	a, #0x80
-    00000576 30 06            [12] 1211 	jr	NC, 00157$
-                                   1212 ;src/states/game.c:297: "ALGUN\nLADO DEBE ESTAR");
-    00000578 11r81r05         [12] 1213 	ld	de, #___str_0
-    0000057B CDr00r00         [24] 1214 	call	_text_dialogue
-    0000057E                       1215 00157$:
-                                   1216 ;src/states/game.c:300: }
-    0000057E E8 04            [16] 1217 	add	sp, #4
-    00000580 C9               [16] 1218 	ret
-    00000581                       1219 ___str_0:
-    00000581 48 4F 4C 41 20 41 4D  1220 	.ascii "HOLA AMIGO,"
+    000004EC 78               [ 4] 1103 	ld	a, b
+    000004ED 22               [ 8] 1104 	ld	(hl+), a
+    000004EE 71               [ 8] 1105 	ld	(hl), c
+                                   1106 ;src/states/game.c:189: move_sprite(1, sx + 8, sy);
+    000004EF F8 0A            [12] 1107 	ldhl	sp,	#10
+    000004F1 4E               [ 8] 1108 	ld	c, (hl)
+    000004F2 79               [ 4] 1109 	ld	a, c
+    000004F3 22               [ 8] 1110 	ld	(hl+), a
+    000004F4 7B               [ 4] 1111 	ld	a, e
+    000004F5 C6 08            [ 8] 1112 	add	a, #0x08
+    000004F7 47               [ 4] 1113 	ld	b, a
+    000004F8 70               [ 8] 1114 	ld	(hl), b
+                                   1115 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    000004F9 21r04r00         [12] 1116 	ld	hl, #(_shadow_OAM + 4)
+                                   1117 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    000004FC E5               [16] 1118 	push	hl
+    000004FD F8 0C            [12] 1119 	ldhl	sp,	#12
+    000004FF 7E               [ 8] 1120 	ld	a, (hl)
+    00000500 E1               [12] 1121 	pop	hl
+    00000501 22               [ 8] 1122 	ld	(hl+), a
+    00000502 E5               [16] 1123 	push	hl
+    00000503 F8 0D            [12] 1124 	ldhl	sp,	#13
+    00000505 7E               [ 8] 1125 	ld	a, (hl)
+    00000506 E1               [12] 1126 	pop	hl
+    00000507 77               [ 8] 1127 	ld	(hl), a
+                                   1128 ;src/states/game.c:190: move_sprite(2, sx, sy + 8);
+    00000508 79               [ 4] 1129 	ld	a, c
+    00000509 C6 08            [ 8] 1130 	add	a, #0x08
+    0000050B 4F               [ 4] 1131 	ld	c, a
+    0000050C F8 0B            [12] 1132 	ldhl	sp,	#11
+    0000050E 71               [ 8] 1133 	ld	(hl), c
+                                   1134 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    0000050F 21r08r00         [12] 1135 	ld	hl, #(_shadow_OAM + 8)
+                                   1136 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000512 E5               [16] 1137 	push	hl
+    00000513 F8 0D            [12] 1138 	ldhl	sp,	#13
+    00000515 7E               [ 8] 1139 	ld	a, (hl)
+    00000516 E1               [12] 1140 	pop	hl
+    00000517 22               [ 8] 1141 	ld	(hl+), a
+    00000518 73               [ 8] 1142 	ld	(hl), e
+                                   1143 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000519 21r0Cr00         [12] 1144 	ld	hl, #(_shadow_OAM + 12)
+                                   1145 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    0000051C 79               [ 4] 1146 	ld	a, c
+    0000051D 22               [ 8] 1147 	ld	(hl+), a
+    0000051E 70               [ 8] 1148 	ld	(hl), b
+                                   1149 ;src/states/game.c:196: uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
+    0000051F FAr03r00         [16] 1150 	ld	a, (_player_y)
+    00000522 4F               [ 4] 1151 	ld	c, a
+    00000523 21r04r00         [12] 1152 	ld	hl, #_player_y + 1
+    00000526 46               [ 8] 1153 	ld	b, (hl)
+    00000527 FAr01r00         [16] 1154 	ld	a, (_player_x)
+    0000052A 21r02r00         [12] 1155 	ld	hl, #_player_x + 1
+    0000052D 56               [ 8] 1156 	ld	d, (hl)
+    0000052E C6 08            [ 8] 1157 	add	a, #0x08
+    00000530 5F               [ 4] 1158 	ld	e, a
+    00000531 30 01            [12] 1159 	jr	NC, 00368$
+    00000533 14               [ 4] 1160 	inc	d
+    00000534                       1161 00368$:
+                                   1162 ;src/states/game.c:194: if (current_loc == LOC_WORLD) {
+    00000534 21r00r00         [12] 1163 	ld	hl, #_current_loc
+    00000537 CB 46            [12] 1164 	bit	0, (hl)
+    00000539 20 46            [12] 1165 	jr	NZ, 00118$
+                                   1166 ;src/states/game.c:196: uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
+    0000053B 03               [ 8] 1167 	inc	bc
+    0000053C 03               [ 8] 1168 	inc	bc
+    0000053D 03               [ 8] 1169 	inc	bc
+    0000053E 03               [ 8] 1170 	inc	bc
+    0000053F CDr00r00         [24] 1171 	call	_get_tile_at
+                                   1172 ;src/states/game.c:197: if (tid == 21 || tid == 22) {
+    00000542 FE 15            [ 8] 1173 	cp	a, #0x15
+    00000544 28 04            [12] 1174 	jr	Z, 00112$
+    00000546 D6 16            [ 8] 1175 	sub	a, #0x16
+    00000548 20 66            [12] 1176 	jr	NZ, 00119$
+    0000054A                       1177 00112$:
+                                   1178 ;src/states/game.c:198: world_saved_x = player_x;
+    0000054A FAr01r00         [16] 1179 	ld	a, (#_player_x)
+    0000054D EAr05r00         [16] 1180 	ld	(#_world_saved_x),a
+    00000550 FAr02r00         [16] 1181 	ld	a, (#_player_x + 1)
+    00000553 EAr06r00         [16] 1182 	ld	(#_world_saved_x + 1),a
+                                   1183 ;src/states/game.c:199: world_saved_y = player_y + 16; // Return position (safe distance)
+    00000556 FAr03r00         [16] 1184 	ld	a, (_player_y)
+    00000559 21r04r00         [12] 1185 	ld	hl, #_player_y + 1
+    0000055C 46               [ 8] 1186 	ld	b, (hl)
+    0000055D C6 10            [ 8] 1187 	add	a, #0x10
+    0000055F 4F               [ 4] 1188 	ld	c, a
+    00000560 78               [ 4] 1189 	ld	a, b
+    00000561 CE 00            [ 8] 1190 	adc	a, #0x00
+    00000563 21r07r00         [12] 1191 	ld	hl, #_world_saved_y
+    00000566 71               [ 8] 1192 	ld	(hl), c
+    00000567 23               [ 8] 1193 	inc	hl
+    00000568 77               [ 8] 1194 	ld	(hl), a
+                                   1195 ;src/states/game.c:200: player_x = 80;
+    00000569 21r01r00         [12] 1196 	ld	hl, #_player_x
+    0000056C 3E 50            [ 8] 1197 	ld	a, #0x50
+    0000056E 22               [ 8] 1198 	ld	(hl+), a
+    0000056F AF               [ 4] 1199 	xor	a, a
+    00000570 77               [ 8] 1200 	ld	(hl), a
+                                   1201 ;src/states/game.c:201: player_y = 120;
+    00000571 21r03r00         [12] 1202 	ld	hl, #_player_y
+    00000574 3E 78            [ 8] 1203 	ld	a, #0x78
+    00000576 22               [ 8] 1204 	ld	(hl+), a
+    00000577 AF               [ 4] 1205 	xor	a, a
+    00000578 77               [ 8] 1206 	ld	(hl), a
+                                   1207 ;src/states/game.c:202: load_location(LOC_HOUSE);
+    00000579 3E 01            [ 8] 1208 	ld	a, #0x01
+    0000057B CDr94r01         [24] 1209 	call	_load_location
+                                   1210 ;src/states/game.c:203: return;
+    0000057E C3r8Ar08         [16] 1211 	jp	00173$
+    00000581                       1212 00118$:
+                                   1213 ;src/states/game.c:207: uint8_t tid = get_tile_at(player_x + 8, player_y + 16);
+    00000581 21 10 00         [12] 1214 	ld	hl, #0x0010
+    00000584 09               [ 8] 1215 	add	hl, bc
+    00000585 4D               [ 4] 1216 	ld	c, l
+    00000586 44               [ 4] 1217 	ld	b, h
+    00000587 CDr00r00         [24] 1218 	call	_get_tile_at
+                                   1219 ;src/states/game.c:208: if (tid == 35) {
+    0000058A D6 23            [ 8] 1220 	sub	a, #0x23
+    0000058C 20 22            [12] 1221 	jr	NZ, 00119$
+                                   1222 ;src/states/game.c:209: player_x = world_saved_x;
+    0000058E FAr05r00         [16] 1223 	ld	a, (#_world_saved_x)
+    00000591 EAr01r00         [16] 1224 	ld	(#_player_x),a
+    00000594 FAr06r00         [16] 1225 	ld	a, (#_world_saved_x + 1)
+    00000597 EAr02r00         [16] 1226 	ld	(#_player_x + 1),a
+                                   1227 ;src/states/game.c:210: player_y = world_saved_y;
+    0000059A FAr07r00         [16] 1228 	ld	a, (#_world_saved_y)
+    0000059D EAr03r00         [16] 1229 	ld	(#_player_y),a
+    000005A0 FAr08r00         [16] 1230 	ld	a, (#_world_saved_y + 1)
+    000005A3 EAr04r00         [16] 1231 	ld	(#_player_y + 1),a
+                                   1232 ;src/states/game.c:211: player_dir = 0; // Face Down when exiting
+                                   1233 ;src/states/game.c:212: load_location(LOC_WORLD);
+    000005A6 AF               [ 4] 1234 	xor	a, a
+    000005A7 EAr09r00         [16] 1235 	ld	(#_player_dir), a
+    000005AA CDr94r01         [24] 1236 	call	_load_location
+                                   1237 ;src/states/game.c:213: return;
+    000005AD C3r8Ar08         [16] 1238 	jp	00173$
+    000005B0                       1239 00119$:
+                                   1240 ;src/states/game.c:217: anim_timer++;
+    000005B0 21r0Br00         [12] 1241 	ld	hl, #_anim_timer
+    000005B3 34               [12] 1242 	inc	(hl)
+                                   1243 ;src/states/game.c:218: if (anim_timer > 6) {
+    000005B4 3E 06            [ 8] 1244 	ld	a, #0x06
+    000005B6 96               [ 8] 1245 	sub	a, (hl)
+    000005B7 30 31            [12] 1246 	jr	NC, 00131$
+                                   1247 ;src/states/game.c:219: anim_frame = !anim_frame;
+    000005B9 21r0Ar00         [12] 1248 	ld	hl, #_anim_frame
+    000005BC 7E               [ 8] 1249 	ld	a, (hl)
+    000005BD D6 01            [ 8] 1250 	sub	a, #0x01
+    000005BF 3E 00            [ 8] 1251 	ld	a, #0x00
+    000005C1 17               [ 4] 1252 	rla
+    000005C2 77               [ 8] 1253 	ld	(hl), a
+                                   1254 ;src/states/game.c:220: anim_timer = 0;
+    000005C3 AF               [ 4] 1255 	xor	a, a
+    000005C4 EAr0Br00         [16] 1256 	ld	(#_anim_timer),a
+                                   1257 ;src/states/game.c:221: update_player_sprite();
+    000005C7 CDrDFr01         [24] 1258 	call	_update_player_sprite
+    000005CA 18 1E            [12] 1259 	jr	00131$
+    000005CC                       1260 00125$:
+                                   1261 ;src/states/game.c:223: } else if (anim_frame != 0) {
+    000005CC 21r0Ar00         [12] 1262 	ld	hl, #_anim_frame
+    000005CF 7E               [ 8] 1263 	ld	a, (hl)
+    000005D0 B7               [ 4] 1264 	or	a, a
+    000005D1 28 17            [12] 1265 	jr	Z, 00131$
+                                   1266 ;src/states/game.c:224: anim_frame = 0;
+    000005D3 36 00            [12] 1267 	ld	(hl), #0x00
+                                   1268 ;src/states/game.c:225: update_player_sprite();
+    000005D5 CDrDFr01         [24] 1269 	call	_update_player_sprite
+    000005D8 18 10            [12] 1270 	jr	00131$
+    000005DA                       1271 00130$:
+                                   1272 ;src/states/game.c:228: if (anim_frame != 0) {
+    000005DA 21r0Ar00         [12] 1273 	ld	hl, #_anim_frame
+    000005DD 7E               [ 8] 1274 	ld	a, (hl)
+    000005DE B7               [ 4] 1275 	or	a, a
+    000005DF 28 05            [12] 1276 	jr	Z, 00128$
+                                   1277 ;src/states/game.c:229: anim_frame = 0;
+    000005E1 36 00            [12] 1278 	ld	(hl), #0x00
+                                   1279 ;src/states/game.c:230: update_player_sprite();
+    000005E3 CDrDFr01         [24] 1280 	call	_update_player_sprite
+    000005E6                       1281 00128$:
+                                   1282 ;src/states/game.c:232: anim_timer = 0;
+    000005E6 AF               [ 4] 1283 	xor	a, a
+    000005E7 EAr0Br00         [16] 1284 	ld	(#_anim_timer),a
+    000005EA                       1285 00131$:
+                                   1286 ;src/states/game.c:238: if (current_loc == LOC_WORLD) {
+    000005EA 21r00r00         [12] 1287 	ld	hl, #_current_loc
+    000005ED CB 46            [12] 1288 	bit	0, (hl)
+    000005EF 20 13            [12] 1289 	jr	NZ, 00133$
+                                   1290 ;src/states/game.c:239: npc_x = 120;
+    000005F1 F8 02            [12] 1291 	ldhl	sp,	#2
+    000005F3 3E 78            [ 8] 1292 	ld	a, #0x78
+    000005F5 22               [ 8] 1293 	ld	(hl+), a
+    000005F6 AF               [ 4] 1294 	xor	a, a
+                                   1295 ;src/states/game.c:240: npc_y = 72;
+    000005F7 22               [ 8] 1296 	ld	(hl+), a
+    000005F8 3E 48            [ 8] 1297 	ld	a, #0x48
+    000005FA 22               [ 8] 1298 	ld	(hl+), a
+    000005FB AF               [ 4] 1299 	xor	a, a
+                                   1300 ;src/states/game.c:242: "HOLA AMIGO,\nTIENES QUE CONSEGUIR\nLA LLAVE EN ALGUN\nLADO DEBE ESTAR";
+    000005FC 22               [ 8] 1301 	ld	(hl+), a
+    000005FD 3Er8D            [ 8] 1302 	ld	a, #<(___str_0)
+    000005FF 22               [ 8] 1303 	ld	(hl+), a
+    00000600 36s08            [12] 1304 	ld	(hl), #>(___str_0)
+    00000602 18 11            [12] 1305 	jr	00134$
+    00000604                       1306 00133$:
+                                   1307 ;src/states/game.c:244: npc_x = 40;
+    00000604 F8 02            [12] 1308 	ldhl	sp,	#2
+    00000606 3E 28            [ 8] 1309 	ld	a, #0x28
+    00000608 22               [ 8] 1310 	ld	(hl+), a
+    00000609 AF               [ 4] 1311 	xor	a, a
+                                   1312 ;src/states/game.c:245: npc_y = 48;
+    0000060A 22               [ 8] 1313 	ld	(hl+), a
+    0000060B 3E 30            [ 8] 1314 	ld	a, #0x30
+    0000060D 22               [ 8] 1315 	ld	(hl+), a
+    0000060E AF               [ 4] 1316 	xor	a, a
+                                   1317 ;src/states/game.c:247: "DESCANSAR\nEN LA CAMA.";
+    0000060F 22               [ 8] 1318 	ld	(hl+), a
+    00000610 3ErD0            [ 8] 1319 	ld	a, #<(___str_1)
+    00000612 22               [ 8] 1320 	ld	(hl+), a
+    00000613 36s08            [12] 1321 	ld	(hl), #>(___str_1)
+    00000615                       1322 00134$:
+                                   1323 ;src/states/game.c:250: uint16_t nsx = npc_x - camera_x + 8;
+    00000615 F8 02            [12] 1324 	ldhl	sp,#2
+    00000617 2A               [ 8] 1325 	ld	a, (hl+)
+    00000618 5F               [ 4] 1326 	ld	e, a
+    00000619 56               [ 8] 1327 	ld	d, (hl)
+    0000061A 21r0Cr00         [12] 1328 	ld	hl, #_camera_x
+    0000061D 2A               [ 8] 1329 	ld	a,	(hl+)
+    0000061E 66               [ 8] 1330 	ld	h, (hl)
+    0000061F 6F               [ 4] 1331 	ld	l, a
+    00000620 7B               [ 4] 1332 	ld	a, e
+    00000621 95               [ 4] 1333 	sub	a, l
+    00000622 5F               [ 4] 1334 	ld	e, a
+    00000623 7A               [ 4] 1335 	ld	a, d
+    00000624 9C               [ 4] 1336 	sbc	a, h
+    00000625 47               [ 4] 1337 	ld	b, a
+    00000626 4B               [ 4] 1338 	ld	c, e
+    00000627 21 08 00         [12] 1339 	ld	hl, #0x0008
+    0000062A 09               [ 8] 1340 	add	hl, bc
+    0000062B 4D               [ 4] 1341 	ld	c, l
+    0000062C 44               [ 4] 1342 	ld	b, h
+    0000062D F8 08            [12] 1343 	ldhl	sp,	#8
+    0000062F 79               [ 4] 1344 	ld	a, c
+    00000630 22               [ 8] 1345 	ld	(hl+), a
+    00000631 70               [ 8] 1346 	ld	(hl), b
+                                   1347 ;src/states/game.c:251: uint16_t nsy = npc_y - camera_y + 16;
+    00000632 F8 04            [12] 1348 	ldhl	sp,#4
+    00000634 2A               [ 8] 1349 	ld	a, (hl+)
+    00000635 5F               [ 4] 1350 	ld	e, a
+    00000636 56               [ 8] 1351 	ld	d, (hl)
+    00000637 21r0Er00         [12] 1352 	ld	hl, #_camera_y
+    0000063A 2A               [ 8] 1353 	ld	a,	(hl+)
+    0000063B 66               [ 8] 1354 	ld	h, (hl)
+    0000063C 6F               [ 4] 1355 	ld	l, a
+    0000063D 7B               [ 4] 1356 	ld	a, e
+    0000063E 95               [ 4] 1357 	sub	a, l
+    0000063F 5F               [ 4] 1358 	ld	e, a
+    00000640 7A               [ 4] 1359 	ld	a, d
+    00000641 9C               [ 4] 1360 	sbc	a, h
+    00000642 47               [ 4] 1361 	ld	b, a
+    00000643 4B               [ 4] 1362 	ld	c, e
+    00000644 21 10 00         [12] 1363 	ld	hl, #0x0010
+    00000647 09               [ 8] 1364 	add	hl, bc
+    00000648 4D               [ 4] 1365 	ld	c, l
+    00000649 44               [ 4] 1366 	ld	b, h
+    0000064A 33               [ 8] 1367 	inc	sp
+    0000064B 33               [ 8] 1368 	inc	sp
+    0000064C C5               [16] 1369 	push	bc
+                                   1370 ;src/states/game.c:252: if (nsx < 168 && nsy < 160) {
+    0000064D F8 08            [12] 1371 	ldhl	sp,	#8
+    0000064F 2A               [ 8] 1372 	ld	a, (hl+)
+    00000650 4F               [ 4] 1373 	ld	c, a
+    00000651 46               [ 8] 1374 	ld	b, (hl)
+    00000652 79               [ 4] 1375 	ld	a, c
+    00000653 D6 A8            [ 8] 1376 	sub	a, #0xa8
+    00000655 78               [ 4] 1377 	ld	a, b
+    00000656 DE 00            [ 8] 1378 	sbc	a, #0x00
+    00000658 D2r01r07         [16] 1379 	jp	NC, 00193$
+    0000065B C1               [12] 1380 	pop	bc
+    0000065C C5               [16] 1381 	push	bc
+    0000065D 79               [ 4] 1382 	ld	a, c
+    0000065E D6 A0            [ 8] 1383 	sub	a, #0xa0
+    00000660 78               [ 4] 1384 	ld	a, b
+    00000661 DE 00            [ 8] 1385 	sbc	a, #0x00
+    00000663 D2r01r07         [16] 1386 	jp	NC, 00193$
+                                   1387 ;src/states/game.c:253: move_sprite(4, nsx, nsy);
+    00000666 F8 00            [12] 1388 	ldhl	sp,	#0
+    00000668 4E               [ 8] 1389 	ld	c, (hl)
+    00000669 F8 08            [12] 1390 	ldhl	sp,	#8
+    0000066B 46               [ 8] 1391 	ld	b, (hl)
+                                   1392 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    0000066C 21r10r00         [12] 1393 	ld	hl, #(_shadow_OAM + 16)
+                                   1394 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    0000066F 79               [ 4] 1395 	ld	a, c
+    00000670 22               [ 8] 1396 	ld	(hl+), a
+    00000671 70               [ 8] 1397 	ld	(hl), b
+                                   1398 ;src/states/game.c:254: move_sprite(5, nsx + 8, nsy);
+    00000672 F8 00            [12] 1399 	ldhl	sp,	#0
+    00000674 7E               [ 8] 1400 	ld	a, (hl)
+    00000675 F8 0A            [12] 1401 	ldhl	sp,	#10
+    00000677 77               [ 8] 1402 	ld	(hl), a
+    00000678 7E               [ 8] 1403 	ld	a, (hl)
+    00000679 F8 01            [12] 1404 	ldhl	sp,	#1
+    0000067B 77               [ 8] 1405 	ld	(hl), a
+    0000067C F8 08            [12] 1406 	ldhl	sp,	#8
+    0000067E 7E               [ 8] 1407 	ld	a, (hl)
+    0000067F F8 0B            [12] 1408 	ldhl	sp,	#11
+    00000681 77               [ 8] 1409 	ld	(hl), a
+    00000682 7E               [ 8] 1410 	ld	a, (hl)
+    00000683 C6 08            [ 8] 1411 	add	a, #0x08
+    00000685 F8 08            [12] 1412 	ldhl	sp,	#8
+    00000687 77               [ 8] 1413 	ld	(hl), a
+    00000688 2A               [ 8] 1414 	ld	a, (hl+)
+    00000689 77               [ 8] 1415 	ld	(hl), a
+                                   1416 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+                                   1417 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    0000068A 11r14r00         [12] 1418 	ld	de, #(_shadow_OAM + 20)
+    0000068D F8 01            [12] 1419 	ldhl	sp,	#1
+    0000068F 7E               [ 8] 1420 	ld	a, (hl)
+    00000690 12               [ 8] 1421 	ld	(de), a
+    00000691 11r15r00         [12] 1422 	ld	de, #(_shadow_OAM + 21)
+    00000694 F8 09            [12] 1423 	ldhl	sp,	#9
+                                   1424 ;src/states/game.c:255: move_sprite(6, nsx, nsy + 8);
+    00000696 2A               [ 8] 1425 	ld	a, (hl+)
+    00000697 12               [ 8] 1426 	ld	(de), a
+    00000698 3A               [ 8] 1427 	ld	a, (hl-)
+    00000699 C6 08            [ 8] 1428 	add	a, #0x08
+    0000069B 77               [ 8] 1429 	ld	(hl), a
+    0000069C 2A               [ 8] 1430 	ld	a, (hl+)
+    0000069D 77               [ 8] 1431 	ld	(hl), a
+                                   1432 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+                                   1433 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    0000069E 11r18r00         [12] 1434 	ld	de, #(_shadow_OAM + 24)
+    000006A1 2A               [ 8] 1435 	ld	a, (hl+)
+    000006A2 12               [ 8] 1436 	ld	(de), a
+    000006A3 11r19r00         [12] 1437 	ld	de, #(_shadow_OAM + 25)
+                                   1438 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+                                   1439 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    000006A6 3A               [ 8] 1440 	ld	a, (hl-)
+    000006A7 2B               [ 8] 1441 	dec	hl
+    000006A8 12               [ 8] 1442 	ld	(de), a
+    000006A9 11r1Cr00         [12] 1443 	ld	de, #(_shadow_OAM + 28)
+    000006AC 3A               [ 8] 1444 	ld	a, (hl-)
+    000006AD 12               [ 8] 1445 	ld	(de), a
+    000006AE 11r1Dr00         [12] 1446 	ld	de, #(_shadow_OAM + 29)
+    000006B1 7E               [ 8] 1447 	ld	a, (hl)
+    000006B2 12               [ 8] 1448 	ld	(de), a
+                                   1449 ;src/states/game.c:257: for (int i = 0; i < 4; i++)
+    000006B3 F8 0B            [12] 1450 	ldhl	sp,	#11
+    000006B5 36 00            [12] 1451 	ld	(hl), #0x00
+    000006B7                       1452 00168$:
+    000006B7 F8 0B            [12] 1453 	ldhl	sp,	#11
+    000006B9 7E               [ 8] 1454 	ld	a, (hl)
+    000006BA D6 04            [ 8] 1455 	sub	a, #0x04
+    000006BC D2r5Cr07         [16] 1456 	jp	NC, 00139$
+                                   1457 ;src/states/game.c:258: set_sprite_tile(4 + i, 24 + i);
+    000006BF 4E               [ 8] 1458 	ld	c, (hl)
+    000006C0 79               [ 4] 1459 	ld	a, c
+    000006C1 C6 18            [ 8] 1460 	add	a, #0x18
+    000006C3 F8 08            [12] 1461 	ldhl	sp,	#8
+                                   1462 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    000006C5 22               [ 8] 1463 	ld	(hl+), a
+    000006C6 0C               [ 4] 1464 	inc	c
+    000006C7 0C               [ 4] 1465 	inc	c
+    000006C8 0C               [ 4] 1466 	inc	c
+    000006C9 0C               [ 4] 1467 	inc	c
+    000006CA 79               [ 4] 1468 	ld	a, c
+    000006CB 22               [ 8] 1469 	ld	(hl+), a
+    000006CC 36 00            [12] 1470 	ld	(hl), #0x00
+    000006CE 3E 02            [ 8] 1471 	ld	a, #0x02
+    000006D0                       1472 00374$:
+    000006D0 F8 09            [12] 1473 	ldhl	sp,	#9
+    000006D2 CB 26            [16] 1474 	sla	(hl)
+    000006D4 23               [ 8] 1475 	inc	hl
+    000006D5 CB 16            [16] 1476 	rl	(hl)
+    000006D7 3D               [ 4] 1477 	dec	a
+    000006D8 20 F6            [12] 1478 	jr	NZ, 00374$
+    000006DA 2B               [ 8] 1479 	dec	hl
+    000006DB 2A               [ 8] 1480 	ld	a, (hl+)
+    000006DC 5F               [ 4] 1481 	ld	e, a
+    000006DD 56               [ 8] 1482 	ld	d, (hl)
+    000006DE 21r00r00         [12] 1483 	ld	hl, #_shadow_OAM
+    000006E1 19               [ 8] 1484 	add	hl, de
+    000006E2 33               [ 8] 1485 	inc	sp
+    000006E3 33               [ 8] 1486 	inc	sp
+    000006E4 5D               [ 4] 1487 	ld	e, l
+    000006E5 54               [ 4] 1488 	ld	d, h
+    000006E6 D5               [16] 1489 	push	de
+    000006E7 21 02 00         [12] 1490 	ld	hl, #0x0002
+    000006EA 19               [ 8] 1491 	add	hl, de
+    000006EB E5               [16] 1492 	push	hl
+    000006EC 7D               [ 4] 1493 	ld	a, l
+    000006ED F8 0B            [12] 1494 	ldhl	sp,	#11
+    000006EF 77               [ 8] 1495 	ld	(hl), a
+    000006F0 E1               [12] 1496 	pop	hl
+    000006F1 7C               [ 4] 1497 	ld	a, h
+    000006F2 F8 0A            [12] 1498 	ldhl	sp,	#10
+    000006F4 32               [ 8] 1499 	ld	(hl-), a
+    000006F5 2A               [ 8] 1500 	ld	a, (hl+)
+    000006F6 5F               [ 4] 1501 	ld	e, a
+    000006F7 3A               [ 8] 1502 	ld	a, (hl-)
+    000006F8 2B               [ 8] 1503 	dec	hl
+    000006F9 57               [ 4] 1504 	ld	d, a
+    000006FA 7E               [ 8] 1505 	ld	a, (hl)
+    000006FB 12               [ 8] 1506 	ld	(de), a
+                                   1507 ;src/states/game.c:257: for (int i = 0; i < 4; i++)
+    000006FC F8 0B            [12] 1508 	ldhl	sp,	#11
+    000006FE 34               [12] 1509 	inc	(hl)
+    000006FF 18 B6            [12] 1510 	jr	00168$
+                                   1511 ;src/states/game.c:260: for (int i = 0; i < 4; i++)
+    00000701                       1512 00193$:
+    00000701 F8 0B            [12] 1513 	ldhl	sp,	#11
+    00000703 36 00            [12] 1514 	ld	(hl), #0x00
+    00000705                       1515 00171$:
+    00000705 F8 0B            [12] 1516 	ldhl	sp,	#11
+    00000707 7E               [ 8] 1517 	ld	a, (hl)
+    00000708 D6 04            [ 8] 1518 	sub	a, #0x04
+    0000070A 30 50            [12] 1519 	jr	NC, 00139$
+                                   1520 ;src/states/game.c:261: move_sprite(4 + i, 0, 0);
+                                   1521 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    0000070C 3A               [ 8] 1522 	ld	a, (hl-)
+    0000070D 2B               [ 8] 1523 	dec	hl
+    0000070E C6 04            [ 8] 1524 	add	a, #0x04
+    00000710 22               [ 8] 1525 	ld	(hl+), a
+    00000711 AF               [ 4] 1526 	xor	a, a
+    00000712 32               [ 8] 1527 	ld	(hl-), a
+    00000713 7E               [ 8] 1528 	ld	a, (hl)
+    00000714 F8 00            [12] 1529 	ldhl	sp,	#0
+    00000716 22               [ 8] 1530 	ld	(hl+), a
+    00000717 36 00            [12] 1531 	ld	(hl), #0x00
+    00000719 3E 02            [ 8] 1532 	ld	a, #0x02
+    0000071B                       1533 00375$:
+    0000071B F8 00            [12] 1534 	ldhl	sp,	#0
+    0000071D CB 26            [16] 1535 	sla	(hl)
+    0000071F 23               [ 8] 1536 	inc	hl
+    00000720 CB 16            [16] 1537 	rl	(hl)
+    00000722 3D               [ 4] 1538 	dec	a
+    00000723 20 F6            [12] 1539 	jr	NZ, 00375$
+    00000725 D1               [12] 1540 	pop	de
+    00000726 D5               [16] 1541 	push	de
+    00000727 21r00r00         [12] 1542 	ld	hl, #_shadow_OAM
+    0000072A 19               [ 8] 1543 	add	hl, de
+    0000072B E5               [16] 1544 	push	hl
+    0000072C 7D               [ 4] 1545 	ld	a, l
+    0000072D F8 0B            [12] 1546 	ldhl	sp,	#11
+    0000072F 77               [ 8] 1547 	ld	(hl), a
+    00000730 E1               [12] 1548 	pop	hl
+    00000731 7C               [ 4] 1549 	ld	a, h
+    00000732 F8 0A            [12] 1550 	ldhl	sp,	#10
+    00000734 32               [ 8] 1551 	ld	(hl-), a
+    00000735 7E               [ 8] 1552 	ld	a, (hl)
+    00000736 F8 00            [12] 1553 	ldhl	sp,	#0
+    00000738 77               [ 8] 1554 	ld	(hl), a
+    00000739 F8 0A            [12] 1555 	ldhl	sp,	#10
+    0000073B 7E               [ 8] 1556 	ld	a, (hl)
+    0000073C F8 01            [12] 1557 	ldhl	sp,	#1
+    0000073E 77               [ 8] 1558 	ld	(hl), a
+                                   1559 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    0000073F E1               [12] 1560 	pop	hl
+    00000740 36 00            [12] 1561 	ld	(hl), #0x00
+    00000742 5D               [ 4] 1562 	ld	e, l
+    00000743 54               [ 4] 1563 	ld	d, h
+    00000744 D5               [16] 1564 	push	de
+    00000745 6B               [ 4] 1565 	ld	l, e
+    00000746 62               [ 4] 1566 	ld	h, d
+    00000747 23               [ 8] 1567 	inc	hl
+    00000748 E5               [16] 1568 	push	hl
+    00000749 7D               [ 4] 1569 	ld	a, l
+    0000074A F8 0B            [12] 1570 	ldhl	sp,	#11
+    0000074C 77               [ 8] 1571 	ld	(hl), a
+    0000074D E1               [12] 1572 	pop	hl
+    0000074E 7C               [ 4] 1573 	ld	a, h
+    0000074F F8 0A            [12] 1574 	ldhl	sp,	#10
+    00000751 32               [ 8] 1575 	ld	(hl-), a
+    00000752 2A               [ 8] 1576 	ld	a, (hl+)
+    00000753 66               [ 8] 1577 	ld	h, (hl)
+    00000754 6F               [ 4] 1578 	ld	l, a
+    00000755 36 00            [12] 1579 	ld	(hl), #0x00
+                                   1580 ;src/states/game.c:260: for (int i = 0; i < 4; i++)
+    00000757 F8 0B            [12] 1581 	ldhl	sp,	#11
+    00000759 34               [12] 1582 	inc	(hl)
+    0000075A 18 A9            [12] 1583 	jr	00171$
+    0000075C                       1584 00139$:
+                                   1585 ;src/states/game.c:264: if (input_pressed(J_A)) {
+    0000075C 3E 10            [ 8] 1586 	ld	a, #0x10
+    0000075E CDr00r00         [24] 1587 	call	_input_pressed
+    00000761 4F               [ 4] 1588 	ld	c, a
+    00000762 B7               [ 4] 1589 	or	a, a
+    00000763 CArE4r07         [16] 1590 	jp	Z, 00149$
+                                   1591 ;src/states/game.c:265: int16_t dx = (int16_t)player_x - npc_x;
+    00000766 FAr01r00         [16] 1592 	ld	a, (_player_x)
+    00000769 21r02r00         [12] 1593 	ld	hl, #_player_x + 1
+    0000076C 46               [ 8] 1594 	ld	b, (hl)
+    0000076D 5F               [ 4] 1595 	ld	e, a
+    0000076E 50               [ 4] 1596 	ld	d, b
+    0000076F F8 02            [12] 1597 	ldhl	sp,	#2
+    00000771 2A               [ 8] 1598 	ld	a,	(hl+)
+    00000772 66               [ 8] 1599 	ld	h, (hl)
+    00000773 6F               [ 4] 1600 	ld	l, a
+    00000774 7B               [ 4] 1601 	ld	a, e
+    00000775 95               [ 4] 1602 	sub	a, l
+    00000776 5F               [ 4] 1603 	ld	e, a
+    00000777 7A               [ 4] 1604 	ld	a, d
+    00000778 9C               [ 4] 1605 	sbc	a, h
+    00000779 47               [ 4] 1606 	ld	b, a
+    0000077A 4B               [ 4] 1607 	ld	c, e
+                                   1608 ;src/states/game.c:266: int16_t dy = (int16_t)player_y - npc_y;
+    0000077B FAr03r00         [16] 1609 	ld	a, (_player_y)
+    0000077E 21r04r00         [12] 1610 	ld	hl, #_player_y + 1
+    00000781 5E               [ 8] 1611 	ld	e, (hl)
+    00000782 F8 08            [12] 1612 	ldhl	sp,	#8
+    00000784 22               [ 8] 1613 	ld	(hl+), a
+    00000785 7B               [ 4] 1614 	ld	a, e
+    00000786 32               [ 8] 1615 	ld	(hl-), a
+    00000787 2A               [ 8] 1616 	ld	a, (hl+)
+    00000788 5F               [ 4] 1617 	ld	e, a
+    00000789 56               [ 8] 1618 	ld	d, (hl)
+    0000078A F8 04            [12] 1619 	ldhl	sp,	#4
+    0000078C 2A               [ 8] 1620 	ld	a,	(hl+)
+    0000078D 66               [ 8] 1621 	ld	h, (hl)
+    0000078E 6F               [ 4] 1622 	ld	l, a
+    0000078F 7B               [ 4] 1623 	ld	a, e
+    00000790 95               [ 4] 1624 	sub	a, l
+    00000791 5F               [ 4] 1625 	ld	e, a
+    00000792 7A               [ 4] 1626 	ld	a, d
+    00000793 9C               [ 4] 1627 	sbc	a, h
+    00000794 F8 0B            [12] 1628 	ldhl	sp,	#11
+    00000796 32               [ 8] 1629 	ld	(hl-), a
+    00000797 73               [ 8] 1630 	ld	(hl), e
+                                   1631 ;src/states/game.c:267: if (dx < 0)
+    00000798 60               [ 4] 1632 	ld	h, b
+    00000799 CB 7C            [ 8] 1633 	bit	7, h
+    0000079B 28 06            [12] 1634 	jr	Z, 00142$
+                                   1635 ;src/states/game.c:268: dx = -dx;
+    0000079D AF               [ 4] 1636 	xor	a, a
+    0000079E 91               [ 4] 1637 	sub	a, c
+    0000079F 4F               [ 4] 1638 	ld	c, a
+    000007A0 9F               [ 4] 1639 	sbc	a, a
+    000007A1 90               [ 4] 1640 	sub	a, b
+    000007A2 47               [ 4] 1641 	ld	b, a
+    000007A3                       1642 00142$:
+                                   1643 ;src/states/game.c:269: if (dy < 0)
+    000007A3 F8 0A            [12] 1644 	ldhl	sp,	#10
+    000007A5 3A               [ 8] 1645 	ld	a, (hl-)
+    000007A6 2B               [ 8] 1646 	dec	hl
+    000007A7 77               [ 8] 1647 	ld	(hl), a
+    000007A8 F8 0B            [12] 1648 	ldhl	sp,	#11
+    000007AA 3A               [ 8] 1649 	ld	a, (hl-)
+    000007AB 2B               [ 8] 1650 	dec	hl
+    000007AC 77               [ 8] 1651 	ld	(hl), a
+    000007AD CB 7E            [12] 1652 	bit	7, (hl)
+    000007AF 28 10            [12] 1653 	jr	Z, 00144$
+                                   1654 ;src/states/game.c:270: dy = -dy;
+    000007B1 23               [ 8] 1655 	inc	hl
+    000007B2 11 00 00         [12] 1656 	ld	de, #0x0000
+    000007B5 2A               [ 8] 1657 	ld	a,	(hl+)
+    000007B6 66               [ 8] 1658 	ld	h, (hl)
+    000007B7 6F               [ 4] 1659 	ld	l, a
+    000007B8 7B               [ 4] 1660 	ld	a, e
+    000007B9 95               [ 4] 1661 	sub	a, l
+    000007BA 5F               [ 4] 1662 	ld	e, a
+    000007BB 7A               [ 4] 1663 	ld	a, d
+    000007BC 9C               [ 4] 1664 	sbc	a, h
+    000007BD F8 0B            [12] 1665 	ldhl	sp,	#11
+    000007BF 32               [ 8] 1666 	ld	(hl-), a
+    000007C0 73               [ 8] 1667 	ld	(hl), e
+    000007C1                       1668 00144$:
+                                   1669 ;src/states/game.c:271: if (dx < 24 && dy < 24)
+    000007C1 79               [ 4] 1670 	ld	a, c
+    000007C2 D6 18            [ 8] 1671 	sub	a, #0x18
+    000007C4 78               [ 4] 1672 	ld	a, b
+    000007C5 17               [ 4] 1673 	rla
+    000007C6 3F               [ 4] 1674 	ccf
+    000007C7 1F               [ 4] 1675 	rra
+    000007C8 DE 80            [ 8] 1676 	sbc	a, #0x80
+    000007CA 30 18            [12] 1677 	jr	NC, 00149$
+    000007CC F8 0A            [12] 1678 	ldhl	sp,	#10
+    000007CE 2A               [ 8] 1679 	ld	a, (hl+)
+    000007CF 4F               [ 4] 1680 	ld	c, a
+    000007D0 46               [ 8] 1681 	ld	b, (hl)
+    000007D1 79               [ 4] 1682 	ld	a, c
+    000007D2 D6 18            [ 8] 1683 	sub	a, #0x18
+    000007D4 78               [ 4] 1684 	ld	a, b
+    000007D5 17               [ 4] 1685 	rla
+    000007D6 3F               [ 4] 1686 	ccf
+    000007D7 1F               [ 4] 1687 	rra
+    000007D8 DE 80            [ 8] 1688 	sbc	a, #0x80
+    000007DA 30 08            [12] 1689 	jr	NC, 00149$
+                                   1690 ;src/states/game.c:272: text_dialogue(dial);
+    000007DC F8 06            [12] 1691 	ldhl	sp,	#6
+    000007DE 2A               [ 8] 1692 	ld	a, (hl+)
+    000007DF 5F               [ 4] 1693 	ld	e, a
+    000007E0 56               [ 8] 1694 	ld	d, (hl)
+    000007E1 CDr00r00         [24] 1695 	call	_text_dialogue
+    000007E4                       1696 00149$:
+                                   1697 ;src/states/game.c:276: if (current_loc == LOC_WORLD) {
+    000007E4 21r00r00         [12] 1698 	ld	hl, #_current_loc
+    000007E7 CB 46            [12] 1699 	bit	0, (hl)
+    000007E9 C2r8Ar08         [16] 1700 	jp	NZ, 00173$
+                                   1701 ;src/states/game.c:277: env_anim_timer++;
+    000007EC 21r10r00         [12] 1702 	ld	hl, #_env_anim_timer
+    000007EF 34               [12] 1703 	inc	(hl)
+                                   1704 ;src/states/game.c:278: if (env_anim_timer >= 40) {
+    000007F0 7E               [ 8] 1705 	ld	a, (hl)
+    000007F1 D6 28            [ 8] 1706 	sub	a, #0x28
+    000007F3 DAr8Ar08         [16] 1707 	jp	C, 00173$
+                                   1708 ;src/states/game.c:279: env_anim_timer = 0;
+    000007F6 36 00            [12] 1709 	ld	(hl), #0x00
+                                   1710 ;src/states/game.c:280: env_anim_frame = !env_anim_frame;
+    000007F8 21r11r00         [12] 1711 	ld	hl, #_env_anim_frame
+    000007FB 7E               [ 8] 1712 	ld	a, (hl)
+    000007FC D6 01            [ 8] 1713 	sub	a, #0x01
+    000007FE 3E 00            [ 8] 1714 	ld	a, #0x00
+    00000800 17               [ 4] 1715 	rla
+    00000801 77               [ 8] 1716 	ld	(hl), a
+                                   1717 ;src/states/game.c:281: if (env_anim_frame) {
+    00000802 7E               [ 8] 1718 	ld	a, (hl)
+    00000803 B7               [ 4] 1719 	or	a, a
+    00000804 28 43            [12] 1720 	jr	Z, 00151$
+                                   1721 ;src/states/game.c:282: set_bkg_data(2, 1, &tiles_anim_data[0]);   // Grass
+    00000806 11r00r00         [12] 1722 	ld	de, #_tiles_anim_data
+    00000809 D5               [16] 1723 	push	de
+    0000080A 21 02 01         [12] 1724 	ld	hl, #0x102
+    0000080D E5               [16] 1725 	push	hl
+    0000080E CDr00r00         [24] 1726 	call	_set_bkg_data
+    00000811 E8 04            [16] 1727 	add	sp, #4
+                                   1728 ;src/states/game.c:283: set_bkg_data(4, 1, &tiles_anim_data[16]);  // Tree TL
+    00000813 11r10r00         [12] 1729 	ld	de, #(_tiles_anim_data + 16)
+    00000816 D5               [16] 1730 	push	de
+    00000817 21 04 01         [12] 1731 	ld	hl, #0x104
+    0000081A E5               [16] 1732 	push	hl
+    0000081B CDr00r00         [24] 1733 	call	_set_bkg_data
+    0000081E E8 04            [16] 1734 	add	sp, #4
+                                   1735 ;src/states/game.c:284: set_bkg_data(5, 1, &tiles_anim_data[32]);  // Tree TR
+    00000820 11r20r00         [12] 1736 	ld	de, #(_tiles_anim_data + 32)
+    00000823 D5               [16] 1737 	push	de
+    00000824 21 05 01         [12] 1738 	ld	hl, #0x105
+    00000827 E5               [16] 1739 	push	hl
+    00000828 CDr00r00         [24] 1740 	call	_set_bkg_data
+    0000082B E8 04            [16] 1741 	add	sp, #4
+                                   1742 ;src/states/game.c:285: set_bkg_data(6, 1, &tiles_anim_data[48]);  // Tree BL
+    0000082D 11r30r00         [12] 1743 	ld	de, #(_tiles_anim_data + 48)
+    00000830 D5               [16] 1744 	push	de
+    00000831 21 06 01         [12] 1745 	ld	hl, #0x106
+    00000834 E5               [16] 1746 	push	hl
+    00000835 CDr00r00         [24] 1747 	call	_set_bkg_data
+    00000838 E8 04            [16] 1748 	add	sp, #4
+                                   1749 ;src/states/game.c:286: set_bkg_data(12, 1, &tiles_anim_data[64]); // Tree BR
+    0000083A 11r40r00         [12] 1750 	ld	de, #(_tiles_anim_data + 64)
+    0000083D D5               [16] 1751 	push	de
+    0000083E 21 0C 01         [12] 1752 	ld	hl, #0x10c
+    00000841 E5               [16] 1753 	push	hl
+    00000842 CDr00r00         [24] 1754 	call	_set_bkg_data
+    00000845 E8 04            [16] 1755 	add	sp, #4
+    00000847 18 41            [12] 1756 	jr	00173$
+    00000849                       1757 00151$:
+                                   1758 ;src/states/game.c:288: set_bkg_data(2, 1, &tiles_data[32]);   // Grass
+    00000849 11r20r00         [12] 1759 	ld	de, #(_tiles_data + 32)
+    0000084C D5               [16] 1760 	push	de
+    0000084D 21 02 01         [12] 1761 	ld	hl, #0x102
+    00000850 E5               [16] 1762 	push	hl
+    00000851 CDr00r00         [24] 1763 	call	_set_bkg_data
+    00000854 E8 04            [16] 1764 	add	sp, #4
+                                   1765 ;src/states/game.c:289: set_bkg_data(4, 1, &tiles_data[64]);   // Tree TL
+    00000856 11r40r00         [12] 1766 	ld	de, #(_tiles_data + 64)
+    00000859 D5               [16] 1767 	push	de
+    0000085A 21 04 01         [12] 1768 	ld	hl, #0x104
+    0000085D E5               [16] 1769 	push	hl
+    0000085E CDr00r00         [24] 1770 	call	_set_bkg_data
+    00000861 E8 04            [16] 1771 	add	sp, #4
+                                   1772 ;src/states/game.c:290: set_bkg_data(5, 1, &tiles_data[80]);   // Tree TR
+    00000863 11r50r00         [12] 1773 	ld	de, #(_tiles_data + 80)
+    00000866 D5               [16] 1774 	push	de
+    00000867 21 05 01         [12] 1775 	ld	hl, #0x105
+    0000086A E5               [16] 1776 	push	hl
+    0000086B CDr00r00         [24] 1777 	call	_set_bkg_data
+    0000086E E8 04            [16] 1778 	add	sp, #4
+                                   1779 ;src/states/game.c:291: set_bkg_data(6, 1, &tiles_data[96]);   // Tree BL
+    00000870 11r60r00         [12] 1780 	ld	de, #(_tiles_data + 96)
+    00000873 D5               [16] 1781 	push	de
+    00000874 21 06 01         [12] 1782 	ld	hl, #0x106
+    00000877 E5               [16] 1783 	push	hl
+    00000878 CDr00r00         [24] 1784 	call	_set_bkg_data
+    0000087B E8 04            [16] 1785 	add	sp, #4
+                                   1786 ;src/states/game.c:292: set_bkg_data(12, 1, &tiles_data[192]); // Tree BR
+    0000087D 11rC0r00         [12] 1787 	ld	de, #(_tiles_data + 192)
+    00000880 D5               [16] 1788 	push	de
+    00000881 21 0C 01         [12] 1789 	ld	hl, #0x10c
+    00000884 E5               [16] 1790 	push	hl
+    00000885 CDr00r00         [24] 1791 	call	_set_bkg_data
+    00000888 E8 04            [16] 1792 	add	sp, #4
+    0000088A                       1793 00173$:
+                                   1794 ;src/states/game.c:296: }
+    0000088A E8 0C            [16] 1795 	add	sp, #12
+    0000088C C9               [16] 1796 	ret
+    0000088D                       1797 ___str_0:
+    0000088D 48 4F 4C 41 20 41 4D  1798 	.ascii "HOLA AMIGO,"
              49 47 4F 2C
-    0000058C 0A                    1221 	.db 0x0a
-    0000058D 54 49 45 4E 45 53 20  1222 	.ascii "TIENES QUE CONSEGUIR"
+    00000898 0A                    1799 	.db 0x0a
+    00000899 54 49 45 4E 45 53 20  1800 	.ascii "TIENES QUE CONSEGUIR"
              51 55 45 20 43 4F 4E
              53 45 47 55 49 52
-    000005A1 0A                    1223 	.db 0x0a
-    000005A2 4C 41 20 4C 4C 41 56  1224 	.ascii "LA LLAVE EN ALGUN"
+    000008AD 0A                    1801 	.db 0x0a
+    000008AE 4C 41 20 4C 4C 41 56  1802 	.ascii "LA LLAVE EN ALGUN"
              45 20 45 4E 20 41 4C
              47 55 4E
-    000005B3 0A                    1225 	.db 0x0a
-    000005B4 4C 41 44 4F 20 44 45  1226 	.ascii "LADO DEBE ESTAR"
+    000008BF 0A                    1803 	.db 0x0a
+    000008C0 4C 41 44 4F 20 44 45  1804 	.ascii "LADO DEBE ESTAR"
              42 45 20 45 53 54 41
              52
-    000005C3 00                    1227 	.db 0x00
-                                   1228 	.area _CODE
-                                   1229 	.area _INITIALIZER
-    00000000                       1230 __xinit__player_x:
-    00000000 50 00                 1231 	.dw #0x0050
-    00000002                       1232 __xinit__player_y:
-    00000002 48 00                 1233 	.dw #0x0048
-    00000004                       1234 __xinit__player_dir:
-    00000004 00                    1235 	.db #0x00	; 0
-    00000005                       1236 __xinit__anim_frame:
-    00000005 00                    1237 	.db #0x00	; 0
-    00000006                       1238 __xinit__anim_timer:
-    00000006 00                    1239 	.db #0x00	; 0
-    00000007                       1240 __xinit__camera_x:
-    00000007 00 00                 1241 	.dw #0x0000
-    00000009                       1242 __xinit__camera_y:
-    00000009 00 00                 1243 	.dw #0x0000
-                                   1244 	.area _CABS (ABS)
+    000008CF 00                    1805 	.db 0x00
+    000008D0                       1806 ___str_1:
+    000008D0 42 49 45 4E 56 45 4E  1807 	.ascii "BIENVENIDO A MI CASA."
+             49 44 4F 20 41 20 4D
+             49 20 43 41 53 41 2E
+    000008E5 0A                    1808 	.db 0x0a
+    000008E6 45 4C 20 52 4F 50 45  1809 	.ascii "EL ROPERO ESTA TRABADO,"
+             52 4F 20 45 53 54 41
+             20 54 52 41 42 41 44
+             4F 2C
+    000008FD 0A                    1810 	.db 0x0a
+    000008FE 50 45 52 4F 20 50 55  1811 	.ascii "PERO PUEDES DESCANSAR"
+             45 44 45 53 20 44 45
+             53 43 41 4E 53 41 52
+    00000913 0A                    1812 	.db 0x0a
+    00000914 45 4E 20 4C 41 20 43  1813 	.ascii "EN LA CAMA."
+             41 4D 41 2E
+    0000091F 00                    1814 	.db 0x00
+                                   1815 	.area _CODE
+                                   1816 	.area _INITIALIZER
+    00000000                       1817 __xinit__current_loc:
+    00000000 00                    1818 	.db #0x00	;  0
+    00000001                       1819 __xinit__player_x:
+    00000001 98 00                 1820 	.dw #0x0098
+    00000003                       1821 __xinit__player_y:
+    00000003 78 00                 1822 	.dw #0x0078
+    00000005                       1823 __xinit__world_saved_x:
+    00000005 98 00                 1824 	.dw #0x0098
+    00000007                       1825 __xinit__world_saved_y:
+    00000007 78 00                 1826 	.dw #0x0078
+    00000009                       1827 __xinit__player_dir:
+    00000009 00                    1828 	.db #0x00	; 0
+    0000000A                       1829 __xinit__anim_frame:
+    0000000A 00                    1830 	.db #0x00	; 0
+    0000000B                       1831 __xinit__anim_timer:
+    0000000B 00                    1832 	.db #0x00	; 0
+    0000000C                       1833 __xinit__camera_x:
+    0000000C 00 00                 1834 	.dw #0x0000
+    0000000E                       1835 __xinit__camera_y:
+    0000000E 00 00                 1836 	.dw #0x0000
+    00000010                       1837 __xinit__env_anim_timer:
+    00000010 00                    1838 	.db #0x00	; 0
+    00000011                       1839 __xinit__env_anim_frame:
+    00000011 00                    1840 	.db #0x00	; 0
+                                   1841 	.area _CABS (ABS)

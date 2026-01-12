@@ -13,55 +13,75 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000581 R
-  8 __xinit__anim_frame                                             00000005 R
-  8 __xinit__anim_timer                                             00000006 R
-  8 __xinit__camera_x                                               00000007 R
-  8 __xinit__camera_y                                               00000009 R
-  8 __xinit__player_dir                                             00000004 R
-  8 __xinit__player_x                                               00000000 R
-  8 __xinit__player_y                                               00000002 R
-  3 _anim_frame                                                     00000005 GR
-  3 _anim_timer                                                     00000006 GR
-  3 _camera_x                                                       00000007 GR
-  3 _camera_y                                                       00000009 GR
-  0 _can_move                                                       0000018F GR
+  0 ___str_0                                                        0000088D R
+  0 ___str_1                                                        000008D0 R
+  8 __xinit__anim_frame                                             0000000A R
+  8 __xinit__anim_timer                                             0000000B R
+  8 __xinit__camera_x                                               0000000C R
+  8 __xinit__camera_y                                               0000000E R
+  8 __xinit__current_loc                                            00000000 R
+  8 __xinit__env_anim_frame                                         00000011 R
+  8 __xinit__env_anim_timer                                         00000010 R
+  8 __xinit__player_dir                                             00000009 R
+  8 __xinit__player_x                                               00000001 R
+  8 __xinit__player_y                                               00000003 R
+  8 __xinit__world_saved_x                                          00000005 R
+  8 __xinit__world_saved_y                                          00000007 R
+  3 _anim_frame                                                     0000000A GR
+  3 _anim_timer                                                     0000000B GR
+  3 _camera_x                                                       0000000C GR
+  3 _camera_y                                                       0000000E GR
+  0 _can_move                                                       000002D7 GR
+  3 _current_loc                                                    00000000 GR
     _display_off                                                    ******** GX
-  0 _game_init                                                      0000022E GR
-  0 _game_update                                                    00000306 GR
-  2 _game_update_last_dir_10001_261                                 00000000 R
+  3 _env_anim_frame                                                 00000011 GR
+  3 _env_anim_timer                                                 00000010 GR
+    _fill_bkg_rect                                                  ******** GX
+  0 _game_init                                                      000003A6 GR
+  0 _game_update                                                    000003FF GR
+  0 _get_tile_at                                                    00000000 GR
+    _house_map                                                      ******** GX
     _input_held                                                     ******** GX
     _input_pressed                                                  ******** GX
-  0 _is_solid                                                       0000013D GR
+  0 _is_solid                                                       0000029F GR
+  0 _load_location                                                  00000194 GR
     _map_data                                                       ******** GX
     _npc_child_sprite                                               ******** GX
-  3 _player_dir                                                     00000004 GR
+  3 _player_dir                                                     00000009 GR
     _player_sprites                                                 ******** GX
-  3 _player_x                                                       00000000 GR
-  3 _player_y                                                       00000002 GR
+  3 _player_x                                                       00000001 GR
+  3 _player_y                                                       00000003 GR
     _set_bkg_data                                                   ******** GX
     _set_bkg_tiles                                                  ******** GX
     _set_sprite_data                                                ******** GX
     _shadow_OAM                                                     ******** GX
     _text_dialogue                                                  ******** GX
     _text_init                                                      ******** GX
-    _tiles_data                                                     ******** GX
-  0 _update_camera                                                  00000000 GR
-  0 _update_player_sprite                                           00000083 GR
-
+    _tiles_anim_data                                                ******** GX
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+    _tiles_data                                                     ******** GX
+  0 _update_camera                                                  000000B2 GR
+  0 _update_player_sprite                                           000001DF GR
+  3 _world_saved_x                                                  00000005 GR
+  3 _world_saved_y                                                  00000007 GR
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 3
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      5C4   flags    0
+   0 _CODE                                      size      920   flags    0
    1 _HRAM                                      size        0   flags    0
-   2 _DATA                                      size        1   flags    0
-   3 _INITIALIZED                               size        B   flags    0
+   2 _DATA                                      size        0   flags    0
+   3 _INITIALIZED                               size       12   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0
-   6 _GSINIT                                    size        5   flags    0
+   6 _GSINIT                                    size        0   flags    0
    7 _GSFINAL                                   size        0   flags    0
-   8 _INITIALIZER                               size        B   flags    0
+   8 _INITIALIZER                               size       12   flags    0
    9 _CABS                                      size        0   flags    8
 
