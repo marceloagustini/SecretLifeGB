@@ -945,10 +945,10 @@ _game_init::
 	ld	hl, #_world_ents
 	ld	a, #0xb4
 	ld	(hl+), a
-;src/states/game.c:154: world_ents[0].y = 200;
+;src/states/game.c:154: world_ents[0].y = 220;
 	xor	a, a
 	ld	(hl+), a
-	ld	a, #0xc8
+	ld	a, #0xdc
 	ld	(hl+), a
 ;src/states/game.c:155: world_ents[0].type = ENT_NPC;
 	xor	a, a
@@ -1111,7 +1111,7 @@ _game_init::
 ___str_0:
 	.ascii "MI CASA ES LA DE"
 	.db 0x0a
-	.ascii "AQUI ABAJO."
+	.ascii "AQUI ARRIBA."
 	.db 0x0a
 	.ascii "BUSCA LA LLAVE EN"
 	.db 0x0a
@@ -2389,9 +2389,9 @@ ___str_5:
 	.area _CODE
 	.area _INITIALIZER
 __xinit__player_x:
-	.dw #0x0098
+	.dw #0x0080
 __xinit__player_y:
-	.dw #0x0078
+	.dw #0x0080
 __xinit__player_dir:
 	.db #0x00	; 0
 __xinit__anim_frame:

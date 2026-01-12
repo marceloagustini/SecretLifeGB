@@ -37,7 +37,7 @@ map_info_t world_map_info, house_map_info, level2_map_info;
 map_info_t *current_map;
 
 // Player state
-uint16_t player_x = 152, player_y = 120;
+uint16_t player_x = 128, player_y = 128;
 uint16_t saved_world_x, saved_world_y;
 uint8_t player_dir = 0; // 0:D, 1:U, 2:L, 3:R
 uint8_t anim_frame = 0, anim_timer = 0;
@@ -151,10 +151,10 @@ void game_init(void) {
   uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 255};
   memcpy(world_map_info.solid_tiles, w_pass, 8);
   world_ents[0].x = 180;
-  world_ents[0].y = 200;
+  world_ents[0].y = 220;
   world_ents[0].type = ENT_NPC;
   world_ents[0].dialogue =
-      "MI CASA ES LA DE\nAQUI ABAJO.\nBUSCA LA LLAVE EN\nMI ROPERO.";
+      "MI CASA ES LA DE\nAQUI ARRIBA.\nBUSCA LA LLAVE EN\nMI ROPERO.";
   world_ents[0].sprite_base = 24;
   world_ents[0].active = 1;
 
