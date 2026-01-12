@@ -150,11 +150,11 @@ void game_init(void) {
   world_map_info.num_entities = 1;
   uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 255};
   memcpy(world_map_info.solid_tiles, w_pass, 8);
-  world_ents[0].x = 120;
-  world_ents[0].y = 72;
+  world_ents[0].x = 180;
+  world_ents[0].y = 200;
   world_ents[0].type = ENT_NPC;
   world_ents[0].dialogue =
-      "HOLA AMIGO,\nBUSCA LA LLAVE EN\nMI CASA PARA\nABRIR EL PORTON.";
+      "MI CASA ES LA DE\nAQUI ABAJO.\nBUSCA LA LLAVE EN\nMI ROPERO.";
   world_ents[0].sprite_base = 24;
   world_ents[0].active = 1;
 
@@ -229,12 +229,15 @@ void game_update(void) {
       // Automatic Transitions
       uint8_t tid = get_tile_at(player_x + 8, player_y + 4); // Head check
       if (current_map == &world_map_info && (tid == 21 || tid == 22)) {
-        saved_world_x = player_x;
-        saved_world_y = player_y + 16;
-        player_x = 80;
-        player_y = 120;
-        load_map(&house_map_info);
-        return;
+        // ONLY the bottom-right house (around x=176, y=176) is accessible
+        if (player_x > 160 && player_y > 160) {
+          saved_world_x = player_x;
+          saved_world_y = player_y + 16;
+          player_x = 80;
+          player_y = 120;
+          load_map(&house_map_info);
+          return;
+        }
       }
       tid = get_tile_at(player_x + 8, player_y + 16); // Foot check
       if (current_map == &house_map_info && tid == 35) {
@@ -320,7 +323,7 @@ void game_update(void) {
       if (has_key) {
         text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
         player_x = 124;
-        player_y = 230; // Level 2 entrance (bottom)
+        player_y = 240; // Level 2 entrance (bottom)
         player_dir = 1;
         load_map(&level2_map_info);
         return;
