@@ -1,0 +1,120 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.1 #15267 (Mac OS X ppc)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module input
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _joypad
+                                     11 	.globl _joy_previous
+                                     12 	.globl _joy_current
+                                     13 	.globl _input_update
+                                     14 	.globl _input_pressed
+                                     15 	.globl _input_held
+                                     16 	.globl _input_released
+                                     17 ;--------------------------------------------------------
+                                     18 ; special function registers
+                                     19 ;--------------------------------------------------------
+                                     20 	.area _HRAM
+                                     21 ;--------------------------------------------------------
+                                     22 ; ram data
+                                     23 ;--------------------------------------------------------
+                                     24 	.area _DATA
+                                     25 ;--------------------------------------------------------
+                                     26 ; ram data
+                                     27 ;--------------------------------------------------------
+                                     28 	.area _INITIALIZED
+    00000000                         29 _joy_current::
+    00000000                         30 	.ds 1
+    00000001                         31 _joy_previous::
+    00000001                         32 	.ds 1
+                                     33 ;--------------------------------------------------------
+                                     34 ; absolute external ram data
+                                     35 ;--------------------------------------------------------
+                                     36 	.area _DABS (ABS)
+                                     37 ;--------------------------------------------------------
+                                     38 ; global & static initialisations
+                                     39 ;--------------------------------------------------------
+                                     40 	.area _HOME
+                                     41 	.area _GSINIT
+                                     42 	.area _GSFINAL
+                                     43 	.area _GSINIT
+                                     44 ;--------------------------------------------------------
+                                     45 ; Home
+                                     46 ;--------------------------------------------------------
+                                     47 	.area _HOME
+                                     48 	.area _HOME
+                                     49 ;--------------------------------------------------------
+                                     50 ; code
+                                     51 ;--------------------------------------------------------
+                                     52 	.area _CODE
+                                     53 ;src/utils/input.c:6: void input_update(void) {
+                                     54 ;	---------------------------------
+                                     55 ; Function input_update
+                                     56 ; ---------------------------------
+    00000000                         57 _input_update::
+                                     58 ;src/utils/input.c:7: joy_previous = joy_current;
+    00000000 FAr00r00         [16]   59 	ld	a, (#_joy_current)
+    00000003 EAr01r00         [16]   60 	ld	(#_joy_previous),a
+                                     61 ;src/utils/input.c:8: joy_current = joypad();
+    00000006 CDr00r00         [24]   62 	call	_joypad
+    00000009 EAr00r00         [16]   63 	ld	(#_joy_current),a
+                                     64 ;src/utils/input.c:9: }
+    0000000C C9               [16]   65 	ret
+                                     66 ;src/utils/input.c:11: uint8_t input_pressed(uint8_t button) {
+                                     67 ;	---------------------------------
+                                     68 ; Function input_pressed
+                                     69 ; ---------------------------------
+    0000000D                         70 _input_pressed::
+    0000000D 4F               [ 4]   71 	ld	c, a
+                                     72 ;src/utils/input.c:12: return (joy_current & button) && !(joy_previous & button);
+    0000000E FAr00r00         [16]   73 	ld	a, (#_joy_current)
+    00000011 A1               [ 4]   74 	and	a, c
+    00000012 28 06            [12]   75 	jr	Z, 00103$
+    00000014 FAr01r00         [16]   76 	ld	a, (#_joy_previous)
+    00000017 A1               [ 4]   77 	and	a, c
+    00000018 28 02            [12]   78 	jr	Z, 00104$
+    0000001A                         79 00103$:
+    0000001A AF               [ 4]   80 	xor	a, a
+    0000001B C9               [16]   81 	ret
+    0000001C                         82 00104$:
+    0000001C 3E 01            [ 8]   83 	ld	a, #0x01
+                                     84 ;src/utils/input.c:13: }
+    0000001E C9               [16]   85 	ret
+                                     86 ;src/utils/input.c:15: uint8_t input_held(uint8_t button) { return (joy_current & button); }
+                                     87 ;	---------------------------------
+                                     88 ; Function input_held
+                                     89 ; ---------------------------------
+    0000001F                         90 _input_held::
+    0000001F 21r00r00         [12]   91 	ld	hl, #_joy_current
+    00000022 A6               [ 8]   92 	and	a, (hl)
+    00000023 C9               [16]   93 	ret
+                                     94 ;src/utils/input.c:17: uint8_t input_released(uint8_t button) {
+                                     95 ;	---------------------------------
+                                     96 ; Function input_released
+                                     97 ; ---------------------------------
+    00000024                         98 _input_released::
+    00000024 4F               [ 4]   99 	ld	c, a
+                                    100 ;src/utils/input.c:18: return !(joy_current & button) && (joy_previous & button);
+    00000025 FAr00r00         [16]  101 	ld	a, (#_joy_current)
+    00000028 A1               [ 4]  102 	and	a, c
+    00000029 20 06            [12]  103 	jr	NZ, 00103$
+    0000002B FAr01r00         [16]  104 	ld	a, (#_joy_previous)
+    0000002E A1               [ 4]  105 	and	a, c
+    0000002F 20 02            [12]  106 	jr	NZ, 00104$
+    00000031                        107 00103$:
+    00000031 AF               [ 4]  108 	xor	a, a
+    00000032 C9               [16]  109 	ret
+    00000033                        110 00104$:
+    00000033 3E 01            [ 8]  111 	ld	a, #0x01
+                                    112 ;src/utils/input.c:19: }
+    00000035 C9               [16]  113 	ret
+                                    114 	.area _CODE
+                                    115 	.area _INITIALIZER
+    00000000                        116 __xinit__joy_current:
+    00000000 00                     117 	.db #0x00	; 0
+    00000001                        118 __xinit__joy_previous:
+    00000001 00                     119 	.db #0x00	; 0
+                                    120 	.area _CABS (ABS)

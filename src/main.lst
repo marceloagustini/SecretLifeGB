@@ -1,0 +1,121 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.1 #15267 (Mac OS X ppc)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module main
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _main
+                                     11 	.globl _input_pressed
+                                     12 	.globl _input_update
+                                     13 	.globl _wait_vbl_done
+                                     14 	.globl _game_update
+                                     15 	.globl _game_init
+                                     16 	.globl _menu_update
+                                     17 	.globl _menu_init
+                                     18 	.globl _current_state
+                                     19 	.globl _game_state
+                                     20 ;--------------------------------------------------------
+                                     21 ; special function registers
+                                     22 ;--------------------------------------------------------
+                                     23 	.area _HRAM
+                                     24 ;--------------------------------------------------------
+                                     25 ; ram data
+                                     26 ;--------------------------------------------------------
+                                     27 	.area _DATA
+                                     28 ;--------------------------------------------------------
+                                     29 ; ram data
+                                     30 ;--------------------------------------------------------
+                                     31 	.area _INITIALIZED
+    00000000                         32 _game_state::
+    00000000                         33 	.ds 1
+    00000001                         34 _current_state::
+    00000001                         35 	.ds 1
+                                     36 ;--------------------------------------------------------
+                                     37 ; absolute external ram data
+                                     38 ;--------------------------------------------------------
+                                     39 	.area _DABS (ABS)
+                                     40 ;--------------------------------------------------------
+                                     41 ; global & static initialisations
+                                     42 ;--------------------------------------------------------
+                                     43 	.area _HOME
+                                     44 	.area _GSINIT
+                                     45 	.area _GSFINAL
+                                     46 	.area _GSINIT
+                                     47 ;--------------------------------------------------------
+                                     48 ; Home
+                                     49 ;--------------------------------------------------------
+                                     50 	.area _HOME
+                                     51 	.area _HOME
+                                     52 ;--------------------------------------------------------
+                                     53 ; code
+                                     54 ;--------------------------------------------------------
+                                     55 	.area _CODE
+                                     56 ;src/main.c:14: void main(void) {
+                                     57 ;	---------------------------------
+                                     58 ; Function main
+                                     59 ; ---------------------------------
+    00000000                         60 _main::
+                                     61 ;src/main.c:19: while (1) {
+    00000000                         62 00116$:
+                                     63 ;src/main.c:21: input_update();
+    00000000 CDr00r00         [24]   64 	call	_input_update
+                                     65 ;src/main.c:24: if (game_state != current_state) {
+    00000003 FAr00r00         [16]   66 	ld	a, (#_game_state)
+    00000006 21r01r00         [12]   67 	ld	hl, #_current_state
+    00000009 96               [ 8]   68 	sub	a, (hl)
+    0000000A 28 1A            [12]   69 	jr	Z, 00107$
+                                     70 ;src/main.c:26: current_state = game_state;
+    0000000C FAr00r00         [16]   71 	ld	a, (#_game_state)
+    0000000F EAr01r00         [16]   72 	ld	(#_current_state),a
+                                     73 ;src/main.c:27: if (game_state == STATE_MENU) {
+    00000012 FAr00r00         [16]   74 	ld	a, (#_game_state)
+    00000015 B7               [ 4]   75 	or	a, a
+    00000016 20 05            [12]   76 	jr	NZ, 00104$
+                                     77 ;src/main.c:28: menu_init();
+    00000018 CDr00r00         [24]   78 	call	_menu_init
+    0000001B 18 09            [12]   79 	jr	00107$
+    0000001D                         80 00104$:
+                                     81 ;src/main.c:29: } else if (game_state == STATE_GAME) {
+    0000001D FAr00r00         [16]   82 	ld	a, (#_game_state)
+    00000020 3D               [ 4]   83 	dec	a
+    00000021 20 03            [12]   84 	jr	NZ, 00107$
+                                     85 ;src/main.c:30: game_init();
+    00000023 CDr00r00         [24]   86 	call	_game_init
+    00000026                         87 00107$:
+                                     88 ;src/main.c:35: if (game_state == STATE_MENU) {
+    00000026 FAr00r00         [16]   89 	ld	a, (#_game_state)
+    00000029 B7               [ 4]   90 	or	a, a
+    0000002A 20 12            [12]   91 	jr	NZ, 00113$
+                                     92 ;src/main.c:36: menu_update();
+    0000002C CDr00r00         [24]   93 	call	_menu_update
+                                     94 ;src/main.c:38: if (input_pressed(J_START)) {
+    0000002F 3E 80            [ 8]   95 	ld	a, #0x80
+    00000031 CDr00r00         [24]   96 	call	_input_pressed
+    00000034 B7               [ 4]   97 	or	a, a
+    00000035 28 10            [12]   98 	jr	Z, 00114$
+                                     99 ;src/main.c:39: game_state = STATE_GAME;
+    00000037 21r00r00         [12]  100 	ld	hl, #_game_state
+    0000003A 36 01            [12]  101 	ld	(hl), #0x01
+    0000003C 18 09            [12]  102 	jr	00114$
+    0000003E                        103 00113$:
+                                    104 ;src/main.c:41: } else if (game_state == STATE_GAME) {
+    0000003E FAr00r00         [16]  105 	ld	a, (#_game_state)
+    00000041 3D               [ 4]  106 	dec	a
+    00000042 20 03            [12]  107 	jr	NZ, 00114$
+                                    108 ;src/main.c:42: game_update();
+    00000044 CDr00r00         [24]  109 	call	_game_update
+    00000047                        110 00114$:
+                                    111 ;src/main.c:46: wait_vbl_done();
+    00000047 CDr00r00         [24]  112 	call	_wait_vbl_done
+                                    113 ;src/main.c:48: }
+    0000004A 18 B4            [12]  114 	jr	00116$
+                                    115 	.area _CODE
+                                    116 	.area _INITIALIZER
+    00000000                        117 __xinit__game_state:
+    00000000 00                     118 	.db #0x00	; 0
+    00000001                        119 __xinit__current_state:
+    00000001 FF                     120 	.db #0xff	; 255
+                                    121 	.area _CABS (ABS)
