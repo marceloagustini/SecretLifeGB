@@ -1,5 +1,6 @@
 #include "../../res/assets.h"
 #include "../utils/input.h"
+#include "../utils/music.h"
 #include "../utils/text.h"
 #include "states.h"
 #include <gb/gb.h>
@@ -150,12 +151,14 @@ void game_init(void) {
   set_sprite_data(24, 4, npc_child_sprite);
   update_player_sprite();
   text_init();
+  music_init();
   SHOW_BKG;
   SHOW_SPRITES;
   DISPLAY_ON;
 }
 
 void game_update(void) {
+  music_update();
   uint8_t moved = 0;
   uint16_t nx = player_x;
   uint16_t ny = player_y;
