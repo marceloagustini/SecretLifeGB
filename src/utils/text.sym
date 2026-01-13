@@ -10,14 +10,14 @@ Symbol Table
     _LCDC_REG                                                       ******** GX
     _WX_REG                                                         ******** GX
     _WY_REG                                                         ******** GX
-  0 _clear_dialog_buf                                               000000D8 GR
+  0 _clear_dialog_buf                                               000000C7 GR
     _delay                                                          ******** GX
   2 _dialog_buf                                                     00000000 GR
     _font_data                                                      ******** GX
   0 _get_tile_for_char                                              00000016 GR
     _set_win_data                                                   ******** GX
     _set_win_tiles                                                  ******** GX
-  0 _text_dialogue                                                  00000175 GR
+  0 _text_dialogue                                                  00000164 GR
   0 _text_init                                                      00000000 GR
     _waitpad                                                        ******** GX
     _waitpadup                                                      ******** GX
@@ -27,7 +27,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      330   flags    0
+   0 _CODE                                      size      31F   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size       78   flags    0
    3 _INITIALIZED                               size        0   flags    0

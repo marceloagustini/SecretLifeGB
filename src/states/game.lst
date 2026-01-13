@@ -2535,20 +2535,20 @@
     00000C69 7E               [ 8] 2525 	ld	a, (hl)
     00000C6A B7               [ 4] 2526 	or	a, a
     00000C6B 20 15            [12] 2527 	jr	NZ, 00161$
-                                   2528 ;src/states/game.c:351: text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
+                                   2528 ;src/states/game.c:351: text_dialogue("HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
     00000C6D 11rFCr0C         [12] 2529 	ld	de, #___str_3
     00000C70 CDr00r00         [24] 2530 	call	_text_dialogue
                                    2531 ;src/states/game.c:352: inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
     00000C73 3E 29            [ 8] 2532 	ld	a, #0x29
     00000C75 F5               [16] 2533 	push	af
     00000C76 33               [ 8] 2534 	inc	sp
-    00000C77 01r22r0D         [12] 2535 	ld	bc, #___str_4
+    00000C77 01r20r0D         [12] 2535 	ld	bc, #___str_4
     00000C7A 11rF6r0C         [12] 2536 	ld	de, #___str_2
     00000C7D CDr00r00         [24] 2537 	call	_inventory_add_item
     00000C80 18 06            [12] 2538 	jr	00166$
     00000C82                       2539 00161$:
                                    2540 ;src/states/game.c:354: text_dialogue("EL ROPERO ESTA\nVACIO.");
-    00000C82 11r37r0D         [12] 2541 	ld	de, #___str_5
+    00000C82 11r35r0D         [12] 2541 	ld	de, #___str_5
     00000C85 CDr00r00         [24] 2542 	call	_text_dialogue
     00000C88                       2543 00166$:
                                    2544 ;src/states/game.c:358: if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
@@ -2574,8 +2574,8 @@
     00000CA7 CDr00r00         [24] 2564 	call	_inventory_has_item
     00000CAA B7               [ 4] 2565 	or	a, a
     00000CAB 28 15            [12] 2566 	jr	Z, 00172$
-                                   2567 ;src/states/game.c:360: text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
-    00000CAD 11r4Dr0D         [12] 2568 	ld	de, #___str_6
+                                   2567 ;src/states/game.c:360: text_dialogue("USAS LA LLAVE...\nEL PORTON SE ABRE!");
+    00000CAD 11r4Br0D         [12] 2568 	ld	de, #___str_6
     00000CB0 CDr00r00         [24] 2569 	call	_text_dialogue
                                    2570 ;src/states/game.c:361: switch_map(&level2_map_info, 128, 224);
     00000CB3 11 E0 00         [12] 2571 	ld	de, #0x00e0
@@ -2587,7 +2587,7 @@
     00000CC0 18 31            [12] 2577 	jr	00201$
     00000CC2                       2578 00172$:
                                    2579 ;src/states/game.c:364: text_dialogue("EL PORTON ESTA\nCERRADO.");
-    00000CC2 11r73r0D         [12] 2580 	ld	de, #___str_7
+    00000CC2 11r6Fr0D         [12] 2580 	ld	de, #___str_7
     00000CC5 CDr00r00         [24] 2581 	call	_text_dialogue
     00000CC8                       2582 00179$:
                                    2583 ;src/states/game.c:369: if ((env_anim_timer % 32) == 0) {
@@ -2627,65 +2627,61 @@
     00000CF6 4C 4C 41 56 45        2617 	.ascii "LLAVE"
     00000CFB 00                    2618 	.db 0x00
     00000CFC                       2619 ___str_3:
-    00000CFC C2                    2620 	.db 0xc2
-    00000CFD A1                    2621 	.db 0xa1
-    00000CFE 48 41 53 20 45 4E 43  2622 	.ascii "HAS ENCONTRADO LA"
+    00000CFC 48 41 53 20 45 4E 43  2620 	.ascii "HAS ENCONTRADO LA"
              4F 4E 54 52 41 44 4F
              20 4C 41
-    00000D0F 0A                    2623 	.db 0x0a
-    00000D10 4C 4C 41 56 45 20 44  2624 	.ascii "LLAVE DEL PORTON!"
+    00000D0D 0A                    2621 	.db 0x0a
+    00000D0E 4C 4C 41 56 45 20 44  2622 	.ascii "LLAVE DEL PORTON!"
              45 4C 20 50 4F 52 54
              4F 4E 21
-    00000D21 00                    2625 	.db 0x00
-    00000D22                       2626 ___str_4:
-    00000D22 41 42 52 45 20 45 4C  2627 	.ascii "ABRE EL PORTON NORTE"
+    00000D1F 00                    2623 	.db 0x00
+    00000D20                       2624 ___str_4:
+    00000D20 41 42 52 45 20 45 4C  2625 	.ascii "ABRE EL PORTON NORTE"
              20 50 4F 52 54 4F 4E
              20 4E 4F 52 54 45
-    00000D36 00                    2628 	.db 0x00
-    00000D37                       2629 ___str_5:
-    00000D37 45 4C 20 52 4F 50 45  2630 	.ascii "EL ROPERO ESTA"
+    00000D34 00                    2626 	.db 0x00
+    00000D35                       2627 ___str_5:
+    00000D35 45 4C 20 52 4F 50 45  2628 	.ascii "EL ROPERO ESTA"
              52 4F 20 45 53 54 41
-    00000D45 0A                    2631 	.db 0x0a
-    00000D46 56 41 43 49 4F 2E     2632 	.ascii "VACIO."
-    00000D4C 00                    2633 	.db 0x00
-    00000D4D                       2634 ___str_6:
-    00000D4D 55 53 41 53 20 4C 41  2635 	.ascii "USAS LA LLAVE..."
+    00000D43 0A                    2629 	.db 0x0a
+    00000D44 56 41 43 49 4F 2E     2630 	.ascii "VACIO."
+    00000D4A 00                    2631 	.db 0x00
+    00000D4B                       2632 ___str_6:
+    00000D4B 55 53 41 53 20 4C 41  2633 	.ascii "USAS LA LLAVE..."
              20 4C 4C 41 56 45 2E
              2E 2E
-    00000D5D 0A                    2636 	.db 0x0a
-    00000D5E C2                    2637 	.db 0xc2
-    00000D5F A1                    2638 	.db 0xa1
-    00000D60 45 4C 20 50 4F 52 54  2639 	.ascii "EL PORTON SE ABRE!"
+    00000D5B 0A                    2634 	.db 0x0a
+    00000D5C 45 4C 20 50 4F 52 54  2635 	.ascii "EL PORTON SE ABRE!"
              4F 4E 20 53 45 20 41
              42 52 45 21
-    00000D72 00                    2640 	.db 0x00
-    00000D73                       2641 ___str_7:
-    00000D73 45 4C 20 50 4F 52 54  2642 	.ascii "EL PORTON ESTA"
+    00000D6E 00                    2636 	.db 0x00
+    00000D6F                       2637 ___str_7:
+    00000D6F 45 4C 20 50 4F 52 54  2638 	.ascii "EL PORTON ESTA"
              4F 4E 20 45 53 54 41
-    00000D81 0A                    2643 	.db 0x0a
-    00000D82 43 45 52 52 41 44 4F  2644 	.ascii "CERRADO."
+    00000D7D 0A                    2639 	.db 0x0a
+    00000D7E 43 45 52 52 41 44 4F  2640 	.ascii "CERRADO."
              2E
-    00000D8A 00                    2645 	.db 0x00
-                                   2646 	.area _CODE
-                                   2647 	.area _INITIALIZER
-    00000000                       2648 __xinit__player_x:
-    00000000 80 00                 2649 	.dw #0x0080
-    00000002                       2650 __xinit__player_y:
-    00000002 80 00                 2651 	.dw #0x0080
-    00000004                       2652 __xinit__player_dir:
-    00000004 00                    2653 	.db #0x00	; 0
-    00000005                       2654 __xinit__anim_frame:
-    00000005 00                    2655 	.db #0x00	; 0
-    00000006                       2656 __xinit__anim_timer:
-    00000006 00                    2657 	.db #0x00	; 0
-    00000007                       2658 __xinit__camera_x:
-    00000007 00 00                 2659 	.dw #0x0000
-    00000009                       2660 __xinit__camera_y:
-    00000009 00 00                 2661 	.dw #0x0000
-    0000000B                       2662 __xinit__env_anim_timer:
-    0000000B 00                    2663 	.db #0x00	; 0
-    0000000C                       2664 __xinit__env_anim_frame:
-    0000000C 00                    2665 	.db #0x00	; 0
-    0000000D                       2666 __xinit__game_ready:
-    0000000D 00                    2667 	.db #0x00	; 0
-                                   2668 	.area _CABS (ABS)
+    00000D86 00                    2641 	.db 0x00
+                                   2642 	.area _CODE
+                                   2643 	.area _INITIALIZER
+    00000000                       2644 __xinit__player_x:
+    00000000 80 00                 2645 	.dw #0x0080
+    00000002                       2646 __xinit__player_y:
+    00000002 80 00                 2647 	.dw #0x0080
+    00000004                       2648 __xinit__player_dir:
+    00000004 00                    2649 	.db #0x00	; 0
+    00000005                       2650 __xinit__anim_frame:
+    00000005 00                    2651 	.db #0x00	; 0
+    00000006                       2652 __xinit__anim_timer:
+    00000006 00                    2653 	.db #0x00	; 0
+    00000007                       2654 __xinit__camera_x:
+    00000007 00 00                 2655 	.dw #0x0000
+    00000009                       2656 __xinit__camera_y:
+    00000009 00 00                 2657 	.dw #0x0000
+    0000000B                       2658 __xinit__env_anim_timer:
+    0000000B 00                    2659 	.db #0x00	; 0
+    0000000C                       2660 __xinit__env_anim_frame:
+    0000000C 00                    2661 	.db #0x00	; 0
+    0000000D                       2662 __xinit__game_ready:
+    0000000D 00                    2663 	.db #0x00	; 0
+                                   2664 	.area _CABS (ABS)

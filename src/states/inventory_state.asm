@@ -110,9 +110,9 @@ _draw_text:
 	ld	a, (hl)
 	sub	a, #0x3e
 	jr	NZ, 00116$
-;src/states/inventory_state.c:21: tile = (uint8_t)(128 + 32);
+;src/states/inventory_state.c:21: tile = (uint8_t)(128 + 31);
 	ldhl	sp,	#1
-	ld	(hl), #0xa0
+	ld	(hl), #0x9f
 	jr	00120$
 00116$:
 ;src/states/inventory_state.c:22: else if (txt[i] == '#')
@@ -120,9 +120,9 @@ _draw_text:
 	ld	a, (hl)
 	sub	a, #0x23
 	jr	NZ, 00113$
-;src/states/inventory_state.c:23: tile = (uint8_t)(128 + 33);
+;src/states/inventory_state.c:23: tile = (uint8_t)(128 + 32);
 	ldhl	sp,	#1
-	ld	(hl), #0xa1
+	ld	(hl), #0xa0
 	jr	00120$
 00113$:
 ;src/states/inventory_state.c:24: else if (txt[i] == ',')
@@ -160,9 +160,9 @@ _draw_text:
 	ld	a, (hl)
 	sub	a, #0x2e
 	jr	NZ, 00120$
-;src/states/inventory_state.c:31: tile = (uint8_t)(128 + 31);
+;src/states/inventory_state.c:31: tile = (uint8_t)(128 + 30);
 	ldhl	sp,	#1
-	ld	(hl), #0x9f
+	ld	(hl), #0x9e
 00120$:
 ;src/states/inventory_state.c:32: set_bkg_tile_xy(x + i, y, tile);
 	ld	a, c
@@ -197,15 +197,15 @@ _draw_box:
 	ldhl	sp,	#3
 	ld	(hl-), a
 	ld	(hl), e
-;src/states/inventory_state.c:37: set_bkg_tile_xy(x, y, (uint8_t)(128 + 34));                 // ┌
-	ld	a, #0xa2
+;src/states/inventory_state.c:37: set_bkg_tile_xy(x, y, (uint8_t)(128 + 33));                 // ┌
+	ld	a, #0xa1
 	push	af
 	inc	sp
 	ld	a, (hl+)
 	ld	e, a
 	ld	a, (hl)
 	call	_set_bkg_tile_xy
-;src/states/inventory_state.c:38: set_bkg_tile_xy(x + w - 1, y, (uint8_t)(128 + 36));         // ┐
+;src/states/inventory_state.c:38: set_bkg_tile_xy(x + w - 1, y, (uint8_t)(128 + 35));         // ┐
 	ldhl	sp,	#3
 	ld	a, (hl)
 	ldhl	sp,	#8
@@ -214,7 +214,7 @@ _draw_box:
 	ldhl	sp,	#0
 	ld	(hl+), a
 	inc	hl
-	ld	a, #0xa4
+	ld	a, #0xa3
 	push	af
 	inc	sp
 	ld	a, (hl-)
@@ -222,7 +222,7 @@ _draw_box:
 	ld	e, a
 	ld	a, (hl)
 	call	_set_bkg_tile_xy
-;src/states/inventory_state.c:39: set_bkg_tile_xy(x, y + h - 1, (uint8_t)(128 + 38));         // └
+;src/states/inventory_state.c:39: set_bkg_tile_xy(x, y + h - 1, (uint8_t)(128 + 37));         // └
 	ldhl	sp,	#2
 	ld	a, (hl)
 	ldhl	sp,	#9
@@ -230,7 +230,7 @@ _draw_box:
 	dec	a
 	ldhl	sp,	#1
 	ld	(hl), a
-	ld	a, #0xa6
+	ld	a, #0xa5
 	push	af
 	inc	sp
 	ld	a, (hl+)
@@ -238,8 +238,8 @@ _draw_box:
 	ld	e, a
 	ld	a, (hl)
 	call	_set_bkg_tile_xy
-;src/states/inventory_state.c:40: set_bkg_tile_xy(x + w - 1, y + h - 1, (uint8_t)(128 + 39)); // ┘
-	ld	a, #0xa7
+;src/states/inventory_state.c:40: set_bkg_tile_xy(x + w - 1, y + h - 1, (uint8_t)(128 + 38)); // ┘
+	ld	a, #0xa6
 	push	af
 	inc	sp
 	ldhl	sp,	#2
@@ -278,7 +278,7 @@ _draw_box:
 	scf
 00142$:
 	jr	NC, 00101$
-;src/states/inventory_state.c:42: set_bkg_tile_xy(x + i, y, (uint8_t)(128 + 35));         // ─
+;src/states/inventory_state.c:42: set_bkg_tile_xy(x + i, y, (uint8_t)(128 + 34));         // ─
 	ldhl	sp,	#4
 	ld	a, (hl-)
 	ld	c, (hl)
@@ -286,15 +286,15 @@ _draw_box:
 	add	a, c
 	ld	c, a
 	push	bc
-	ld	a, #0xa3
+	ld	a, #0xa2
 	push	af
 	inc	sp
 	ld	e, (hl)
 	ld	a, c
 	call	_set_bkg_tile_xy
 	pop	bc
-;src/states/inventory_state.c:43: set_bkg_tile_xy(x + i, y + h - 1, (uint8_t)(128 + 35)); // ─
-	ld	a, #0xa3
+;src/states/inventory_state.c:43: set_bkg_tile_xy(x + i, y + h - 1, (uint8_t)(128 + 34)); // ─
+	ld	a, #0xa2
 	push	af
 	inc	sp
 	ldhl	sp,	#2
@@ -336,7 +336,7 @@ _draw_box:
 	scf
 00145$:
 	jr	NC, 00109$
-;src/states/inventory_state.c:46: set_bkg_tile_xy(x, y + i, (uint8_t)(128 + 37));         // │
+;src/states/inventory_state.c:46: set_bkg_tile_xy(x, y + i, (uint8_t)(128 + 36));         // │
 	ldhl	sp,	#5
 	ld	(hl), c
 	ldhl	sp,	#2
@@ -348,14 +348,14 @@ _draw_box:
 	ld	e, a
 	push	bc
 	push	de
-	ld	a, #0xa5
+	ld	a, #0xa4
 	push	af
 	inc	sp
 	ld	a, (hl)
 	call	_set_bkg_tile_xy
 	pop	de
-;src/states/inventory_state.c:47: set_bkg_tile_xy(x + w - 1, y + i, (uint8_t)(128 + 37)); // │
-	ld	a, #0xa5
+;src/states/inventory_state.c:47: set_bkg_tile_xy(x + w - 1, y + i, (uint8_t)(128 + 36)); // │
+	ld	a, #0xa4
 	push	af
 	inc	sp
 	ldhl	sp,	#3
@@ -396,12 +396,12 @@ _inventory_draw::
 ;src/states/inventory_state.c:57: for (int i = 1; i < 19; i++)
 	ld	c, #0x01
 00107$:
-;src/states/inventory_state.c:58: set_bkg_tile_xy(i, 2, (uint8_t)(128 + 35));
+;src/states/inventory_state.c:58: set_bkg_tile_xy(i, 2, (uint8_t)(128 + 34));
 	ld	a,c
 	cp	a,#0x13
 	jr	NC, 00101$
 	push	bc
-	ld	h, #0xa3
+	ld	h, #0xa2
 	push	hl
 	inc	sp
 	ld	e, #0x02
@@ -551,10 +551,10 @@ _inventory_state_init::
 	ldh	(_SCX_REG + 0), a
 	xor	a, a
 	ldh	(_SCY_REG + 0), a
-;src/states/inventory_state.c:89: set_bkg_data(128, 40, font_data);
+;src/states/inventory_state.c:89: set_bkg_data(128, 39, font_data);
 	ld	de, #_font_data
 	push	de
-	ld	hl, #0x2880
+	ld	hl, #0x2780
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4

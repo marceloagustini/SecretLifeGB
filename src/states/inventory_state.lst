@@ -110,9 +110,9 @@
     00000045 7E               [ 8]  110 	ld	a, (hl)
     00000046 D6 3E            [ 8]  111 	sub	a, #0x3e
     00000048 20 06            [12]  112 	jr	NZ, 00116$
-                                    113 ;src/states/inventory_state.c:21: tile = (uint8_t)(128 + 32);
+                                    113 ;src/states/inventory_state.c:21: tile = (uint8_t)(128 + 31);
     0000004A F8 01            [12]  114 	ldhl	sp,	#1
-    0000004C 36 A0            [12]  115 	ld	(hl), #0xa0
+    0000004C 36 9F            [12]  115 	ld	(hl), #0x9f
     0000004E 18 3F            [12]  116 	jr	00120$
     00000050                        117 00116$:
                                     118 ;src/states/inventory_state.c:22: else if (txt[i] == '#')
@@ -120,9 +120,9 @@
     00000052 7E               [ 8]  120 	ld	a, (hl)
     00000053 D6 23            [ 8]  121 	sub	a, #0x23
     00000055 20 06            [12]  122 	jr	NZ, 00113$
-                                    123 ;src/states/inventory_state.c:23: tile = (uint8_t)(128 + 33);
+                                    123 ;src/states/inventory_state.c:23: tile = (uint8_t)(128 + 32);
     00000057 F8 01            [12]  124 	ldhl	sp,	#1
-    00000059 36 A1            [12]  125 	ld	(hl), #0xa1
+    00000059 36 A0            [12]  125 	ld	(hl), #0xa0
     0000005B 18 32            [12]  126 	jr	00120$
     0000005D                        127 00113$:
                                     128 ;src/states/inventory_state.c:24: else if (txt[i] == ',')
@@ -160,9 +160,9 @@
     00000086 7E               [ 8]  160 	ld	a, (hl)
     00000087 D6 2E            [ 8]  161 	sub	a, #0x2e
     00000089 20 04            [12]  162 	jr	NZ, 00120$
-                                    163 ;src/states/inventory_state.c:31: tile = (uint8_t)(128 + 31);
+                                    163 ;src/states/inventory_state.c:31: tile = (uint8_t)(128 + 30);
     0000008B F8 01            [12]  164 	ldhl	sp,	#1
-    0000008D 36 9F            [12]  165 	ld	(hl), #0x9f
+    0000008D 36 9E            [12]  165 	ld	(hl), #0x9e
     0000008F                        166 00120$:
                                     167 ;src/states/inventory_state.c:32: set_bkg_tile_xy(x + i, y, tile);
     0000008F 79               [ 4]  168 	ld	a, c
@@ -197,15 +197,15 @@
     000000AC F8 03            [12]  197 	ldhl	sp,	#3
     000000AE 32               [ 8]  198 	ld	(hl-), a
     000000AF 73               [ 8]  199 	ld	(hl), e
-                                    200 ;src/states/inventory_state.c:37: set_bkg_tile_xy(x, y, (uint8_t)(128 + 34));                 // ┌
-    000000B0 3E A2            [ 8]  201 	ld	a, #0xa2
+                                    200 ;src/states/inventory_state.c:37: set_bkg_tile_xy(x, y, (uint8_t)(128 + 33));                 // ┌
+    000000B0 3E A1            [ 8]  201 	ld	a, #0xa1
     000000B2 F5               [16]  202 	push	af
     000000B3 33               [ 8]  203 	inc	sp
     000000B4 2A               [ 8]  204 	ld	a, (hl+)
     000000B5 5F               [ 4]  205 	ld	e, a
     000000B6 7E               [ 8]  206 	ld	a, (hl)
     000000B7 CDr00r00         [24]  207 	call	_set_bkg_tile_xy
-                                    208 ;src/states/inventory_state.c:38: set_bkg_tile_xy(x + w - 1, y, (uint8_t)(128 + 36));         // ┐
+                                    208 ;src/states/inventory_state.c:38: set_bkg_tile_xy(x + w - 1, y, (uint8_t)(128 + 35));         // ┐
     000000BA F8 03            [12]  209 	ldhl	sp,	#3
     000000BC 7E               [ 8]  210 	ld	a, (hl)
     000000BD F8 08            [12]  211 	ldhl	sp,	#8
@@ -214,7 +214,7 @@
     000000C1 F8 00            [12]  214 	ldhl	sp,	#0
     000000C3 22               [ 8]  215 	ld	(hl+), a
     000000C4 23               [ 8]  216 	inc	hl
-    000000C5 3E A4            [ 8]  217 	ld	a, #0xa4
+    000000C5 3E A3            [ 8]  217 	ld	a, #0xa3
     000000C7 F5               [16]  218 	push	af
     000000C8 33               [ 8]  219 	inc	sp
     000000C9 3A               [ 8]  220 	ld	a, (hl-)
@@ -222,7 +222,7 @@
     000000CB 5F               [ 4]  222 	ld	e, a
     000000CC 7E               [ 8]  223 	ld	a, (hl)
     000000CD CDr00r00         [24]  224 	call	_set_bkg_tile_xy
-                                    225 ;src/states/inventory_state.c:39: set_bkg_tile_xy(x, y + h - 1, (uint8_t)(128 + 38));         // └
+                                    225 ;src/states/inventory_state.c:39: set_bkg_tile_xy(x, y + h - 1, (uint8_t)(128 + 37));         // └
     000000D0 F8 02            [12]  226 	ldhl	sp,	#2
     000000D2 7E               [ 8]  227 	ld	a, (hl)
     000000D3 F8 09            [12]  228 	ldhl	sp,	#9
@@ -230,7 +230,7 @@
     000000D6 3D               [ 4]  230 	dec	a
     000000D7 F8 01            [12]  231 	ldhl	sp,	#1
     000000D9 77               [ 8]  232 	ld	(hl), a
-    000000DA 3E A6            [ 8]  233 	ld	a, #0xa6
+    000000DA 3E A5            [ 8]  233 	ld	a, #0xa5
     000000DC F5               [16]  234 	push	af
     000000DD 33               [ 8]  235 	inc	sp
     000000DE 2A               [ 8]  236 	ld	a, (hl+)
@@ -238,8 +238,8 @@
     000000E0 5F               [ 4]  238 	ld	e, a
     000000E1 7E               [ 8]  239 	ld	a, (hl)
     000000E2 CDr00r00         [24]  240 	call	_set_bkg_tile_xy
-                                    241 ;src/states/inventory_state.c:40: set_bkg_tile_xy(x + w - 1, y + h - 1, (uint8_t)(128 + 39)); // ┘
-    000000E5 3E A7            [ 8]  242 	ld	a, #0xa7
+                                    241 ;src/states/inventory_state.c:40: set_bkg_tile_xy(x + w - 1, y + h - 1, (uint8_t)(128 + 38)); // ┘
+    000000E5 3E A6            [ 8]  242 	ld	a, #0xa6
     000000E7 F5               [16]  243 	push	af
     000000E8 33               [ 8]  244 	inc	sp
     000000E9 F8 02            [12]  245 	ldhl	sp,	#2
@@ -278,7 +278,7 @@
     00000115 37               [ 4]  278 	scf
     00000116                        279 00142$:
     00000116 30 26            [12]  280 	jr	NC, 00101$
-                                    281 ;src/states/inventory_state.c:42: set_bkg_tile_xy(x + i, y, (uint8_t)(128 + 35));         // ─
+                                    281 ;src/states/inventory_state.c:42: set_bkg_tile_xy(x + i, y, (uint8_t)(128 + 34));         // ─
     00000118 F8 04            [12]  282 	ldhl	sp,	#4
     0000011A 3A               [ 8]  283 	ld	a, (hl-)
     0000011B 4E               [ 8]  284 	ld	c, (hl)
@@ -286,15 +286,15 @@
     0000011D 81               [ 4]  286 	add	a, c
     0000011E 4F               [ 4]  287 	ld	c, a
     0000011F C5               [16]  288 	push	bc
-    00000120 3E A3            [ 8]  289 	ld	a, #0xa3
+    00000120 3E A2            [ 8]  289 	ld	a, #0xa2
     00000122 F5               [16]  290 	push	af
     00000123 33               [ 8]  291 	inc	sp
     00000124 5E               [ 8]  292 	ld	e, (hl)
     00000125 79               [ 4]  293 	ld	a, c
     00000126 CDr00r00         [24]  294 	call	_set_bkg_tile_xy
     00000129 C1               [12]  295 	pop	bc
-                                    296 ;src/states/inventory_state.c:43: set_bkg_tile_xy(x + i, y + h - 1, (uint8_t)(128 + 35)); // ─
-    0000012A 3E A3            [ 8]  297 	ld	a, #0xa3
+                                    296 ;src/states/inventory_state.c:43: set_bkg_tile_xy(x + i, y + h - 1, (uint8_t)(128 + 34)); // ─
+    0000012A 3E A2            [ 8]  297 	ld	a, #0xa2
     0000012C F5               [16]  298 	push	af
     0000012D 33               [ 8]  299 	inc	sp
     0000012E F8 02            [12]  300 	ldhl	sp,	#2
@@ -336,7 +336,7 @@
     0000015D 37               [ 4]  336 	scf
     0000015E                        337 00145$:
     0000015E 30 25            [12]  338 	jr	NC, 00109$
-                                    339 ;src/states/inventory_state.c:46: set_bkg_tile_xy(x, y + i, (uint8_t)(128 + 37));         // │
+                                    339 ;src/states/inventory_state.c:46: set_bkg_tile_xy(x, y + i, (uint8_t)(128 + 36));         // │
     00000160 F8 05            [12]  340 	ldhl	sp,	#5
     00000162 71               [ 8]  341 	ld	(hl), c
     00000163 F8 02            [12]  342 	ldhl	sp,	#2
@@ -348,14 +348,14 @@
     0000016B 5F               [ 4]  348 	ld	e, a
     0000016C C5               [16]  349 	push	bc
     0000016D D5               [16]  350 	push	de
-    0000016E 3E A5            [ 8]  351 	ld	a, #0xa5
+    0000016E 3E A4            [ 8]  351 	ld	a, #0xa4
     00000170 F5               [16]  352 	push	af
     00000171 33               [ 8]  353 	inc	sp
     00000172 7E               [ 8]  354 	ld	a, (hl)
     00000173 CDr00r00         [24]  355 	call	_set_bkg_tile_xy
     00000176 D1               [12]  356 	pop	de
-                                    357 ;src/states/inventory_state.c:47: set_bkg_tile_xy(x + w - 1, y + i, (uint8_t)(128 + 37)); // │
-    00000177 3E A5            [ 8]  358 	ld	a, #0xa5
+                                    357 ;src/states/inventory_state.c:47: set_bkg_tile_xy(x + w - 1, y + i, (uint8_t)(128 + 36)); // │
+    00000177 3E A4            [ 8]  358 	ld	a, #0xa4
     00000179 F5               [16]  359 	push	af
     0000017A 33               [ 8]  360 	inc	sp
     0000017B F8 03            [12]  361 	ldhl	sp,	#3
@@ -396,12 +396,12 @@
                                     396 ;src/states/inventory_state.c:57: for (int i = 1; i < 19; i++)
     000001A5 0E 01            [ 8]  397 	ld	c, #0x01
     000001A7                        398 00107$:
-                                    399 ;src/states/inventory_state.c:58: set_bkg_tile_xy(i, 2, (uint8_t)(128 + 35));
+                                    399 ;src/states/inventory_state.c:58: set_bkg_tile_xy(i, 2, (uint8_t)(128 + 34));
     000001A7 79               [ 4]  400 	ld	a,c
     000001A8 FE 13            [ 8]  401 	cp	a,#0x13
     000001AA 30 0E            [12]  402 	jr	NC, 00101$
     000001AC C5               [16]  403 	push	bc
-    000001AD 26 A3            [ 8]  404 	ld	h, #0xa3
+    000001AD 26 A2            [ 8]  404 	ld	h, #0xa2
     000001AF E5               [16]  405 	push	hl
     000001B0 33               [ 8]  406 	inc	sp
     000001B1 1E 02            [ 8]  407 	ld	e, #0x02
@@ -553,10 +553,10 @@
     00000283 E0r00            [12]  551 	ldh	(_SCX_REG + 0), a
     00000285 AF               [ 4]  552 	xor	a, a
     00000286 E0r00            [12]  553 	ldh	(_SCY_REG + 0), a
-                                    554 ;src/states/inventory_state.c:89: set_bkg_data(128, 40, font_data);
+                                    554 ;src/states/inventory_state.c:89: set_bkg_data(128, 39, font_data);
     00000288 11r00r00         [12]  555 	ld	de, #_font_data
     0000028B D5               [16]  556 	push	de
-    0000028C 21 80 28         [12]  557 	ld	hl, #0x2880
+    0000028C 21 80 27         [12]  557 	ld	hl, #0x2780
     0000028F E5               [16]  558 	push	hl
     00000290 CDr00r00         [24]  559 	call	_set_bkg_data
     00000293 E8 04            [16]  560 	add	sp, #4

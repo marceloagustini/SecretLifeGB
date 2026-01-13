@@ -2525,7 +2525,7 @@ _game_update::
 	ld	a, (hl)
 	or	a, a
 	jr	NZ, 00161$
-;src/states/game.c:351: text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
+;src/states/game.c:351: text_dialogue("HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
 	ld	de, #___str_3
 	call	_text_dialogue
 ;src/states/game.c:352: inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
@@ -2564,7 +2564,7 @@ _game_update::
 	call	_inventory_has_item
 	or	a, a
 	jr	Z, 00172$
-;src/states/game.c:360: text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
+;src/states/game.c:360: text_dialogue("USAS LA LLAVE...\nEL PORTON SE ABRE!");
 	ld	de, #___str_6
 	call	_text_dialogue
 ;src/states/game.c:361: switch_map(&level2_map_info, 128, 224);
@@ -2617,8 +2617,6 @@ ___str_2:
 	.ascii "LLAVE"
 	.db 0x00
 ___str_3:
-	.db 0xc2
-	.db 0xa1
 	.ascii "HAS ENCONTRADO LA"
 	.db 0x0a
 	.ascii "LLAVE DEL PORTON!"
@@ -2634,8 +2632,6 @@ ___str_5:
 ___str_6:
 	.ascii "USAS LA LLAVE..."
 	.db 0x0a
-	.db 0xc2
-	.db 0xa1
 	.ascii "EL PORTON SE ABRE!"
 	.db 0x00
 ___str_7:

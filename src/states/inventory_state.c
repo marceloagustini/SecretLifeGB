@@ -18,9 +18,9 @@ static void draw_text(uint8_t x, uint8_t y, const char *txt) {
     if (txt[i] >= 'A' && txt[i] <= 'Z')
       tile = (uint8_t)(128 + 1 + (txt[i] - 'A'));
     else if (txt[i] == '>')
-      tile = (uint8_t)(128 + 32);
+      tile = (uint8_t)(128 + 31);
     else if (txt[i] == '#')
-      tile = (uint8_t)(128 + 33);
+      tile = (uint8_t)(128 + 32);
     else if (txt[i] == ',')
       tile = (uint8_t)(128 + 27);
     else if (txt[i] == '?')
@@ -28,23 +28,23 @@ static void draw_text(uint8_t x, uint8_t y, const char *txt) {
     else if (txt[i] == '!')
       tile = (uint8_t)(128 + 29);
     else if (txt[i] == '.')
-      tile = (uint8_t)(128 + 31);
+      tile = (uint8_t)(128 + 30);
     set_bkg_tile_xy(x + i, y, tile);
   }
 }
 
 static void draw_box(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
-  set_bkg_tile_xy(x, y, (uint8_t)(128 + 34));                 // ┌
-  set_bkg_tile_xy(x + w - 1, y, (uint8_t)(128 + 36));         // ┐
-  set_bkg_tile_xy(x, y + h - 1, (uint8_t)(128 + 38));         // └
-  set_bkg_tile_xy(x + w - 1, y + h - 1, (uint8_t)(128 + 39)); // ┘
+  set_bkg_tile_xy(x, y, (uint8_t)(128 + 33));                 // ┌
+  set_bkg_tile_xy(x + w - 1, y, (uint8_t)(128 + 35));         // ┐
+  set_bkg_tile_xy(x, y + h - 1, (uint8_t)(128 + 37));         // └
+  set_bkg_tile_xy(x + w - 1, y + h - 1, (uint8_t)(128 + 38)); // ┘
   for (int i = 1; i < w - 1; i++) {
-    set_bkg_tile_xy(x + i, y, (uint8_t)(128 + 35));         // ─
-    set_bkg_tile_xy(x + i, y + h - 1, (uint8_t)(128 + 35)); // ─
+    set_bkg_tile_xy(x + i, y, (uint8_t)(128 + 34));         // ─
+    set_bkg_tile_xy(x + i, y + h - 1, (uint8_t)(128 + 34)); // ─
   }
   for (int i = 1; i < h - 1; i++) {
-    set_bkg_tile_xy(x, y + i, (uint8_t)(128 + 37));         // │
-    set_bkg_tile_xy(x + w - 1, y + i, (uint8_t)(128 + 37)); // │
+    set_bkg_tile_xy(x, y + i, (uint8_t)(128 + 36));         // │
+    set_bkg_tile_xy(x + w - 1, y + i, (uint8_t)(128 + 36)); // │
   }
 }
 
@@ -55,7 +55,7 @@ void inventory_draw(void) {
   // Header
   draw_text(5, 1, "INVENTARIO");
   for (int i = 1; i < 19; i++)
-    set_bkg_tile_xy(i, 2, (uint8_t)(128 + 35));
+    set_bkg_tile_xy(i, 2, (uint8_t)(128 + 34));
 
   if (inventory_count == 0) {
     draw_text(7, 8, "VACIO");
@@ -86,7 +86,7 @@ void inventory_state_init(void) {
   move_bkg(0, 0);
 
   // Use the text system mapping logic if possible, or just load data
-  set_bkg_data(128, 40, font_data);
+  set_bkg_data(128, 39, font_data);
 
   selection = 0;
   inventory_draw();

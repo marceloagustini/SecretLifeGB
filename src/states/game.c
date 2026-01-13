@@ -348,7 +348,7 @@ void game_update(void) {
         (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
       if (input_pressed(J_B)) {
         if (!inventory_has_item("LLAVE")) {
-          text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
+          text_dialogue("HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
           inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
         } else
           text_dialogue("EL ROPERO ESTA\nVACIO.");
@@ -357,7 +357,7 @@ void game_update(void) {
 
     if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
       if (inventory_has_item("LLAVE")) {
-        text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
+        text_dialogue("USAS LA LLAVE...\nEL PORTON SE ABRE!");
         switch_map(&level2_map_info, 128, 224);
         return;
       } else {
