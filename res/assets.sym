@@ -7,13 +7,13 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 _font_data                                                      00000FF8 GR
-  0 _house_map                                                      000008D0 GR
-  0 _level2_map                                                     00000A38 GR
-  0 _map_data                                                       000004D0 GR
-  0 _npc_child_sprite                                               00000FB8 GR
-  0 _player_sprites                                                 00000E38 GR
-  0 _tiles_anim_data                                                00000340 GR
+  0 _font_data                                                      00000EF8 GR
+  0 _house_map                                                      000007D0 GR
+  0 _level2_map                                                     00000938 GR
+  0 _map_data                                                       000003D0 GR
+  0 _npc_child_sprite                                               00000EB8 GR
+  0 _player_sprites                                                 00000D38 GR
+  0 _tiles_anim_data                                                00000380 GR
   0 _tiles_data                                                     00000000 GR
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
@@ -21,7 +21,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     1228   flags    0
+   0 _CODE                                      size     1128   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0

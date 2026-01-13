@@ -1,39 +1,60 @@
+#include "../../res/assets.h"
 #include "../utils/input.h"
 #include "states.h"
 #include <gb/gb.h>
-#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
-extern uint8_t game_state; // Defined in main.c
+extern uint8_t game_state;
+#define STATE_GAME 2
+
+static uint8_t selection = 0; // 0: START, 1: ABOUT
+
+void menu_draw(void) {
+  // Clear BKG with space (tile 128+0)
+  fill_bkg_rect(0, 0, 20, 18, 128 + 0);
+
+  // Title
+  const char *title1 = "SECRET LIFE";
+  for (int i = 0; i < 11; i++)
+    set_bkg_tile_xy(4 + i, 4, 128 + 1 + (title1[i] - 'A'));
+
+  // Options
+  const char *opt1 = "START";
+  const char *opt2 = "ABOUT";
+
+  for (int i = 0; i < 5; i++)
+    set_bkg_tile_xy(7 + i, 8, 128 + 1 + (opt1[i] - 'A'));
+  for (int i = 0; i < 5; i++)
+    set_bkg_tile_xy(7 + i, 10, 128 + 1 + (opt2[i] - 'A'));
+
+  // Cursor
+  set_bkg_tile_xy(5, 8 + (selection * 2), 128 + 32); // Use '>' or similar char
+}
 
 void menu_init(void) {
-  wait_vbl_done();
-  // Turn off screen to write VRAM
   DISPLAY_OFF;
-
-  // Set default palette
   BGP_REG = 0xE4;
 
-  // Clear screen
-  // get_bkg_data / set_bkg_data ...
-  // For simplicity, we just use printf to the background
-  printf("\n\n\n\n");
-  printf("   GAMEBOY ZELDA\n");
-  printf("      LIKE\n");
-  printf("\n\n");
-  printf("   PRESS START");
+  // Load font data to BKG tiles starting at 128
+  set_bkg_data(128, 35, font_data);
 
-  // Turn screen on
+  menu_draw();
+
   SHOW_BKG;
   DISPLAY_ON;
 }
 
 void menu_update(void) {
-  if (input_pressed(J_START)) {
-    // Switch to game state
-    // game_state = 1; // Assuming 1 is GAME
-    // Since we don't have direct access, we might need to return a value,
-    // but for now we'll assume the main loop handles the transition if we set a
-    // flag OR we just use a global. Let's rely on the main loop to see the
-    // return or global change.
+  if (input_pressed(J_DOWN | J_UP)) {
+    selection = 1 - selection;
+    menu_draw();
+  }
+
+  if (input_pressed(J_START | J_A)) {
+    if (selection == 0) {
+      game_state = STATE_GAME;
+    }
+    // Selection 1 (ABOUT) does nothing for now
   }
 }
