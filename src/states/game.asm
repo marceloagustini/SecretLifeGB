@@ -1738,25 +1738,19 @@ _game_update::
 	inc	d
 00612$:
 	call	_get_tile_at
-	ldhl	sp,	#9
-	ld	(hl), a
+	ld	e, a
 ;src/states/game.c:293: if (current_map == &world_map_info &&
 ;src/states/game.c:292: uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
 	ld	a, (_player_y)
-	ld	e, a
+	ld	c, a
 	ld	hl, #_player_y + 1
-	ld	d, (hl)
+	ld	b, (hl)
 	ld	a, (#_player_x)
 	ldhl	sp,	#10
 	ld	(hl), a
 	ld	a, (#_player_x + 1)
 	ldhl	sp,	#11
 	ld	(hl), a
-;src/states/game.c:298: saved_world_y = player_y + 16;
-	ld	hl, #0x0010
-	add	hl, de
-	ld	c, l
-	ld	b, h
 ;src/states/game.c:293: if (current_map == &world_map_info &&
 	ld	hl, #_current_map
 	ld	a, (hl)
@@ -1767,29 +1761,18 @@ _game_update::
 	sub	a, #>(_world_map_info)
 	jr	NZ, 00125$
 ;src/states/game.c:294: (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
-	ldhl	sp,	#9
-	ld	a, (hl)
-	sub	a, #0x15
+	ld	a,e
+	cp	a,#0x15
 	jr	Z, 00124$
-	ldhl	sp,	#9
-	ld	a, (hl)
-	sub	a, #0x16
+	cp	a,#0x16
 	jr	Z, 00124$
-	ldhl	sp,	#9
-	ld	a, (hl)
-	sub	a, #0x3a
-	jr	Z, 00124$
-	ldhl	sp,	#9
-	ld	a, (hl)
-	sub	a, #0x3b
-	jr	Z, 00124$
-	ldhl	sp,	#9
-	ld	a, (hl)
-	sub	a, #0x46
+	cp	a,#0x3a
 	jr	Z, 00124$
 ;src/states/game.c:295: tid == 71)) {
-	ldhl	sp,	#9
-	ld	a, (hl)
+	cp	a,#0x3b
+	jr	Z, 00124$
+	cp	a,#0x46
+	jr	Z, 00124$
 	sub	a, #0x47
 	jr	NZ, 00125$
 00124$:
@@ -1802,9 +1785,9 @@ _game_update::
 	sbc	a, (hl)
 	jr	NC, 00125$
 	ld	a, #0xa0
-	cp	a, e
+	cp	a, c
 	ld	a, #0x00
-	sbc	a, d
+	sbc	a, b
 	jr	NC, 00125$
 ;src/states/game.c:297: saved_world_x = player_x;
 	ld	a, (#_player_x)
@@ -1812,10 +1795,14 @@ _game_update::
 	ld	a, (#_player_x + 1)
 	ld	(#_saved_world_x + 1),a
 ;src/states/game.c:298: saved_world_y = player_y + 16;
+	ld	hl, #0x0010
+	add	hl, bc
+	ld	e, l
+	ld	d, h
 	ld	hl, #_saved_world_y
-	ld	a, c
+	ld	a, e
 	ld	(hl+), a
-	ld	(hl), b
+	ld	(hl), d
 ;src/states/game.c:299: switch_map(&house_map_info, 76, 112);
 	ld	de, #0x0070
 	push	de
@@ -1825,7 +1812,11 @@ _game_update::
 ;src/states/game.c:300: return;
 	jp	00201$
 00125$:
-;src/states/game.c:303: tid = get_tile_at(player_x + 8, player_y + 16);
+;src/states/game.c:303: tid = get_tile_at(player_x + 8, player_y + 12);
+	ld	hl, #0x000c
+	add	hl, bc
+	ld	c, l
+	ld	b, h
 	ldhl	sp,#10
 	ld	a, (hl+)
 	ld	e, a

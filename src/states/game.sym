@@ -15,12 +15,12 @@ Symbol Table
     _SCY_REG                                                        ******** GX
   0 ___str_0                                                        00000677 R
   0 ___str_1                                                        000006B2 R
-  0 ___str_2                                                        00000D03 R
-  0 ___str_3                                                        00000D09 R
-  0 ___str_4                                                        00000D2F R
-  0 ___str_5                                                        00000D44 R
-  0 ___str_6                                                        00000D5A R
-  0 ___str_7                                                        00000D80 R
+  0 ___str_2                                                        00000CF6 R
+  0 ___str_3                                                        00000CFC R
+  0 ___str_4                                                        00000D22 R
+  0 ___str_5                                                        00000D37 R
+  0 ___str_6                                                        00000D4D R
+  0 ___str_7                                                        00000D73 R
     __mulint                                                        ******** GX
   8 __xinit__anim_frame                                             00000005 R
   8 __xinit__anim_timer                                             00000006 R
@@ -97,7 +97,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      D98   flags    0
+   0 _CODE                                      size      D8B   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size       66   flags    0
    3 _INITIALIZED                               size        E   flags    0

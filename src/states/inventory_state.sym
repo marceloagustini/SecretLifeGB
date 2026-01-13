@@ -11,12 +11,14 @@ Symbol Table
     _LCDC_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000105 R
-  0 ___str_1                                                        00000110 R
-  0 ___str_2                                                        00000116 R
-  0 ___str_3                                                        0000012B R
+  0 ___str_0                                                        0000025B R
+  0 ___str_1                                                        00000266 R
+  0 ___str_2                                                        0000026C R
+  0 ___str_3                                                        0000026E R
+  0 ___str_4                                                        00000270 R
   8 __xinit__selection                                              00000000 R
     _display_off                                                    ******** GX
+  0 _draw_box                                                       000000AA R
   0 _draw_text                                                      00000000 R
     _fill_bkg_rect                                                  ******** GX
     _font_data                                                      ******** GX
@@ -24,19 +26,20 @@ Symbol Table
     _input_pressed                                                  ******** GX
     _inventory                                                      ******** GX
     _inventory_count                                                ******** GX
-  0 _inventory_draw                                                 0000005A GR
-  0 _inventory_state_init                                           00000136 GR
-  0 _inventory_state_update                                         0000016A GR
+  0 _inventory_draw                                                 0000018A GR
+  0 _inventory_state_init                                           0000027B GR
+  0 _inventory_state_update                                         000002AF GR
   3 _selection                                                      00000000 R
     _set_bkg_data                                                   ******** GX
     _set_bkg_tile_xy                                                ******** GX
+
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      1C4   flags    0
+   0 _CODE                                      size      309   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        1   flags    0

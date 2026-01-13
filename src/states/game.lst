@@ -1594,7 +1594,7 @@
     00000776 56               [ 8] 1584 	ld	d, (hl)
     00000777 CDr00r03         [24] 1585 	call	_can_move
     0000077A B7               [ 4] 1586 	or	a, a
-    0000077B CAr4Br09         [16] 1587 	jp	Z, 00248$
+    0000077B CAr3Er09         [16] 1587 	jp	Z, 00248$
                                    1588 ;src/states/game.c:265: player_x = nx;
     0000077E F8 08            [12] 1589 	ldhl	sp,	#8
     00000780 7E               [ 8] 1590 	ld	a, (hl)
@@ -1691,7 +1691,7 @@
     000007FF 34               [12] 1681 	inc	(hl)
     00000800 3E 06            [ 8] 1682 	ld	a, #0x06
     00000802 96               [ 8] 1683 	sub	a, (hl)
-    00000803 D2r4Br09         [16] 1684 	jp	NC, 00248$
+    00000803 D2r3Er09         [16] 1684 	jp	NC, 00248$
                                    1685 ;src/states/game.c:273: anim_frame = !anim_frame;
     00000806 21r05r00         [12] 1686 	ld	hl, #_anim_frame
     00000809 7E               [ 8] 1687 	ld	a, (hl)
@@ -1704,7 +1704,7 @@
     00000811 EAr06r00         [16] 1694 	ld	(#_anim_timer),a
                                    1695 ;src/states/game.c:275: update_player_sprite();
     00000814 CDr4Cr01         [24] 1696 	call	_update_player_sprite
-    00000817 C3r4Br09         [16] 1697 	jp	00248$
+    00000817 C3r3Er09         [16] 1697 	jp	00248$
     0000081A                       1698 00140$:
                                    1699 ;src/states/game.c:279: if (anim_frame != 0) {
     0000081A 21r05r00         [12] 1700 	ld	hl, #_anim_frame
@@ -1728,7 +1728,7 @@
     00000832 21r00r00         [12] 1718 	ld	hl, #_game_state
     00000835 36 03            [12] 1719 	ld	(hl), #0x03
                                    1720 ;src/states/game.c:288: return;
-    00000837 C3r00r0D         [16] 1721 	jp	00201$
+    00000837 C3rF3r0C         [16] 1721 	jp	00201$
     0000083A                       1722 00120$:
                                    1723 ;src/states/game.c:292: uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
     0000083A FAr02r00         [16] 1724 	ld	a, (_player_y)
@@ -1748,953 +1748,944 @@
     00000852 14               [ 4] 1738 	inc	d
     00000853                       1739 00612$:
     00000853 CDr00r00         [24] 1740 	call	_get_tile_at
-    00000856 F8 09            [12] 1741 	ldhl	sp,	#9
-    00000858 77               [ 8] 1742 	ld	(hl), a
-                                   1743 ;src/states/game.c:293: if (current_map == &world_map_info &&
-                                   1744 ;src/states/game.c:292: uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
-    00000859 FAr02r00         [16] 1745 	ld	a, (_player_y)
-    0000085C 5F               [ 4] 1746 	ld	e, a
-    0000085D 21r03r00         [12] 1747 	ld	hl, #_player_y + 1
-    00000860 56               [ 8] 1748 	ld	d, (hl)
-    00000861 FAr00r00         [16] 1749 	ld	a, (#_player_x)
-    00000864 F8 0A            [12] 1750 	ldhl	sp,	#10
-    00000866 77               [ 8] 1751 	ld	(hl), a
-    00000867 FAr01r00         [16] 1752 	ld	a, (#_player_x + 1)
-    0000086A F8 0B            [12] 1753 	ldhl	sp,	#11
-    0000086C 77               [ 8] 1754 	ld	(hl), a
-                                   1755 ;src/states/game.c:298: saved_world_y = player_y + 16;
-    0000086D 21 10 00         [12] 1756 	ld	hl, #0x0010
-    00000870 19               [ 8] 1757 	add	hl, de
-    00000871 4D               [ 4] 1758 	ld	c, l
-    00000872 44               [ 4] 1759 	ld	b, h
-                                   1760 ;src/states/game.c:293: if (current_map == &world_map_info &&
-    00000873 21r60r00         [12] 1761 	ld	hl, #_current_map
-    00000876 7E               [ 8] 1762 	ld	a, (hl)
-    00000877 D6r1B            [ 8] 1763 	sub	a, #<(_world_map_info)
-    00000879 20 65            [12] 1764 	jr	NZ, 00125$
-    0000087B 23               [ 8] 1765 	inc	hl
-    0000087C 7E               [ 8] 1766 	ld	a, (hl)
-    0000087D D6s00            [ 8] 1767 	sub	a, #>(_world_map_info)
-    0000087F 20 5F            [12] 1768 	jr	NZ, 00125$
-                                   1769 ;src/states/game.c:294: (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
-    00000881 F8 09            [12] 1770 	ldhl	sp,	#9
-    00000883 7E               [ 8] 1771 	ld	a, (hl)
-    00000884 D6 15            [ 8] 1772 	sub	a, #0x15
-    00000886 28 23            [12] 1773 	jr	Z, 00124$
-    00000888 F8 09            [12] 1774 	ldhl	sp,	#9
-    0000088A 7E               [ 8] 1775 	ld	a, (hl)
-    0000088B D6 16            [ 8] 1776 	sub	a, #0x16
-    0000088D 28 1C            [12] 1777 	jr	Z, 00124$
-    0000088F F8 09            [12] 1778 	ldhl	sp,	#9
-    00000891 7E               [ 8] 1779 	ld	a, (hl)
-    00000892 D6 3A            [ 8] 1780 	sub	a, #0x3a
-    00000894 28 15            [12] 1781 	jr	Z, 00124$
-    00000896 F8 09            [12] 1782 	ldhl	sp,	#9
-    00000898 7E               [ 8] 1783 	ld	a, (hl)
-    00000899 D6 3B            [ 8] 1784 	sub	a, #0x3b
-    0000089B 28 0E            [12] 1785 	jr	Z, 00124$
-    0000089D F8 09            [12] 1786 	ldhl	sp,	#9
-    0000089F 7E               [ 8] 1787 	ld	a, (hl)
-    000008A0 D6 46            [ 8] 1788 	sub	a, #0x46
-    000008A2 28 07            [12] 1789 	jr	Z, 00124$
-                                   1790 ;src/states/game.c:295: tid == 71)) {
-    000008A4 F8 09            [12] 1791 	ldhl	sp,	#9
-    000008A6 7E               [ 8] 1792 	ld	a, (hl)
-    000008A7 D6 47            [ 8] 1793 	sub	a, #0x47
-    000008A9 20 35            [12] 1794 	jr	NZ, 00125$
-    000008AB                       1795 00124$:
-                                   1796 ;src/states/game.c:296: if (player_x > 160 && player_y > 160) {
-    000008AB F8 0A            [12] 1797 	ldhl	sp,	#10
-    000008AD 3E A0            [ 8] 1798 	ld	a, #0xa0
-    000008AF 96               [ 8] 1799 	sub	a, (hl)
-    000008B0 23               [ 8] 1800 	inc	hl
-    000008B1 3E 00            [ 8] 1801 	ld	a, #0x00
-    000008B3 9E               [ 8] 1802 	sbc	a, (hl)
-    000008B4 30 2A            [12] 1803 	jr	NC, 00125$
-    000008B6 3E A0            [ 8] 1804 	ld	a, #0xa0
-    000008B8 BB               [ 4] 1805 	cp	a, e
-    000008B9 3E 00            [ 8] 1806 	ld	a, #0x00
-    000008BB 9A               [ 4] 1807 	sbc	a, d
-    000008BC 30 22            [12] 1808 	jr	NC, 00125$
-                                   1809 ;src/states/game.c:297: saved_world_x = player_x;
-    000008BE FAr00r00         [16] 1810 	ld	a, (#_player_x)
-    000008C1 EAr62r00         [16] 1811 	ld	(#_saved_world_x),a
-    000008C4 FAr01r00         [16] 1812 	ld	a, (#_player_x + 1)
-    000008C7 EAr63r00         [16] 1813 	ld	(#_saved_world_x + 1),a
-                                   1814 ;src/states/game.c:298: saved_world_y = player_y + 16;
-    000008CA 21r64r00         [12] 1815 	ld	hl, #_saved_world_y
-    000008CD 79               [ 4] 1816 	ld	a, c
-    000008CE 22               [ 8] 1817 	ld	(hl+), a
-    000008CF 70               [ 8] 1818 	ld	(hl), b
-                                   1819 ;src/states/game.c:299: switch_map(&house_map_info, 76, 112);
-    000008D0 11 70 00         [12] 1820 	ld	de, #0x0070
-    000008D3 D5               [16] 1821 	push	de
-    000008D4 01 4C 00         [12] 1822 	ld	bc, #0x004c
-    000008D7 11r32r00         [12] 1823 	ld	de, #_house_map_info
-    000008DA CDrB0r02         [24] 1824 	call	_switch_map
-                                   1825 ;src/states/game.c:300: return;
-    000008DD C3r00r0D         [16] 1826 	jp	00201$
-    000008E0                       1827 00125$:
-                                   1828 ;src/states/game.c:303: tid = get_tile_at(player_x + 8, player_y + 16);
-    000008E0 F8 0A            [12] 1829 	ldhl	sp,#10
-    000008E2 2A               [ 8] 1830 	ld	a, (hl+)
-    000008E3 5F               [ 4] 1831 	ld	e, a
-    000008E4 56               [ 8] 1832 	ld	d, (hl)
-    000008E5 21 08 00         [12] 1833 	ld	hl, #0x0008
-    000008E8 19               [ 8] 1834 	add	hl, de
-    000008E9 5D               [ 4] 1835 	ld	e, l
-    000008EA 54               [ 4] 1836 	ld	d, h
-    000008EB CDr00r00         [24] 1837 	call	_get_tile_at
-    000008EE 4F               [ 4] 1838 	ld	c, a
-                                   1839 ;src/states/game.c:304: if (current_map == &house_map_info && tid == 35) {
-    000008EF 21r60r00         [12] 1840 	ld	hl, #_current_map
-    000008F2 7E               [ 8] 1841 	ld	a, (hl)
-    000008F3 D6r32            [ 8] 1842 	sub	a, #<(_house_map_info)
-    000008F5 20 23            [12] 1843 	jr	NZ, 00133$
-    000008F7 23               [ 8] 1844 	inc	hl
-    000008F8 7E               [ 8] 1845 	ld	a, (hl)
-    000008F9 D6s00            [ 8] 1846 	sub	a, #>(_house_map_info)
-    000008FB 20 1D            [12] 1847 	jr	NZ, 00133$
-    000008FD 79               [ 4] 1848 	ld	a, c
-    000008FE D6 23            [ 8] 1849 	sub	a, #0x23
-    00000900 20 18            [12] 1850 	jr	NZ, 00133$
-                                   1851 ;src/states/game.c:305: uint16_t wx = saved_world_x;
-    00000902 FAr62r00         [16] 1852 	ld	a, (_saved_world_x)
-    00000905 21r63r00         [12] 1853 	ld	hl, #_saved_world_x + 1
-    00000908 46               [ 8] 1854 	ld	b, (hl)
-                                   1855 ;src/states/game.c:306: uint16_t wy = saved_world_y;
-    00000909 21r64r00         [12] 1856 	ld	hl, #_saved_world_y
-    0000090C 5E               [ 8] 1857 	ld	e, (hl)
-    0000090D 23               [ 8] 1858 	inc	hl
-    0000090E 56               [ 8] 1859 	ld	d, (hl)
-                                   1860 ;src/states/game.c:307: switch_map(&world_map_info, wx, wy);
-    0000090F D5               [16] 1861 	push	de
-    00000910 4F               [ 4] 1862 	ld	c, a
-    00000911 11r1Br00         [12] 1863 	ld	de, #_world_map_info
-    00000914 CDrB0r02         [24] 1864 	call	_switch_map
-                                   1865 ;src/states/game.c:308: return;
-    00000917 C3r00r0D         [16] 1866 	jp	00201$
-    0000091A                       1867 00133$:
-                                   1868 ;src/states/game.c:310: if (current_map == &level2_map_info && tid == 0 && player_y > 240) {
-    0000091A 21r60r00         [12] 1869 	ld	hl, #_current_map
-    0000091D 7E               [ 8] 1870 	ld	a, (hl)
-    0000091E D6r49            [ 8] 1871 	sub	a, #<(_level2_map_info)
-    00000920 20 29            [12] 1872 	jr	NZ, 00248$
-    00000922 23               [ 8] 1873 	inc	hl
-    00000923 7E               [ 8] 1874 	ld	a, (hl)
-    00000924 D6s00            [ 8] 1875 	sub	a, #>(_level2_map_info)
-    00000926 20 23            [12] 1876 	jr	NZ, 00248$
-    00000928 B1               [ 4] 1877 	or	a, c
-    00000929 20 20            [12] 1878 	jr	NZ, 00248$
-    0000092B FAr02r00         [16] 1879 	ld	a, (_player_y)
-    0000092E 4F               [ 4] 1880 	ld	c, a
-    0000092F 21r03r00         [12] 1881 	ld	hl, #_player_y + 1
-    00000932 46               [ 8] 1882 	ld	b, (hl)
-    00000933 3E F0            [ 8] 1883 	ld	a, #0xf0
-    00000935 B9               [ 4] 1884 	cp	a, c
-    00000936 3E 00            [ 8] 1885 	ld	a, #0x00
-    00000938 98               [ 4] 1886 	sbc	a, b
-    00000939 30 10            [12] 1887 	jr	NC, 00248$
-                                   1888 ;src/states/game.c:311: switch_map(&world_map_info, 124, 48);
-    0000093B 11 30 00         [12] 1889 	ld	de, #0x0030
-    0000093E D5               [16] 1890 	push	de
-    0000093F 01 7C 00         [12] 1891 	ld	bc, #0x007c
-    00000942 11r1Br00         [12] 1892 	ld	de, #_world_map_info
-    00000945 CDrB0r02         [24] 1893 	call	_switch_map
-                                   1894 ;src/states/game.c:312: return;
-    00000948 C3r00r0D         [16] 1895 	jp	00201$
-                                   1896 ;src/states/game.c:317: for (int i = 0; i < current_map->num_entities; i++) {
-    0000094B                       1897 00248$:
-    0000094B AF               [ 4] 1898 	xor	a, a
-    0000094C F8 0A            [12] 1899 	ldhl	sp,	#10
-    0000094E 22               [ 8] 1900 	ld	(hl+), a
-    0000094F 77               [ 8] 1901 	ld	(hl), a
-    00000950                       1902 00196$:
-    00000950 FAr60r00         [16] 1903 	ld	a, (#_current_map)
-    00000953 F8 06            [12] 1904 	ldhl	sp,	#6
-    00000955 77               [ 8] 1905 	ld	(hl), a
-    00000956 FAr61r00         [16] 1906 	ld	a, (#_current_map + 1)
-    00000959 F8 07            [12] 1907 	ldhl	sp,	#7
-    0000095B 32               [ 8] 1908 	ld	(hl-), a
-    0000095C 2A               [ 8] 1909 	ld	a, (hl+)
-    0000095D 5F               [ 4] 1910 	ld	e, a
-    0000095E 56               [ 8] 1911 	ld	d, (hl)
-    0000095F 21 06 00         [12] 1912 	ld	hl, #0x0006
-    00000962 19               [ 8] 1913 	add	hl, de
-    00000963 4D               [ 4] 1914 	ld	c, l
-    00000964 44               [ 4] 1915 	ld	b, h
-    00000965 0A               [ 8] 1916 	ld	a, (bc)
-    00000966 4F               [ 4] 1917 	ld	c, a
-    00000967 06 00            [ 8] 1918 	ld	b, #0x00
-    00000969 F8 0A            [12] 1919 	ldhl	sp,	#10
-    0000096B 2A               [ 8] 1920 	ld	a, (hl+)
-    0000096C 91               [ 4] 1921 	sub	a, c
-    0000096D 7E               [ 8] 1922 	ld	a, (hl)
-    0000096E 98               [ 4] 1923 	sbc	a, b
-    0000096F 56               [ 8] 1924 	ld	d, (hl)
-    00000970 78               [ 4] 1925 	ld	a, b
-    00000971 CB 7F            [ 8] 1926 	bit	7,a
-    00000973 28 07            [12] 1927 	jr	Z, 00628$
-    00000975 CB 7A            [ 8] 1928 	bit	7, d
-    00000977 20 08            [12] 1929 	jr	NZ, 00629$
-    00000979 BF               [ 4] 1930 	cp	a, a
-    0000097A 18 05            [12] 1931 	jr	00629$
-    0000097C                       1932 00628$:
-    0000097C CB 7A            [ 8] 1933 	bit	7, d
-    0000097E 28 01            [12] 1934 	jr	Z, 00629$
-    00000980 37               [ 4] 1935 	scf
-    00000981                       1936 00629$:
-    00000981 D2rAAr0A         [16] 1937 	jp	NC, 00148$
-                                   1938 ;src/states/game.c:318: entity_t *e = &current_map->entities[i];
-    00000984 F8 06            [12] 1939 	ldhl	sp,#6
-    00000986 2A               [ 8] 1940 	ld	a, (hl+)
-    00000987 5F               [ 4] 1941 	ld	e, a
-    00000988 56               [ 8] 1942 	ld	d, (hl)
-    00000989 21 04 00         [12] 1943 	ld	hl, #0x0004
-    0000098C 19               [ 8] 1944 	add	hl, de
-    0000098D E5               [16] 1945 	push	hl
-    0000098E 7D               [ 4] 1946 	ld	a, l
-    0000098F F8 0A            [12] 1947 	ldhl	sp,	#10
-    00000991 77               [ 8] 1948 	ld	(hl), a
-    00000992 E1               [12] 1949 	pop	hl
-    00000993 7C               [ 4] 1950 	ld	a, h
-    00000994 F8 09            [12] 1951 	ldhl	sp,	#9
-    00000996 32               [ 8] 1952 	ld	(hl-), a
-    00000997 2A               [ 8] 1953 	ld	a, (hl+)
-    00000998 5F               [ 4] 1954 	ld	e, a
-    00000999 56               [ 8] 1955 	ld	d, (hl)
-    0000099A 1A               [ 8] 1956 	ld	a, (de)
-    0000099B F8 06            [12] 1957 	ldhl	sp,	#6
-    0000099D 22               [ 8] 1958 	ld	(hl+), a
-    0000099E 13               [ 8] 1959 	inc	de
-    0000099F 1A               [ 8] 1960 	ld	a, (de)
-    000009A0 77               [ 8] 1961 	ld	(hl), a
-    000009A1 F8 0A            [12] 1962 	ldhl	sp,#10
-    000009A3 2A               [ 8] 1963 	ld	a, (hl+)
-    000009A4 4F               [ 4] 1964 	ld	c, a
-    000009A5 46               [ 8] 1965 	ld	b, (hl)
-    000009A6 69               [ 4] 1966 	ld	l, c
-    000009A7 60               [ 4] 1967 	ld	h, b
-    000009A8 29               [ 8] 1968 	add	hl, hl
-    000009A9 29               [ 8] 1969 	add	hl, hl
-    000009AA 29               [ 8] 1970 	add	hl, hl
-    000009AB 09               [ 8] 1971 	add	hl, bc
-    000009AC 4D               [ 4] 1972 	ld	c, l
-    000009AD 44               [ 4] 1973 	ld	b, h
-    000009AE F8 06            [12] 1974 	ldhl	sp,	#6
-    000009B0 2A               [ 8] 1975 	ld	a,	(hl+)
-    000009B1 66               [ 8] 1976 	ld	h, (hl)
-    000009B2 6F               [ 4] 1977 	ld	l, a
-    000009B3 09               [ 8] 1978 	add	hl, bc
-    000009B4 E5               [16] 1979 	push	hl
-    000009B5 7D               [ 4] 1980 	ld	a, l
-    000009B6 F8 0A            [12] 1981 	ldhl	sp,	#10
-    000009B8 77               [ 8] 1982 	ld	(hl), a
-    000009B9 E1               [12] 1983 	pop	hl
-    000009BA 7C               [ 4] 1984 	ld	a, h
-    000009BB F8 09            [12] 1985 	ldhl	sp,	#9
-                                   1986 ;src/states/game.c:319: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
-    000009BD 32               [ 8] 1987 	ld	(hl-), a
-    000009BE 2A               [ 8] 1988 	ld	a, (hl+)
-    000009BF 5F               [ 4] 1989 	ld	e, a
-    000009C0 56               [ 8] 1990 	ld	d, (hl)
-    000009C1 1A               [ 8] 1991 	ld	a, (de)
-    000009C2 4F               [ 4] 1992 	ld	c, a
-    000009C3 13               [ 8] 1993 	inc	de
-    000009C4 1A               [ 8] 1994 	ld	a, (de)
-    000009C5 47               [ 4] 1995 	ld	b, a
-    000009C6 79               [ 4] 1996 	ld	a, c
-    000009C7 21r07r00         [12] 1997 	ld	hl, #_camera_x
-    000009CA 96               [ 8] 1998 	sub	a, (hl)
-    000009CB 23               [ 8] 1999 	inc	hl
-    000009CC 4F               [ 4] 2000 	ld	c, a
-    000009CD 78               [ 4] 2001 	ld	a, b
-    000009CE 9E               [ 8] 2002 	sbc	a, (hl)
-    000009CF 47               [ 4] 2003 	ld	b, a
-    000009D0 21 08 00         [12] 2004 	ld	hl, #0x0008
-    000009D3 09               [ 8] 2005 	add	hl, bc
-    000009D4 4D               [ 4] 2006 	ld	c, l
-    000009D5 7C               [ 4] 2007 	ld	a, h
-    000009D6 F8 02            [12] 2008 	ldhl	sp,	#2
-    000009D8 71               [ 8] 2009 	ld	(hl), c
-    000009D9 23               [ 8] 2010 	inc	hl
-    000009DA 77               [ 8] 2011 	ld	(hl), a
-    000009DB F8 08            [12] 2012 	ldhl	sp,	#8
-    000009DD 2A               [ 8] 2013 	ld	a, (hl+)
-    000009DE 66               [ 8] 2014 	ld	h, (hl)
-    000009DF 6F               [ 4] 2015 	ld	l, a
-    000009E0 23               [ 8] 2016 	inc	hl
-    000009E1 23               [ 8] 2017 	inc	hl
-    000009E2 2A               [ 8] 2018 	ld	a, (hl+)
-    000009E3 4F               [ 4] 2019 	ld	c, a
-    000009E4 46               [ 8] 2020 	ld	b, (hl)
-    000009E5 79               [ 4] 2021 	ld	a, c
-    000009E6 21r09r00         [12] 2022 	ld	hl, #_camera_y
-    000009E9 96               [ 8] 2023 	sub	a, (hl)
-    000009EA 23               [ 8] 2024 	inc	hl
-    000009EB 4F               [ 4] 2025 	ld	c, a
-    000009EC 78               [ 4] 2026 	ld	a, b
-    000009ED 9E               [ 8] 2027 	sbc	a, (hl)
-    000009EE 47               [ 4] 2028 	ld	b, a
-    000009EF 21 10 00         [12] 2029 	ld	hl, #0x0010
-    000009F2 09               [ 8] 2030 	add	hl, bc
-    000009F3 4D               [ 4] 2031 	ld	c, l
-    000009F4 7C               [ 4] 2032 	ld	a, h
-    000009F5 F8 04            [12] 2033 	ldhl	sp,	#4
-    000009F7 71               [ 8] 2034 	ld	(hl), c
-    000009F8 23               [ 8] 2035 	inc	hl
-    000009F9 77               [ 8] 2036 	ld	(hl), a
-                                   2037 ;src/states/game.c:320: if (esx < 168 && esy < 160) {
-    000009FA F8 02            [12] 2038 	ldhl	sp,	#2
+    00000856 5F               [ 4] 1741 	ld	e, a
+                                   1742 ;src/states/game.c:293: if (current_map == &world_map_info &&
+                                   1743 ;src/states/game.c:292: uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
+    00000857 FAr02r00         [16] 1744 	ld	a, (_player_y)
+    0000085A 4F               [ 4] 1745 	ld	c, a
+    0000085B 21r03r00         [12] 1746 	ld	hl, #_player_y + 1
+    0000085E 46               [ 8] 1747 	ld	b, (hl)
+    0000085F FAr00r00         [16] 1748 	ld	a, (#_player_x)
+    00000862 F8 0A            [12] 1749 	ldhl	sp,	#10
+    00000864 77               [ 8] 1750 	ld	(hl), a
+    00000865 FAr01r00         [16] 1751 	ld	a, (#_player_x + 1)
+    00000868 F8 0B            [12] 1752 	ldhl	sp,	#11
+    0000086A 77               [ 8] 1753 	ld	(hl), a
+                                   1754 ;src/states/game.c:293: if (current_map == &world_map_info &&
+    0000086B 21r60r00         [12] 1755 	ld	hl, #_current_map
+    0000086E 7E               [ 8] 1756 	ld	a, (hl)
+    0000086F D6r1B            [ 8] 1757 	sub	a, #<(_world_map_info)
+    00000871 20 5A            [12] 1758 	jr	NZ, 00125$
+    00000873 23               [ 8] 1759 	inc	hl
+    00000874 7E               [ 8] 1760 	ld	a, (hl)
+    00000875 D6s00            [ 8] 1761 	sub	a, #>(_world_map_info)
+    00000877 20 54            [12] 1762 	jr	NZ, 00125$
+                                   1763 ;src/states/game.c:294: (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
+    00000879 7B               [ 4] 1764 	ld	a,e
+    0000087A FE 15            [ 8] 1765 	cp	a,#0x15
+    0000087C 28 14            [12] 1766 	jr	Z, 00124$
+    0000087E FE 16            [ 8] 1767 	cp	a,#0x16
+    00000880 28 10            [12] 1768 	jr	Z, 00124$
+    00000882 FE 3A            [ 8] 1769 	cp	a,#0x3a
+    00000884 28 0C            [12] 1770 	jr	Z, 00124$
+                                   1771 ;src/states/game.c:295: tid == 71)) {
+    00000886 FE 3B            [ 8] 1772 	cp	a,#0x3b
+    00000888 28 08            [12] 1773 	jr	Z, 00124$
+    0000088A FE 46            [ 8] 1774 	cp	a,#0x46
+    0000088C 28 04            [12] 1775 	jr	Z, 00124$
+    0000088E D6 47            [ 8] 1776 	sub	a, #0x47
+    00000890 20 3B            [12] 1777 	jr	NZ, 00125$
+    00000892                       1778 00124$:
+                                   1779 ;src/states/game.c:296: if (player_x > 160 && player_y > 160) {
+    00000892 F8 0A            [12] 1780 	ldhl	sp,	#10
+    00000894 3E A0            [ 8] 1781 	ld	a, #0xa0
+    00000896 96               [ 8] 1782 	sub	a, (hl)
+    00000897 23               [ 8] 1783 	inc	hl
+    00000898 3E 00            [ 8] 1784 	ld	a, #0x00
+    0000089A 9E               [ 8] 1785 	sbc	a, (hl)
+    0000089B 30 30            [12] 1786 	jr	NC, 00125$
+    0000089D 3E A0            [ 8] 1787 	ld	a, #0xa0
+    0000089F B9               [ 4] 1788 	cp	a, c
+    000008A0 3E 00            [ 8] 1789 	ld	a, #0x00
+    000008A2 98               [ 4] 1790 	sbc	a, b
+    000008A3 30 28            [12] 1791 	jr	NC, 00125$
+                                   1792 ;src/states/game.c:297: saved_world_x = player_x;
+    000008A5 FAr00r00         [16] 1793 	ld	a, (#_player_x)
+    000008A8 EAr62r00         [16] 1794 	ld	(#_saved_world_x),a
+    000008AB FAr01r00         [16] 1795 	ld	a, (#_player_x + 1)
+    000008AE EAr63r00         [16] 1796 	ld	(#_saved_world_x + 1),a
+                                   1797 ;src/states/game.c:298: saved_world_y = player_y + 16;
+    000008B1 21 10 00         [12] 1798 	ld	hl, #0x0010
+    000008B4 09               [ 8] 1799 	add	hl, bc
+    000008B5 5D               [ 4] 1800 	ld	e, l
+    000008B6 54               [ 4] 1801 	ld	d, h
+    000008B7 21r64r00         [12] 1802 	ld	hl, #_saved_world_y
+    000008BA 7B               [ 4] 1803 	ld	a, e
+    000008BB 22               [ 8] 1804 	ld	(hl+), a
+    000008BC 72               [ 8] 1805 	ld	(hl), d
+                                   1806 ;src/states/game.c:299: switch_map(&house_map_info, 76, 112);
+    000008BD 11 70 00         [12] 1807 	ld	de, #0x0070
+    000008C0 D5               [16] 1808 	push	de
+    000008C1 01 4C 00         [12] 1809 	ld	bc, #0x004c
+    000008C4 11r32r00         [12] 1810 	ld	de, #_house_map_info
+    000008C7 CDrB0r02         [24] 1811 	call	_switch_map
+                                   1812 ;src/states/game.c:300: return;
+    000008CA C3rF3r0C         [16] 1813 	jp	00201$
+    000008CD                       1814 00125$:
+                                   1815 ;src/states/game.c:303: tid = get_tile_at(player_x + 8, player_y + 12);
+    000008CD 21 0C 00         [12] 1816 	ld	hl, #0x000c
+    000008D0 09               [ 8] 1817 	add	hl, bc
+    000008D1 4D               [ 4] 1818 	ld	c, l
+    000008D2 44               [ 4] 1819 	ld	b, h
+    000008D3 F8 0A            [12] 1820 	ldhl	sp,#10
+    000008D5 2A               [ 8] 1821 	ld	a, (hl+)
+    000008D6 5F               [ 4] 1822 	ld	e, a
+    000008D7 56               [ 8] 1823 	ld	d, (hl)
+    000008D8 21 08 00         [12] 1824 	ld	hl, #0x0008
+    000008DB 19               [ 8] 1825 	add	hl, de
+    000008DC 5D               [ 4] 1826 	ld	e, l
+    000008DD 54               [ 4] 1827 	ld	d, h
+    000008DE CDr00r00         [24] 1828 	call	_get_tile_at
+    000008E1 4F               [ 4] 1829 	ld	c, a
+                                   1830 ;src/states/game.c:304: if (current_map == &house_map_info && tid == 35) {
+    000008E2 21r60r00         [12] 1831 	ld	hl, #_current_map
+    000008E5 7E               [ 8] 1832 	ld	a, (hl)
+    000008E6 D6r32            [ 8] 1833 	sub	a, #<(_house_map_info)
+    000008E8 20 23            [12] 1834 	jr	NZ, 00133$
+    000008EA 23               [ 8] 1835 	inc	hl
+    000008EB 7E               [ 8] 1836 	ld	a, (hl)
+    000008EC D6s00            [ 8] 1837 	sub	a, #>(_house_map_info)
+    000008EE 20 1D            [12] 1838 	jr	NZ, 00133$
+    000008F0 79               [ 4] 1839 	ld	a, c
+    000008F1 D6 23            [ 8] 1840 	sub	a, #0x23
+    000008F3 20 18            [12] 1841 	jr	NZ, 00133$
+                                   1842 ;src/states/game.c:305: uint16_t wx = saved_world_x;
+    000008F5 FAr62r00         [16] 1843 	ld	a, (_saved_world_x)
+    000008F8 21r63r00         [12] 1844 	ld	hl, #_saved_world_x + 1
+    000008FB 46               [ 8] 1845 	ld	b, (hl)
+                                   1846 ;src/states/game.c:306: uint16_t wy = saved_world_y;
+    000008FC 21r64r00         [12] 1847 	ld	hl, #_saved_world_y
+    000008FF 5E               [ 8] 1848 	ld	e, (hl)
+    00000900 23               [ 8] 1849 	inc	hl
+    00000901 56               [ 8] 1850 	ld	d, (hl)
+                                   1851 ;src/states/game.c:307: switch_map(&world_map_info, wx, wy);
+    00000902 D5               [16] 1852 	push	de
+    00000903 4F               [ 4] 1853 	ld	c, a
+    00000904 11r1Br00         [12] 1854 	ld	de, #_world_map_info
+    00000907 CDrB0r02         [24] 1855 	call	_switch_map
+                                   1856 ;src/states/game.c:308: return;
+    0000090A C3rF3r0C         [16] 1857 	jp	00201$
+    0000090D                       1858 00133$:
+                                   1859 ;src/states/game.c:310: if (current_map == &level2_map_info && tid == 0 && player_y > 240) {
+    0000090D 21r60r00         [12] 1860 	ld	hl, #_current_map
+    00000910 7E               [ 8] 1861 	ld	a, (hl)
+    00000911 D6r49            [ 8] 1862 	sub	a, #<(_level2_map_info)
+    00000913 20 29            [12] 1863 	jr	NZ, 00248$
+    00000915 23               [ 8] 1864 	inc	hl
+    00000916 7E               [ 8] 1865 	ld	a, (hl)
+    00000917 D6s00            [ 8] 1866 	sub	a, #>(_level2_map_info)
+    00000919 20 23            [12] 1867 	jr	NZ, 00248$
+    0000091B B1               [ 4] 1868 	or	a, c
+    0000091C 20 20            [12] 1869 	jr	NZ, 00248$
+    0000091E FAr02r00         [16] 1870 	ld	a, (_player_y)
+    00000921 4F               [ 4] 1871 	ld	c, a
+    00000922 21r03r00         [12] 1872 	ld	hl, #_player_y + 1
+    00000925 46               [ 8] 1873 	ld	b, (hl)
+    00000926 3E F0            [ 8] 1874 	ld	a, #0xf0
+    00000928 B9               [ 4] 1875 	cp	a, c
+    00000929 3E 00            [ 8] 1876 	ld	a, #0x00
+    0000092B 98               [ 4] 1877 	sbc	a, b
+    0000092C 30 10            [12] 1878 	jr	NC, 00248$
+                                   1879 ;src/states/game.c:311: switch_map(&world_map_info, 124, 48);
+    0000092E 11 30 00         [12] 1880 	ld	de, #0x0030
+    00000931 D5               [16] 1881 	push	de
+    00000932 01 7C 00         [12] 1882 	ld	bc, #0x007c
+    00000935 11r1Br00         [12] 1883 	ld	de, #_world_map_info
+    00000938 CDrB0r02         [24] 1884 	call	_switch_map
+                                   1885 ;src/states/game.c:312: return;
+    0000093B C3rF3r0C         [16] 1886 	jp	00201$
+                                   1887 ;src/states/game.c:317: for (int i = 0; i < current_map->num_entities; i++) {
+    0000093E                       1888 00248$:
+    0000093E AF               [ 4] 1889 	xor	a, a
+    0000093F F8 0A            [12] 1890 	ldhl	sp,	#10
+    00000941 22               [ 8] 1891 	ld	(hl+), a
+    00000942 77               [ 8] 1892 	ld	(hl), a
+    00000943                       1893 00196$:
+    00000943 FAr60r00         [16] 1894 	ld	a, (#_current_map)
+    00000946 F8 06            [12] 1895 	ldhl	sp,	#6
+    00000948 77               [ 8] 1896 	ld	(hl), a
+    00000949 FAr61r00         [16] 1897 	ld	a, (#_current_map + 1)
+    0000094C F8 07            [12] 1898 	ldhl	sp,	#7
+    0000094E 32               [ 8] 1899 	ld	(hl-), a
+    0000094F 2A               [ 8] 1900 	ld	a, (hl+)
+    00000950 5F               [ 4] 1901 	ld	e, a
+    00000951 56               [ 8] 1902 	ld	d, (hl)
+    00000952 21 06 00         [12] 1903 	ld	hl, #0x0006
+    00000955 19               [ 8] 1904 	add	hl, de
+    00000956 4D               [ 4] 1905 	ld	c, l
+    00000957 44               [ 4] 1906 	ld	b, h
+    00000958 0A               [ 8] 1907 	ld	a, (bc)
+    00000959 4F               [ 4] 1908 	ld	c, a
+    0000095A 06 00            [ 8] 1909 	ld	b, #0x00
+    0000095C F8 0A            [12] 1910 	ldhl	sp,	#10
+    0000095E 2A               [ 8] 1911 	ld	a, (hl+)
+    0000095F 91               [ 4] 1912 	sub	a, c
+    00000960 7E               [ 8] 1913 	ld	a, (hl)
+    00000961 98               [ 4] 1914 	sbc	a, b
+    00000962 56               [ 8] 1915 	ld	d, (hl)
+    00000963 78               [ 4] 1916 	ld	a, b
+    00000964 CB 7F            [ 8] 1917 	bit	7,a
+    00000966 28 07            [12] 1918 	jr	Z, 00628$
+    00000968 CB 7A            [ 8] 1919 	bit	7, d
+    0000096A 20 08            [12] 1920 	jr	NZ, 00629$
+    0000096C BF               [ 4] 1921 	cp	a, a
+    0000096D 18 05            [12] 1922 	jr	00629$
+    0000096F                       1923 00628$:
+    0000096F CB 7A            [ 8] 1924 	bit	7, d
+    00000971 28 01            [12] 1925 	jr	Z, 00629$
+    00000973 37               [ 4] 1926 	scf
+    00000974                       1927 00629$:
+    00000974 D2r9Dr0A         [16] 1928 	jp	NC, 00148$
+                                   1929 ;src/states/game.c:318: entity_t *e = &current_map->entities[i];
+    00000977 F8 06            [12] 1930 	ldhl	sp,#6
+    00000979 2A               [ 8] 1931 	ld	a, (hl+)
+    0000097A 5F               [ 4] 1932 	ld	e, a
+    0000097B 56               [ 8] 1933 	ld	d, (hl)
+    0000097C 21 04 00         [12] 1934 	ld	hl, #0x0004
+    0000097F 19               [ 8] 1935 	add	hl, de
+    00000980 E5               [16] 1936 	push	hl
+    00000981 7D               [ 4] 1937 	ld	a, l
+    00000982 F8 0A            [12] 1938 	ldhl	sp,	#10
+    00000984 77               [ 8] 1939 	ld	(hl), a
+    00000985 E1               [12] 1940 	pop	hl
+    00000986 7C               [ 4] 1941 	ld	a, h
+    00000987 F8 09            [12] 1942 	ldhl	sp,	#9
+    00000989 32               [ 8] 1943 	ld	(hl-), a
+    0000098A 2A               [ 8] 1944 	ld	a, (hl+)
+    0000098B 5F               [ 4] 1945 	ld	e, a
+    0000098C 56               [ 8] 1946 	ld	d, (hl)
+    0000098D 1A               [ 8] 1947 	ld	a, (de)
+    0000098E F8 06            [12] 1948 	ldhl	sp,	#6
+    00000990 22               [ 8] 1949 	ld	(hl+), a
+    00000991 13               [ 8] 1950 	inc	de
+    00000992 1A               [ 8] 1951 	ld	a, (de)
+    00000993 77               [ 8] 1952 	ld	(hl), a
+    00000994 F8 0A            [12] 1953 	ldhl	sp,#10
+    00000996 2A               [ 8] 1954 	ld	a, (hl+)
+    00000997 4F               [ 4] 1955 	ld	c, a
+    00000998 46               [ 8] 1956 	ld	b, (hl)
+    00000999 69               [ 4] 1957 	ld	l, c
+    0000099A 60               [ 4] 1958 	ld	h, b
+    0000099B 29               [ 8] 1959 	add	hl, hl
+    0000099C 29               [ 8] 1960 	add	hl, hl
+    0000099D 29               [ 8] 1961 	add	hl, hl
+    0000099E 09               [ 8] 1962 	add	hl, bc
+    0000099F 4D               [ 4] 1963 	ld	c, l
+    000009A0 44               [ 4] 1964 	ld	b, h
+    000009A1 F8 06            [12] 1965 	ldhl	sp,	#6
+    000009A3 2A               [ 8] 1966 	ld	a,	(hl+)
+    000009A4 66               [ 8] 1967 	ld	h, (hl)
+    000009A5 6F               [ 4] 1968 	ld	l, a
+    000009A6 09               [ 8] 1969 	add	hl, bc
+    000009A7 E5               [16] 1970 	push	hl
+    000009A8 7D               [ 4] 1971 	ld	a, l
+    000009A9 F8 0A            [12] 1972 	ldhl	sp,	#10
+    000009AB 77               [ 8] 1973 	ld	(hl), a
+    000009AC E1               [12] 1974 	pop	hl
+    000009AD 7C               [ 4] 1975 	ld	a, h
+    000009AE F8 09            [12] 1976 	ldhl	sp,	#9
+                                   1977 ;src/states/game.c:319: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
+    000009B0 32               [ 8] 1978 	ld	(hl-), a
+    000009B1 2A               [ 8] 1979 	ld	a, (hl+)
+    000009B2 5F               [ 4] 1980 	ld	e, a
+    000009B3 56               [ 8] 1981 	ld	d, (hl)
+    000009B4 1A               [ 8] 1982 	ld	a, (de)
+    000009B5 4F               [ 4] 1983 	ld	c, a
+    000009B6 13               [ 8] 1984 	inc	de
+    000009B7 1A               [ 8] 1985 	ld	a, (de)
+    000009B8 47               [ 4] 1986 	ld	b, a
+    000009B9 79               [ 4] 1987 	ld	a, c
+    000009BA 21r07r00         [12] 1988 	ld	hl, #_camera_x
+    000009BD 96               [ 8] 1989 	sub	a, (hl)
+    000009BE 23               [ 8] 1990 	inc	hl
+    000009BF 4F               [ 4] 1991 	ld	c, a
+    000009C0 78               [ 4] 1992 	ld	a, b
+    000009C1 9E               [ 8] 1993 	sbc	a, (hl)
+    000009C2 47               [ 4] 1994 	ld	b, a
+    000009C3 21 08 00         [12] 1995 	ld	hl, #0x0008
+    000009C6 09               [ 8] 1996 	add	hl, bc
+    000009C7 4D               [ 4] 1997 	ld	c, l
+    000009C8 7C               [ 4] 1998 	ld	a, h
+    000009C9 F8 02            [12] 1999 	ldhl	sp,	#2
+    000009CB 71               [ 8] 2000 	ld	(hl), c
+    000009CC 23               [ 8] 2001 	inc	hl
+    000009CD 77               [ 8] 2002 	ld	(hl), a
+    000009CE F8 08            [12] 2003 	ldhl	sp,	#8
+    000009D0 2A               [ 8] 2004 	ld	a, (hl+)
+    000009D1 66               [ 8] 2005 	ld	h, (hl)
+    000009D2 6F               [ 4] 2006 	ld	l, a
+    000009D3 23               [ 8] 2007 	inc	hl
+    000009D4 23               [ 8] 2008 	inc	hl
+    000009D5 2A               [ 8] 2009 	ld	a, (hl+)
+    000009D6 4F               [ 4] 2010 	ld	c, a
+    000009D7 46               [ 8] 2011 	ld	b, (hl)
+    000009D8 79               [ 4] 2012 	ld	a, c
+    000009D9 21r09r00         [12] 2013 	ld	hl, #_camera_y
+    000009DC 96               [ 8] 2014 	sub	a, (hl)
+    000009DD 23               [ 8] 2015 	inc	hl
+    000009DE 4F               [ 4] 2016 	ld	c, a
+    000009DF 78               [ 4] 2017 	ld	a, b
+    000009E0 9E               [ 8] 2018 	sbc	a, (hl)
+    000009E1 47               [ 4] 2019 	ld	b, a
+    000009E2 21 10 00         [12] 2020 	ld	hl, #0x0010
+    000009E5 09               [ 8] 2021 	add	hl, bc
+    000009E6 4D               [ 4] 2022 	ld	c, l
+    000009E7 7C               [ 4] 2023 	ld	a, h
+    000009E8 F8 04            [12] 2024 	ldhl	sp,	#4
+    000009EA 71               [ 8] 2025 	ld	(hl), c
+    000009EB 23               [ 8] 2026 	inc	hl
+    000009EC 77               [ 8] 2027 	ld	(hl), a
+                                   2028 ;src/states/game.c:320: if (esx < 168 && esy < 160) {
+    000009ED F8 02            [12] 2029 	ldhl	sp,	#2
+    000009EF 2A               [ 8] 2030 	ld	a, (hl+)
+    000009F0 4F               [ 4] 2031 	ld	c, a
+    000009F1 46               [ 8] 2032 	ld	b, (hl)
+    000009F2 79               [ 4] 2033 	ld	a, c
+    000009F3 D6 A8            [ 8] 2034 	sub	a, #0xa8
+    000009F5 78               [ 4] 2035 	ld	a, b
+    000009F6 DE 00            [ 8] 2036 	sbc	a, #0x00
+    000009F8 D2r79r0A         [16] 2037 	jp	NC, 00247$
+    000009FB 23               [ 8] 2038 	inc	hl
     000009FC 2A               [ 8] 2039 	ld	a, (hl+)
     000009FD 4F               [ 4] 2040 	ld	c, a
     000009FE 46               [ 8] 2041 	ld	b, (hl)
     000009FF 79               [ 4] 2042 	ld	a, c
-    00000A00 D6 A8            [ 8] 2043 	sub	a, #0xa8
+    00000A00 D6 A0            [ 8] 2043 	sub	a, #0xa0
     00000A02 78               [ 4] 2044 	ld	a, b
     00000A03 DE 00            [ 8] 2045 	sbc	a, #0x00
-    00000A05 D2r86r0A         [16] 2046 	jp	NC, 00247$
-    00000A08 23               [ 8] 2047 	inc	hl
-    00000A09 2A               [ 8] 2048 	ld	a, (hl+)
-    00000A0A 4F               [ 4] 2049 	ld	c, a
-    00000A0B 46               [ 8] 2050 	ld	b, (hl)
-    00000A0C 79               [ 4] 2051 	ld	a, c
-    00000A0D D6 A0            [ 8] 2052 	sub	a, #0xa0
-    00000A0F 78               [ 4] 2053 	ld	a, b
-    00000A10 DE 00            [ 8] 2054 	sbc	a, #0x00
-    00000A12 30 72            [12] 2055 	jr	NC, 00247$
-                                   2056 ;src/states/game.c:321: for (int j = 0; j < 4; j++) {
-    00000A14 F8 08            [12] 2057 	ldhl	sp,#8
-    00000A16 2A               [ 8] 2058 	ld	a, (hl+)
-    00000A17 5F               [ 4] 2059 	ld	e, a
-    00000A18 56               [ 8] 2060 	ld	d, (hl)
-    00000A19 21 07 00         [12] 2061 	ld	hl, #0x0007
-    00000A1C 19               [ 8] 2062 	add	hl, de
-    00000A1D E5               [16] 2063 	push	hl
-    00000A1E 7D               [ 4] 2064 	ld	a, l
-    00000A1F F8 08            [12] 2065 	ldhl	sp,	#8
-    00000A21 77               [ 8] 2066 	ld	(hl), a
-    00000A22 E1               [12] 2067 	pop	hl
-    00000A23 7C               [ 4] 2068 	ld	a, h
-    00000A24 F8 07            [12] 2069 	ldhl	sp,	#7
-    00000A26 77               [ 8] 2070 	ld	(hl), a
-    00000A27 0E 00            [ 8] 2071 	ld	c, #0x00
-    00000A29                       2072 00190$:
-    00000A29 79               [ 4] 2073 	ld	a, c
-    00000A2A D6 04            [ 8] 2074 	sub	a, #0x04
-    00000A2C 30 71            [12] 2075 	jr	NC, 00197$
-                                   2076 ;src/states/game.c:322: move_sprite(4 + j, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-    00000A2E F8 04            [12] 2077 	ldhl	sp,	#4
-    00000A30 46               [ 8] 2078 	ld	b, (hl)
-    00000A31 79               [ 4] 2079 	ld	a, c
-    00000A32 D6 02            [ 8] 2080 	sub	a, #0x02
-    00000A34 38 04            [12] 2081 	jr	C, 00207$
-    00000A36 3E 08            [ 8] 2082 	ld	a, #0x08
-    00000A38 18 01            [12] 2083 	jr	00208$
-    00000A3A                       2084 00207$:
-    00000A3A AF               [ 4] 2085 	xor	a, a
-    00000A3B                       2086 00208$:
-    00000A3B 80               [ 4] 2087 	add	a, b
-    00000A3C 5F               [ 4] 2088 	ld	e, a
-    00000A3D F8 02            [12] 2089 	ldhl	sp,	#2
-    00000A3F 46               [ 8] 2090 	ld	b, (hl)
-    00000A40 79               [ 4] 2091 	ld	a, c
-    00000A41 E6 01            [ 8] 2092 	and	a, #0x01
-    00000A43 3E 08            [ 8] 2093 	ld	a, #0x08
-    00000A45 20 01            [12] 2094 	jr	NZ, 00210$
-    00000A47 AF               [ 4] 2095 	xor	a, a
-    00000A48                       2096 00210$:
-    00000A48 80               [ 4] 2097 	add	a, b
-    00000A49 F8 09            [12] 2098 	ldhl	sp,	#9
-    00000A4B 32               [ 8] 2099 	ld	(hl-), a
-    00000A4C 41               [ 4] 2100 	ld	b, c
-    00000A4D 78               [ 4] 2101 	ld	a, b
-    00000A4E C6 04            [ 8] 2102 	add	a, #0x04
-    00000A50 77               [ 8] 2103 	ld	(hl), a
-    00000A51 56               [ 8] 2104 	ld	d, (hl)
-                                   2105 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    00000A52 AF               [ 4] 2106 	xor	a, a
-    00000A53 6A               [ 4] 2107 	ld	l, d
-    00000A54 67               [ 4] 2108 	ld	h, a
-    00000A55 29               [ 8] 2109 	add	hl, hl
-    00000A56 29               [ 8] 2110 	add	hl, hl
-    00000A57 3Er00            [ 8] 2111 	ld	a, #<(_shadow_OAM)
-    00000A59 85               [ 4] 2112 	add	a, l
-    00000A5A 6F               [ 4] 2113 	ld	l, a
-    00000A5B 3Es00            [ 8] 2114 	ld	a, #>(_shadow_OAM)
-    00000A5D 8C               [ 4] 2115 	adc	a, h
-    00000A5E 67               [ 4] 2116 	ld	h, a
-                                   2117 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    00000A5F 7B               [ 4] 2118 	ld	a, e
-    00000A60 22               [ 8] 2119 	ld	(hl+), a
-    00000A61 5D               [ 4] 2120 	ld	e, l
-    00000A62 54               [ 4] 2121 	ld	d, h
-    00000A63 F8 09            [12] 2122 	ldhl	sp,	#9
-                                   2123 ;src/states/game.c:323: set_sprite_tile(4 + j, e->sprite_base + j);
-    00000A65 3A               [ 8] 2124 	ld	a, (hl-)
-    00000A66 2B               [ 8] 2125 	dec	hl
-    00000A67 2B               [ 8] 2126 	dec	hl
-    00000A68 12               [ 8] 2127 	ld	(de), a
-    00000A69 2A               [ 8] 2128 	ld	a, (hl+)
-    00000A6A 5F               [ 4] 2129 	ld	e, a
-    00000A6B 2A               [ 8] 2130 	ld	a, (hl+)
-    00000A6C 23               [ 8] 2131 	inc	hl
-    00000A6D 57               [ 4] 2132 	ld	d, a
-    00000A6E 1A               [ 8] 2133 	ld	a, (de)
-    00000A6F 80               [ 4] 2134 	add	a, b
-    00000A70 32               [ 8] 2135 	ld	(hl-), a
-    00000A71 46               [ 8] 2136 	ld	b, (hl)
-                                   2137 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    00000A72 11r00r00         [12] 2138 	ld	de, #_shadow_OAM+0
-    00000A75 AF               [ 4] 2139 	xor	a, a
-    00000A76 68               [ 4] 2140 	ld	l, b
-    00000A77 67               [ 4] 2141 	ld	h, a
-    00000A78 29               [ 8] 2142 	add	hl, hl
-    00000A79 29               [ 8] 2143 	add	hl, hl
-    00000A7A 19               [ 8] 2144 	add	hl, de
-    00000A7B 23               [ 8] 2145 	inc	hl
-    00000A7C 23               [ 8] 2146 	inc	hl
-    00000A7D 5D               [ 4] 2147 	ld	e, l
-    00000A7E 54               [ 4] 2148 	ld	d, h
-    00000A7F F8 09            [12] 2149 	ldhl	sp,	#9
-    00000A81 7E               [ 8] 2150 	ld	a, (hl)
-    00000A82 12               [ 8] 2151 	ld	(de), a
-                                   2152 ;src/states/game.c:321: for (int j = 0; j < 4; j++) {
-    00000A83 0C               [ 4] 2153 	inc	c
-    00000A84 18 A3            [12] 2154 	jr	00190$
-                                   2155 ;src/states/game.c:326: for (int j = 0; j < 4; j++)
-    00000A86                       2156 00247$:
-    00000A86 0E 00            [ 8] 2157 	ld	c, #0x00
-    00000A88                       2158 00193$:
-                                   2159 ;src/states/game.c:327: move_sprite(4 + j, 0, 0);
-    00000A88 79               [ 4] 2160 	ld	a,c
-    00000A89 FE 04            [ 8] 2161 	cp	a,#0x04
-    00000A8B 30 12            [12] 2162 	jr	NC, 00197$
-    00000A8D C6 04            [ 8] 2163 	add	a, #0x04
-    00000A8F 47               [ 4] 2164 	ld	b, a
-                                   2165 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    00000A90 AF               [ 4] 2166 	xor	a, a
-    00000A91 68               [ 4] 2167 	ld	l, b
-    00000A92 67               [ 4] 2168 	ld	h, a
-    00000A93 29               [ 8] 2169 	add	hl, hl
-    00000A94 29               [ 8] 2170 	add	hl, hl
-    00000A95 11r00r00         [12] 2171 	ld	de, #_shadow_OAM
-    00000A98 19               [ 8] 2172 	add	hl, de
-                                   2173 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    00000A99 AF               [ 4] 2174 	xor	a, a
-    00000A9A 22               [ 8] 2175 	ld	(hl+), a
-    00000A9B 77               [ 8] 2176 	ld	(hl), a
-                                   2177 ;src/states/game.c:326: for (int j = 0; j < 4; j++)
-    00000A9C 0C               [ 4] 2178 	inc	c
-    00000A9D 18 E9            [12] 2179 	jr	00193$
-    00000A9F                       2180 00197$:
-                                   2181 ;src/states/game.c:317: for (int i = 0; i < current_map->num_entities; i++) {
-    00000A9F F8 0A            [12] 2182 	ldhl	sp,	#10
-    00000AA1 34               [12] 2183 	inc	(hl)
-    00000AA2 C2r50r09         [16] 2184 	jp	NZ, 00196$
-    00000AA5 23               [ 8] 2185 	inc	hl
-    00000AA6 34               [12] 2186 	inc	(hl)
-    00000AA7 C3r50r09         [16] 2187 	jp	00196$
-    00000AAA                       2188 00148$:
-                                   2189 ;src/states/game.c:331: if (input_pressed(J_A | J_B)) {
-    00000AAA 3E 30            [ 8] 2190 	ld	a, #0x30
-    00000AAC CDr00r00         [24] 2191 	call	_input_pressed
-    00000AAF B7               [ 4] 2192 	or	a, a
-    00000AB0 CArD5r0C         [16] 2193 	jp	Z, 00179$
-                                   2194 ;src/states/game.c:332: for (int i = 0; i < current_map->num_entities; i++) {
-    00000AB3 AF               [ 4] 2195 	xor	a, a
-    00000AB4 F8 06            [12] 2196 	ldhl	sp,	#6
-    00000AB6 22               [ 8] 2197 	ld	(hl+), a
-    00000AB7 77               [ 8] 2198 	ld	(hl), a
-    00000AB8                       2199 00199$:
-                                   2200 ;src/states/game.c:317: for (int i = 0; i < current_map->num_entities; i++) {
-    00000AB8 FAr60r00         [16] 2201 	ld	a, (#_current_map)
-    00000ABB F8 08            [12] 2202 	ldhl	sp,	#8
-    00000ABD 77               [ 8] 2203 	ld	(hl), a
-    00000ABE FAr61r00         [16] 2204 	ld	a, (#_current_map + 1)
-    00000AC1 F8 09            [12] 2205 	ldhl	sp,	#9
-                                   2206 ;src/states/game.c:332: for (int i = 0; i < current_map->num_entities; i++) {
-    00000AC3 32               [ 8] 2207 	ld	(hl-), a
-    00000AC4 2A               [ 8] 2208 	ld	a, (hl+)
-    00000AC5 5F               [ 4] 2209 	ld	e, a
-    00000AC6 56               [ 8] 2210 	ld	d, (hl)
-    00000AC7 21 06 00         [12] 2211 	ld	hl, #0x0006
-    00000ACA 19               [ 8] 2212 	add	hl, de
-    00000ACB 4D               [ 4] 2213 	ld	c, l
-    00000ACC 44               [ 4] 2214 	ld	b, h
-    00000ACD 0A               [ 8] 2215 	ld	a, (bc)
-    00000ACE 4F               [ 4] 2216 	ld	c, a
-    00000ACF 06 00            [ 8] 2217 	ld	b, #0x00
-    00000AD1 F8 06            [12] 2218 	ldhl	sp,	#6
-    00000AD3 2A               [ 8] 2219 	ld	a, (hl+)
-    00000AD4 91               [ 4] 2220 	sub	a, c
-    00000AD5 7E               [ 8] 2221 	ld	a, (hl)
-    00000AD6 98               [ 4] 2222 	sbc	a, b
-    00000AD7 56               [ 8] 2223 	ld	d, (hl)
-    00000AD8 78               [ 4] 2224 	ld	a, b
-    00000AD9 CB 7F            [ 8] 2225 	bit	7,a
-    00000ADB 28 07            [12] 2226 	jr	Z, 00631$
-    00000ADD CB 7A            [ 8] 2227 	bit	7, d
-    00000ADF 20 08            [12] 2228 	jr	NZ, 00632$
-    00000AE1 BF               [ 4] 2229 	cp	a, a
-    00000AE2 18 05            [12] 2230 	jr	00632$
-    00000AE4                       2231 00631$:
-    00000AE4 CB 7A            [ 8] 2232 	bit	7, d
-    00000AE6 28 01            [12] 2233 	jr	Z, 00632$
-    00000AE8 37               [ 4] 2234 	scf
-    00000AE9                       2235 00632$:
-    00000AE9 D2rF9r0B         [16] 2236 	jp	NC, 00157$
-                                   2237 ;src/states/game.c:333: entity_t *e = &current_map->entities[i];
-    00000AEC F8 08            [12] 2238 	ldhl	sp,#8
-    00000AEE 2A               [ 8] 2239 	ld	a, (hl+)
-    00000AEF 5F               [ 4] 2240 	ld	e, a
-    00000AF0 56               [ 8] 2241 	ld	d, (hl)
-    00000AF1 21 04 00         [12] 2242 	ld	hl, #0x0004
-    00000AF4 19               [ 8] 2243 	add	hl, de
-    00000AF5 E5               [16] 2244 	push	hl
-    00000AF6 7D               [ 4] 2245 	ld	a, l
-    00000AF7 F8 0C            [12] 2246 	ldhl	sp,	#12
-    00000AF9 77               [ 8] 2247 	ld	(hl), a
-    00000AFA E1               [12] 2248 	pop	hl
-    00000AFB 7C               [ 4] 2249 	ld	a, h
-    00000AFC F8 0B            [12] 2250 	ldhl	sp,	#11
-    00000AFE 32               [ 8] 2251 	ld	(hl-), a
-    00000AFF 2A               [ 8] 2252 	ld	a, (hl+)
-    00000B00 5F               [ 4] 2253 	ld	e, a
-    00000B01 3A               [ 8] 2254 	ld	a, (hl-)
-    00000B02 57               [ 4] 2255 	ld	d, a
-    00000B03 1A               [ 8] 2256 	ld	a, (de)
-    00000B04 22               [ 8] 2257 	ld	(hl+), a
-    00000B05 13               [ 8] 2258 	inc	de
-    00000B06 1A               [ 8] 2259 	ld	a, (de)
-    00000B07 77               [ 8] 2260 	ld	(hl), a
-    00000B08 F8 06            [12] 2261 	ldhl	sp,#6
-    00000B0A 2A               [ 8] 2262 	ld	a, (hl+)
-    00000B0B 4F               [ 4] 2263 	ld	c, a
-    00000B0C 46               [ 8] 2264 	ld	b, (hl)
-    00000B0D 69               [ 4] 2265 	ld	l, c
-    00000B0E 60               [ 4] 2266 	ld	h, b
-    00000B0F 29               [ 8] 2267 	add	hl, hl
-    00000B10 29               [ 8] 2268 	add	hl, hl
-    00000B11 29               [ 8] 2269 	add	hl, hl
-    00000B12 09               [ 8] 2270 	add	hl, bc
-    00000B13 4D               [ 4] 2271 	ld	c, l
-    00000B14 44               [ 4] 2272 	ld	b, h
-    00000B15 F8 0A            [12] 2273 	ldhl	sp,	#10
-    00000B17 2A               [ 8] 2274 	ld	a,	(hl+)
-    00000B18 66               [ 8] 2275 	ld	h, (hl)
-    00000B19 6F               [ 4] 2276 	ld	l, a
-    00000B1A 09               [ 8] 2277 	add	hl, bc
-    00000B1B E5               [16] 2278 	push	hl
-    00000B1C 7D               [ 4] 2279 	ld	a, l
-    00000B1D F8 04            [12] 2280 	ldhl	sp,	#4
-    00000B1F 77               [ 8] 2281 	ld	(hl), a
-    00000B20 E1               [12] 2282 	pop	hl
-    00000B21 7C               [ 4] 2283 	ld	a, h
-    00000B22 F8 03            [12] 2284 	ldhl	sp,	#3
-    00000B24 77               [ 8] 2285 	ld	(hl), a
-                                   2286 ;src/states/game.c:334: int16_t dx = (int16_t)player_x - e->x, dy = (int16_t)player_y - e->y;
-    00000B25 FAr00r00         [16] 2287 	ld	a, (_player_x)
-    00000B28 4F               [ 4] 2288 	ld	c, a
-    00000B29 21r01r00         [12] 2289 	ld	hl, #_player_x + 1
-    00000B2C 46               [ 8] 2290 	ld	b, (hl)
-    00000B2D F8 02            [12] 2291 	ldhl	sp,#2
-    00000B2F 2A               [ 8] 2292 	ld	a, (hl+)
-    00000B30 5F               [ 4] 2293 	ld	e, a
-    00000B31 2A               [ 8] 2294 	ld	a, (hl+)
-    00000B32 57               [ 4] 2295 	ld	d, a
-    00000B33 1A               [ 8] 2296 	ld	a, (de)
-    00000B34 22               [ 8] 2297 	ld	(hl+), a
-    00000B35 13               [ 8] 2298 	inc	de
-    00000B36 1A               [ 8] 2299 	ld	a, (de)
-    00000B37 77               [ 8] 2300 	ld	(hl), a
-    00000B38 F8 0A            [12] 2301 	ldhl	sp,	#10
-    00000B3A 79               [ 4] 2302 	ld	a, c
-    00000B3B 22               [ 8] 2303 	ld	(hl+), a
-    00000B3C 78               [ 4] 2304 	ld	a, b
-    00000B3D 32               [ 8] 2305 	ld	(hl-), a
-    00000B3E 2A               [ 8] 2306 	ld	a, (hl+)
-    00000B3F 5F               [ 4] 2307 	ld	e, a
-    00000B40 56               [ 8] 2308 	ld	d, (hl)
-    00000B41 F8 04            [12] 2309 	ldhl	sp,	#4
-    00000B43 2A               [ 8] 2310 	ld	a,	(hl+)
-    00000B44 66               [ 8] 2311 	ld	h, (hl)
-    00000B45 6F               [ 4] 2312 	ld	l, a
-    00000B46 7B               [ 4] 2313 	ld	a, e
-    00000B47 95               [ 4] 2314 	sub	a, l
-    00000B48 5F               [ 4] 2315 	ld	e, a
-    00000B49 7A               [ 4] 2316 	ld	a, d
-    00000B4A 9C               [ 4] 2317 	sbc	a, h
-    00000B4B F8 09            [12] 2318 	ldhl	sp,	#9
-    00000B4D 32               [ 8] 2319 	ld	(hl-), a
-    00000B4E 73               [ 8] 2320 	ld	(hl), e
-    00000B4F FAr02r00         [16] 2321 	ld	a, (#_player_y)
-    00000B52 F8 00            [12] 2322 	ldhl	sp,	#0
-    00000B54 77               [ 8] 2323 	ld	(hl), a
-    00000B55 FAr03r00         [16] 2324 	ld	a, (#_player_y + 1)
-    00000B58 F8 01            [12] 2325 	ldhl	sp,	#1
-    00000B5A 22               [ 8] 2326 	ld	(hl+), a
-    00000B5B 2A               [ 8] 2327 	ld	a, (hl+)
-    00000B5C 5F               [ 4] 2328 	ld	e, a
-    00000B5D 56               [ 8] 2329 	ld	d, (hl)
-    00000B5E 21 02 00         [12] 2330 	ld	hl, #0x0002
-    00000B61 19               [ 8] 2331 	add	hl, de
-    00000B62 E5               [16] 2332 	push	hl
-    00000B63 7D               [ 4] 2333 	ld	a, l
-    00000B64 F8 0C            [12] 2334 	ldhl	sp,	#12
-    00000B66 77               [ 8] 2335 	ld	(hl), a
-    00000B67 E1               [12] 2336 	pop	hl
-    00000B68 7C               [ 4] 2337 	ld	a, h
-    00000B69 F8 0B            [12] 2338 	ldhl	sp,	#11
-    00000B6B 32               [ 8] 2339 	ld	(hl-), a
-    00000B6C 2A               [ 8] 2340 	ld	a, (hl+)
-    00000B6D 5F               [ 4] 2341 	ld	e, a
-    00000B6E 56               [ 8] 2342 	ld	d, (hl)
-    00000B6F 1A               [ 8] 2343 	ld	a, (de)
-    00000B70 F8 04            [12] 2344 	ldhl	sp,	#4
-    00000B72 22               [ 8] 2345 	ld	(hl+), a
-    00000B73 13               [ 8] 2346 	inc	de
-    00000B74 1A               [ 8] 2347 	ld	a, (de)
-    00000B75 77               [ 8] 2348 	ld	(hl), a
-    00000B76 F8 00            [12] 2349 	ldhl	sp,	#0
-    00000B78 2A               [ 8] 2350 	ld	a, (hl+)
-    00000B79 4E               [ 8] 2351 	ld	c, (hl)
-    00000B7A 5F               [ 4] 2352 	ld	e, a
-    00000B7B 51               [ 4] 2353 	ld	d, c
-    00000B7C F8 04            [12] 2354 	ldhl	sp,	#4
-    00000B7E 2A               [ 8] 2355 	ld	a,	(hl+)
-    00000B7F 66               [ 8] 2356 	ld	h, (hl)
-    00000B80 6F               [ 4] 2357 	ld	l, a
-    00000B81 7B               [ 4] 2358 	ld	a, e
-    00000B82 95               [ 4] 2359 	sub	a, l
-    00000B83 5F               [ 4] 2360 	ld	e, a
-    00000B84 7A               [ 4] 2361 	ld	a, d
-    00000B85 9C               [ 4] 2362 	sbc	a, h
-    00000B86 F8 0B            [12] 2363 	ldhl	sp,	#11
-    00000B88 32               [ 8] 2364 	ld	(hl-), a
-                                   2365 ;src/states/game.c:335: if (dx < 0)
-    00000B89 7B               [ 4] 2366 	ld	a, e
-    00000B8A 32               [ 8] 2367 	ld	(hl-), a
-    00000B8B 2B               [ 8] 2368 	dec	hl
-    00000B8C 2A               [ 8] 2369 	ld	a, (hl+)
-    00000B8D CB 7E            [12] 2370 	bit	7, (hl)
-    00000B8F 28 0F            [12] 2371 	jr	Z, 00150$
-                                   2372 ;src/states/game.c:336: dx = -dx;
-    00000B91 11 00 00         [12] 2373 	ld	de, #0x0000
-    00000B94 3A               [ 8] 2374 	ld	a, (hl-)
-    00000B95 6E               [ 8] 2375 	ld	l, (hl)
-    00000B96 67               [ 4] 2376 	ld	h, a
-    00000B97 7B               [ 4] 2377 	ld	a, e
-    00000B98 95               [ 4] 2378 	sub	a, l
-    00000B99 5F               [ 4] 2379 	ld	e, a
-    00000B9A 7A               [ 4] 2380 	ld	a, d
-    00000B9B 9C               [ 4] 2381 	sbc	a, h
-    00000B9C F8 09            [12] 2382 	ldhl	sp,	#9
-    00000B9E 32               [ 8] 2383 	ld	(hl-), a
-    00000B9F 73               [ 8] 2384 	ld	(hl), e
-    00000BA0                       2385 00150$:
-                                   2386 ;src/states/game.c:337: if (dy < 0)
-    00000BA0 F8 0A            [12] 2387 	ldhl	sp,	#10
-    00000BA2 2A               [ 8] 2388 	ld	a, (hl+)
-    00000BA3 CB 7E            [12] 2389 	bit	7, (hl)
-    00000BA5 28 0F            [12] 2390 	jr	Z, 00152$
-                                   2391 ;src/states/game.c:338: dy = -dy;
-    00000BA7 11 00 00         [12] 2392 	ld	de, #0x0000
-    00000BAA 3A               [ 8] 2393 	ld	a, (hl-)
-    00000BAB 6E               [ 8] 2394 	ld	l, (hl)
-    00000BAC 67               [ 4] 2395 	ld	h, a
-    00000BAD 7B               [ 4] 2396 	ld	a, e
-    00000BAE 95               [ 4] 2397 	sub	a, l
-    00000BAF 5F               [ 4] 2398 	ld	e, a
-    00000BB0 7A               [ 4] 2399 	ld	a, d
-    00000BB1 9C               [ 4] 2400 	sbc	a, h
-    00000BB2 F8 0B            [12] 2401 	ldhl	sp,	#11
-    00000BB4 32               [ 8] 2402 	ld	(hl-), a
-    00000BB5 73               [ 8] 2403 	ld	(hl), e
-    00000BB6                       2404 00152$:
-                                   2405 ;src/states/game.c:339: if (dx < 24 && dy < 24 && input_pressed(J_A))
-    00000BB6 F8 08            [12] 2406 	ldhl	sp,	#8
-    00000BB8 2A               [ 8] 2407 	ld	a, (hl+)
-    00000BB9 4F               [ 4] 2408 	ld	c, a
-    00000BBA 46               [ 8] 2409 	ld	b, (hl)
-    00000BBB 79               [ 4] 2410 	ld	a, c
-    00000BBC D6 18            [ 8] 2411 	sub	a, #0x18
-    00000BBE 78               [ 4] 2412 	ld	a, b
-    00000BBF 17               [ 4] 2413 	rla
-    00000BC0 3F               [ 4] 2414 	ccf
-    00000BC1 1F               [ 4] 2415 	rra
-    00000BC2 DE 80            [ 8] 2416 	sbc	a, #0x80
-    00000BC4 30 28            [12] 2417 	jr	NC, 00200$
-    00000BC6 23               [ 8] 2418 	inc	hl
-    00000BC7 2A               [ 8] 2419 	ld	a, (hl+)
-    00000BC8 4F               [ 4] 2420 	ld	c, a
-    00000BC9 46               [ 8] 2421 	ld	b, (hl)
-    00000BCA 79               [ 4] 2422 	ld	a, c
-    00000BCB D6 18            [ 8] 2423 	sub	a, #0x18
-    00000BCD 78               [ 4] 2424 	ld	a, b
-    00000BCE 17               [ 4] 2425 	rla
-    00000BCF 3F               [ 4] 2426 	ccf
-    00000BD0 1F               [ 4] 2427 	rra
-    00000BD1 DE 80            [ 8] 2428 	sbc	a, #0x80
-    00000BD3 30 19            [12] 2429 	jr	NC, 00200$
-    00000BD5 3E 10            [ 8] 2430 	ld	a, #0x10
-    00000BD7 CDr00r00         [24] 2431 	call	_input_pressed
-    00000BDA B7               [ 4] 2432 	or	a, a
-    00000BDB 28 11            [12] 2433 	jr	Z, 00200$
-                                   2434 ;src/states/game.c:340: text_dialogue(e->dialogue);
-    00000BDD F8 02            [12] 2435 	ldhl	sp,#2
-    00000BDF 2A               [ 8] 2436 	ld	a, (hl+)
-    00000BE0 5F               [ 4] 2437 	ld	e, a
-    00000BE1 56               [ 8] 2438 	ld	d, (hl)
-    00000BE2 21 05 00         [12] 2439 	ld	hl, #0x0005
-    00000BE5 19               [ 8] 2440 	add	hl, de
-    00000BE6 2A               [ 8] 2441 	ld	a, (hl+)
-    00000BE7 4F               [ 4] 2442 	ld	c, a
-    00000BE8 7E               [ 8] 2443 	ld	a, (hl)
-    00000BE9 59               [ 4] 2444 	ld	e, c
-    00000BEA 57               [ 4] 2445 	ld	d, a
-    00000BEB CDr00r00         [24] 2446 	call	_text_dialogue
-    00000BEE                       2447 00200$:
-                                   2448 ;src/states/game.c:332: for (int i = 0; i < current_map->num_entities; i++) {
-    00000BEE F8 06            [12] 2449 	ldhl	sp,	#6
-    00000BF0 34               [12] 2450 	inc	(hl)
-    00000BF1 C2rB8r0A         [16] 2451 	jp	NZ, 00199$
-    00000BF4 23               [ 8] 2452 	inc	hl
-    00000BF5 34               [12] 2453 	inc	(hl)
-    00000BF6 C3rB8r0A         [16] 2454 	jp	00199$
-    00000BF9                       2455 00157$:
-                                   2456 ;src/states/game.c:343: uint8_t tid = get_tile_at(player_x + 8, player_y);
-    00000BF9 FAr00r00         [16] 2457 	ld	a, (_player_x)
-    00000BFC 21r01r00         [12] 2458 	ld	hl, #_player_x + 1
-    00000BFF 56               [ 8] 2459 	ld	d, (hl)
-    00000C00 C6 08            [ 8] 2460 	add	a, #0x08
-    00000C02 5F               [ 4] 2461 	ld	e, a
-    00000C03 30 01            [12] 2462 	jr	NC, 00634$
-    00000C05 14               [ 4] 2463 	inc	d
-    00000C06                       2464 00634$:
-    00000C06 FAr02r00         [16] 2465 	ld	a, (_player_y)
-    00000C09 4F               [ 4] 2466 	ld	c, a
-    00000C0A 21r03r00         [12] 2467 	ld	hl, #_player_y + 1
-    00000C0D 46               [ 8] 2468 	ld	b, (hl)
-    00000C0E CDr00r00         [24] 2469 	call	_get_tile_at
-    00000C11 F8 0A            [12] 2470 	ldhl	sp,	#10
-    00000C13 77               [ 8] 2471 	ld	(hl), a
-                                   2472 ;src/states/game.c:344: if (player_dir == 1)
-    00000C14 FAr04r00         [16] 2473 	ld	a, (#_player_dir)
-    00000C17 3D               [ 4] 2474 	dec	a
-    00000C18 20 21            [12] 2475 	jr	NZ, 00159$
-                                   2476 ;src/states/game.c:345: tid = get_tile_at(player_x + 8, player_y - 4);
-    00000C1A FAr02r00         [16] 2477 	ld	a, (_player_y)
-    00000C1D 21r03r00         [12] 2478 	ld	hl, #_player_y + 1
-    00000C20 46               [ 8] 2479 	ld	b, (hl)
-    00000C21 C6 FC            [ 8] 2480 	add	a, #0xfc
-    00000C23 4F               [ 4] 2481 	ld	c, a
-    00000C24 78               [ 4] 2482 	ld	a, b
-    00000C25 CE FF            [ 8] 2483 	adc	a, #0xff
-    00000C27 47               [ 4] 2484 	ld	b, a
-    00000C28 FAr00r00         [16] 2485 	ld	a, (_player_x)
-    00000C2B 21r01r00         [12] 2486 	ld	hl, #_player_x + 1
-    00000C2E 56               [ 8] 2487 	ld	d, (hl)
-    00000C2F C6 08            [ 8] 2488 	add	a, #0x08
-    00000C31 5F               [ 4] 2489 	ld	e, a
-    00000C32 30 01            [12] 2490 	jr	NC, 00637$
-    00000C34 14               [ 4] 2491 	inc	d
-    00000C35                       2492 00637$:
-    00000C35 CDr00r00         [24] 2493 	call	_get_tile_at
-    00000C38 F8 0A            [12] 2494 	ldhl	sp,	#10
-    00000C3A 77               [ 8] 2495 	ld	(hl), a
-    00000C3B                       2496 00159$:
-                                   2497 ;src/states/game.c:347: if (current_map == &house_map_info &&
-    00000C3B 21r60r00         [12] 2498 	ld	hl, #_current_map
+    00000A05 30 72            [12] 2046 	jr	NC, 00247$
+                                   2047 ;src/states/game.c:321: for (int j = 0; j < 4; j++) {
+    00000A07 F8 08            [12] 2048 	ldhl	sp,#8
+    00000A09 2A               [ 8] 2049 	ld	a, (hl+)
+    00000A0A 5F               [ 4] 2050 	ld	e, a
+    00000A0B 56               [ 8] 2051 	ld	d, (hl)
+    00000A0C 21 07 00         [12] 2052 	ld	hl, #0x0007
+    00000A0F 19               [ 8] 2053 	add	hl, de
+    00000A10 E5               [16] 2054 	push	hl
+    00000A11 7D               [ 4] 2055 	ld	a, l
+    00000A12 F8 08            [12] 2056 	ldhl	sp,	#8
+    00000A14 77               [ 8] 2057 	ld	(hl), a
+    00000A15 E1               [12] 2058 	pop	hl
+    00000A16 7C               [ 4] 2059 	ld	a, h
+    00000A17 F8 07            [12] 2060 	ldhl	sp,	#7
+    00000A19 77               [ 8] 2061 	ld	(hl), a
+    00000A1A 0E 00            [ 8] 2062 	ld	c, #0x00
+    00000A1C                       2063 00190$:
+    00000A1C 79               [ 4] 2064 	ld	a, c
+    00000A1D D6 04            [ 8] 2065 	sub	a, #0x04
+    00000A1F 30 71            [12] 2066 	jr	NC, 00197$
+                                   2067 ;src/states/game.c:322: move_sprite(4 + j, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+    00000A21 F8 04            [12] 2068 	ldhl	sp,	#4
+    00000A23 46               [ 8] 2069 	ld	b, (hl)
+    00000A24 79               [ 4] 2070 	ld	a, c
+    00000A25 D6 02            [ 8] 2071 	sub	a, #0x02
+    00000A27 38 04            [12] 2072 	jr	C, 00207$
+    00000A29 3E 08            [ 8] 2073 	ld	a, #0x08
+    00000A2B 18 01            [12] 2074 	jr	00208$
+    00000A2D                       2075 00207$:
+    00000A2D AF               [ 4] 2076 	xor	a, a
+    00000A2E                       2077 00208$:
+    00000A2E 80               [ 4] 2078 	add	a, b
+    00000A2F 5F               [ 4] 2079 	ld	e, a
+    00000A30 F8 02            [12] 2080 	ldhl	sp,	#2
+    00000A32 46               [ 8] 2081 	ld	b, (hl)
+    00000A33 79               [ 4] 2082 	ld	a, c
+    00000A34 E6 01            [ 8] 2083 	and	a, #0x01
+    00000A36 3E 08            [ 8] 2084 	ld	a, #0x08
+    00000A38 20 01            [12] 2085 	jr	NZ, 00210$
+    00000A3A AF               [ 4] 2086 	xor	a, a
+    00000A3B                       2087 00210$:
+    00000A3B 80               [ 4] 2088 	add	a, b
+    00000A3C F8 09            [12] 2089 	ldhl	sp,	#9
+    00000A3E 32               [ 8] 2090 	ld	(hl-), a
+    00000A3F 41               [ 4] 2091 	ld	b, c
+    00000A40 78               [ 4] 2092 	ld	a, b
+    00000A41 C6 04            [ 8] 2093 	add	a, #0x04
+    00000A43 77               [ 8] 2094 	ld	(hl), a
+    00000A44 56               [ 8] 2095 	ld	d, (hl)
+                                   2096 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000A45 AF               [ 4] 2097 	xor	a, a
+    00000A46 6A               [ 4] 2098 	ld	l, d
+    00000A47 67               [ 4] 2099 	ld	h, a
+    00000A48 29               [ 8] 2100 	add	hl, hl
+    00000A49 29               [ 8] 2101 	add	hl, hl
+    00000A4A 3Er00            [ 8] 2102 	ld	a, #<(_shadow_OAM)
+    00000A4C 85               [ 4] 2103 	add	a, l
+    00000A4D 6F               [ 4] 2104 	ld	l, a
+    00000A4E 3Es00            [ 8] 2105 	ld	a, #>(_shadow_OAM)
+    00000A50 8C               [ 4] 2106 	adc	a, h
+    00000A51 67               [ 4] 2107 	ld	h, a
+                                   2108 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000A52 7B               [ 4] 2109 	ld	a, e
+    00000A53 22               [ 8] 2110 	ld	(hl+), a
+    00000A54 5D               [ 4] 2111 	ld	e, l
+    00000A55 54               [ 4] 2112 	ld	d, h
+    00000A56 F8 09            [12] 2113 	ldhl	sp,	#9
+                                   2114 ;src/states/game.c:323: set_sprite_tile(4 + j, e->sprite_base + j);
+    00000A58 3A               [ 8] 2115 	ld	a, (hl-)
+    00000A59 2B               [ 8] 2116 	dec	hl
+    00000A5A 2B               [ 8] 2117 	dec	hl
+    00000A5B 12               [ 8] 2118 	ld	(de), a
+    00000A5C 2A               [ 8] 2119 	ld	a, (hl+)
+    00000A5D 5F               [ 4] 2120 	ld	e, a
+    00000A5E 2A               [ 8] 2121 	ld	a, (hl+)
+    00000A5F 23               [ 8] 2122 	inc	hl
+    00000A60 57               [ 4] 2123 	ld	d, a
+    00000A61 1A               [ 8] 2124 	ld	a, (de)
+    00000A62 80               [ 4] 2125 	add	a, b
+    00000A63 32               [ 8] 2126 	ld	(hl-), a
+    00000A64 46               [ 8] 2127 	ld	b, (hl)
+                                   2128 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000A65 11r00r00         [12] 2129 	ld	de, #_shadow_OAM+0
+    00000A68 AF               [ 4] 2130 	xor	a, a
+    00000A69 68               [ 4] 2131 	ld	l, b
+    00000A6A 67               [ 4] 2132 	ld	h, a
+    00000A6B 29               [ 8] 2133 	add	hl, hl
+    00000A6C 29               [ 8] 2134 	add	hl, hl
+    00000A6D 19               [ 8] 2135 	add	hl, de
+    00000A6E 23               [ 8] 2136 	inc	hl
+    00000A6F 23               [ 8] 2137 	inc	hl
+    00000A70 5D               [ 4] 2138 	ld	e, l
+    00000A71 54               [ 4] 2139 	ld	d, h
+    00000A72 F8 09            [12] 2140 	ldhl	sp,	#9
+    00000A74 7E               [ 8] 2141 	ld	a, (hl)
+    00000A75 12               [ 8] 2142 	ld	(de), a
+                                   2143 ;src/states/game.c:321: for (int j = 0; j < 4; j++) {
+    00000A76 0C               [ 4] 2144 	inc	c
+    00000A77 18 A3            [12] 2145 	jr	00190$
+                                   2146 ;src/states/game.c:326: for (int j = 0; j < 4; j++)
+    00000A79                       2147 00247$:
+    00000A79 0E 00            [ 8] 2148 	ld	c, #0x00
+    00000A7B                       2149 00193$:
+                                   2150 ;src/states/game.c:327: move_sprite(4 + j, 0, 0);
+    00000A7B 79               [ 4] 2151 	ld	a,c
+    00000A7C FE 04            [ 8] 2152 	cp	a,#0x04
+    00000A7E 30 12            [12] 2153 	jr	NC, 00197$
+    00000A80 C6 04            [ 8] 2154 	add	a, #0x04
+    00000A82 47               [ 4] 2155 	ld	b, a
+                                   2156 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000A83 AF               [ 4] 2157 	xor	a, a
+    00000A84 68               [ 4] 2158 	ld	l, b
+    00000A85 67               [ 4] 2159 	ld	h, a
+    00000A86 29               [ 8] 2160 	add	hl, hl
+    00000A87 29               [ 8] 2161 	add	hl, hl
+    00000A88 11r00r00         [12] 2162 	ld	de, #_shadow_OAM
+    00000A8B 19               [ 8] 2163 	add	hl, de
+                                   2164 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000A8C AF               [ 4] 2165 	xor	a, a
+    00000A8D 22               [ 8] 2166 	ld	(hl+), a
+    00000A8E 77               [ 8] 2167 	ld	(hl), a
+                                   2168 ;src/states/game.c:326: for (int j = 0; j < 4; j++)
+    00000A8F 0C               [ 4] 2169 	inc	c
+    00000A90 18 E9            [12] 2170 	jr	00193$
+    00000A92                       2171 00197$:
+                                   2172 ;src/states/game.c:317: for (int i = 0; i < current_map->num_entities; i++) {
+    00000A92 F8 0A            [12] 2173 	ldhl	sp,	#10
+    00000A94 34               [12] 2174 	inc	(hl)
+    00000A95 C2r43r09         [16] 2175 	jp	NZ, 00196$
+    00000A98 23               [ 8] 2176 	inc	hl
+    00000A99 34               [12] 2177 	inc	(hl)
+    00000A9A C3r43r09         [16] 2178 	jp	00196$
+    00000A9D                       2179 00148$:
+                                   2180 ;src/states/game.c:331: if (input_pressed(J_A | J_B)) {
+    00000A9D 3E 30            [ 8] 2181 	ld	a, #0x30
+    00000A9F CDr00r00         [24] 2182 	call	_input_pressed
+    00000AA2 B7               [ 4] 2183 	or	a, a
+    00000AA3 CArC8r0C         [16] 2184 	jp	Z, 00179$
+                                   2185 ;src/states/game.c:332: for (int i = 0; i < current_map->num_entities; i++) {
+    00000AA6 AF               [ 4] 2186 	xor	a, a
+    00000AA7 F8 06            [12] 2187 	ldhl	sp,	#6
+    00000AA9 22               [ 8] 2188 	ld	(hl+), a
+    00000AAA 77               [ 8] 2189 	ld	(hl), a
+    00000AAB                       2190 00199$:
+                                   2191 ;src/states/game.c:317: for (int i = 0; i < current_map->num_entities; i++) {
+    00000AAB FAr60r00         [16] 2192 	ld	a, (#_current_map)
+    00000AAE F8 08            [12] 2193 	ldhl	sp,	#8
+    00000AB0 77               [ 8] 2194 	ld	(hl), a
+    00000AB1 FAr61r00         [16] 2195 	ld	a, (#_current_map + 1)
+    00000AB4 F8 09            [12] 2196 	ldhl	sp,	#9
+                                   2197 ;src/states/game.c:332: for (int i = 0; i < current_map->num_entities; i++) {
+    00000AB6 32               [ 8] 2198 	ld	(hl-), a
+    00000AB7 2A               [ 8] 2199 	ld	a, (hl+)
+    00000AB8 5F               [ 4] 2200 	ld	e, a
+    00000AB9 56               [ 8] 2201 	ld	d, (hl)
+    00000ABA 21 06 00         [12] 2202 	ld	hl, #0x0006
+    00000ABD 19               [ 8] 2203 	add	hl, de
+    00000ABE 4D               [ 4] 2204 	ld	c, l
+    00000ABF 44               [ 4] 2205 	ld	b, h
+    00000AC0 0A               [ 8] 2206 	ld	a, (bc)
+    00000AC1 4F               [ 4] 2207 	ld	c, a
+    00000AC2 06 00            [ 8] 2208 	ld	b, #0x00
+    00000AC4 F8 06            [12] 2209 	ldhl	sp,	#6
+    00000AC6 2A               [ 8] 2210 	ld	a, (hl+)
+    00000AC7 91               [ 4] 2211 	sub	a, c
+    00000AC8 7E               [ 8] 2212 	ld	a, (hl)
+    00000AC9 98               [ 4] 2213 	sbc	a, b
+    00000ACA 56               [ 8] 2214 	ld	d, (hl)
+    00000ACB 78               [ 4] 2215 	ld	a, b
+    00000ACC CB 7F            [ 8] 2216 	bit	7,a
+    00000ACE 28 07            [12] 2217 	jr	Z, 00631$
+    00000AD0 CB 7A            [ 8] 2218 	bit	7, d
+    00000AD2 20 08            [12] 2219 	jr	NZ, 00632$
+    00000AD4 BF               [ 4] 2220 	cp	a, a
+    00000AD5 18 05            [12] 2221 	jr	00632$
+    00000AD7                       2222 00631$:
+    00000AD7 CB 7A            [ 8] 2223 	bit	7, d
+    00000AD9 28 01            [12] 2224 	jr	Z, 00632$
+    00000ADB 37               [ 4] 2225 	scf
+    00000ADC                       2226 00632$:
+    00000ADC D2rECr0B         [16] 2227 	jp	NC, 00157$
+                                   2228 ;src/states/game.c:333: entity_t *e = &current_map->entities[i];
+    00000ADF F8 08            [12] 2229 	ldhl	sp,#8
+    00000AE1 2A               [ 8] 2230 	ld	a, (hl+)
+    00000AE2 5F               [ 4] 2231 	ld	e, a
+    00000AE3 56               [ 8] 2232 	ld	d, (hl)
+    00000AE4 21 04 00         [12] 2233 	ld	hl, #0x0004
+    00000AE7 19               [ 8] 2234 	add	hl, de
+    00000AE8 E5               [16] 2235 	push	hl
+    00000AE9 7D               [ 4] 2236 	ld	a, l
+    00000AEA F8 0C            [12] 2237 	ldhl	sp,	#12
+    00000AEC 77               [ 8] 2238 	ld	(hl), a
+    00000AED E1               [12] 2239 	pop	hl
+    00000AEE 7C               [ 4] 2240 	ld	a, h
+    00000AEF F8 0B            [12] 2241 	ldhl	sp,	#11
+    00000AF1 32               [ 8] 2242 	ld	(hl-), a
+    00000AF2 2A               [ 8] 2243 	ld	a, (hl+)
+    00000AF3 5F               [ 4] 2244 	ld	e, a
+    00000AF4 3A               [ 8] 2245 	ld	a, (hl-)
+    00000AF5 57               [ 4] 2246 	ld	d, a
+    00000AF6 1A               [ 8] 2247 	ld	a, (de)
+    00000AF7 22               [ 8] 2248 	ld	(hl+), a
+    00000AF8 13               [ 8] 2249 	inc	de
+    00000AF9 1A               [ 8] 2250 	ld	a, (de)
+    00000AFA 77               [ 8] 2251 	ld	(hl), a
+    00000AFB F8 06            [12] 2252 	ldhl	sp,#6
+    00000AFD 2A               [ 8] 2253 	ld	a, (hl+)
+    00000AFE 4F               [ 4] 2254 	ld	c, a
+    00000AFF 46               [ 8] 2255 	ld	b, (hl)
+    00000B00 69               [ 4] 2256 	ld	l, c
+    00000B01 60               [ 4] 2257 	ld	h, b
+    00000B02 29               [ 8] 2258 	add	hl, hl
+    00000B03 29               [ 8] 2259 	add	hl, hl
+    00000B04 29               [ 8] 2260 	add	hl, hl
+    00000B05 09               [ 8] 2261 	add	hl, bc
+    00000B06 4D               [ 4] 2262 	ld	c, l
+    00000B07 44               [ 4] 2263 	ld	b, h
+    00000B08 F8 0A            [12] 2264 	ldhl	sp,	#10
+    00000B0A 2A               [ 8] 2265 	ld	a,	(hl+)
+    00000B0B 66               [ 8] 2266 	ld	h, (hl)
+    00000B0C 6F               [ 4] 2267 	ld	l, a
+    00000B0D 09               [ 8] 2268 	add	hl, bc
+    00000B0E E5               [16] 2269 	push	hl
+    00000B0F 7D               [ 4] 2270 	ld	a, l
+    00000B10 F8 04            [12] 2271 	ldhl	sp,	#4
+    00000B12 77               [ 8] 2272 	ld	(hl), a
+    00000B13 E1               [12] 2273 	pop	hl
+    00000B14 7C               [ 4] 2274 	ld	a, h
+    00000B15 F8 03            [12] 2275 	ldhl	sp,	#3
+    00000B17 77               [ 8] 2276 	ld	(hl), a
+                                   2277 ;src/states/game.c:334: int16_t dx = (int16_t)player_x - e->x, dy = (int16_t)player_y - e->y;
+    00000B18 FAr00r00         [16] 2278 	ld	a, (_player_x)
+    00000B1B 4F               [ 4] 2279 	ld	c, a
+    00000B1C 21r01r00         [12] 2280 	ld	hl, #_player_x + 1
+    00000B1F 46               [ 8] 2281 	ld	b, (hl)
+    00000B20 F8 02            [12] 2282 	ldhl	sp,#2
+    00000B22 2A               [ 8] 2283 	ld	a, (hl+)
+    00000B23 5F               [ 4] 2284 	ld	e, a
+    00000B24 2A               [ 8] 2285 	ld	a, (hl+)
+    00000B25 57               [ 4] 2286 	ld	d, a
+    00000B26 1A               [ 8] 2287 	ld	a, (de)
+    00000B27 22               [ 8] 2288 	ld	(hl+), a
+    00000B28 13               [ 8] 2289 	inc	de
+    00000B29 1A               [ 8] 2290 	ld	a, (de)
+    00000B2A 77               [ 8] 2291 	ld	(hl), a
+    00000B2B F8 0A            [12] 2292 	ldhl	sp,	#10
+    00000B2D 79               [ 4] 2293 	ld	a, c
+    00000B2E 22               [ 8] 2294 	ld	(hl+), a
+    00000B2F 78               [ 4] 2295 	ld	a, b
+    00000B30 32               [ 8] 2296 	ld	(hl-), a
+    00000B31 2A               [ 8] 2297 	ld	a, (hl+)
+    00000B32 5F               [ 4] 2298 	ld	e, a
+    00000B33 56               [ 8] 2299 	ld	d, (hl)
+    00000B34 F8 04            [12] 2300 	ldhl	sp,	#4
+    00000B36 2A               [ 8] 2301 	ld	a,	(hl+)
+    00000B37 66               [ 8] 2302 	ld	h, (hl)
+    00000B38 6F               [ 4] 2303 	ld	l, a
+    00000B39 7B               [ 4] 2304 	ld	a, e
+    00000B3A 95               [ 4] 2305 	sub	a, l
+    00000B3B 5F               [ 4] 2306 	ld	e, a
+    00000B3C 7A               [ 4] 2307 	ld	a, d
+    00000B3D 9C               [ 4] 2308 	sbc	a, h
+    00000B3E F8 09            [12] 2309 	ldhl	sp,	#9
+    00000B40 32               [ 8] 2310 	ld	(hl-), a
+    00000B41 73               [ 8] 2311 	ld	(hl), e
+    00000B42 FAr02r00         [16] 2312 	ld	a, (#_player_y)
+    00000B45 F8 00            [12] 2313 	ldhl	sp,	#0
+    00000B47 77               [ 8] 2314 	ld	(hl), a
+    00000B48 FAr03r00         [16] 2315 	ld	a, (#_player_y + 1)
+    00000B4B F8 01            [12] 2316 	ldhl	sp,	#1
+    00000B4D 22               [ 8] 2317 	ld	(hl+), a
+    00000B4E 2A               [ 8] 2318 	ld	a, (hl+)
+    00000B4F 5F               [ 4] 2319 	ld	e, a
+    00000B50 56               [ 8] 2320 	ld	d, (hl)
+    00000B51 21 02 00         [12] 2321 	ld	hl, #0x0002
+    00000B54 19               [ 8] 2322 	add	hl, de
+    00000B55 E5               [16] 2323 	push	hl
+    00000B56 7D               [ 4] 2324 	ld	a, l
+    00000B57 F8 0C            [12] 2325 	ldhl	sp,	#12
+    00000B59 77               [ 8] 2326 	ld	(hl), a
+    00000B5A E1               [12] 2327 	pop	hl
+    00000B5B 7C               [ 4] 2328 	ld	a, h
+    00000B5C F8 0B            [12] 2329 	ldhl	sp,	#11
+    00000B5E 32               [ 8] 2330 	ld	(hl-), a
+    00000B5F 2A               [ 8] 2331 	ld	a, (hl+)
+    00000B60 5F               [ 4] 2332 	ld	e, a
+    00000B61 56               [ 8] 2333 	ld	d, (hl)
+    00000B62 1A               [ 8] 2334 	ld	a, (de)
+    00000B63 F8 04            [12] 2335 	ldhl	sp,	#4
+    00000B65 22               [ 8] 2336 	ld	(hl+), a
+    00000B66 13               [ 8] 2337 	inc	de
+    00000B67 1A               [ 8] 2338 	ld	a, (de)
+    00000B68 77               [ 8] 2339 	ld	(hl), a
+    00000B69 F8 00            [12] 2340 	ldhl	sp,	#0
+    00000B6B 2A               [ 8] 2341 	ld	a, (hl+)
+    00000B6C 4E               [ 8] 2342 	ld	c, (hl)
+    00000B6D 5F               [ 4] 2343 	ld	e, a
+    00000B6E 51               [ 4] 2344 	ld	d, c
+    00000B6F F8 04            [12] 2345 	ldhl	sp,	#4
+    00000B71 2A               [ 8] 2346 	ld	a,	(hl+)
+    00000B72 66               [ 8] 2347 	ld	h, (hl)
+    00000B73 6F               [ 4] 2348 	ld	l, a
+    00000B74 7B               [ 4] 2349 	ld	a, e
+    00000B75 95               [ 4] 2350 	sub	a, l
+    00000B76 5F               [ 4] 2351 	ld	e, a
+    00000B77 7A               [ 4] 2352 	ld	a, d
+    00000B78 9C               [ 4] 2353 	sbc	a, h
+    00000B79 F8 0B            [12] 2354 	ldhl	sp,	#11
+    00000B7B 32               [ 8] 2355 	ld	(hl-), a
+                                   2356 ;src/states/game.c:335: if (dx < 0)
+    00000B7C 7B               [ 4] 2357 	ld	a, e
+    00000B7D 32               [ 8] 2358 	ld	(hl-), a
+    00000B7E 2B               [ 8] 2359 	dec	hl
+    00000B7F 2A               [ 8] 2360 	ld	a, (hl+)
+    00000B80 CB 7E            [12] 2361 	bit	7, (hl)
+    00000B82 28 0F            [12] 2362 	jr	Z, 00150$
+                                   2363 ;src/states/game.c:336: dx = -dx;
+    00000B84 11 00 00         [12] 2364 	ld	de, #0x0000
+    00000B87 3A               [ 8] 2365 	ld	a, (hl-)
+    00000B88 6E               [ 8] 2366 	ld	l, (hl)
+    00000B89 67               [ 4] 2367 	ld	h, a
+    00000B8A 7B               [ 4] 2368 	ld	a, e
+    00000B8B 95               [ 4] 2369 	sub	a, l
+    00000B8C 5F               [ 4] 2370 	ld	e, a
+    00000B8D 7A               [ 4] 2371 	ld	a, d
+    00000B8E 9C               [ 4] 2372 	sbc	a, h
+    00000B8F F8 09            [12] 2373 	ldhl	sp,	#9
+    00000B91 32               [ 8] 2374 	ld	(hl-), a
+    00000B92 73               [ 8] 2375 	ld	(hl), e
+    00000B93                       2376 00150$:
+                                   2377 ;src/states/game.c:337: if (dy < 0)
+    00000B93 F8 0A            [12] 2378 	ldhl	sp,	#10
+    00000B95 2A               [ 8] 2379 	ld	a, (hl+)
+    00000B96 CB 7E            [12] 2380 	bit	7, (hl)
+    00000B98 28 0F            [12] 2381 	jr	Z, 00152$
+                                   2382 ;src/states/game.c:338: dy = -dy;
+    00000B9A 11 00 00         [12] 2383 	ld	de, #0x0000
+    00000B9D 3A               [ 8] 2384 	ld	a, (hl-)
+    00000B9E 6E               [ 8] 2385 	ld	l, (hl)
+    00000B9F 67               [ 4] 2386 	ld	h, a
+    00000BA0 7B               [ 4] 2387 	ld	a, e
+    00000BA1 95               [ 4] 2388 	sub	a, l
+    00000BA2 5F               [ 4] 2389 	ld	e, a
+    00000BA3 7A               [ 4] 2390 	ld	a, d
+    00000BA4 9C               [ 4] 2391 	sbc	a, h
+    00000BA5 F8 0B            [12] 2392 	ldhl	sp,	#11
+    00000BA7 32               [ 8] 2393 	ld	(hl-), a
+    00000BA8 73               [ 8] 2394 	ld	(hl), e
+    00000BA9                       2395 00152$:
+                                   2396 ;src/states/game.c:339: if (dx < 24 && dy < 24 && input_pressed(J_A))
+    00000BA9 F8 08            [12] 2397 	ldhl	sp,	#8
+    00000BAB 2A               [ 8] 2398 	ld	a, (hl+)
+    00000BAC 4F               [ 4] 2399 	ld	c, a
+    00000BAD 46               [ 8] 2400 	ld	b, (hl)
+    00000BAE 79               [ 4] 2401 	ld	a, c
+    00000BAF D6 18            [ 8] 2402 	sub	a, #0x18
+    00000BB1 78               [ 4] 2403 	ld	a, b
+    00000BB2 17               [ 4] 2404 	rla
+    00000BB3 3F               [ 4] 2405 	ccf
+    00000BB4 1F               [ 4] 2406 	rra
+    00000BB5 DE 80            [ 8] 2407 	sbc	a, #0x80
+    00000BB7 30 28            [12] 2408 	jr	NC, 00200$
+    00000BB9 23               [ 8] 2409 	inc	hl
+    00000BBA 2A               [ 8] 2410 	ld	a, (hl+)
+    00000BBB 4F               [ 4] 2411 	ld	c, a
+    00000BBC 46               [ 8] 2412 	ld	b, (hl)
+    00000BBD 79               [ 4] 2413 	ld	a, c
+    00000BBE D6 18            [ 8] 2414 	sub	a, #0x18
+    00000BC0 78               [ 4] 2415 	ld	a, b
+    00000BC1 17               [ 4] 2416 	rla
+    00000BC2 3F               [ 4] 2417 	ccf
+    00000BC3 1F               [ 4] 2418 	rra
+    00000BC4 DE 80            [ 8] 2419 	sbc	a, #0x80
+    00000BC6 30 19            [12] 2420 	jr	NC, 00200$
+    00000BC8 3E 10            [ 8] 2421 	ld	a, #0x10
+    00000BCA CDr00r00         [24] 2422 	call	_input_pressed
+    00000BCD B7               [ 4] 2423 	or	a, a
+    00000BCE 28 11            [12] 2424 	jr	Z, 00200$
+                                   2425 ;src/states/game.c:340: text_dialogue(e->dialogue);
+    00000BD0 F8 02            [12] 2426 	ldhl	sp,#2
+    00000BD2 2A               [ 8] 2427 	ld	a, (hl+)
+    00000BD3 5F               [ 4] 2428 	ld	e, a
+    00000BD4 56               [ 8] 2429 	ld	d, (hl)
+    00000BD5 21 05 00         [12] 2430 	ld	hl, #0x0005
+    00000BD8 19               [ 8] 2431 	add	hl, de
+    00000BD9 2A               [ 8] 2432 	ld	a, (hl+)
+    00000BDA 4F               [ 4] 2433 	ld	c, a
+    00000BDB 7E               [ 8] 2434 	ld	a, (hl)
+    00000BDC 59               [ 4] 2435 	ld	e, c
+    00000BDD 57               [ 4] 2436 	ld	d, a
+    00000BDE CDr00r00         [24] 2437 	call	_text_dialogue
+    00000BE1                       2438 00200$:
+                                   2439 ;src/states/game.c:332: for (int i = 0; i < current_map->num_entities; i++) {
+    00000BE1 F8 06            [12] 2440 	ldhl	sp,	#6
+    00000BE3 34               [12] 2441 	inc	(hl)
+    00000BE4 C2rABr0A         [16] 2442 	jp	NZ, 00199$
+    00000BE7 23               [ 8] 2443 	inc	hl
+    00000BE8 34               [12] 2444 	inc	(hl)
+    00000BE9 C3rABr0A         [16] 2445 	jp	00199$
+    00000BEC                       2446 00157$:
+                                   2447 ;src/states/game.c:343: uint8_t tid = get_tile_at(player_x + 8, player_y);
+    00000BEC FAr00r00         [16] 2448 	ld	a, (_player_x)
+    00000BEF 21r01r00         [12] 2449 	ld	hl, #_player_x + 1
+    00000BF2 56               [ 8] 2450 	ld	d, (hl)
+    00000BF3 C6 08            [ 8] 2451 	add	a, #0x08
+    00000BF5 5F               [ 4] 2452 	ld	e, a
+    00000BF6 30 01            [12] 2453 	jr	NC, 00634$
+    00000BF8 14               [ 4] 2454 	inc	d
+    00000BF9                       2455 00634$:
+    00000BF9 FAr02r00         [16] 2456 	ld	a, (_player_y)
+    00000BFC 4F               [ 4] 2457 	ld	c, a
+    00000BFD 21r03r00         [12] 2458 	ld	hl, #_player_y + 1
+    00000C00 46               [ 8] 2459 	ld	b, (hl)
+    00000C01 CDr00r00         [24] 2460 	call	_get_tile_at
+    00000C04 F8 0A            [12] 2461 	ldhl	sp,	#10
+    00000C06 77               [ 8] 2462 	ld	(hl), a
+                                   2463 ;src/states/game.c:344: if (player_dir == 1)
+    00000C07 FAr04r00         [16] 2464 	ld	a, (#_player_dir)
+    00000C0A 3D               [ 4] 2465 	dec	a
+    00000C0B 20 21            [12] 2466 	jr	NZ, 00159$
+                                   2467 ;src/states/game.c:345: tid = get_tile_at(player_x + 8, player_y - 4);
+    00000C0D FAr02r00         [16] 2468 	ld	a, (_player_y)
+    00000C10 21r03r00         [12] 2469 	ld	hl, #_player_y + 1
+    00000C13 46               [ 8] 2470 	ld	b, (hl)
+    00000C14 C6 FC            [ 8] 2471 	add	a, #0xfc
+    00000C16 4F               [ 4] 2472 	ld	c, a
+    00000C17 78               [ 4] 2473 	ld	a, b
+    00000C18 CE FF            [ 8] 2474 	adc	a, #0xff
+    00000C1A 47               [ 4] 2475 	ld	b, a
+    00000C1B FAr00r00         [16] 2476 	ld	a, (_player_x)
+    00000C1E 21r01r00         [12] 2477 	ld	hl, #_player_x + 1
+    00000C21 56               [ 8] 2478 	ld	d, (hl)
+    00000C22 C6 08            [ 8] 2479 	add	a, #0x08
+    00000C24 5F               [ 4] 2480 	ld	e, a
+    00000C25 30 01            [12] 2481 	jr	NC, 00637$
+    00000C27 14               [ 4] 2482 	inc	d
+    00000C28                       2483 00637$:
+    00000C28 CDr00r00         [24] 2484 	call	_get_tile_at
+    00000C2B F8 0A            [12] 2485 	ldhl	sp,	#10
+    00000C2D 77               [ 8] 2486 	ld	(hl), a
+    00000C2E                       2487 00159$:
+                                   2488 ;src/states/game.c:347: if (current_map == &house_map_info &&
+    00000C2E 21r60r00         [12] 2489 	ld	hl, #_current_map
+    00000C31 7E               [ 8] 2490 	ld	a, (hl)
+    00000C32 D6r32            [ 8] 2491 	sub	a, #<(_house_map_info)
+    00000C34 20 52            [12] 2492 	jr	NZ, 00166$
+    00000C36 23               [ 8] 2493 	inc	hl
+    00000C37 7E               [ 8] 2494 	ld	a, (hl)
+    00000C38 D6s00            [ 8] 2495 	sub	a, #>(_house_map_info)
+    00000C3A 20 4C            [12] 2496 	jr	NZ, 00166$
+                                   2497 ;src/states/game.c:348: (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
+    00000C3C F8 0A            [12] 2498 	ldhl	sp,	#10
     00000C3E 7E               [ 8] 2499 	ld	a, (hl)
-    00000C3F D6r32            [ 8] 2500 	sub	a, #<(_house_map_info)
-    00000C41 20 52            [12] 2501 	jr	NZ, 00166$
-    00000C43 23               [ 8] 2502 	inc	hl
-    00000C44 7E               [ 8] 2503 	ld	a, (hl)
-    00000C45 D6s00            [ 8] 2504 	sub	a, #>(_house_map_info)
-    00000C47 20 4C            [12] 2505 	jr	NZ, 00166$
-                                   2506 ;src/states/game.c:348: (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
-    00000C49 F8 0A            [12] 2507 	ldhl	sp,	#10
-    00000C4B 7E               [ 8] 2508 	ld	a, (hl)
-    00000C4C D6 1F            [ 8] 2509 	sub	a, #0x1f
-    00000C4E 28 15            [12] 2510 	jr	Z, 00165$
-    00000C50 F8 0A            [12] 2511 	ldhl	sp,	#10
-    00000C52 7E               [ 8] 2512 	ld	a, (hl)
-    00000C53 D6 20            [ 8] 2513 	sub	a, #0x20
-    00000C55 28 0E            [12] 2514 	jr	Z, 00165$
-    00000C57 F8 0A            [12] 2515 	ldhl	sp,	#10
-    00000C59 7E               [ 8] 2516 	ld	a, (hl)
-    00000C5A D6 21            [ 8] 2517 	sub	a, #0x21
-    00000C5C 28 07            [12] 2518 	jr	Z, 00165$
-    00000C5E F8 0A            [12] 2519 	ldhl	sp,	#10
-    00000C60 7E               [ 8] 2520 	ld	a, (hl)
-    00000C61 D6 22            [ 8] 2521 	sub	a, #0x22
-    00000C63 20 30            [12] 2522 	jr	NZ, 00166$
-    00000C65                       2523 00165$:
-                                   2524 ;src/states/game.c:349: if (input_pressed(J_B)) {
-    00000C65 3E 20            [ 8] 2525 	ld	a, #0x20
-    00000C67 CDr00r00         [24] 2526 	call	_input_pressed
-    00000C6A B7               [ 4] 2527 	or	a, a
-    00000C6B 28 28            [12] 2528 	jr	Z, 00166$
-                                   2529 ;src/states/game.c:350: if (!inventory_has_item("LLAVE")) {
-    00000C6D 11r03r0D         [12] 2530 	ld	de, #___str_2
-    00000C70 CDr00r00         [24] 2531 	call	_inventory_has_item
-    00000C73 F8 0B            [12] 2532 	ldhl	sp,#11
-    00000C75 77               [ 8] 2533 	ld	(hl), a
-    00000C76 7E               [ 8] 2534 	ld	a, (hl)
-    00000C77 B7               [ 4] 2535 	or	a, a
-    00000C78 20 15            [12] 2536 	jr	NZ, 00161$
-                                   2537 ;src/states/game.c:351: text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
-    00000C7A 11r09r0D         [12] 2538 	ld	de, #___str_3
-    00000C7D CDr00r00         [24] 2539 	call	_text_dialogue
-                                   2540 ;src/states/game.c:352: inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
-    00000C80 3E 29            [ 8] 2541 	ld	a, #0x29
-    00000C82 F5               [16] 2542 	push	af
-    00000C83 33               [ 8] 2543 	inc	sp
-    00000C84 01r2Fr0D         [12] 2544 	ld	bc, #___str_4
-    00000C87 11r03r0D         [12] 2545 	ld	de, #___str_2
-    00000C8A CDr00r00         [24] 2546 	call	_inventory_add_item
-    00000C8D 18 06            [12] 2547 	jr	00166$
-    00000C8F                       2548 00161$:
-                                   2549 ;src/states/game.c:354: text_dialogue("EL ROPERO ESTA\nVACIO.");
-    00000C8F 11r44r0D         [12] 2550 	ld	de, #___str_5
-    00000C92 CDr00r00         [24] 2551 	call	_text_dialogue
-    00000C95                       2552 00166$:
-                                   2553 ;src/states/game.c:358: if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
-    00000C95 21r60r00         [12] 2554 	ld	hl, #_current_map
-    00000C98 7E               [ 8] 2555 	ld	a, (hl)
-    00000C99 D6r1B            [ 8] 2556 	sub	a, #<(_world_map_info)
-    00000C9B 20 38            [12] 2557 	jr	NZ, 00179$
-    00000C9D 23               [ 8] 2558 	inc	hl
-    00000C9E 7E               [ 8] 2559 	ld	a, (hl)
-    00000C9F D6s00            [ 8] 2560 	sub	a, #>(_world_map_info)
-    00000CA1 20 32            [12] 2561 	jr	NZ, 00179$
-    00000CA3 F8 0A            [12] 2562 	ldhl	sp,	#10
-    00000CA5 7E               [ 8] 2563 	ld	a, (hl)
-    00000CA6 D6 2B            [ 8] 2564 	sub	a, #0x2b
-    00000CA8 28 07            [12] 2565 	jr	Z, 00174$
-    00000CAA F8 0A            [12] 2566 	ldhl	sp,	#10
-    00000CAC 7E               [ 8] 2567 	ld	a, (hl)
-    00000CAD D6 2C            [ 8] 2568 	sub	a, #0x2c
-    00000CAF 20 24            [12] 2569 	jr	NZ, 00179$
-    00000CB1                       2570 00174$:
-                                   2571 ;src/states/game.c:359: if (inventory_has_item("LLAVE")) {
-    00000CB1 11r03r0D         [12] 2572 	ld	de, #___str_2
-    00000CB4 CDr00r00         [24] 2573 	call	_inventory_has_item
-    00000CB7 B7               [ 4] 2574 	or	a, a
-    00000CB8 28 15            [12] 2575 	jr	Z, 00172$
-                                   2576 ;src/states/game.c:360: text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
-    00000CBA 11r5Ar0D         [12] 2577 	ld	de, #___str_6
-    00000CBD CDr00r00         [24] 2578 	call	_text_dialogue
-                                   2579 ;src/states/game.c:361: switch_map(&level2_map_info, 128, 224);
-    00000CC0 11 E0 00         [12] 2580 	ld	de, #0x00e0
-    00000CC3 D5               [16] 2581 	push	de
-    00000CC4 01 80 00         [12] 2582 	ld	bc, #0x0080
-    00000CC7 11r49r00         [12] 2583 	ld	de, #_level2_map_info
-    00000CCA CDrB0r02         [24] 2584 	call	_switch_map
-                                   2585 ;src/states/game.c:362: return;
-    00000CCD 18 31            [12] 2586 	jr	00201$
-    00000CCF                       2587 00172$:
-                                   2588 ;src/states/game.c:364: text_dialogue("EL PORTON ESTA\nCERRADO.");
-    00000CCF 11r80r0D         [12] 2589 	ld	de, #___str_7
-    00000CD2 CDr00r00         [24] 2590 	call	_text_dialogue
-    00000CD5                       2591 00179$:
-                                   2592 ;src/states/game.c:369: if ((env_anim_timer % 32) == 0) {
-    00000CD5 FAr0Br00         [16] 2593 	ld	a, (_env_anim_timer)
-    00000CD8 E6 1F            [ 8] 2594 	and	a, #0x1f
-    00000CDA 20 20            [12] 2595 	jr	NZ, 00181$
-                                   2596 ;src/states/game.c:370: env_anim_frame = !env_anim_frame;
-    00000CDC 21r0Cr00         [12] 2597 	ld	hl, #_env_anim_frame
-    00000CDF 7E               [ 8] 2598 	ld	a, (hl)
-    00000CE0 D6 01            [ 8] 2599 	sub	a, #0x01
-    00000CE2 3E 00            [ 8] 2600 	ld	a, #0x00
-    00000CE4 17               [ 4] 2601 	rla
-    00000CE5 77               [ 8] 2602 	ld	(hl), a
-                                   2603 ;src/states/game.c:374: set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
-    00000CE6 7E               [ 8] 2604 	ld	a, (hl)
-    00000CE7 B7               [ 4] 2605 	or	a, a
-    00000CE8 28 05            [12] 2606 	jr	Z, 00211$
-    00000CEA 01r00r00         [12] 2607 	ld	bc, #_tiles_anim_data+0
-    00000CED 18 03            [12] 2608 	jr	00212$
-    00000CEF                       2609 00211$:
-    00000CEF 01r20r00         [12] 2610 	ld	bc, #_tiles_data+32
-    00000CF2                       2611 00212$:
-    00000CF2 C5               [16] 2612 	push	bc
-    00000CF3 21 02 01         [12] 2613 	ld	hl, #0x102
-    00000CF6 E5               [16] 2614 	push	hl
-    00000CF7 CDr00r00         [24] 2615 	call	_set_bkg_data
-    00000CFA E8 04            [16] 2616 	add	sp, #4
-    00000CFC                       2617 00181$:
-                                   2618 ;src/states/game.c:376: env_anim_timer++;
-    00000CFC 21r0Br00         [12] 2619 	ld	hl, #_env_anim_timer
-    00000CFF 34               [12] 2620 	inc	(hl)
-    00000D00                       2621 00201$:
-                                   2622 ;src/states/game.c:377: }
-    00000D00 E8 0C            [16] 2623 	add	sp, #12
-    00000D02 C9               [16] 2624 	ret
-    00000D03                       2625 ___str_2:
-    00000D03 4C 4C 41 56 45        2626 	.ascii "LLAVE"
-    00000D08 00                    2627 	.db 0x00
-    00000D09                       2628 ___str_3:
-    00000D09 C2                    2629 	.db 0xc2
-    00000D0A A1                    2630 	.db 0xa1
-    00000D0B 48 41 53 20 45 4E 43  2631 	.ascii "HAS ENCONTRADO LA"
+    00000C3F D6 1F            [ 8] 2500 	sub	a, #0x1f
+    00000C41 28 15            [12] 2501 	jr	Z, 00165$
+    00000C43 F8 0A            [12] 2502 	ldhl	sp,	#10
+    00000C45 7E               [ 8] 2503 	ld	a, (hl)
+    00000C46 D6 20            [ 8] 2504 	sub	a, #0x20
+    00000C48 28 0E            [12] 2505 	jr	Z, 00165$
+    00000C4A F8 0A            [12] 2506 	ldhl	sp,	#10
+    00000C4C 7E               [ 8] 2507 	ld	a, (hl)
+    00000C4D D6 21            [ 8] 2508 	sub	a, #0x21
+    00000C4F 28 07            [12] 2509 	jr	Z, 00165$
+    00000C51 F8 0A            [12] 2510 	ldhl	sp,	#10
+    00000C53 7E               [ 8] 2511 	ld	a, (hl)
+    00000C54 D6 22            [ 8] 2512 	sub	a, #0x22
+    00000C56 20 30            [12] 2513 	jr	NZ, 00166$
+    00000C58                       2514 00165$:
+                                   2515 ;src/states/game.c:349: if (input_pressed(J_B)) {
+    00000C58 3E 20            [ 8] 2516 	ld	a, #0x20
+    00000C5A CDr00r00         [24] 2517 	call	_input_pressed
+    00000C5D B7               [ 4] 2518 	or	a, a
+    00000C5E 28 28            [12] 2519 	jr	Z, 00166$
+                                   2520 ;src/states/game.c:350: if (!inventory_has_item("LLAVE")) {
+    00000C60 11rF6r0C         [12] 2521 	ld	de, #___str_2
+    00000C63 CDr00r00         [24] 2522 	call	_inventory_has_item
+    00000C66 F8 0B            [12] 2523 	ldhl	sp,#11
+    00000C68 77               [ 8] 2524 	ld	(hl), a
+    00000C69 7E               [ 8] 2525 	ld	a, (hl)
+    00000C6A B7               [ 4] 2526 	or	a, a
+    00000C6B 20 15            [12] 2527 	jr	NZ, 00161$
+                                   2528 ;src/states/game.c:351: text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
+    00000C6D 11rFCr0C         [12] 2529 	ld	de, #___str_3
+    00000C70 CDr00r00         [24] 2530 	call	_text_dialogue
+                                   2531 ;src/states/game.c:352: inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
+    00000C73 3E 29            [ 8] 2532 	ld	a, #0x29
+    00000C75 F5               [16] 2533 	push	af
+    00000C76 33               [ 8] 2534 	inc	sp
+    00000C77 01r22r0D         [12] 2535 	ld	bc, #___str_4
+    00000C7A 11rF6r0C         [12] 2536 	ld	de, #___str_2
+    00000C7D CDr00r00         [24] 2537 	call	_inventory_add_item
+    00000C80 18 06            [12] 2538 	jr	00166$
+    00000C82                       2539 00161$:
+                                   2540 ;src/states/game.c:354: text_dialogue("EL ROPERO ESTA\nVACIO.");
+    00000C82 11r37r0D         [12] 2541 	ld	de, #___str_5
+    00000C85 CDr00r00         [24] 2542 	call	_text_dialogue
+    00000C88                       2543 00166$:
+                                   2544 ;src/states/game.c:358: if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
+    00000C88 21r60r00         [12] 2545 	ld	hl, #_current_map
+    00000C8B 7E               [ 8] 2546 	ld	a, (hl)
+    00000C8C D6r1B            [ 8] 2547 	sub	a, #<(_world_map_info)
+    00000C8E 20 38            [12] 2548 	jr	NZ, 00179$
+    00000C90 23               [ 8] 2549 	inc	hl
+    00000C91 7E               [ 8] 2550 	ld	a, (hl)
+    00000C92 D6s00            [ 8] 2551 	sub	a, #>(_world_map_info)
+    00000C94 20 32            [12] 2552 	jr	NZ, 00179$
+    00000C96 F8 0A            [12] 2553 	ldhl	sp,	#10
+    00000C98 7E               [ 8] 2554 	ld	a, (hl)
+    00000C99 D6 2B            [ 8] 2555 	sub	a, #0x2b
+    00000C9B 28 07            [12] 2556 	jr	Z, 00174$
+    00000C9D F8 0A            [12] 2557 	ldhl	sp,	#10
+    00000C9F 7E               [ 8] 2558 	ld	a, (hl)
+    00000CA0 D6 2C            [ 8] 2559 	sub	a, #0x2c
+    00000CA2 20 24            [12] 2560 	jr	NZ, 00179$
+    00000CA4                       2561 00174$:
+                                   2562 ;src/states/game.c:359: if (inventory_has_item("LLAVE")) {
+    00000CA4 11rF6r0C         [12] 2563 	ld	de, #___str_2
+    00000CA7 CDr00r00         [24] 2564 	call	_inventory_has_item
+    00000CAA B7               [ 4] 2565 	or	a, a
+    00000CAB 28 15            [12] 2566 	jr	Z, 00172$
+                                   2567 ;src/states/game.c:360: text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
+    00000CAD 11r4Dr0D         [12] 2568 	ld	de, #___str_6
+    00000CB0 CDr00r00         [24] 2569 	call	_text_dialogue
+                                   2570 ;src/states/game.c:361: switch_map(&level2_map_info, 128, 224);
+    00000CB3 11 E0 00         [12] 2571 	ld	de, #0x00e0
+    00000CB6 D5               [16] 2572 	push	de
+    00000CB7 01 80 00         [12] 2573 	ld	bc, #0x0080
+    00000CBA 11r49r00         [12] 2574 	ld	de, #_level2_map_info
+    00000CBD CDrB0r02         [24] 2575 	call	_switch_map
+                                   2576 ;src/states/game.c:362: return;
+    00000CC0 18 31            [12] 2577 	jr	00201$
+    00000CC2                       2578 00172$:
+                                   2579 ;src/states/game.c:364: text_dialogue("EL PORTON ESTA\nCERRADO.");
+    00000CC2 11r73r0D         [12] 2580 	ld	de, #___str_7
+    00000CC5 CDr00r00         [24] 2581 	call	_text_dialogue
+    00000CC8                       2582 00179$:
+                                   2583 ;src/states/game.c:369: if ((env_anim_timer % 32) == 0) {
+    00000CC8 FAr0Br00         [16] 2584 	ld	a, (_env_anim_timer)
+    00000CCB E6 1F            [ 8] 2585 	and	a, #0x1f
+    00000CCD 20 20            [12] 2586 	jr	NZ, 00181$
+                                   2587 ;src/states/game.c:370: env_anim_frame = !env_anim_frame;
+    00000CCF 21r0Cr00         [12] 2588 	ld	hl, #_env_anim_frame
+    00000CD2 7E               [ 8] 2589 	ld	a, (hl)
+    00000CD3 D6 01            [ 8] 2590 	sub	a, #0x01
+    00000CD5 3E 00            [ 8] 2591 	ld	a, #0x00
+    00000CD7 17               [ 4] 2592 	rla
+    00000CD8 77               [ 8] 2593 	ld	(hl), a
+                                   2594 ;src/states/game.c:374: set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
+    00000CD9 7E               [ 8] 2595 	ld	a, (hl)
+    00000CDA B7               [ 4] 2596 	or	a, a
+    00000CDB 28 05            [12] 2597 	jr	Z, 00211$
+    00000CDD 01r00r00         [12] 2598 	ld	bc, #_tiles_anim_data+0
+    00000CE0 18 03            [12] 2599 	jr	00212$
+    00000CE2                       2600 00211$:
+    00000CE2 01r20r00         [12] 2601 	ld	bc, #_tiles_data+32
+    00000CE5                       2602 00212$:
+    00000CE5 C5               [16] 2603 	push	bc
+    00000CE6 21 02 01         [12] 2604 	ld	hl, #0x102
+    00000CE9 E5               [16] 2605 	push	hl
+    00000CEA CDr00r00         [24] 2606 	call	_set_bkg_data
+    00000CED E8 04            [16] 2607 	add	sp, #4
+    00000CEF                       2608 00181$:
+                                   2609 ;src/states/game.c:376: env_anim_timer++;
+    00000CEF 21r0Br00         [12] 2610 	ld	hl, #_env_anim_timer
+    00000CF2 34               [12] 2611 	inc	(hl)
+    00000CF3                       2612 00201$:
+                                   2613 ;src/states/game.c:377: }
+    00000CF3 E8 0C            [16] 2614 	add	sp, #12
+    00000CF5 C9               [16] 2615 	ret
+    00000CF6                       2616 ___str_2:
+    00000CF6 4C 4C 41 56 45        2617 	.ascii "LLAVE"
+    00000CFB 00                    2618 	.db 0x00
+    00000CFC                       2619 ___str_3:
+    00000CFC C2                    2620 	.db 0xc2
+    00000CFD A1                    2621 	.db 0xa1
+    00000CFE 48 41 53 20 45 4E 43  2622 	.ascii "HAS ENCONTRADO LA"
              4F 4E 54 52 41 44 4F
              20 4C 41
-    00000D1C 0A                    2632 	.db 0x0a
-    00000D1D 4C 4C 41 56 45 20 44  2633 	.ascii "LLAVE DEL PORTON!"
+    00000D0F 0A                    2623 	.db 0x0a
+    00000D10 4C 4C 41 56 45 20 44  2624 	.ascii "LLAVE DEL PORTON!"
              45 4C 20 50 4F 52 54
              4F 4E 21
-    00000D2E 00                    2634 	.db 0x00
-    00000D2F                       2635 ___str_4:
-    00000D2F 41 42 52 45 20 45 4C  2636 	.ascii "ABRE EL PORTON NORTE"
+    00000D21 00                    2625 	.db 0x00
+    00000D22                       2626 ___str_4:
+    00000D22 41 42 52 45 20 45 4C  2627 	.ascii "ABRE EL PORTON NORTE"
              20 50 4F 52 54 4F 4E
              20 4E 4F 52 54 45
-    00000D43 00                    2637 	.db 0x00
-    00000D44                       2638 ___str_5:
-    00000D44 45 4C 20 52 4F 50 45  2639 	.ascii "EL ROPERO ESTA"
+    00000D36 00                    2628 	.db 0x00
+    00000D37                       2629 ___str_5:
+    00000D37 45 4C 20 52 4F 50 45  2630 	.ascii "EL ROPERO ESTA"
              52 4F 20 45 53 54 41
-    00000D52 0A                    2640 	.db 0x0a
-    00000D53 56 41 43 49 4F 2E     2641 	.ascii "VACIO."
-    00000D59 00                    2642 	.db 0x00
-    00000D5A                       2643 ___str_6:
-    00000D5A 55 53 41 53 20 4C 41  2644 	.ascii "USAS LA LLAVE..."
+    00000D45 0A                    2631 	.db 0x0a
+    00000D46 56 41 43 49 4F 2E     2632 	.ascii "VACIO."
+    00000D4C 00                    2633 	.db 0x00
+    00000D4D                       2634 ___str_6:
+    00000D4D 55 53 41 53 20 4C 41  2635 	.ascii "USAS LA LLAVE..."
              20 4C 4C 41 56 45 2E
              2E 2E
-    00000D6A 0A                    2645 	.db 0x0a
-    00000D6B C2                    2646 	.db 0xc2
-    00000D6C A1                    2647 	.db 0xa1
-    00000D6D 45 4C 20 50 4F 52 54  2648 	.ascii "EL PORTON SE ABRE!"
+    00000D5D 0A                    2636 	.db 0x0a
+    00000D5E C2                    2637 	.db 0xc2
+    00000D5F A1                    2638 	.db 0xa1
+    00000D60 45 4C 20 50 4F 52 54  2639 	.ascii "EL PORTON SE ABRE!"
              4F 4E 20 53 45 20 41
              42 52 45 21
-    00000D7F 00                    2649 	.db 0x00
-    00000D80                       2650 ___str_7:
-    00000D80 45 4C 20 50 4F 52 54  2651 	.ascii "EL PORTON ESTA"
+    00000D72 00                    2640 	.db 0x00
+    00000D73                       2641 ___str_7:
+    00000D73 45 4C 20 50 4F 52 54  2642 	.ascii "EL PORTON ESTA"
              4F 4E 20 45 53 54 41
-    00000D8E 0A                    2652 	.db 0x0a
-    00000D8F 43 45 52 52 41 44 4F  2653 	.ascii "CERRADO."
+    00000D81 0A                    2643 	.db 0x0a
+    00000D82 43 45 52 52 41 44 4F  2644 	.ascii "CERRADO."
              2E
-    00000D97 00                    2654 	.db 0x00
-                                   2655 	.area _CODE
-                                   2656 	.area _INITIALIZER
-    00000000                       2657 __xinit__player_x:
-    00000000 80 00                 2658 	.dw #0x0080
-    00000002                       2659 __xinit__player_y:
-    00000002 80 00                 2660 	.dw #0x0080
-    00000004                       2661 __xinit__player_dir:
-    00000004 00                    2662 	.db #0x00	; 0
-    00000005                       2663 __xinit__anim_frame:
-    00000005 00                    2664 	.db #0x00	; 0
-    00000006                       2665 __xinit__anim_timer:
-    00000006 00                    2666 	.db #0x00	; 0
-    00000007                       2667 __xinit__camera_x:
-    00000007 00 00                 2668 	.dw #0x0000
-    00000009                       2669 __xinit__camera_y:
-    00000009 00 00                 2670 	.dw #0x0000
-    0000000B                       2671 __xinit__env_anim_timer:
-    0000000B 00                    2672 	.db #0x00	; 0
-    0000000C                       2673 __xinit__env_anim_frame:
-    0000000C 00                    2674 	.db #0x00	; 0
-    0000000D                       2675 __xinit__game_ready:
-    0000000D 00                    2676 	.db #0x00	; 0
-                                   2677 	.area _CABS (ABS)
+    00000D8A 00                    2645 	.db 0x00
+                                   2646 	.area _CODE
+                                   2647 	.area _INITIALIZER
+    00000000                       2648 __xinit__player_x:
+    00000000 80 00                 2649 	.dw #0x0080
+    00000002                       2650 __xinit__player_y:
+    00000002 80 00                 2651 	.dw #0x0080
+    00000004                       2652 __xinit__player_dir:
+    00000004 00                    2653 	.db #0x00	; 0
+    00000005                       2654 __xinit__anim_frame:
+    00000005 00                    2655 	.db #0x00	; 0
+    00000006                       2656 __xinit__anim_timer:
+    00000006 00                    2657 	.db #0x00	; 0
+    00000007                       2658 __xinit__camera_x:
+    00000007 00 00                 2659 	.dw #0x0000
+    00000009                       2660 __xinit__camera_y:
+    00000009 00 00                 2661 	.dw #0x0000
+    0000000B                       2662 __xinit__env_anim_timer:
+    0000000B 00                    2663 	.db #0x00	; 0
+    0000000C                       2664 __xinit__env_anim_frame:
+    0000000C 00                    2665 	.db #0x00	; 0
+    0000000D                       2666 __xinit__game_ready:
+    0000000D 00                    2667 	.db #0x00	; 0
+                                   2668 	.area _CABS (ABS)

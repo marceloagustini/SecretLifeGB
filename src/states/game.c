@@ -300,7 +300,7 @@ void game_update(void) {
         return;
       }
     }
-    tid = get_tile_at(player_x + 8, player_y + 16);
+    tid = get_tile_at(player_x + 8, player_y + 12);
     if (current_map == &house_map_info && tid == 35) {
       uint16_t wx = saved_world_x;
       uint16_t wy = saved_world_y;
