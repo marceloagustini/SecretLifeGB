@@ -18,7 +18,10 @@ typedef struct {
   const char *dialogue;
   uint8_t sprite_base;
   uint8_t active;
-  int8_t dir; // 1 or -1 for enemies
+  int8_t dir; // 1 or -1 (or 0-3 for 4-way)
+  uint8_t anim_frame;
+  uint8_t anim_timer;
+  uint8_t move_timer;
 } entity_t;
 
 typedef struct {
@@ -226,9 +229,12 @@ void game_init(void) {
   level2_ents[0].x = 120;
   level2_ents[0].y = 120;
   level2_ents[0].type = ENT_ENEMY;
-  level2_ents[0].sprite_base = 28; // Guard Sprite
+  level2_ents[0].sprite_base = 28; // Guard Sprite (8 tiles total)
   level2_ents[0].active = 1;
   level2_ents[0].dir = 1;
+  level2_ents[0].anim_frame = 0;
+  level2_ents[0].anim_timer = 0;
+  level2_ents[0].move_timer = 30;
 
   load_map(&world_map_info);
 
@@ -236,7 +242,7 @@ void game_init(void) {
   SPRITES_8x8;
   set_sprite_data(0, 24, player_sprites);
   set_sprite_data(24, 4, npc_child_sprite);
-  set_sprite_data(28, 4, guard_sprite_data);
+  set_sprite_data(28, 8, guard_sprite_data);
   update_player_sprite();
   text_init();
   music_init();
@@ -329,29 +335,56 @@ void game_update(void) {
       continue;
 
     if (e->type == ENT_ENEMY) {
-      // Simple Horizontal Oscillation
-      if (e->dir == 1) {
-        if (e->x < 180)
-          e->x++;
-        else
-          e->dir = -1;
+      // Randomized Movement & Animation
+      if (e->move_timer > 0) {
+        e->move_timer--;
+        if (e->dir == 0) {
+          if (e->x < 240)
+            e->x++;
+          else
+            e->move_timer = 0;
+        } else if (e->dir == 1) {
+          if (e->x > 16)
+            e->x--;
+          else
+            e->move_timer = 0;
+        } else if (e->dir == 2) {
+          if (e->y < 240)
+            e->y++;
+          else
+            e->move_timer = 0;
+        } else if (e->dir == 3) {
+          if (e->y > 16)
+            e->y--;
+          else
+            e->move_timer = 0;
+        }
+
+        if (++e->anim_timer > 8) {
+          e->anim_frame = !e->anim_frame;
+          e->anim_timer = 0;
+        }
       } else {
-        if (e->x > 80)
-          e->x--;
+        // Change direction randomly
+        uint8_t r = DIV_REG & 0x0F;
+        if (r < 4)
+          e->dir = r; // 0=R, 1=L, 2=D, 3=U
         else
-          e->dir = 1;
+          e->dir = -1; // Wait/Idle
+        e->move_timer = 30 + (DIV_REG & 0x1F);
       }
 
       // Collision with player
-      int16_t dx = (int16_t)player_x - e->x, dy = (int16_t)player_y - e->y;
+      int16_t dx = (int16_t)player_x - (int16_t)e->x;
+      int16_t dy = (int16_t)player_y - (int16_t)e->y;
       if (dx < 0)
         dx = -dx;
       if (dy < 0)
         dy = -dy;
-      if (dx < 12 && dy < 12) {
-        // DEATH
+      if (dx < 10 && dy < 10) {
+        // DEATH Sequence
         fade_out();
-        delay(500);
+        delay(1000);
         player_x = 128;
         player_y = 224;
         load_map(&level2_map_info);
@@ -363,9 +396,10 @@ void game_update(void) {
 
     uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
     if (esx < 168 && esy < 160) {
+      uint8_t frame_offset = (e->type == ENT_ENEMY) ? (e->anim_frame * 4) : 0;
       for (int j = 0; j < 4; j++) {
         move_sprite(4 + j, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-        set_sprite_tile(4 + j, e->sprite_base + j);
+        set_sprite_tile(4 + j, e->sprite_base + frame_offset + j);
       }
     } else {
       for (int j = 0; j < 4; j++)

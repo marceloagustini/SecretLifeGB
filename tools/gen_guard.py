@@ -33,8 +33,8 @@ def pixel_grid_to_hex(grid):
     
     return hex_data
 
-# CARTOON GUARD - Standing
-guard_sprite = [
+# CARTOON GUARD - Standing / Frame 0
+guard_f0 = [
     "0000333333300000", # Hat top
     "0003222222230000", # Hat body (Blue)
     "0033333333330000", # Hat brim
@@ -53,11 +53,36 @@ guard_sprite = [
     "0000000000000000", # Padding
 ]
 
+# CARTOON GUARD - Walking / Frame 1
+guard_f1 = [
+    "0000333333300000", # Hat top
+    "0003222222230000", # Hat body (Blue)
+    "0033333333330000", # Hat brim
+    "0031111111111300", # Face top
+    "0031131111311300", # Eyes
+    "0031111122111300", # Nose/Mouth area
+    "0003111111113000", # Face bottom
+    "0000333333330000", # Chin/Neck
+    "0003222222223000", # Shoulders
+    "0032222222222300", # Uniform
+    "0032233222332300", # Uniform with Badge/Detail
+    "0033333333333300", # Belt
+    "0003333000000000", # Pants walk L
+    "0031113000033300", # Pants walk R
+    "0033333000311130", # Shoes
+    "0000000000333330", # Padding
+]
+
 if __name__ == "__main__":
     print("const unsigned char guard_sprite_data[] = {")
-    print("    // GUARD NPC")
-    data = pixel_grid_to_hex(guard_sprite)
-    for i in range(0, len(data), 16):
-        chunk = data[i:i+16]
+    print("    // FRAME 0")
+    data0 = pixel_grid_to_hex(guard_f0)
+    for i in range(0, len(data0), 16):
+        chunk = data0[i:i+16]
+        print("    " + ", ".join([f"0x{b:02X}" for b in chunk]) + ",")
+    print("    // FRAME 1")
+    data1 = pixel_grid_to_hex(guard_f1)
+    for i in range(0, len(data1), 16):
+        chunk = data1[i:i+16]
         print("    " + ", ".join([f"0x{b:02X}" for b in chunk]) + ",")
     print("};")

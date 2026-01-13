@@ -8,19 +8,20 @@ Symbol Table
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
     _BGP_REG                                                        ******** GX
+    _DIV_REG                                                        ******** GX
     _LCDC_REG                                                       ******** GX
     _OBP0_REG                                                       ******** GX
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        000006A2 R
-  0 ___str_1                                                        000006DD R
-  0 ___str_2                                                        00000E79 R
-  0 ___str_3                                                        00000E7F R
-  0 ___str_4                                                        00000EA3 R
-  0 ___str_5                                                        00000EB8 R
-  0 ___str_6                                                        00000ECE R
-  0 ___str_7                                                        00000EF2 R
+  0 ___str_0                                                        000006B2 R
+  0 ___str_1                                                        000006ED R
+  0 ___str_2                                                        00001088 R
+  0 ___str_3                                                        0000108E R
+  0 ___str_4                                                        000010B2 R
+  0 ___str_5                                                        000010C7 R
+  0 ___str_6                                                        000010DD R
+  0 ___str_7                                                        00001101 R
     __mulint                                                        ******** GX
   8 __xinit__anim_frame                                             00000005 R
   8 __xinit__anim_timer                                             00000006 R
@@ -37,7 +38,7 @@ Symbol Table
   3 _camera_x                                                       00000007 GR
   3 _camera_y                                                       00000009 GR
   0 _can_move                                                       00000300 GR
-  2 _current_map                                                    00000063 GR
+  2 _current_map                                                    0000006C GR
     _delay                                                          ******** GX
     _display_off                                                    ******** GX
   3 _env_anim_frame                                                 0000000C GR
@@ -45,28 +46,28 @@ Symbol Table
     _fade_in                                                        ******** GX
     _fade_out                                                       ******** GX
     _fill_bkg_rect                                                  ******** GX
-  0 _game_init                                                      000004EE GR
+  0 _game_init                                                      000004EF GR
   3 _game_ready                                                     0000000D R
     _game_state                                                     ******** GX
-  0 _game_update                                                    00000709 GR
+  0 _game_update                                                    00000719 GR
   0 _get_tile_at                                                    00000000 GR
     _guard_sprite_data                                              ******** GX
-  2 _house_ents                                                     0000000A GR
+  2 _house_ents                                                     0000000D GR
     _house_map                                                      ******** GX
-  2 _house_map_info                                                 00000035 GR
+  2 _house_map_info                                                 0000003E GR
     _input_held                                                     ******** GX
     _input_pressed                                                  ******** GX
     _inventory_add_item                                             ******** GX
-    _inventory_has_item                                             ******** GX
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _inventory_has_item                                             ******** GX
   0 _is_solid                                                       000002D5 GR
-  2 _level2_ents                                                    00000014 GR
+  2 _level2_ents                                                    0000001A GR
     _level2_map                                                     ******** GX
-  2 _level2_map_info                                                0000004C GR
+  2 _level2_map_info                                                00000055 GR
   0 _load_map                                                       000001F2 GR
     _map_data                                                       ******** GX
     _memcpy                                                         ******** GX
@@ -77,8 +78,8 @@ Symbol Table
     _player_sprites                                                 ******** GX
   3 _player_x                                                       00000000 GR
   3 _player_y                                                       00000002 GR
-  2 _saved_world_x                                                  00000065 GR
-  2 _saved_world_y                                                  00000067 GR
+  2 _saved_world_x                                                  0000006E GR
+  2 _saved_world_y                                                  00000070 GR
     _set_bkg_data                                                   ******** GX
     _set_bkg_tiles                                                  ******** GX
     _set_sprite_data                                                ******** GX
@@ -91,16 +92,17 @@ Symbol Table
   0 _update_camera                                                  00000070 GR
   0 _update_player_sprite                                           0000014C GR
   2 _world_ents                                                     00000000 GR
-  2 _world_map_info                                                 0000001E GR
+  2 _world_map_info                                                 00000027 GR
+
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 3
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      F0A   flags    0
+   0 _CODE                                      size     1119   flags    0
    1 _HRAM                                      size        0   flags    0
-   2 _DATA                                      size       69   flags    0
+   2 _DATA                                      size       72   flags    0
    3 _INITIALIZED                               size        E   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0

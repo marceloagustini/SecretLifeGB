@@ -7,7 +7,7 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 _font_data                                                      00001088 GR
+  0 _font_data                                                      000010C8 GR
   0 _guard_sprite_data                                              00001048 GR
   0 _house_map                                                      00000920 GR
   0 _level2_map                                                     00000A88 GR
@@ -23,7 +23,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     12F8   flags    0
+   0 _CODE                                      size     1338   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0
