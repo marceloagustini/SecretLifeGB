@@ -163,9 +163,25 @@ uint8_t can_move(uint16_t nx, uint16_t ny) {
 
 // --- STATE LOGIC ---
 
+static uint8_t game_ready = 0;
+
 void game_init(void) {
   DISPLAY_OFF;
   set_bkg_data(0, 77, tiles_data); // All tiles (now 77)
+
+  if (game_ready) {
+    // Coming back from Inventory - Don't reset state
+    load_map(current_map);
+    update_camera();
+    uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+    for (int i = 0; i < 4; i++)
+      move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
+    update_player_sprite();
+
+    BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
+    DISPLAY_ON;
+    return;
+  }
 
   // Define Maps
   world_map_info.tiles = map_data;
@@ -223,6 +239,7 @@ void game_init(void) {
   SHOW_BKG;
   SHOW_SPRITES;
   DISPLAY_ON;
+  game_ready = 1;
 }
 
 void game_update(void) {
@@ -285,8 +302,9 @@ void game_update(void) {
         saved_world_x = player_x;
         saved_world_y = player_y + 16;
         player_x = 76;
-        player_y = 120; // Near Door in House
+        player_y = 112; // Farther from mat (avoid loop)
         load_map(&house_map_info);
+        fade_in();
         return;
       }
     }
