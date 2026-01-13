@@ -17,6 +17,9 @@ Symbol Table
     _input_update                                                   ******** GX
     _intro_init                                                     ******** GX
     _intro_update                                                   ******** GX
+    _inventory_init                                                 ******** GX
+    _inventory_state_init                                           ******** GX
+    _inventory_state_update                                         ******** GX
   0 _main                                                           00000000 GR
     _menu_init                                                      ******** GX
     _menu_update                                                    ******** GX
@@ -27,7 +30,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size       64   flags    0
+   0 _CODE                                      size       7F   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        2   flags    0

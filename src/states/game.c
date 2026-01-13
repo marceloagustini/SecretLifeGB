@@ -1,6 +1,7 @@
 #include "../../res/assets.h"
 #include "../utils/fade.h"
 #include "../utils/input.h"
+#include "../utils/inventory.h"
 #include "../utils/music.h"
 #include "../utils/text.h"
 #include "states.h"
@@ -37,6 +38,8 @@ entity_t level2_ents[1];
 map_info_t world_map_info, house_map_info, level2_map_info;
 map_info_t *current_map;
 
+extern uint8_t game_state;
+
 // Player state
 uint16_t player_x = 128, player_y = 128;
 uint16_t saved_world_x, saved_world_y;
@@ -45,7 +48,7 @@ uint8_t anim_frame = 0, anim_timer = 0;
 uint16_t camera_x = 0, camera_y = 0;
 
 // Quest state
-uint8_t has_key = 0;
+// Quest state (removed has_key global, now in inventory)
 
 // Env animation
 uint8_t env_anim_timer = 0, env_anim_frame = 0;
@@ -254,44 +257,11 @@ void game_update(void) {
       for (int i = 0; i < 4; i++)
         move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
 
-      // Automatic Transitions
-      uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
-      if (current_map == &world_map_info &&
-          (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
-           tid == 71)) {
-        if (player_x > 160 && player_y > 160) {
-          saved_world_x = player_x;
-          saved_world_y = player_y + 16;
-          player_x = 76;
-          player_y = 120; // Near Door in House
-          load_map(&house_map_info);
-          return;
-        }
-      }
-      tid = get_tile_at(player_x + 8, player_y + 16);
-      if (current_map == &house_map_info && tid == 35) {
-        player_x = saved_world_x;
-        player_y = saved_world_y;
-        player_dir = 0;
-        load_map(&world_map_info);
-        return;
-      }
-      if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
-        player_x = 124;
-        player_y = 32;
-        player_dir = 0;
-        load_map(&world_map_info);
-        return;
-      }
-
       if (++anim_timer > 6) {
         anim_frame = !anim_frame;
         anim_timer = 0;
         update_player_sprite();
       }
-    } else if (anim_frame != 0) {
-      anim_frame = 0;
-      update_player_sprite();
     }
   } else {
     if (anim_frame != 0) {
@@ -299,6 +269,42 @@ void game_update(void) {
       update_player_sprite();
     }
     anim_timer = 0;
+
+    // Inventory trigger
+    if (input_pressed(J_SELECT)) {
+      game_state = 3; // STATE_INVENTORY
+      return;
+    }
+
+    // Automatic Transitions
+    uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
+    if (current_map == &world_map_info &&
+        (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
+         tid == 71)) {
+      if (player_x > 160 && player_y > 160) {
+        saved_world_x = player_x;
+        saved_world_y = player_y + 16;
+        player_x = 76;
+        player_y = 120; // Near Door in House
+        load_map(&house_map_info);
+        return;
+      }
+    }
+    tid = get_tile_at(player_x + 8, player_y + 16);
+    if (current_map == &house_map_info && tid == 35) {
+      player_x = saved_world_x;
+      player_y = saved_world_y;
+      player_dir = 0;
+      load_map(&world_map_info);
+      return;
+    }
+    if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
+      player_x = 124;
+      player_y = 32;
+      player_dir = 0;
+      load_map(&world_map_info);
+      return;
+    }
   }
 
   // Render entities
@@ -335,16 +341,16 @@ void game_update(void) {
     if (current_map == &house_map_info &&
         (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
       if (input_pressed(J_B)) {
-        if (!has_key) {
+        if (!inventory_has_item("LLAVE")) {
           text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
-          has_key = 1;
+          inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
         } else
           text_dialogue("EL ROPERO ESTA\nVACIO.");
       }
     }
 
     if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
-      if (has_key) {
+      if (inventory_has_item("LLAVE")) {
         text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
         player_x = 124;
         player_y = 230;

@@ -1,0 +1,231 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.1 #15267 (Mac OS X ppc)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module inventory
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _strcmp
+                                     11 	.globl _inventory_count
+                                     12 	.globl _inventory
+                                     13 	.globl _inventory_init
+                                     14 	.globl _inventory_add_item
+                                     15 	.globl _inventory_has_item
+                                     16 ;--------------------------------------------------------
+                                     17 ; special function registers
+                                     18 ;--------------------------------------------------------
+                                     19 	.area _HRAM
+                                     20 ;--------------------------------------------------------
+                                     21 ; ram data
+                                     22 ;--------------------------------------------------------
+                                     23 	.area _DATA
+    00000000                         24 _inventory::
+    00000000                         25 	.ds 40
+                                     26 ;--------------------------------------------------------
+                                     27 ; ram data
+                                     28 ;--------------------------------------------------------
+                                     29 	.area _INITIALIZED
+    00000000                         30 _inventory_count::
+    00000000                         31 	.ds 1
+                                     32 ;--------------------------------------------------------
+                                     33 ; absolute external ram data
+                                     34 ;--------------------------------------------------------
+                                     35 	.area _DABS (ABS)
+                                     36 ;--------------------------------------------------------
+                                     37 ; global & static initialisations
+                                     38 ;--------------------------------------------------------
+                                     39 	.area _HOME
+                                     40 	.area _GSINIT
+                                     41 	.area _GSFINAL
+                                     42 	.area _GSINIT
+                                     43 ;--------------------------------------------------------
+                                     44 ; Home
+                                     45 ;--------------------------------------------------------
+                                     46 	.area _HOME
+                                     47 	.area _HOME
+                                     48 ;--------------------------------------------------------
+                                     49 ; code
+                                     50 ;--------------------------------------------------------
+                                     51 	.area _CODE
+                                     52 ;src/utils/inventory.c:7: void inventory_init(void) {
+                                     53 ;	---------------------------------
+                                     54 ; Function inventory_init
+                                     55 ; ---------------------------------
+    00000000                         56 _inventory_init::
+                                     57 ;src/utils/inventory.c:8: inventory_count = 0;
+    00000000 AF               [ 4]   58 	xor	a, a
+    00000001 EAr00r00         [16]   59 	ld	(#_inventory_count),a
+                                     60 ;src/utils/inventory.c:9: for (uint8_t i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    00000004 0E 00            [ 8]   61 	ld	c, #0x00
+    00000006                         62 00103$:
+    00000006 79               [ 4]   63 	ld	a, c
+    00000007 D6 08            [ 8]   64 	sub	a, #0x08
+    00000009 D0               [20]   65 	ret	NC
+                                     66 ;src/utils/inventory.c:10: inventory[i].name = "";
+    0000000A 06 00            [ 8]   67 	ld	b, #0x00
+    0000000C 69               [ 4]   68 	ld	l, c
+    0000000D 60               [ 4]   69 	ld	h, b
+    0000000E 29               [ 8]   70 	add	hl, hl
+    0000000F 29               [ 8]   71 	add	hl, hl
+    00000010 09               [ 8]   72 	add	hl, bc
+    00000011 11r00r00         [12]   73 	ld	de, #_inventory
+    00000014 19               [ 8]   74 	add	hl, de
+    00000015 3Er1D            [ 8]   75 	ld	a, #<(___str_0)
+    00000017 22               [ 8]   76 	ld	(hl+), a
+    00000018 36s00            [12]   77 	ld	(hl), #>(___str_0)
+                                     78 ;src/utils/inventory.c:9: for (uint8_t i = 0; i < MAX_INVENTORY_SIZE; i++) {
+    0000001A 0C               [ 4]   79 	inc	c
+                                     80 ;src/utils/inventory.c:12: }
+    0000001B 18 E9            [12]   81 	jr	00103$
+    0000001D                         82 ___str_0:
+    0000001D 00                      83 	.db 0x00
+                                     84 ;src/utils/inventory.c:14: int8_t inventory_add_item(const char *name, const char *desc, uint8_t icon) {
+                                     85 ;	---------------------------------
+                                     86 ; Function inventory_add_item
+                                     87 ; ---------------------------------
+    0000001E                         88 _inventory_add_item::
+    0000001E E8 FC            [16]   89 	add	sp, #-4
+    00000020 F8 02            [12]   90 	ldhl	sp,	#2
+    00000022 7B               [ 4]   91 	ld	a, e
+    00000023 22               [ 8]   92 	ld	(hl+), a
+    00000024 72               [ 8]   93 	ld	(hl), d
+    00000025 33               [ 8]   94 	inc	sp
+    00000026 33               [ 8]   95 	inc	sp
+    00000027 C5               [16]   96 	push	bc
+                                     97 ;src/utils/inventory.c:15: if (inventory_count >= MAX_INVENTORY_SIZE)
+    00000028 FAr00r00         [16]   98 	ld	a, (#_inventory_count)
+    0000002B D6 08            [ 8]   99 	sub	a, #0x08
+    0000002D 38 04            [12]  100 	jr	C, 00102$
+                                    101 ;src/utils/inventory.c:16: return -1;
+    0000002F 3E FF            [ 8]  102 	ld	a, #0xff
+    00000031 18 51            [12]  103 	jr	00103$
+    00000033                        104 00102$:
+                                    105 ;src/utils/inventory.c:18: inventory[inventory_count].name = name;
+    00000033 21r00r00         [12]  106 	ld	hl, #_inventory_count
+    00000036 4E               [ 8]  107 	ld	c, (hl)
+    00000037 06 00            [ 8]  108 	ld	b, #0x00
+    00000039 69               [ 4]  109 	ld	l, c
+    0000003A 60               [ 4]  110 	ld	h, b
+    0000003B 29               [ 8]  111 	add	hl, hl
+    0000003C 29               [ 8]  112 	add	hl, hl
+    0000003D 09               [ 8]  113 	add	hl, bc
+    0000003E 01r00r00         [12]  114 	ld	bc, #_inventory
+    00000041 09               [ 8]  115 	add	hl, bc
+    00000042 4D               [ 4]  116 	ld	c, l
+    00000043 44               [ 4]  117 	ld	b, h
+    00000044 F8 02            [12]  118 	ldhl	sp,	#2
+    00000046 2A               [ 8]  119 	ld	a, (hl+)
+    00000047 02               [ 8]  120 	ld	(bc), a
+    00000048 03               [ 8]  121 	inc	bc
+    00000049 7E               [ 8]  122 	ld	a, (hl)
+    0000004A 02               [ 8]  123 	ld	(bc), a
+                                    124 ;src/utils/inventory.c:19: inventory[inventory_count].description = desc;
+    0000004B 21r00r00         [12]  125 	ld	hl, #_inventory_count
+    0000004E 4E               [ 8]  126 	ld	c, (hl)
+    0000004F 06 00            [ 8]  127 	ld	b, #0x00
+    00000051 69               [ 4]  128 	ld	l, c
+    00000052 60               [ 4]  129 	ld	h, b
+    00000053 29               [ 8]  130 	add	hl, hl
+    00000054 29               [ 8]  131 	add	hl, hl
+    00000055 09               [ 8]  132 	add	hl, bc
+    00000056 01r00r00         [12]  133 	ld	bc, #_inventory
+    00000059 09               [ 8]  134 	add	hl, bc
+    0000005A 23               [ 8]  135 	inc	hl
+    0000005B 23               [ 8]  136 	inc	hl
+    0000005C 4D               [ 4]  137 	ld	c, l
+    0000005D 44               [ 4]  138 	ld	b, h
+    0000005E F8 00            [12]  139 	ldhl	sp,	#0
+    00000060 2A               [ 8]  140 	ld	a, (hl+)
+    00000061 02               [ 8]  141 	ld	(bc), a
+    00000062 03               [ 8]  142 	inc	bc
+    00000063 7E               [ 8]  143 	ld	a, (hl)
+    00000064 02               [ 8]  144 	ld	(bc), a
+                                    145 ;src/utils/inventory.c:20: inventory[inventory_count].icon_tile = icon;
+    00000065 21r00r00         [12]  146 	ld	hl, #_inventory_count
+    00000068 4E               [ 8]  147 	ld	c, (hl)
+    00000069 06 00            [ 8]  148 	ld	b, #0x00
+    0000006B 69               [ 4]  149 	ld	l, c
+    0000006C 60               [ 4]  150 	ld	h, b
+    0000006D 29               [ 8]  151 	add	hl, hl
+    0000006E 29               [ 8]  152 	add	hl, hl
+    0000006F 09               [ 8]  153 	add	hl, bc
+    00000070 01r00r00         [12]  154 	ld	bc, #_inventory
+    00000073 09               [ 8]  155 	add	hl, bc
+    00000074 23               [ 8]  156 	inc	hl
+    00000075 23               [ 8]  157 	inc	hl
+    00000076 23               [ 8]  158 	inc	hl
+    00000077 23               [ 8]  159 	inc	hl
+    00000078 4D               [ 4]  160 	ld	c, l
+    00000079 44               [ 4]  161 	ld	b, h
+    0000007A F8 06            [12]  162 	ldhl	sp,	#6
+    0000007C 7E               [ 8]  163 	ld	a, (hl)
+    0000007D 02               [ 8]  164 	ld	(bc), a
+                                    165 ;src/utils/inventory.c:21: inventory_count++;
+    0000007E 21r00r00         [12]  166 	ld	hl, #_inventory_count
+    00000081 34               [12]  167 	inc	(hl)
+                                    168 ;src/utils/inventory.c:22: return inventory_count - 1;
+    00000082 7E               [ 8]  169 	ld	a, (hl)
+    00000083 3D               [ 4]  170 	dec	a
+    00000084                        171 00103$:
+                                    172 ;src/utils/inventory.c:23: }
+    00000084 E8 04            [16]  173 	add	sp, #4
+    00000086 E1               [12]  174 	pop	hl
+    00000087 33               [ 8]  175 	inc	sp
+    00000088 E9               [ 4]  176 	jp	(hl)
+                                    177 ;src/utils/inventory.c:25: uint8_t inventory_has_item(const char *name) {
+                                    178 ;	---------------------------------
+                                    179 ; Function inventory_has_item
+                                    180 ; ---------------------------------
+    00000089                        181 _inventory_has_item::
+    00000089 D5               [16]  182 	push	de
+                                    183 ;src/utils/inventory.c:26: for (uint8_t i = 0; i < inventory_count; i++) {
+    0000008A 0E 00            [ 8]  184 	ld	c, #0x00
+    0000008C                        185 00105$:
+    0000008C 79               [ 4]  186 	ld	a, c
+    0000008D 21r00r00         [12]  187 	ld	hl, #_inventory_count
+    00000090 96               [ 8]  188 	sub	a, (hl)
+    00000091 30 23            [12]  189 	jr	NC, 00103$
+                                    190 ;src/utils/inventory.c:27: if (strcmp(inventory[i].name, name) == 0) {
+    00000093 06 00            [ 8]  191 	ld	b, #0x00
+    00000095 69               [ 4]  192 	ld	l, c
+    00000096 60               [ 4]  193 	ld	h, b
+    00000097 29               [ 8]  194 	add	hl, hl
+    00000098 29               [ 8]  195 	add	hl, hl
+    00000099 09               [ 8]  196 	add	hl, bc
+    0000009A 11r00r00         [12]  197 	ld	de, #_inventory
+    0000009D 19               [ 8]  198 	add	hl, de
+    0000009E 2A               [ 8]  199 	ld	a, (hl+)
+    0000009F 46               [ 8]  200 	ld	b, (hl)
+    000000A0 D1               [12]  201 	pop	de
+    000000A1 D5               [16]  202 	push	de
+    000000A2 D5               [16]  203 	push	de
+    000000A3 5F               [ 4]  204 	ld	e, a
+    000000A4 50               [ 4]  205 	ld	d, b
+    000000A5 D5               [16]  206 	push	de
+    000000A6 CDr00r00         [24]  207 	call	_strcmp
+    000000A9 E8 04            [16]  208 	add	sp, #4
+    000000AB 7A               [ 4]  209 	ld	a, d
+    000000AC B3               [ 4]  210 	or	a, e
+    000000AD 20 04            [12]  211 	jr	NZ, 00106$
+                                    212 ;src/utils/inventory.c:28: return 1;
+    000000AF 3E 01            [ 8]  213 	ld	a, #0x01
+    000000B1 18 04            [12]  214 	jr	00107$
+    000000B3                        215 00106$:
+                                    216 ;src/utils/inventory.c:26: for (uint8_t i = 0; i < inventory_count; i++) {
+    000000B3 0C               [ 4]  217 	inc	c
+    000000B4 18 D6            [12]  218 	jr	00105$
+    000000B6                        219 00103$:
+                                    220 ;src/utils/inventory.c:31: return 0;
+    000000B6 AF               [ 4]  221 	xor	a, a
+    000000B7                        222 00107$:
+                                    223 ;src/utils/inventory.c:32: }
+    000000B7 33               [ 8]  224 	inc	sp
+    000000B8 33               [ 8]  225 	inc	sp
+    000000B9 C9               [16]  226 	ret
+                                    227 	.area _CODE
+                                    228 	.area _INITIALIZER
+    00000000                        229 __xinit__inventory_count:
+    00000000 00                     230 	.db #0x00	; 0
+                                    231 	.area _CABS (ABS)
