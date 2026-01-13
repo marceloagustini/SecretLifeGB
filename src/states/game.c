@@ -307,8 +307,8 @@ void game_update(void) {
       switch_map(&world_map_info, wx, wy);
       return;
     }
-    if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
-      switch_map(&world_map_info, 124, 32);
+    if (current_map == &level2_map_info && tid == 0 && player_y > 240) {
+      switch_map(&world_map_info, 124, 48);
       return;
     }
   }
@@ -358,10 +358,8 @@ void game_update(void) {
     if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
       if (inventory_has_item("LLAVE")) {
         text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
-        player_x = 124;
-        player_y = 230;
-        player_dir = 1;
-        switch_map(&level2_map_info, 128, 240);
+        switch_map(&level2_map_info, 128, 224);
+        return;
       } else {
         text_dialogue("EL PORTON ESTA\nCERRADO.");
       }

@@ -1865,7 +1865,7 @@ _game_update::
 ;src/states/game.c:308: return;
 	jp	00201$
 00133$:
-;src/states/game.c:310: if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
+;src/states/game.c:310: if (current_map == &level2_map_info && tid == 0 && player_y > 240) {
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<(_level2_map_info)
@@ -1880,13 +1880,13 @@ _game_update::
 	ld	c, a
 	ld	hl, #_player_y + 1
 	ld	b, (hl)
-	ld	a, #0xe6
+	ld	a, #0xf0
 	cp	a, c
 	ld	a, #0x00
 	sbc	a, b
 	jr	NC, 00248$
-;src/states/game.c:311: switch_map(&world_map_info, 124, 32);
-	ld	de, #0x0020
+;src/states/game.c:311: switch_map(&world_map_info, 124, 48);
+	ld	de, #0x0030
 	push	de
 	ld	bc, #0x007c
 	ld	de, #_world_map_info
@@ -2455,13 +2455,13 @@ _game_update::
 00157$:
 ;src/states/game.c:343: uint8_t tid = get_tile_at(player_x + 8, player_y);
 	ld	a, (_player_x)
-	ld	c, a
 	ld	hl, #_player_x + 1
-	ld	b, (hl)
-	ld	hl, #0x0008
-	add	hl, bc
-	ld	e, l
-	ld	d, h
+	ld	d, (hl)
+	add	a, #0x08
+	ld	e, a
+	jr	NC, 00634$
+	inc	d
+00634$:
 	ld	a, (_player_y)
 	ld	c, a
 	ld	hl, #_player_y + 1
@@ -2474,58 +2474,22 @@ _game_update::
 	dec	a
 	jr	NZ, 00159$
 ;src/states/game.c:345: tid = get_tile_at(player_x + 8, player_y - 4);
-	ld	a, (#_player_y)
-	ldhl	sp,	#8
-	ld	(hl), a
-	ld	a, (#_player_y + 1)
-	ldhl	sp,	#9
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
-	ld	hl, #0x0004
-	ld	a, e
-	sub	a, l
-	ld	e, a
-	ld	a, d
-	sbc	a, h
-	ldhl	sp,	#11
-	ld	(hl-), a
-	ld	(hl), e
-	ld	a, (hl-)
-	dec	hl
-	ld	(hl), a
-	ldhl	sp,	#11
-	ld	a, (hl-)
-	dec	hl
-	ld	(hl), a
-	ld	a, (#_player_x)
-	ldhl	sp,	#6
-	ld	(hl), a
-	ld	a, (#_player_x + 1)
-	ldhl	sp,	#7
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
-	ld	hl, #0x0008
-	add	hl, de
-	push	hl
-	ld	a, l
-	ldhl	sp,	#12
-	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#11
-	ld	(hl), a
-	ldhl	sp,	#8
-	ld	a, (hl+)
+	ld	a, (_player_y)
+	ld	hl, #_player_y + 1
+	ld	b, (hl)
+	add	a, #0xfc
 	ld	c, a
-	ld	a, (hl+)
+	ld	a, b
+	adc	a, #0xff
 	ld	b, a
-	ld	a, (hl+)
-	ld	e, a
+	ld	a, (_player_x)
+	ld	hl, #_player_x + 1
 	ld	d, (hl)
+	add	a, #0x08
+	ld	e, a
+	jr	NC, 00637$
+	inc	d
+00637$:
 	call	_get_tile_at
 	ldhl	sp,	#10
 	ld	(hl), a
@@ -2612,45 +2576,31 @@ _game_update::
 ;src/states/game.c:360: text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
 	ld	de, #___str_6
 	call	_text_dialogue
-;src/states/game.c:361: player_x = 124;
-	ld	hl, #_player_x
-	ld	a, #0x7c
-	ld	(hl+), a
-	xor	a, a
-	ld	(hl), a
-;src/states/game.c:362: player_y = 230;
-	ld	hl, #_player_y
-	ld	a, #0xe6
-	ld	(hl+), a
-	xor	a, a
-	ld	(hl), a
-;src/states/game.c:363: player_dir = 1;
-	ld	hl, #_player_dir
-	ld	(hl), #0x01
-;src/states/game.c:364: switch_map(&level2_map_info, 128, 240);
-	ld	de, #0x00f0
+;src/states/game.c:361: switch_map(&level2_map_info, 128, 224);
+	ld	de, #0x00e0
 	push	de
 	ld	bc, #0x0080
 	ld	de, #_level2_map_info
 	call	_switch_map
-	jr	00179$
+;src/states/game.c:362: return;
+	jr	00201$
 00172$:
-;src/states/game.c:366: text_dialogue("EL PORTON ESTA\nCERRADO.");
+;src/states/game.c:364: text_dialogue("EL PORTON ESTA\nCERRADO.");
 	ld	de, #___str_7
 	call	_text_dialogue
 00179$:
-;src/states/game.c:371: if ((env_anim_timer % 32) == 0) {
+;src/states/game.c:369: if ((env_anim_timer % 32) == 0) {
 	ld	a, (_env_anim_timer)
 	and	a, #0x1f
 	jr	NZ, 00181$
-;src/states/game.c:372: env_anim_frame = !env_anim_frame;
+;src/states/game.c:370: env_anim_frame = !env_anim_frame;
 	ld	hl, #_env_anim_frame
 	ld	a, (hl)
 	sub	a, #0x01
 	ld	a, #0x00
 	rla
 	ld	(hl), a
-;src/states/game.c:376: set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
+;src/states/game.c:374: set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00211$
@@ -2665,11 +2615,11 @@ _game_update::
 	call	_set_bkg_data
 	add	sp, #4
 00181$:
-;src/states/game.c:378: env_anim_timer++;
+;src/states/game.c:376: env_anim_timer++;
 	ld	hl, #_env_anim_timer
 	inc	(hl)
 00201$:
-;src/states/game.c:379: }
+;src/states/game.c:377: }
 	add	sp, #12
 	ret
 ___str_2:
