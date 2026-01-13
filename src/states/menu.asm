@@ -174,57 +174,62 @@ _menu_init::
 ;src/states/menu.c:37: BGP_REG = 0xE4;
 	ld	a, #0xe4
 	ldh	(_BGP_REG + 0), a
-;src/states/menu.c:40: set_bkg_data(128, 35, font_data);
+;./gbdk/include/gb/gb.h:1461: SCX_REG=x, SCY_REG=y;
+	xor	a, a
+	ldh	(_SCX_REG + 0), a
+	xor	a, a
+	ldh	(_SCY_REG + 0), a
+;src/states/menu.c:43: set_bkg_data(128, 35, font_data);
 	ld	de, #_font_data
 	push	de
 	ld	hl, #0x2380
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/menu.c:42: menu_draw();
+;src/states/menu.c:45: menu_draw();
 	call	_menu_draw
-;src/states/menu.c:44: SHOW_BKG;
+;src/states/menu.c:47: SHOW_BKG;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x01
 	ldh	(_LCDC_REG + 0), a
-;src/states/menu.c:45: DISPLAY_ON;
+;src/states/menu.c:48: DISPLAY_ON;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x80
 	ldh	(_LCDC_REG + 0), a
-;src/states/menu.c:46: }
+;src/states/menu.c:49: }
 	ret
-;src/states/menu.c:48: void menu_update(void) {
+;src/states/menu.c:51: void menu_update(void) {
 ;	---------------------------------
 ; Function menu_update
 ; ---------------------------------
 _menu_update::
-;src/states/menu.c:49: if (input_pressed(J_DOWN | J_UP)) {
+;src/states/menu.c:52: if (input_pressed(J_DOWN | J_UP)) {
 	ld	a, #0x0c
 	call	_input_pressed
 	or	a, a
 	jr	Z, 00102$
-;src/states/menu.c:50: selection = 1 - selection;
+;src/states/menu.c:53: selection = 1 - selection;
 	ld	a, (_selection)
 	ld	c, a
 	ld	a, #0x01
 	sub	a, c
 	ld	(#_selection),a
-;src/states/menu.c:51: menu_draw();
+;src/states/menu.c:54: menu_draw();
 	call	_menu_draw
 00102$:
-;src/states/menu.c:54: if (input_pressed(J_START | J_A)) {
+;src/states/menu.c:57: if (input_pressed(J_START | J_A)) {
 	ld	a, #0x90
 	call	_input_pressed
 	or	a, a
 	ret	Z
-;src/states/menu.c:55: if (selection == 0) {
+;src/states/menu.c:58: if (selection == 0) {
 	ld	a, (#_selection)
 	or	a, a
 	ret	NZ
-;src/states/menu.c:56: game_state = STATE_GAME;
+;src/states/menu.c:59: game_state = STATE_GAME;
 	ld	hl, #_game_state
 	ld	(hl), #0x02
-;src/states/menu.c:60: }
+;src/states/menu.c:63: }
 	ret
 	.area _CODE
 	.area _INITIALIZER

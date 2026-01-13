@@ -61,8 +61,8 @@ def generate_map():
         set_tile(x, y+1, 6); set_tile(x+1, y+1, 12)
 
     # Houses
-    set_house(4, 4, house_t3); set_house(22, 4, house_t3) # Top: Urban
-    set_house(4, 22, house_t1); set_house(22, 22, house_t1) # Bottom: Classic
+    set_house(4, 4, house_t1); set_house(22, 4, house_t1)
+    set_house(4, 22, house_t1); set_house(22, 22, house_t1)
 
     import random
     random.seed(42)

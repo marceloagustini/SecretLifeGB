@@ -175,60 +175,65 @@
                                     174 ;src/states/menu.c:37: BGP_REG = 0xE4;
     0000009C 3E E4            [ 8]  175 	ld	a, #0xe4
     0000009E E0r00            [12]  176 	ldh	(_BGP_REG + 0), a
-                                    177 ;src/states/menu.c:40: set_bkg_data(128, 35, font_data);
-    000000A0 11r00r00         [12]  178 	ld	de, #_font_data
-    000000A3 D5               [16]  179 	push	de
-    000000A4 21 80 23         [12]  180 	ld	hl, #0x2380
-    000000A7 E5               [16]  181 	push	hl
-    000000A8 CDr00r00         [24]  182 	call	_set_bkg_data
-    000000AB E8 04            [16]  183 	add	sp, #4
-                                    184 ;src/states/menu.c:42: menu_draw();
-    000000AD CDr00r00         [24]  185 	call	_menu_draw
-                                    186 ;src/states/menu.c:44: SHOW_BKG;
-    000000B0 F0r00            [12]  187 	ldh	a, (_LCDC_REG + 0)
-    000000B2 F6 01            [ 8]  188 	or	a, #0x01
-    000000B4 E0r00            [12]  189 	ldh	(_LCDC_REG + 0), a
-                                    190 ;src/states/menu.c:45: DISPLAY_ON;
-    000000B6 F0r00            [12]  191 	ldh	a, (_LCDC_REG + 0)
-    000000B8 F6 80            [ 8]  192 	or	a, #0x80
-    000000BA E0r00            [12]  193 	ldh	(_LCDC_REG + 0), a
-                                    194 ;src/states/menu.c:46: }
-    000000BC C9               [16]  195 	ret
-                                    196 ;src/states/menu.c:48: void menu_update(void) {
-                                    197 ;	---------------------------------
-                                    198 ; Function menu_update
-                                    199 ; ---------------------------------
-    000000BD                        200 _menu_update::
-                                    201 ;src/states/menu.c:49: if (input_pressed(J_DOWN | J_UP)) {
-    000000BD 3E 0C            [ 8]  202 	ld	a, #0x0c
-    000000BF CDr00r00         [24]  203 	call	_input_pressed
-    000000C2 B7               [ 4]  204 	or	a, a
-    000000C3 28 0D            [12]  205 	jr	Z, 00102$
-                                    206 ;src/states/menu.c:50: selection = 1 - selection;
-    000000C5 FAr00r00         [16]  207 	ld	a, (_selection)
-    000000C8 4F               [ 4]  208 	ld	c, a
-    000000C9 3E 01            [ 8]  209 	ld	a, #0x01
-    000000CB 91               [ 4]  210 	sub	a, c
-    000000CC EAr00r00         [16]  211 	ld	(#_selection),a
-                                    212 ;src/states/menu.c:51: menu_draw();
-    000000CF CDr00r00         [24]  213 	call	_menu_draw
-    000000D2                        214 00102$:
-                                    215 ;src/states/menu.c:54: if (input_pressed(J_START | J_A)) {
-    000000D2 3E 90            [ 8]  216 	ld	a, #0x90
-    000000D4 CDr00r00         [24]  217 	call	_input_pressed
-    000000D7 B7               [ 4]  218 	or	a, a
-    000000D8 C8               [20]  219 	ret	Z
-                                    220 ;src/states/menu.c:55: if (selection == 0) {
-    000000D9 FAr00r00         [16]  221 	ld	a, (#_selection)
-    000000DC B7               [ 4]  222 	or	a, a
-    000000DD C0               [20]  223 	ret	NZ
-                                    224 ;src/states/menu.c:56: game_state = STATE_GAME;
-    000000DE 21r00r00         [12]  225 	ld	hl, #_game_state
-    000000E1 36 02            [12]  226 	ld	(hl), #0x02
-                                    227 ;src/states/menu.c:60: }
-    000000E3 C9               [16]  228 	ret
-                                    229 	.area _CODE
-                                    230 	.area _INITIALIZER
-    00000000                        231 __xinit__selection:
-    00000000 00                     232 	.db #0x00	; 0
-                                    233 	.area _CABS (ABS)
+                                    177 ;./gbdk/include/gb/gb.h:1461: SCX_REG=x, SCY_REG=y;
+    000000A0 AF               [ 4]  178 	xor	a, a
+    000000A1 E0r00            [12]  179 	ldh	(_SCX_REG + 0), a
+    000000A3 AF               [ 4]  180 	xor	a, a
+    000000A4 E0r00            [12]  181 	ldh	(_SCY_REG + 0), a
+                                    182 ;src/states/menu.c:43: set_bkg_data(128, 35, font_data);
+    000000A6 11r00r00         [12]  183 	ld	de, #_font_data
+    000000A9 D5               [16]  184 	push	de
+    000000AA 21 80 23         [12]  185 	ld	hl, #0x2380
+    000000AD E5               [16]  186 	push	hl
+    000000AE CDr00r00         [24]  187 	call	_set_bkg_data
+    000000B1 E8 04            [16]  188 	add	sp, #4
+                                    189 ;src/states/menu.c:45: menu_draw();
+    000000B3 CDr00r00         [24]  190 	call	_menu_draw
+                                    191 ;src/states/menu.c:47: SHOW_BKG;
+    000000B6 F0r00            [12]  192 	ldh	a, (_LCDC_REG + 0)
+    000000B8 F6 01            [ 8]  193 	or	a, #0x01
+    000000BA E0r00            [12]  194 	ldh	(_LCDC_REG + 0), a
+                                    195 ;src/states/menu.c:48: DISPLAY_ON;
+    000000BC F0r00            [12]  196 	ldh	a, (_LCDC_REG + 0)
+    000000BE F6 80            [ 8]  197 	or	a, #0x80
+    000000C0 E0r00            [12]  198 	ldh	(_LCDC_REG + 0), a
+                                    199 ;src/states/menu.c:49: }
+    000000C2 C9               [16]  200 	ret
+                                    201 ;src/states/menu.c:51: void menu_update(void) {
+                                    202 ;	---------------------------------
+                                    203 ; Function menu_update
+                                    204 ; ---------------------------------
+    000000C3                        205 _menu_update::
+                                    206 ;src/states/menu.c:52: if (input_pressed(J_DOWN | J_UP)) {
+    000000C3 3E 0C            [ 8]  207 	ld	a, #0x0c
+    000000C5 CDr00r00         [24]  208 	call	_input_pressed
+    000000C8 B7               [ 4]  209 	or	a, a
+    000000C9 28 0D            [12]  210 	jr	Z, 00102$
+                                    211 ;src/states/menu.c:53: selection = 1 - selection;
+    000000CB FAr00r00         [16]  212 	ld	a, (_selection)
+    000000CE 4F               [ 4]  213 	ld	c, a
+    000000CF 3E 01            [ 8]  214 	ld	a, #0x01
+    000000D1 91               [ 4]  215 	sub	a, c
+    000000D2 EAr00r00         [16]  216 	ld	(#_selection),a
+                                    217 ;src/states/menu.c:54: menu_draw();
+    000000D5 CDr00r00         [24]  218 	call	_menu_draw
+    000000D8                        219 00102$:
+                                    220 ;src/states/menu.c:57: if (input_pressed(J_START | J_A)) {
+    000000D8 3E 90            [ 8]  221 	ld	a, #0x90
+    000000DA CDr00r00         [24]  222 	call	_input_pressed
+    000000DD B7               [ 4]  223 	or	a, a
+    000000DE C8               [20]  224 	ret	Z
+                                    225 ;src/states/menu.c:58: if (selection == 0) {
+    000000DF FAr00r00         [16]  226 	ld	a, (#_selection)
+    000000E2 B7               [ 4]  227 	or	a, a
+    000000E3 C0               [20]  228 	ret	NZ
+                                    229 ;src/states/menu.c:59: game_state = STATE_GAME;
+    000000E4 21r00r00         [12]  230 	ld	hl, #_game_state
+    000000E7 36 02            [12]  231 	ld	(hl), #0x02
+                                    232 ;src/states/menu.c:63: }
+    000000E9 C9               [16]  233 	ret
+                                    234 	.area _CODE
+                                    235 	.area _INITIALIZER
+    00000000                        236 __xinit__selection:
+    00000000 00                     237 	.db #0x00	; 0
+                                    238 	.area _CABS (ABS)

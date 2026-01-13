@@ -36,6 +36,9 @@ void menu_init(void) {
   DISPLAY_OFF;
   BGP_REG = 0xE4;
 
+  // Reset scroll position (might be offset from intro)
+  move_bkg(0, 0);
+
   // Load font data to BKG tiles starting at 128
   set_bkg_data(128, 35, font_data);
 
