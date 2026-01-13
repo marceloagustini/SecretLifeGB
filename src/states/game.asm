@@ -1360,14 +1360,14 @@ _game_init::
 	push	de
 	ld	de, #(_world_map_info + 7)
 	call	_memcpy
-;src/states/game.c:175: world_ents[0].x = 180;
+;src/states/game.c:175: world_ents[0].x = 210;
 	ld	hl, #_world_ents
-	ld	a, #0xb4
+	ld	a, #0xd2
 	ld	(hl+), a
-;src/states/game.c:176: world_ents[0].y = 220;
+;src/states/game.c:176: world_ents[0].y = 230;
 	xor	a, a
 	ld	(hl+), a
-	ld	a, #0xdc
+	ld	a, #0xe6
 	ld	(hl+), a
 ;src/states/game.c:177: world_ents[0].type = ENT_NPC;
 	xor	a, a

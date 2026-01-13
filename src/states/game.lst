@@ -1360,14 +1360,14 @@
     000005EB D5               [16] 1360 	push	de
     000005EC 11r22r00         [12] 1361 	ld	de, #(_world_map_info + 7)
     000005EF CDr00r00         [24] 1362 	call	_memcpy
-                                   1363 ;src/states/game.c:175: world_ents[0].x = 180;
+                                   1363 ;src/states/game.c:175: world_ents[0].x = 210;
     000005F2 21r00r00         [12] 1364 	ld	hl, #_world_ents
-    000005F5 3E B4            [ 8] 1365 	ld	a, #0xb4
+    000005F5 3E D2            [ 8] 1365 	ld	a, #0xd2
     000005F7 22               [ 8] 1366 	ld	(hl+), a
-                                   1367 ;src/states/game.c:176: world_ents[0].y = 220;
+                                   1367 ;src/states/game.c:176: world_ents[0].y = 230;
     000005F8 AF               [ 4] 1368 	xor	a, a
     000005F9 22               [ 8] 1369 	ld	(hl+), a
-    000005FA 3E DC            [ 8] 1370 	ld	a, #0xdc
+    000005FA 3E E6            [ 8] 1370 	ld	a, #0xe6
     000005FC 22               [ 8] 1371 	ld	(hl+), a
                                    1372 ;src/states/game.c:177: world_ents[0].type = ENT_NPC;
     000005FD AF               [ 4] 1373 	xor	a, a

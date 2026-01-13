@@ -172,8 +172,8 @@ void game_init(void) {
   world_map_info.num_entities = 1;
   uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 58, 59, 255};
   memcpy(world_map_info.solid_tiles, w_pass, 10);
-  world_ents[0].x = 180;
-  world_ents[0].y = 220;
+  world_ents[0].x = 210;
+  world_ents[0].y = 230;
   world_ents[0].type = ENT_NPC;
   world_ents[0].dialogue =
       "MI CASA ES LA DE\nAQUI ARRIBA.\nBUSCA LA LLAVE EN\nMI ROPERO.";
