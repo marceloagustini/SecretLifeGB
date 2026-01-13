@@ -18,15 +18,23 @@ def to_gb_tile(pixels):
 
 def convert_tiles(name, tiles_map):
     print(f"const unsigned char {name}[] = {{")
-    sorted_indices = sorted(tiles_map.keys())
-    for idx in sorted_indices:
-        pixels = tiles_map[idx]
+    if not tiles_map:
+        print("};")
+        return
+    max_idx = max(tiles_map.keys())
+    for idx in range(max_idx + 1):
         print(f"    // Tile {idx}")
-        rows = [r.strip().replace(' ', '') for r in pixels if r.strip()]
-        if len(rows) != 8:
-            print(f"Error: Tile {idx} has {len(rows)} rows, expected 8")
-            continue
-        bytes_str = ", ".join(to_gb_tile(rows))
+        if idx in tiles_map:
+            pixels = tiles_map[idx]
+            rows = [r.strip().replace(' ', '') for r in pixels if r.strip()]
+            if len(rows) != 8:
+                print(f"Error: Tile {idx} has {len(rows)} rows, expected 8")
+                bytes_str = ", ".join(["0x00"] * 16)
+            else:
+                bytes_str = ", ".join(to_gb_tile(rows))
+        else:
+            # Fill gap with empty tile
+            bytes_str = ", ".join(["0x00"] * 16)
         print(f"    {bytes_str},")
     print("};\n")
 
