@@ -16,13 +16,19 @@ def to_gb_tile(pixels):
         hex_bytes.append(f"0x{hi:02X}")
     return hex_bytes
 
-def convert_tiles(name, tiles_map):
+def convert_tiles(name, tiles_map, fill_gaps=True):
     print(f"const unsigned char {name}[] = {{")
     if not tiles_map:
         print("};")
         return
-    max_idx = max(tiles_map.keys())
-    for idx in range(max_idx + 1):
+    
+    if fill_gaps:
+        max_idx = max(tiles_map.keys())
+        indices = range(max_idx + 1)
+    else:
+        indices = sorted(tiles_map.keys())
+
+    for idx in indices:
         print(f"    // Tile {idx}")
         if idx in tiles_map:
             pixels = tiles_map[idx]
@@ -33,7 +39,7 @@ def convert_tiles(name, tiles_map):
             else:
                 bytes_str = ", ".join(to_gb_tile(rows))
         else:
-            # Fill gap with empty tile
+            # Fill gap with empty tile (only if fill_gaps is True)
             bytes_str = ", ".join(["0x00"] * 16)
         print(f"    {bytes_str},")
     print("};\n")
@@ -257,5 +263,5 @@ anim_design = {
 }
 
 if __name__ == "__main__":
-    convert_tiles("tiles_data", tiles_design)
-    convert_tiles("tiles_anim_data", anim_design)
+    convert_tiles("tiles_data", tiles_design, fill_gaps=True)
+    convert_tiles("tiles_anim_data", anim_design, fill_gaps=False)

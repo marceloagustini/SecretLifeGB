@@ -1,4 +1,5 @@
 #include "../../res/assets.h"
+#include "../utils/fade.h"
 #include "../utils/input.h"
 #include "states.h"
 #include <gb/gb.h>
@@ -10,23 +11,25 @@ extern uint8_t game_state;
 
 static uint8_t selection = 0; // 0: START, 1: ABOUT
 
+void draw_text(uint8_t x, uint8_t y, const char *txt) {
+  for (int i = 0; txt[i] != '\0'; i++) {
+    uint8_t tile = 128; // Space
+    if (txt[i] >= 'A' && txt[i] <= 'Z')
+      tile = 128 + 1 + (txt[i] - 'A');
+    set_bkg_tile_xy(x + i, y, tile);
+  }
+}
+
 void menu_draw(void) {
   // Clear BKG with space (tile 128+0)
   fill_bkg_rect(0, 0, 20, 18, 128 + 0);
 
   // Title
-  const char *title1 = "SECRET LIFE";
-  for (int i = 0; i < 11; i++)
-    set_bkg_tile_xy(4 + i, 4, 128 + 1 + (title1[i] - 'A'));
+  draw_text(4, 4, "SECRET LIFE");
 
   // Options
-  const char *opt1 = "START";
-  const char *opt2 = "ABOUT";
-
-  for (int i = 0; i < 5; i++)
-    set_bkg_tile_xy(7 + i, 8, 128 + 1 + (opt1[i] - 'A'));
-  for (int i = 0; i < 5; i++)
-    set_bkg_tile_xy(7 + i, 10, 128 + 1 + (opt2[i] - 'A'));
+  draw_text(7, 8, "START");
+  draw_text(7, 10, "ABOUT");
 
   // Cursor
   set_bkg_tile_xy(5, 8 + (selection * 2), 128 + 32); // Use '>' or similar char
@@ -46,6 +49,7 @@ void menu_init(void) {
 
   SHOW_BKG;
   DISPLAY_ON;
+  fade_in();
 }
 
 void menu_update(void) {
