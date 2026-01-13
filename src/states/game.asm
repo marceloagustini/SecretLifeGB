@@ -1302,13 +1302,13 @@ _can_move::
 ; Function game_init
 ; ---------------------------------
 _game_init::
-	add	sp, #-23
+	add	sp, #-25
 ;src/states/game.c:164: DISPLAY_OFF;
 	call	_display_off
-;src/states/game.c:165: set_bkg_data(0, 62, tiles_data); // All tiles
+;src/states/game.c:165: set_bkg_data(0, 77, tiles_data); // All tiles (now 77)
 	ld	de, #_tiles_data
 	push	de
-	ld	hl, #0x3e00
+	ld	hl, #0x4d00
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
@@ -1331,7 +1331,7 @@ _game_init::
 	ld	a, #>(_world_ents)
 	ld	(hl+), a
 	ld	(hl), #0x01
-;src/states/game.c:173: uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 58, 59, 255};
+;src/states/game.c:173: uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 58, 59, 70, 71, 255};
 	ldhl	sp,	#0
 	ld	c, l
 	ld	b, h
@@ -1354,9 +1354,13 @@ _game_init::
 	ld	(hl+), a
 	ld	a, #0x3b
 	ld	(hl+), a
+	ld	a, #0x46
+	ld	(hl+), a
+	ld	a, #0x47
+	ld	(hl+), a
 	ld	(hl), #0xff
-;src/states/game.c:174: memcpy(world_map_info.solid_tiles, w_pass, 10);
-	ld	de, #0x000a
+;src/states/game.c:174: memcpy(world_map_info.solid_tiles, w_pass, 12);
+	ld	de, #0x000c
 	push	de
 	ld	de, #(_world_map_info + 7)
 	call	_memcpy
@@ -1404,11 +1408,11 @@ _game_init::
 	ld	(hl+), a
 	ld	(hl), #0x01
 ;src/states/game.c:188: uint8_t h_pass[] = {25, 35, 255};
-	ldhl	sp,	#10
+	ldhl	sp,	#12
 	ld	c, l
 	ld	b, h
 	ld	(hl), #0x19
-	ldhl	sp,	#11
+	ldhl	sp,	#13
 	ld	a, #0x23
 	ld	(hl+), a
 	ld	(hl), #0xff
@@ -1461,12 +1465,12 @@ _game_init::
 	ld	(hl+), a
 	ld	(hl), #0x00
 ;src/states/game.c:202: uint8_t l2_pass[] = {0, 2, 3, 4, 255};
-	ldhl	sp,	#13
+	ldhl	sp,	#15
 	ld	c, l
 	ld	b, h
 	xor	a, a
 	ld	(bc), a
-	ldhl	sp,	#14
+	ldhl	sp,	#16
 	ld	a, #0x02
 	ld	(hl+), a
 	ld	a, #0x03
@@ -1495,14 +1499,14 @@ _game_init::
 	ld	e, (hl)
 	sub	a, e
 	add	a, #0x08
-	ldhl	sp,	#18
+	ldhl	sp,	#20
 	ld	(hl), a
 	ld	a, (_player_y)
 	ld	hl, #_camera_y
 	ld	e, (hl)
 	sub	a, e
 	add	a, #0x10
-	ldhl	sp,	#19
+	ldhl	sp,	#21
 	ld	(hl), a
 ;src/states/game.c:208: for (int i = 0; i < 4; i++)
 	ld	e, #0x00
@@ -1511,9 +1515,9 @@ _game_init::
 	sub	a, #0x04
 	jr	NC, 00101$
 ;src/states/game.c:209: move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
-	ldhl	sp,	#19
+	ldhl	sp,	#21
 	ld	a, (hl)
-	ldhl	sp,	#22
+	ldhl	sp,	#24
 	ld	(hl), a
 	ld	a, e
 	sub	a, #0x02
@@ -1523,14 +1527,14 @@ _game_init::
 00108$:
 	xor	a, a
 00109$:
-	ldhl	sp,	#22
+	ldhl	sp,	#24
 	ld	l, (hl)
 	add	a, l
-	ldhl	sp,	#20
+	ldhl	sp,	#22
 	ld	(hl-), a
 	dec	hl
 	ld	a, (hl)
-	ldhl	sp,	#22
+	ldhl	sp,	#24
 	ld	(hl-), a
 	ld	(hl), e
 	ld	a, (hl)
@@ -1539,7 +1543,7 @@ _game_init::
 	jr	NZ, 00111$
 	xor	a, a
 00111$:
-	ldhl	sp,	#22
+	ldhl	sp,	#24
 	ld	d, (hl)
 	add	a, d
 	ld	(hl-), a
@@ -1557,12 +1561,12 @@ _game_init::
 	ld	h, a
 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
 	push	hl
-	ldhl	sp,	#22
+	ldhl	sp,	#24
 	ld	a, (hl)
 	pop	hl
 	ld	(hl+), a
 	push	hl
-	ldhl	sp,	#24
+	ldhl	sp,	#26
 	ld	a, (hl)
 	pop	hl
 	ld	(hl), a
@@ -1618,7 +1622,7 @@ _game_init::
 	or	a, #0x80
 	ldh	(_LCDC_REG + 0), a
 ;src/states/game.c:223: }
-	add	sp, #23
+	add	sp, #25
 	ret
 ___str_0:
 	.ascii "MI CASA ES LA DE"
@@ -1693,10 +1697,10 @@ _game_update::
 ;src/states/game.c:235: ny++;
 	ldhl	sp,	#10
 	inc	(hl)
-	jr	NZ, 00605$
+	jr	NZ, 00621$
 	inc	hl
 	inc	(hl)
-00605$:
+00621$:
 ;src/states/game.c:236: player_dir = 0;
 	xor	a, a
 	ld	(#_player_dir),a
@@ -1738,10 +1742,10 @@ _game_update::
 ;src/states/game.c:243: nx++;
 	ldhl	sp,	#8
 	inc	(hl)
-	jr	NZ, 00606$
+	jr	NZ, 00622$
 	inc	hl
 	inc	(hl)
-00606$:
+00622$:
 ;src/states/game.c:244: player_dir = 3;
 	ld	hl, #_player_dir
 	ld	(hl), #0x03
@@ -1751,7 +1755,7 @@ _game_update::
 ;src/states/game.c:248: if (moved) {
 	ld	a, c
 	or	a, a
-	jp	Z, 00139$
+	jp	Z, 00141$
 ;src/states/game.c:249: if (can_move(nx, ny)) {
 	ldhl	sp,	#10
 	ld	a, (hl+)
@@ -1763,7 +1767,7 @@ _game_update::
 	ld	d, (hl)
 	call	_can_move
 	or	a, a
-	jp	Z, 00134$
+	jp	Z, 00136$
 ;src/states/game.c:250: player_x = nx;
 	ldhl	sp,	#8
 	ld	a, (hl)
@@ -1798,7 +1802,7 @@ _game_update::
 ;src/states/game.c:254: for (int i = 0; i < 4; i++)
 	ldhl	sp,	#11
 	ld	(hl), #0x00
-00191$:
+00193$:
 	ldhl	sp,	#11
 	ld	a, (hl)
 	sub	a, #0x04
@@ -1809,12 +1813,12 @@ _game_update::
 	ldhl	sp,	#11
 	ld	a, (hl)
 	sub	a, #0x02
-	jr	C, 00207$
+	jr	C, 00209$
 	ld	a, #0x08
-	jr	00208$
-00207$:
+	jr	00210$
+00209$:
 	xor	a, a
-00208$:
+00210$:
 	add	a, c
 	ldhl	sp,	#8
 	ld	(hl-), a
@@ -1828,9 +1832,9 @@ _game_update::
 	ld	a, (hl)
 	and	a, #0x01
 	ld	a, #0x08
-	jr	NZ, 00210$
+	jr	NZ, 00212$
 	xor	a, a
-00210$:
+00212$:
 	ldhl	sp,	#9
 	ld	c, (hl)
 	inc	hl
@@ -1853,7 +1857,7 @@ _game_update::
 ;src/states/game.c:254: for (int i = 0; i < 4; i++)
 	ldhl	sp,	#11
 	inc	(hl)
-	jr	00191$
+	jr	00193$
 00112$:
 ;src/states/game.c:258: uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
 	ld	a, (_player_y)
@@ -1869,9 +1873,9 @@ _game_update::
 	ld	d, (hl)
 	add	a, #0x08
 	ld	e, a
-	jr	NC, 00607$
+	jr	NC, 00623$
 	inc	d
-00607$:
+00623$:
 	call	_get_tile_at
 	ldhl	sp,	#9
 	ld	(hl), a
@@ -1887,7 +1891,7 @@ _game_update::
 	ld	a, (#_player_x + 1)
 	ldhl	sp,	#11
 	ld	(hl), a
-;src/states/game.c:263: saved_world_y = player_y + 16;
+;src/states/game.c:264: saved_world_y = player_y + 16;
 	ld	hl, #0x0010
 	add	hl, de
 	ld	c, l
@@ -1901,7 +1905,7 @@ _game_update::
 	ld	a, (hl)
 	sub	a, #>(_world_map_info)
 	jr	NZ, 00117$
-;src/states/game.c:260: (tid == 21 || tid == 22 || tid == 58 || tid == 59)) {
+;src/states/game.c:260: (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
 	ldhl	sp,	#9
 	ld	a, (hl)
 	sub	a, #0x15
@@ -1917,9 +1921,18 @@ _game_update::
 	ldhl	sp,	#9
 	ld	a, (hl)
 	sub	a, #0x3b
+	jr	Z, 00116$
+	ldhl	sp,	#9
+	ld	a, (hl)
+	sub	a, #0x46
+	jr	Z, 00116$
+;src/states/game.c:261: tid == 71)) {
+	ldhl	sp,	#9
+	ld	a, (hl)
+	sub	a, #0x47
 	jr	NZ, 00117$
 00116$:
-;src/states/game.c:261: if (player_x > 160 && player_y > 160) {
+;src/states/game.c:262: if (player_x > 160 && player_y > 160) {
 	ldhl	sp,	#10
 	ld	a, #0xa0
 	sub	a, (hl)
@@ -1932,35 +1945,35 @@ _game_update::
 	ld	a, #0x00
 	sbc	a, d
 	jr	NC, 00117$
-;src/states/game.c:262: saved_world_x = player_x;
+;src/states/game.c:263: saved_world_x = player_x;
 	ld	a, (#_player_x)
 	ld	(#_saved_world_x),a
 	ld	a, (#_player_x + 1)
 	ld	(#_saved_world_x + 1),a
-;src/states/game.c:263: saved_world_y = player_y + 16;
+;src/states/game.c:264: saved_world_y = player_y + 16;
 	ld	hl, #_saved_world_y
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/states/game.c:264: player_x = 76;
+;src/states/game.c:265: player_x = 76;
 	ld	hl, #_player_x
 	ld	a, #0x4c
 	ld	(hl+), a
 	xor	a, a
 	ld	(hl), a
-;src/states/game.c:265: player_y = 120; // Near Door in House
+;src/states/game.c:266: player_y = 120; // Near Door in House
 	ld	hl, #_player_y
 	ld	a, #0x78
 	ld	(hl+), a
 	xor	a, a
 	ld	(hl), a
-;src/states/game.c:266: load_map(&house_map_info);
+;src/states/game.c:267: load_map(&house_map_info);
 	ld	de, #_house_map_info
 	call	_load_map
-;src/states/game.c:267: return;
-	jp	00205$
+;src/states/game.c:268: return;
+	jp	00207$
 00117$:
-;src/states/game.c:270: tid = get_tile_at(player_x + 8, player_y + 16);
+;src/states/game.c:271: tid = get_tile_at(player_x + 8, player_y + 16);
 	ldhl	sp,#10
 	ld	a, (hl+)
 	ld	e, a
@@ -1971,48 +1984,48 @@ _game_update::
 	ld	d, h
 	call	_get_tile_at
 	ld	c, a
-;src/states/game.c:271: if (current_map == &house_map_info && tid == 35) {
+;src/states/game.c:272: if (current_map == &house_map_info && tid == 35) {
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<(_house_map_info)
-	jr	NZ, 00123$
+	jr	NZ, 00125$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>(_house_map_info)
-	jr	NZ, 00123$
+	jr	NZ, 00125$
 	ld	a, c
 	sub	a, #0x23
-	jr	NZ, 00123$
-;src/states/game.c:272: player_x = saved_world_x;
+	jr	NZ, 00125$
+;src/states/game.c:273: player_x = saved_world_x;
 	ld	a, (#_saved_world_x)
 	ld	(#_player_x),a
 	ld	a, (#_saved_world_x + 1)
 	ld	(#_player_x + 1),a
-;src/states/game.c:273: player_y = saved_world_y;
+;src/states/game.c:274: player_y = saved_world_y;
 	ld	a, (#_saved_world_y)
 	ld	(#_player_y),a
 	ld	a, (#_saved_world_y + 1)
 	ld	(#_player_y + 1),a
-;src/states/game.c:274: player_dir = 0;
+;src/states/game.c:275: player_dir = 0;
 	xor	a, a
 	ld	(#_player_dir),a
-;src/states/game.c:275: load_map(&world_map_info);
+;src/states/game.c:276: load_map(&world_map_info);
 	ld	de, #_world_map_info
 	call	_load_map
-;src/states/game.c:276: return;
-	jp	00205$
-00123$:
-;src/states/game.c:278: if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
+;src/states/game.c:277: return;
+	jp	00207$
+00125$:
+;src/states/game.c:279: if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<(_level2_map_info)
-	jr	NZ, 00126$
+	jr	NZ, 00128$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>(_level2_map_info)
-	jr	NZ, 00126$
+	jr	NZ, 00128$
 	or	a, c
-	jr	NZ, 00126$
+	jr	NZ, 00128$
 	ld	a, (_player_y)
 	ld	c, a
 	ld	hl, #_player_y + 1
@@ -2021,78 +2034,78 @@ _game_update::
 	cp	a, c
 	ld	a, #0x00
 	sbc	a, b
-	jr	NC, 00126$
-;src/states/game.c:279: player_x = 124;
+	jr	NC, 00128$
+;src/states/game.c:280: player_x = 124;
 	ld	hl, #_player_x
 	ld	a, #0x7c
 	ld	(hl+), a
 	xor	a, a
 	ld	(hl), a
-;src/states/game.c:280: player_y = 32;
+;src/states/game.c:281: player_y = 32;
 	ld	hl, #_player_y
 	ld	a, #0x20
 	ld	(hl+), a
-;src/states/game.c:281: player_dir = 0;
+;src/states/game.c:282: player_dir = 0;
 	xor	a, a
 	ld	(hl), a
 	ld	(#_player_dir),a
-;src/states/game.c:282: load_map(&world_map_info);
+;src/states/game.c:283: load_map(&world_map_info);
 	ld	de, #_world_map_info
 	call	_load_map
-;src/states/game.c:283: return;
-	jp	00205$
-00126$:
-;src/states/game.c:286: if (++anim_timer > 6) {
+;src/states/game.c:284: return;
+	jp	00207$
+00128$:
+;src/states/game.c:287: if (++anim_timer > 6) {
 	ld	hl, #_anim_timer
 	inc	(hl)
 	ld	a, #0x06
 	sub	a, (hl)
-	jr	NC, 00248$
-;src/states/game.c:287: anim_frame = !anim_frame;
+	jr	NC, 00252$
+;src/states/game.c:288: anim_frame = !anim_frame;
 	ld	hl, #_anim_frame
 	ld	a, (hl)
 	sub	a, #0x01
 	ld	a, #0x00
 	rla
 	ld	(hl), a
-;src/states/game.c:288: anim_timer = 0;
+;src/states/game.c:289: anim_timer = 0;
 	xor	a, a
 	ld	(#_anim_timer),a
-;src/states/game.c:289: update_player_sprite();
+;src/states/game.c:290: update_player_sprite();
 	call	_update_player_sprite
-	jr	00248$
-00134$:
-;src/states/game.c:291: } else if (anim_frame != 0) {
+	jr	00252$
+00136$:
+;src/states/game.c:292: } else if (anim_frame != 0) {
 	ld	hl, #_anim_frame
 	ld	a, (hl)
 	or	a, a
-	jr	Z, 00248$
-;src/states/game.c:292: anim_frame = 0;
+	jr	Z, 00252$
+;src/states/game.c:293: anim_frame = 0;
 	ld	(hl), #0x00
-;src/states/game.c:293: update_player_sprite();
+;src/states/game.c:294: update_player_sprite();
 	call	_update_player_sprite
-	jr	00248$
+	jr	00252$
+00141$:
+;src/states/game.c:297: if (anim_frame != 0) {
+	ld	hl, #_anim_frame
+	ld	a, (hl)
+	or	a, a
+	jr	Z, 00139$
+;src/states/game.c:298: anim_frame = 0;
+	ld	(hl), #0x00
+;src/states/game.c:299: update_player_sprite();
+	call	_update_player_sprite
 00139$:
-;src/states/game.c:296: if (anim_frame != 0) {
-	ld	hl, #_anim_frame
-	ld	a, (hl)
-	or	a, a
-	jr	Z, 00137$
-;src/states/game.c:297: anim_frame = 0;
-	ld	(hl), #0x00
-;src/states/game.c:298: update_player_sprite();
-	call	_update_player_sprite
-00137$:
-;src/states/game.c:300: anim_timer = 0;
+;src/states/game.c:301: anim_timer = 0;
 	xor	a, a
 	ld	(#_anim_timer),a
-;src/states/game.c:304: for (int i = 0; i < current_map->num_entities; i++) {
-00248$:
+;src/states/game.c:305: for (int i = 0; i < current_map->num_entities; i++) {
+00252$:
 	xor	a, a
 	ldhl	sp,	#10
 	ld	(hl+), a
 	ld	(hl), a
-00200$:
+00202$:
 	ld	a, (#_current_map)
 	ldhl	sp,	#6
 	ld	(hl), a
@@ -2117,18 +2130,18 @@ _game_update::
 	ld	d, (hl)
 	ld	a, b
 	bit	7,a
-	jr	Z, 00621$
+	jr	Z, 00639$
 	bit	7, d
-	jr	NZ, 00622$
+	jr	NZ, 00640$
 	cp	a, a
-	jr	00622$
-00621$:
+	jr	00640$
+00639$:
 	bit	7, d
-	jr	Z, 00622$
+	jr	Z, 00640$
 	scf
-00622$:
-	jp	NC, 00147$
-;src/states/game.c:305: entity_t *e = &current_map->entities[i];
+00640$:
+	jp	NC, 00149$
+;src/states/game.c:306: entity_t *e = &current_map->entities[i];
 	ldhl	sp,#6
 	ld	a, (hl+)
 	ld	e, a
@@ -2176,7 +2189,7 @@ _game_update::
 	pop	hl
 	ld	a, h
 	ldhl	sp,	#9
-;src/states/game.c:306: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
+;src/states/game.c:307: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
@@ -2227,7 +2240,7 @@ _game_update::
 	ld	(hl), c
 	inc	hl
 	ld	(hl), a
-;src/states/game.c:307: if (esx < 168 && esy < 160) {
+;src/states/game.c:308: if (esx < 168 && esy < 160) {
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	ld	c, a
@@ -2236,7 +2249,7 @@ _game_update::
 	sub	a, #0xa8
 	ld	a, b
 	sbc	a, #0x00
-	jp	NC, 00247$
+	jp	NC, 00251$
 	inc	hl
 	ld	a, (hl+)
 	ld	c, a
@@ -2245,8 +2258,8 @@ _game_update::
 	sub	a, #0xa0
 	ld	a, b
 	sbc	a, #0x00
-	jr	NC, 00247$
-;src/states/game.c:308: for (int j = 0; j < 4; j++) {
+	jr	NC, 00251$
+;src/states/game.c:309: for (int j = 0; j < 4; j++) {
 	ldhl	sp,#8
 	ld	a, (hl+)
 	ld	e, a
@@ -2262,21 +2275,21 @@ _game_update::
 	ldhl	sp,	#7
 	ld	(hl), a
 	ld	c, #0x00
-00194$:
+00196$:
 	ld	a, c
 	sub	a, #0x04
-	jr	NC, 00201$
-;src/states/game.c:309: move_sprite(4 + j, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+	jr	NC, 00203$
+;src/states/game.c:310: move_sprite(4 + j, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
 	ldhl	sp,	#4
 	ld	b, (hl)
 	ld	a, c
 	sub	a, #0x02
-	jr	C, 00211$
+	jr	C, 00213$
 	ld	a, #0x08
-	jr	00212$
-00211$:
+	jr	00214$
+00213$:
 	xor	a, a
-00212$:
+00214$:
 	add	a, b
 	ld	e, a
 	ldhl	sp,	#2
@@ -2284,9 +2297,9 @@ _game_update::
 	ld	a, c
 	and	a, #0x01
 	ld	a, #0x08
-	jr	NZ, 00214$
+	jr	NZ, 00216$
 	xor	a, a
-00214$:
+00216$:
 	add	a, b
 	ldhl	sp,	#9
 	ld	(hl-), a
@@ -2313,7 +2326,7 @@ _game_update::
 	ld	e, l
 	ld	d, h
 	ldhl	sp,	#9
-;src/states/game.c:310: set_sprite_tile(4 + j, e->sprite_base + j);
+;src/states/game.c:311: set_sprite_tile(4 + j, e->sprite_base + j);
 	ld	a, (hl-)
 	dec	hl
 	dec	hl
@@ -2342,61 +2355,61 @@ _game_update::
 	ldhl	sp,	#9
 	ld	a, (hl)
 	ld	(de), a
-;src/states/game.c:308: for (int j = 0; j < 4; j++) {
+;src/states/game.c:309: for (int j = 0; j < 4; j++) {
 	inc	c
-	jr	00194$
-;src/states/game.c:313: for (int j = 0; j < 4; j++)
-00247$:
+	jr	00196$
+;src/states/game.c:314: for (int j = 0; j < 4; j++)
+00251$:
 	ld	c, #0x00
-00197$:
-;src/states/game.c:314: move_sprite(4 + j, 0, 0);
+00199$:
+;src/states/game.c:315: move_sprite(4 + j, 0, 0);
 	ld	a,c
 	cp	a,#0x04
-	jr	NC, 00201$
+	jr	NC, 00203$
 	add	a, #0x04
 	ld	b, a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	de, #_shadow_OAM+0
 	xor	a, a
 	ld	l, b
 	ld	h, a
 	add	hl, hl
 	add	hl, hl
-	ld	de, #_shadow_OAM
 	add	hl, de
 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/states/game.c:313: for (int j = 0; j < 4; j++)
+;src/states/game.c:314: for (int j = 0; j < 4; j++)
 	inc	c
-	jr	00197$
-00201$:
-;src/states/game.c:304: for (int i = 0; i < current_map->num_entities; i++) {
+	jr	00199$
+00203$:
+;src/states/game.c:305: for (int i = 0; i < current_map->num_entities; i++) {
 	ldhl	sp,	#10
 	inc	(hl)
-	jp	NZ, 00200$
+	jp	NZ, 00202$
 	inc	hl
 	inc	(hl)
-	jp	00200$
-00147$:
-;src/states/game.c:318: if (input_pressed(J_A | J_B)) {
+	jp	00202$
+00149$:
+;src/states/game.c:319: if (input_pressed(J_A | J_B)) {
 	ld	a, #0x30
 	call	_input_pressed
 	or	a, a
-	jp	Z, 00178$
-;src/states/game.c:319: for (int i = 0; i < current_map->num_entities; i++) {
+	jp	Z, 00180$
+;src/states/game.c:320: for (int i = 0; i < current_map->num_entities; i++) {
 	xor	a, a
 	ldhl	sp,	#6
 	ld	(hl+), a
 	ld	(hl), a
-00203$:
-;src/states/game.c:304: for (int i = 0; i < current_map->num_entities; i++) {
+00205$:
+;src/states/game.c:305: for (int i = 0; i < current_map->num_entities; i++) {
 	ld	a, (#_current_map)
 	ldhl	sp,	#8
 	ld	(hl), a
 	ld	a, (#_current_map + 1)
 	ldhl	sp,	#9
-;src/states/game.c:319: for (int i = 0; i < current_map->num_entities; i++) {
+;src/states/game.c:320: for (int i = 0; i < current_map->num_entities; i++) {
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
@@ -2416,18 +2429,18 @@ _game_update::
 	ld	d, (hl)
 	ld	a, b
 	bit	7,a
-	jr	Z, 00624$
+	jr	Z, 00642$
 	bit	7, d
-	jr	NZ, 00625$
+	jr	NZ, 00643$
 	cp	a, a
-	jr	00625$
-00624$:
+	jr	00643$
+00642$:
 	bit	7, d
-	jr	Z, 00625$
+	jr	Z, 00643$
 	scf
-00625$:
-	jp	NC, 00156$
-;src/states/game.c:320: entity_t *e = &current_map->entities[i];
+00643$:
+	jp	NC, 00158$
+;src/states/game.c:321: entity_t *e = &current_map->entities[i];
 	ldhl	sp,#8
 	ld	a, (hl+)
 	ld	e, a
@@ -2476,7 +2489,7 @@ _game_update::
 	ld	a, h
 	ldhl	sp,	#3
 	ld	(hl), a
-;src/states/game.c:321: int16_t dx = (int16_t)player_x - e->x, dy = (int16_t)player_y - e->y;
+;src/states/game.c:322: int16_t dx = (int16_t)player_x - e->x, dy = (int16_t)player_y - e->y;
 	ld	a, (_player_x)
 	ld	c, a
 	ld	hl, #_player_x + 1
@@ -2555,14 +2568,14 @@ _game_update::
 	sbc	a, h
 	ldhl	sp,	#11
 	ld	(hl-), a
-;src/states/game.c:322: if (dx < 0)
+;src/states/game.c:323: if (dx < 0)
 	ld	a, e
 	ld	(hl-), a
 	dec	hl
 	ld	a, (hl+)
 	bit	7, (hl)
-	jr	Z, 00149$
-;src/states/game.c:323: dx = -dx;
+	jr	Z, 00151$
+;src/states/game.c:324: dx = -dx;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -2575,13 +2588,13 @@ _game_update::
 	ldhl	sp,	#9
 	ld	(hl-), a
 	ld	(hl), e
-00149$:
-;src/states/game.c:324: if (dy < 0)
+00151$:
+;src/states/game.c:325: if (dy < 0)
 	ldhl	sp,	#10
 	ld	a, (hl+)
 	bit	7, (hl)
-	jr	Z, 00151$
-;src/states/game.c:325: dy = -dy;
+	jr	Z, 00153$
+;src/states/game.c:326: dy = -dy;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -2594,8 +2607,8 @@ _game_update::
 	ldhl	sp,	#11
 	ld	(hl-), a
 	ld	(hl), e
-00151$:
-;src/states/game.c:326: if (dx < 24 && dy < 24 && input_pressed(J_A))
+00153$:
+;src/states/game.c:327: if (dx < 24 && dy < 24 && input_pressed(J_A))
 	ldhl	sp,	#8
 	ld	a, (hl+)
 	ld	c, a
@@ -2607,7 +2620,7 @@ _game_update::
 	ccf
 	rra
 	sbc	a, #0x80
-	jr	NC, 00204$
+	jr	NC, 00206$
 	inc	hl
 	ld	a, (hl+)
 	ld	c, a
@@ -2619,12 +2632,12 @@ _game_update::
 	ccf
 	rra
 	sbc	a, #0x80
-	jr	NC, 00204$
+	jr	NC, 00206$
 	ld	a, #0x10
 	call	_input_pressed
 	or	a, a
-	jr	Z, 00204$
-;src/states/game.c:327: text_dialogue(e->dialogue);
+	jr	Z, 00206$
+;src/states/game.c:328: text_dialogue(e->dialogue);
 	ldhl	sp,#2
 	ld	a, (hl+)
 	ld	e, a
@@ -2637,35 +2650,35 @@ _game_update::
 	ld	e, c
 	ld	d, a
 	call	_text_dialogue
-00204$:
-;src/states/game.c:319: for (int i = 0; i < current_map->num_entities; i++) {
+00206$:
+;src/states/game.c:320: for (int i = 0; i < current_map->num_entities; i++) {
 	ldhl	sp,	#6
 	inc	(hl)
-	jp	NZ, 00203$
+	jp	NZ, 00205$
 	inc	hl
 	inc	(hl)
-	jp	00203$
-00156$:
-;src/states/game.c:330: uint8_t tid = get_tile_at(player_x + 8, player_y);
+	jp	00205$
+00158$:
+;src/states/game.c:331: uint8_t tid = get_tile_at(player_x + 8, player_y);
 	ld	a, (_player_x)
 	ld	hl, #_player_x + 1
 	ld	d, (hl)
 	add	a, #0x08
 	ld	e, a
-	jr	NC, 00627$
+	jr	NC, 00645$
 	inc	d
-00627$:
+00645$:
 	ld	a, (_player_y)
 	ld	c, a
 	ld	hl, #_player_y + 1
 	ld	b, (hl)
 	call	_get_tile_at
 	ld	c, a
-;src/states/game.c:331: if (player_dir == 1)
+;src/states/game.c:332: if (player_dir == 1)
 	ld	a, (#_player_dir)
 	dec	a
-	jr	NZ, 00158$
-;src/states/game.c:332: tid = get_tile_at(player_x + 8, player_y - 4);
+	jr	NZ, 00160$
+;src/states/game.c:333: tid = get_tile_at(player_x + 8, player_y - 4);
 	ld	a, (_player_y)
 	ld	hl, #_player_y + 1
 	ld	b, (hl)
@@ -2679,208 +2692,208 @@ _game_update::
 	ld	d, (hl)
 	add	a, #0x08
 	ld	e, a
-	jr	NC, 00630$
+	jr	NC, 00648$
 	inc	d
-00630$:
+00648$:
 	call	_get_tile_at
 	ld	c, a
-00158$:
-;src/states/game.c:334: if (current_map == &house_map_info &&
+00160$:
+;src/states/game.c:335: if (current_map == &house_map_info &&
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<(_house_map_info)
-	jr	NZ, 00165$
+	jr	NZ, 00167$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>(_house_map_info)
-	jr	NZ, 00165$
-;src/states/game.c:335: (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
+	jr	NZ, 00167$
+;src/states/game.c:336: (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
 	ld	a,c
 	cp	a,#0x1f
-	jr	Z, 00164$
+	jr	Z, 00166$
 	cp	a,#0x20
-	jr	Z, 00164$
+	jr	Z, 00166$
 	cp	a,#0x21
-	jr	Z, 00164$
+	jr	Z, 00166$
 	sub	a, #0x22
-	jr	NZ, 00165$
-00164$:
-;src/states/game.c:336: if (input_pressed(J_B)) {
+	jr	NZ, 00167$
+00166$:
+;src/states/game.c:337: if (input_pressed(J_B)) {
 	push	bc
 	ld	a, #0x20
 	call	_input_pressed
 	pop	bc
 	or	a, a
-	jr	Z, 00165$
-;src/states/game.c:337: if (!has_key) {
+	jr	Z, 00167$
+;src/states/game.c:338: if (!has_key) {
 	ld	a, (#_has_key)
 	or	a, a
-	jr	NZ, 00160$
-;src/states/game.c:338: text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
+	jr	NZ, 00162$
+;src/states/game.c:339: text_dialogue("¡HAS ENCONTRADO LA\nLLAVE DEL PORTON!");
 	push	bc
 	ld	de, #___str_2
 	call	_text_dialogue
 	pop	bc
-;src/states/game.c:339: has_key = 1;
+;src/states/game.c:340: has_key = 1;
 	ld	hl, #_has_key
 	ld	(hl), #0x01
-	jr	00165$
-00160$:
-;src/states/game.c:341: text_dialogue("EL ROPERO ESTA\nVACIO.");
+	jr	00167$
+00162$:
+;src/states/game.c:342: text_dialogue("EL ROPERO ESTA\nVACIO.");
 	push	bc
 	ld	de, #___str_3
 	call	_text_dialogue
 	pop	bc
-00165$:
-;src/states/game.c:345: if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
+00167$:
+;src/states/game.c:346: if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<(_world_map_info)
-	jr	NZ, 00178$
+	jr	NZ, 00180$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>(_world_map_info)
-	jr	NZ, 00178$
+	jr	NZ, 00180$
 	ld	a,c
 	cp	a,#0x2b
-	jr	Z, 00173$
+	jr	Z, 00175$
 	sub	a, #0x2c
-	jr	NZ, 00178$
-00173$:
-;src/states/game.c:346: if (has_key) {
+	jr	NZ, 00180$
+00175$:
+;src/states/game.c:347: if (has_key) {
 	ld	a, (#_has_key)
 	or	a, a
-	jr	Z, 00171$
-;src/states/game.c:347: text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
+	jr	Z, 00173$
+;src/states/game.c:348: text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
 	ld	de, #___str_4
 	call	_text_dialogue
-;src/states/game.c:348: player_x = 124;
+;src/states/game.c:349: player_x = 124;
 	ld	hl, #_player_x
 	ld	a, #0x7c
 	ld	(hl+), a
 	xor	a, a
 	ld	(hl), a
-;src/states/game.c:349: player_y = 230;
+;src/states/game.c:350: player_y = 230;
 	ld	hl, #_player_y
 	ld	a, #0xe6
 	ld	(hl+), a
 	xor	a, a
 	ld	(hl), a
-;src/states/game.c:350: player_dir = 1;
+;src/states/game.c:351: player_dir = 1;
 	ld	hl, #_player_dir
 	ld	(hl), #0x01
-;src/states/game.c:351: load_map(&level2_map_info);
+;src/states/game.c:352: load_map(&level2_map_info);
 	ld	de, #_level2_map_info
 	call	_load_map
-;src/states/game.c:352: return;
-	jp	00205$
-00171$:
-;src/states/game.c:354: text_dialogue("ESTA CERRADO.\nNECESITAS UNA LLAVE.");
+;src/states/game.c:353: return;
+	jp	00207$
+00173$:
+;src/states/game.c:355: text_dialogue("ESTA CERRADO.\nNECESITAS UNA LLAVE.");
 	ld	de, #___str_5
 	call	_text_dialogue
-00178$:
-;src/states/game.c:359: if (current_map == &world_map_info) {
+00180$:
+;src/states/game.c:360: if (current_map == &world_map_info) {
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<(_world_map_info)
-	jp	NZ, 00205$
+	jp	NZ, 00207$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>(_world_map_info)
-	jp	NZ, 00205$
-;src/states/game.c:360: if (++env_anim_timer >= 40) {
+	jp	NZ, 00207$
+;src/states/game.c:361: if (++env_anim_timer >= 40) {
 	ld	hl, #_env_anim_timer
 	inc	(hl)
 	ld	a, (hl)
 	sub	a, #0x28
-	jp	C, 00205$
-;src/states/game.c:361: env_anim_timer = 0;
+	jp	C, 00207$
+;src/states/game.c:362: env_anim_timer = 0;
 	ld	(hl), #0x00
-;src/states/game.c:362: env_anim_frame = !env_anim_frame;
+;src/states/game.c:363: env_anim_frame = !env_anim_frame;
 	ld	hl, #_env_anim_frame
 	ld	a, (hl)
 	sub	a, #0x01
 	ld	a, #0x00
 	rla
 	ld	(hl), a
-;src/states/game.c:363: if (env_anim_frame) {
+;src/states/game.c:364: if (env_anim_frame) {
 	ld	a, (hl)
 	or	a, a
-	jr	Z, 00180$
-;src/states/game.c:364: set_bkg_data(2, 1, &tiles_anim_data[0]);
+	jr	Z, 00182$
+;src/states/game.c:365: set_bkg_data(2, 1, &tiles_anim_data[0]);
 	ld	de, #_tiles_anim_data
 	push	de
 	ld	hl, #0x102
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:365: set_bkg_data(4, 1, &tiles_anim_data[16]);
+;src/states/game.c:366: set_bkg_data(4, 1, &tiles_anim_data[16]);
 	ld	de, #(_tiles_anim_data + 16)
 	push	de
 	ld	hl, #0x104
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:366: set_bkg_data(5, 1, &tiles_anim_data[32]);
+;src/states/game.c:367: set_bkg_data(5, 1, &tiles_anim_data[32]);
 	ld	de, #(_tiles_anim_data + 32)
 	push	de
 	ld	hl, #0x105
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:367: set_bkg_data(6, 1, &tiles_anim_data[48]);
+;src/states/game.c:368: set_bkg_data(6, 1, &tiles_anim_data[48]);
 	ld	de, #(_tiles_anim_data + 48)
 	push	de
 	ld	hl, #0x106
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:368: set_bkg_data(12, 1, &tiles_anim_data[64]);
+;src/states/game.c:369: set_bkg_data(12, 1, &tiles_anim_data[64]);
 	ld	de, #(_tiles_anim_data + 64)
 	push	de
 	ld	hl, #0x10c
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-	jr	00205$
-00180$:
-;src/states/game.c:370: set_bkg_data(2, 1, &tiles_data[32]);
+	jr	00207$
+00182$:
+;src/states/game.c:371: set_bkg_data(2, 1, &tiles_data[32]);
 	ld	de, #(_tiles_data + 32)
 	push	de
 	ld	hl, #0x102
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:371: set_bkg_data(4, 1, &tiles_data[64]);
+;src/states/game.c:372: set_bkg_data(4, 1, &tiles_data[64]);
 	ld	de, #(_tiles_data + 64)
 	push	de
 	ld	hl, #0x104
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:372: set_bkg_data(5, 1, &tiles_data[80]);
+;src/states/game.c:373: set_bkg_data(5, 1, &tiles_data[80]);
 	ld	de, #(_tiles_data + 80)
 	push	de
 	ld	hl, #0x105
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:373: set_bkg_data(6, 1, &tiles_data[96]);
+;src/states/game.c:374: set_bkg_data(6, 1, &tiles_data[96]);
 	ld	de, #(_tiles_data + 96)
 	push	de
 	ld	hl, #0x106
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/game.c:374: set_bkg_data(12, 1, &tiles_data[192]);
-	ld	bc, #(_tiles_data + 192)
-	push	bc
+;src/states/game.c:375: set_bkg_data(12, 1, &tiles_data[192]);
+	ld	de, #(_tiles_data + 192)
+	push	de
 	ld	hl, #0x10c
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-00205$:
-;src/states/game.c:378: }
+00207$:
+;src/states/game.c:379: }
 	add	sp, #12
 	ret
 ___str_2:

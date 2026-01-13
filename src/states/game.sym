@@ -13,12 +13,12 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        0000075C R
-  0 ___str_1                                                        00000797 R
-  0 ___str_2                                                        00000E6A R
-  0 ___str_3                                                        00000E90 R
-  0 ___str_4                                                        00000EA6 R
-  0 ___str_5                                                        00000ECC R
+  0 ___str_0                                                        00000762 R
+  0 ___str_1                                                        0000079D R
+  0 ___str_2                                                        00000E7E R
+  0 ___str_3                                                        00000EA4 R
+  0 ___str_4                                                        00000EBA R
+  0 ___str_5                                                        00000EE0 R
     __mulint                                                        ******** GX
   8 __xinit__anim_frame                                             00000005 R
   8 __xinit__anim_timer                                             00000006 R
@@ -43,7 +43,7 @@ Symbol Table
     _fade_out                                                       ******** GX
     _fill_bkg_rect                                                  ******** GX
   0 _game_init                                                      00000599 GR
-  0 _game_update                                                    000007C3 GR
+  0 _game_update                                                    000007C9 GR
   0 _get_tile_at                                                    00000000 GR
   3 _has_key                                                        0000000B GR
   2 _house_ents                                                     00000009 GR
@@ -91,7 +91,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      EEF   flags    0
+   0 _CODE                                      size      F03   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size       66   flags    0
    3 _INITIALIZED                               size        E   flags    0

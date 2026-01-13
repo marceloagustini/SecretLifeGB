@@ -162,7 +162,7 @@ uint8_t can_move(uint16_t nx, uint16_t ny) {
 
 void game_init(void) {
   DISPLAY_OFF;
-  set_bkg_data(0, 62, tiles_data); // All tiles
+  set_bkg_data(0, 77, tiles_data); // All tiles (now 77)
 
   // Define Maps
   world_map_info.tiles = map_data;
@@ -170,8 +170,8 @@ void game_init(void) {
   world_map_info.h = MAP_HEIGHT;
   world_map_info.entities = world_ents;
   world_map_info.num_entities = 1;
-  uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 58, 59, 255};
-  memcpy(world_map_info.solid_tiles, w_pass, 10);
+  uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 58, 59, 70, 71, 255};
+  memcpy(world_map_info.solid_tiles, w_pass, 12);
   world_ents[0].x = 210;
   world_ents[0].y = 230;
   world_ents[0].type = ENT_NPC;
@@ -257,7 +257,8 @@ void game_update(void) {
       // Automatic Transitions
       uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
       if (current_map == &world_map_info &&
-          (tid == 21 || tid == 22 || tid == 58 || tid == 59)) {
+          (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
+           tid == 71)) {
         if (player_x > 160 && player_y > 160) {
           saved_world_x = player_x;
           saved_world_y = player_y + 16;

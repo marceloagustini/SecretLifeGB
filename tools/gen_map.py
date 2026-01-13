@@ -40,11 +40,11 @@ def generate_map():
         [16, 17, 19, 18], # Walls
         [20, 21, 22, 24]  # Door
     ]
-    house_t2 = [
-        [47, 45, 46, 48], # Variant Peak
-        [49, 51, 52, 50], # Variant Roof (matching the same structural logic)
-        [53, 54, 56, 55], # Walls
-        [57, 58, 59, 60]  # Door
+    house_t3 = [
+        [61, 63, 64, 62], # Flat Roof
+        [65, 68, 68, 66], # Bricks
+        [69, 70, 71, 72], # Door/Wall
+        [73, 74, 75, 76]  # Base
     ]
 
     def set_house(x, y, tiles):
@@ -61,8 +61,8 @@ def generate_map():
         set_tile(x, y+1, 6); set_tile(x+1, y+1, 12)
 
     # Houses
-    set_house(4, 4, house_t2); set_house(22, 4, house_t2)
-    set_house(4, 22, house_t1); set_house(22, 22, house_t1)
+    set_house(4, 4, house_t3); set_house(22, 4, house_t3) # Top: Urban
+    set_house(4, 22, house_t1); set_house(22, 22, house_t1) # Bottom: Classic
 
     import random
     random.seed(42)
