@@ -1,4 +1,5 @@
 #include "../../res/assets.h"
+#include "../utils/fade.h"
 #include "../utils/input.h"
 #include "../utils/music.h"
 #include "../utils/text.h"
@@ -14,7 +15,7 @@ typedef struct {
   uint16_t x, y;
   ent_type_t type;
   const char *dialogue;
-  uint8_t sprite_base; // 0 for player, 24 for child, etc.
+  uint8_t sprite_base;
   uint8_t active;
 } entity_t;
 
@@ -23,7 +24,7 @@ typedef struct {
   uint8_t w, h;
   entity_t *entities;
   uint8_t num_entities;
-  uint8_t solid_tiles[16]; // Tiles that are NOT solid (passable)
+  uint8_t solid_tiles[16];
 } map_info_t;
 
 // --- GLOBALS ---
@@ -79,17 +80,24 @@ void update_camera() {
 }
 
 void load_map(map_info_t *m) {
+  fade_out();
   HIDE_BKG;
   current_map = m;
-  // Clear sprites (hide all except player)
   for (int i = 4; i < 40; i++)
-    move_sprite(i, 0, 0);
+    move_sprite(i, 0, 0); // Hide map sprites
 
   if (m == &house_map_info)
-    fill_bkg_rect(0, 0, 32, 32, 26); // Wall filler
+    fill_bkg_rect(0, 0, 32, 32, 26);
   set_bkg_tiles(0, 0, m->w, m->h, m->tiles);
   update_camera();
+
+  // Sync player sprites immediately
+  uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+  for (int i = 0; i < 4; i++)
+    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
+
   SHOW_BKG;
+  fade_in();
 }
 
 void update_player_sprite() {
@@ -133,6 +141,20 @@ uint8_t can_move(uint16_t nx, uint16_t ny) {
   if (is_solid(nx + 4, ny + 8) || is_solid(nx + 11, ny + 8) ||
       is_solid(nx + 4, ny + 15) || is_solid(nx + 11, ny + 15))
     return 0;
+
+  // NPC Collisions
+  for (int i = 0; i < current_map->num_entities; i++) {
+    entity_t *e = &current_map->entities[i];
+    if (!e->active)
+      continue;
+    int16_t dx = (int16_t)nx - e->x, dy = (int16_t)ny - e->y;
+    if (dx < 0)
+      dx = -dx;
+    if (dy < 0)
+      dy = -dy;
+    if (dx < 12 && dy < 12)
+      return 0; // Collide if too close
+  }
   return 1;
 }
 
@@ -140,7 +162,7 @@ uint8_t can_move(uint16_t nx, uint16_t ny) {
 
 void game_init(void) {
   DISPLAY_OFF;
-  set_bkg_data(0, 45, tiles_data); // Tiles 0-44
+  set_bkg_data(0, 62, tiles_data); // All tiles
 
   // Define Maps
   world_map_info.tiles = map_data;
@@ -148,8 +170,8 @@ void game_init(void) {
   world_map_info.h = MAP_HEIGHT;
   world_map_info.entities = world_ents;
   world_map_info.num_entities = 1;
-  uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 255};
-  memcpy(world_map_info.solid_tiles, w_pass, 8);
+  uint8_t w_pass[] = {0, 2, 3, 4, 5, 21, 22, 58, 59, 255};
+  memcpy(world_map_info.solid_tiles, w_pass, 10);
   world_ents[0].x = 180;
   world_ents[0].y = 220;
   world_ents[0].type = ENT_NPC;
@@ -175,10 +197,16 @@ void game_init(void) {
   level2_map_info.tiles = level2_map;
   level2_map_info.w = L2_WIDTH;
   level2_map_info.h = L2_HEIGHT;
-  level2_map_info.entities = NULL;
+  level2_map_info.entities = level2_ents;
   level2_map_info.num_entities = 0;
   uint8_t l2_pass[] = {0, 2, 3, 4, 255};
   memcpy(level2_map_info.solid_tiles, l2_pass, 5);
+
+  current_map = &world_map_info;
+  update_camera();
+  uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+  for (int i = 0; i < 4; i++)
+    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
 
   load_map(&world_map_info);
 
@@ -227,19 +255,19 @@ void game_update(void) {
         move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
 
       // Automatic Transitions
-      uint8_t tid = get_tile_at(player_x + 8, player_y + 4); // Head check
-      if (current_map == &world_map_info && (tid == 21 || tid == 22)) {
-        // ONLY the bottom-right house (around x=176, y=176) is accessible
+      uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
+      if (current_map == &world_map_info &&
+          (tid == 21 || tid == 22 || tid == 58 || tid == 59)) {
         if (player_x > 160 && player_y > 160) {
           saved_world_x = player_x;
           saved_world_y = player_y + 16;
-          player_x = 80;
-          player_y = 120;
+          player_x = 76;
+          player_y = 120; // Near Door in House
           load_map(&house_map_info);
           return;
         }
       }
-      tid = get_tile_at(player_x + 8, player_y + 16); // Foot check
+      tid = get_tile_at(player_x + 8, player_y + 16);
       if (current_map == &house_map_info && tid == 35) {
         player_x = saved_world_x;
         player_y = saved_world_y;
@@ -248,7 +276,6 @@ void game_update(void) {
         return;
       }
       if (current_map == &level2_map_info && tid == 0 && player_y > 230) {
-        // Return from Level 2 to top of World Map
         player_x = 124;
         player_y = 32;
         player_dir = 0;
@@ -273,7 +300,7 @@ void game_update(void) {
     anim_timer = 0;
   }
 
-  // --- Entity Rendering ---
+  // Render entities
   for (int i = 0; i < current_map->num_entities; i++) {
     entity_t *e = &current_map->entities[i];
     uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
@@ -288,9 +315,7 @@ void game_update(void) {
     }
   }
 
-  // --- Interaction (A=Talk, B=Search) ---
   if (input_pressed(J_A | J_B)) {
-    // Check nearby entities
     for (int i = 0; i < current_map->num_entities; i++) {
       entity_t *e = &current_map->entities[i];
       int16_t dx = (int16_t)player_x - e->x, dy = (int16_t)player_y - e->y;
@@ -302,10 +327,9 @@ void game_update(void) {
         text_dialogue(e->dialogue);
     }
 
-    // Check Special Objects
-    uint8_t tid = get_tile_at(player_x + 8, player_y); // Check in front
+    uint8_t tid = get_tile_at(player_x + 8, player_y);
     if (player_dir == 1)
-      tid = get_tile_at(player_x + 8, player_y - 4); // Up
+      tid = get_tile_at(player_x + 8, player_y - 4);
 
     if (current_map == &house_map_info &&
         (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
@@ -318,12 +342,11 @@ void game_update(void) {
       }
     }
 
-    // Giant Door (Gate) at top of World Map
     if (current_map == &world_map_info && (tid == 43 || tid == 44)) {
       if (has_key) {
         text_dialogue("USAS LA LLAVE...\n¡EL PORTON SE ABRE!");
         player_x = 124;
-        player_y = 240; // Level 2 entrance (bottom)
+        player_y = 230;
         player_dir = 1;
         load_map(&level2_map_info);
         return;
@@ -333,7 +356,6 @@ void game_update(void) {
     }
   }
 
-  // --- ENV ANIM ---
   if (current_map == &world_map_info) {
     if (++env_anim_timer >= 40) {
       env_anim_timer = 0;

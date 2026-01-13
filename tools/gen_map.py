@@ -27,24 +27,27 @@ def generate_map():
 
     # Main Path (Crossroad)
     for i in range(width):
-        set_tile(15, i, 0)
-        set_tile(16, i, 0)
-        set_tile(i, 15, 0)
-        set_tile(i, 16, 0)
+        set_tile(15, i, 0); set_tile(16, i, 0)
+        set_tile(i, 15, 0); set_tile(i, 16, 0)
 
-    # --- Giant Door (Gate) at the top of the path ---
-    # Tiles 41, 42 (Top)
-    # Tiles 43, 44 (Bottom)
+    # Giant Door
     set_tile(15, 1, 41); set_tile(16, 1, 42)
     set_tile(15, 2, 43); set_tile(16, 2, 44)
 
-    def set_house(x, y):
-        tiles = [
-            [7, 8, 9, 10],
-            [11, 13, 14, 15],
-            [16, 17, 18, 19],
-            [20, 21, 22, 24]
-        ]
+    house_t1 = [
+        [7, 8, 9, 10],
+        [11, 13, 14, 15],
+        [16, 17, 18, 19],
+        [20, 21, 22, 24]
+    ]
+    house_t2 = [
+        [45, 46, 47, 48],
+        [49, 50, 51, 52],
+        [53, 54, 55, 56],
+        [57, 58, 59, 60]
+    ]
+
+    def set_house(x, y, tiles):
         for dy, row in enumerate(tiles):
             for dx, t in enumerate(row):
                 set_tile(x + dx, y+dy, t)
@@ -58,8 +61,8 @@ def generate_map():
         set_tile(x, y+1, 6); set_tile(x+1, y+1, 12)
 
     # Houses
-    set_house(4, 4); set_house(22, 4)
-    set_house(4, 22); set_house(22, 22)
+    set_house(4, 4, house_t2); set_house(22, 4, house_t2)
+    set_house(4, 22, house_t1); set_house(22, 22, house_t1)
 
     import random
     random.seed(42)
@@ -95,21 +98,18 @@ def generate_house_map():
 
 def generate_level2_map():
     w, h = 32, 32
-    data = [0] * (w * h) # Mostly path for "new area"
+    data = [0] * (w * h)
     def set(x, y, t):
         if 0 <= x < w and 0 <= y < h: data[y * w + x] = t
-    # Border with rocks
     for i in range(w):
         set(i, 0, 23); set(i, h-1, 23)
         set(0, i, 23); set(w-1, i, 23)
-    # Entrance at bottom
     set(15, h-1, 0); set(16, h-1, 0)
-    # Some decorations
     import random
     random.seed(99)
     for _ in range(40):
         tx, ty = random.randint(2, 28), random.randint(2, 28)
-        set(tx, ty, random.choice([2, 3, 4])) # Simple icons
+        set(tx, ty, random.choice([2, 3, 4]))
     print_map("level2_map", "L2_WIDTH", "L2_HEIGHT", w, h, data)
 
 if __name__ == "__main__":
