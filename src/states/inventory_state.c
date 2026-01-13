@@ -73,8 +73,45 @@ void inventory_draw(void) {
     // Icon + Name
     draw_text(3, 13, "#"); // Key Icon (always key for now)
     draw_text(5, 13, inventory[selection].name);
-    // Description (Simplified wrapping: first 15 chars)
-    draw_text(3, 14, inventory[selection].description);
+
+    // Multi-line Description
+    const char *desc = inventory[selection].description;
+    uint8_t start = 0;
+    uint8_t line = 0;
+    char line_buffer[17]; // Max 16 chars per line inside box
+
+    while (desc[start] != '\0' && line < 3) {
+      uint8_t len = 0;
+      uint8_t last_space = 0;
+
+      // Find how many chars fit and where the last space is
+      while (desc[start + len] != '\0' && len < 15) {
+        if (desc[start + len] == ' ')
+          last_space = len;
+        len++;
+      }
+
+      // If we hit the end of the string, take it all
+      if (desc[start + len] == '\0') {
+        strncpy(line_buffer, &desc[start], len);
+        line_buffer[len] = '\0';
+        start += len;
+      } else {
+        // If we have a space, break there
+        if (last_space > 0) {
+          strncpy(line_buffer, &desc[start], last_space);
+          line_buffer[last_space] = '\0';
+          start += (last_space + 1);
+        } else {
+          // No space found, hard cut
+          strncpy(line_buffer, &desc[start], 15);
+          line_buffer[15] = '\0';
+          start += 15;
+        }
+      }
+      draw_text(3, 14 + line, line_buffer);
+      line++;
+    }
   }
 
   draw_text(1, 17, "(B) VOLVER");

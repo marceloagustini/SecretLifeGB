@@ -8,6 +8,7 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _font_data
+	.globl _guard_sprite_data
 	.globl _npc_child_sprite
 	.globl _player_sprites
 	.globl _level2_map
@@ -4221,6 +4222,71 @@ _npc_child_sprite:
 	.db #0x90	; 144
 	.db #0xf0	; 240
 	.db #0xf0	; 240
+	.db #0x00	; 0
+	.db #0x00	; 0
+_guard_sprite_data:
+	.db #0x0f	; 15
+	.db #0x0f	; 15
+	.db #0x10	; 16
+	.db #0x1f	; 31
+	.db #0x3f	; 63
+	.db #0x3f	; 63
+	.db #0x3f	; 63
+	.db #0x20	; 32
+	.db #0x3f	; 63
+	.db #0x24	; 36
+	.db #0x3f	; 63
+	.db #0x20	; 32
+	.db #0x1f	; 31
+	.db #0x10	; 16
+	.db #0x0f	; 15
+	.db #0x0f	; 15
+	.db #0xe0	; 224
+	.db #0xe0	; 224
+	.db #0x10	; 16
+	.db #0xf0	; 240
+	.db #0xf0	; 240
+	.db #0xf0	; 240
+	.db #0xfc	; 252
+	.db #0x04	; 4
+	.db #0xfc	; 252
+	.db #0x24	; 36
+	.db #0x3c	; 60
+	.db #0xc4	; 196
+	.db #0xf8	; 248
+	.db #0x08	; 8
+	.db #0xf0	; 240
+	.db #0xf0	; 240
+	.db #0x10	; 16
+	.db #0x1f	; 31
+	.db #0x20	; 32
+	.db #0x3f	; 63
+	.db #0x26	; 38
+	.db #0x3f	; 63
+	.db #0x3f	; 63
+	.db #0x3f	; 63
+	.db #0x12	; 18
+	.db #0x1e	; 30
+	.db #0x12	; 18
+	.db #0x1e	; 30
+	.db #0x3e	; 62
+	.db #0x3e	; 62
+	.db #0x00	; 0
+	.db #0x00	; 0
+	.db #0x08	; 8
+	.db #0xf8	; 248
+	.db #0x04	; 4
+	.db #0xfc	; 252
+	.db #0x34	; 52	'4'
+	.db #0xfc	; 252
+	.db #0xfc	; 252
+	.db #0xfc	; 252
+	.db #0x48	; 72	'H'
+	.db #0x78	; 120	'x'
+	.db #0x48	; 72	'H'
+	.db #0x78	; 120	'x'
+	.db #0x7c	; 124
+	.db #0x7c	; 124
 	.db #0x00	; 0
 	.db #0x00	; 0
 _font_data:

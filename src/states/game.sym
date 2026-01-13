@@ -13,14 +13,14 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000677 R
-  0 ___str_1                                                        000006B2 R
-  0 ___str_2                                                        00000CF6 R
-  0 ___str_3                                                        00000CFC R
-  0 ___str_4                                                        00000D20 R
-  0 ___str_5                                                        00000D35 R
-  0 ___str_6                                                        00000D4B R
-  0 ___str_7                                                        00000D6F R
+  0 ___str_0                                                        000006A2 R
+  0 ___str_1                                                        000006DD R
+  0 ___str_2                                                        00000E79 R
+  0 ___str_3                                                        00000E7F R
+  0 ___str_4                                                        00000EA3 R
+  0 ___str_5                                                        00000EB8 R
+  0 ___str_6                                                        00000ECE R
+  0 ___str_7                                                        00000EF2 R
     __mulint                                                        ******** GX
   8 __xinit__anim_frame                                             00000005 R
   8 __xinit__anim_timer                                             00000006 R
@@ -37,7 +37,8 @@ Symbol Table
   3 _camera_x                                                       00000007 GR
   3 _camera_y                                                       00000009 GR
   0 _can_move                                                       00000300 GR
-  2 _current_map                                                    00000060 GR
+  2 _current_map                                                    00000063 GR
+    _delay                                                          ******** GX
     _display_off                                                    ******** GX
   3 _env_anim_frame                                                 0000000C GR
   3 _env_anim_timer                                                 0000000B GR
@@ -47,24 +48,25 @@ Symbol Table
   0 _game_init                                                      000004EE GR
   3 _game_ready                                                     0000000D R
     _game_state                                                     ******** GX
-  0 _game_update                                                    000006DE GR
+  0 _game_update                                                    00000709 GR
   0 _get_tile_at                                                    00000000 GR
-  2 _house_ents                                                     00000009 GR
+    _guard_sprite_data                                              ******** GX
+  2 _house_ents                                                     0000000A GR
     _house_map                                                      ******** GX
-  2 _house_map_info                                                 00000032 GR
+  2 _house_map_info                                                 00000035 GR
     _input_held                                                     ******** GX
     _input_pressed                                                  ******** GX
     _inventory_add_item                                             ******** GX
     _inventory_has_item                                             ******** GX
-  0 _is_solid                                                       000002D5 GR
-  2 _level2_ents                                                    00000012 GR
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+  0 _is_solid                                                       000002D5 GR
+  2 _level2_ents                                                    00000014 GR
     _level2_map                                                     ******** GX
-  2 _level2_map_info                                                00000049 GR
+  2 _level2_map_info                                                0000004C GR
   0 _load_map                                                       000001F2 GR
     _map_data                                                       ******** GX
     _memcpy                                                         ******** GX
@@ -75,8 +77,8 @@ Symbol Table
     _player_sprites                                                 ******** GX
   3 _player_x                                                       00000000 GR
   3 _player_y                                                       00000002 GR
-  2 _saved_world_x                                                  00000062 GR
-  2 _saved_world_y                                                  00000064 GR
+  2 _saved_world_x                                                  00000065 GR
+  2 _saved_world_y                                                  00000067 GR
     _set_bkg_data                                                   ******** GX
     _set_bkg_tiles                                                  ******** GX
     _set_sprite_data                                                ******** GX
@@ -89,17 +91,16 @@ Symbol Table
   0 _update_camera                                                  00000070 GR
   0 _update_player_sprite                                           0000014C GR
   2 _world_ents                                                     00000000 GR
-  2 _world_map_info                                                 0000001B GR
-
+  2 _world_map_info                                                 0000001E GR
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 3
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      D87   flags    0
+   0 _CODE                                      size      F0A   flags    0
    1 _HRAM                                      size        0   flags    0
-   2 _DATA                                      size       66   flags    0
+   2 _DATA                                      size       69   flags    0
    3 _INITIALIZED                               size        E   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0

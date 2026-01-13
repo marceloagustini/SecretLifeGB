@@ -10,6 +10,7 @@ extern const unsigned char level2_map[];
 extern const unsigned char player_sprites[];
 extern const unsigned char font_data[];
 extern const unsigned char npc_child_sprite[];
+extern const unsigned char guard_sprite_data[];
 
 #define MAP_WIDTH 32
 #define MAP_HEIGHT 32

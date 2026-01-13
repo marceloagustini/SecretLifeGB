@@ -10,7 +10,7 @@
 
 // --- STRUCTURES & TYPES ---
 
-typedef enum { ENT_NPC, ENT_ITEM, ENT_DOOR } ent_type_t;
+typedef enum { ENT_NPC, ENT_ITEM, ENT_DOOR, ENT_ENEMY } ent_type_t;
 
 typedef struct {
   uint16_t x, y;
@@ -18,6 +18,7 @@ typedef struct {
   const char *dialogue;
   uint8_t sprite_base;
   uint8_t active;
+  int8_t dir; // 1 or -1 for enemies
 } entity_t;
 
 typedef struct {
@@ -218,9 +219,16 @@ void game_init(void) {
   level2_map_info.w = L2_WIDTH;
   level2_map_info.h = L2_HEIGHT;
   level2_map_info.entities = level2_ents;
-  level2_map_info.num_entities = 0;
+  level2_map_info.num_entities = 1;
   uint8_t l2_pass[] = {0, 2, 3, 4, 255};
   memcpy(level2_map_info.solid_tiles, l2_pass, 5);
+
+  level2_ents[0].x = 120;
+  level2_ents[0].y = 120;
+  level2_ents[0].type = ENT_ENEMY;
+  level2_ents[0].sprite_base = 28; // Guard Sprite
+  level2_ents[0].active = 1;
+  level2_ents[0].dir = 1;
 
   load_map(&world_map_info);
 
@@ -228,6 +236,7 @@ void game_init(void) {
   SPRITES_8x8;
   set_sprite_data(0, 24, player_sprites);
   set_sprite_data(24, 4, npc_child_sprite);
+  set_sprite_data(28, 4, guard_sprite_data);
   update_player_sprite();
   text_init();
   music_init();
@@ -313,9 +322,45 @@ void game_update(void) {
     }
   }
 
-  // Render entities
+  // Render entities & AI
   for (int i = 0; i < current_map->num_entities; i++) {
     entity_t *e = &current_map->entities[i];
+    if (!e->active)
+      continue;
+
+    if (e->type == ENT_ENEMY) {
+      // Simple Horizontal Oscillation
+      if (e->dir == 1) {
+        if (e->x < 180)
+          e->x++;
+        else
+          e->dir = -1;
+      } else {
+        if (e->x > 80)
+          e->x--;
+        else
+          e->dir = 1;
+      }
+
+      // Collision with player
+      int16_t dx = (int16_t)player_x - e->x, dy = (int16_t)player_y - e->y;
+      if (dx < 0)
+        dx = -dx;
+      if (dy < 0)
+        dy = -dy;
+      if (dx < 12 && dy < 12) {
+        // DEATH
+        fade_out();
+        delay(500);
+        player_x = 128;
+        player_y = 224;
+        load_map(&level2_map_info);
+        update_player_sprite();
+        fade_in();
+        return;
+      }
+    }
+
     uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
     if (esx < 168 && esy < 160) {
       for (int j = 0; j < 4; j++) {

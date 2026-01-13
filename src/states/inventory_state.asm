@@ -8,6 +8,7 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _inventory_draw
+	.globl _strncpy
 	.globl _input_pressed
 	.globl _fill_bkg_rect
 	.globl _set_bkg_tile_xy
@@ -376,6 +377,7 @@ _draw_box:
 ; Function inventory_draw
 ; ---------------------------------
 _inventory_draw::
+	add	sp, #-25
 ;src/states/inventory_state.c:53: fill_bkg_rect(0, 0, 20, 18, (uint8_t)128);
 	ld	hl, #0x8012
 	push	hl
@@ -395,7 +397,7 @@ _inventory_draw::
 	call	_draw_text
 ;src/states/inventory_state.c:57: for (int i = 1; i < 19; i++)
 	ld	c, #0x01
-00107$:
+00123$:
 ;src/states/inventory_state.c:58: set_bkg_tile_xy(i, 2, (uint8_t)(128 + 34));
 	ld	a,c
 	cp	a,#0x13
@@ -409,23 +411,23 @@ _inventory_draw::
 	pop	bc
 ;src/states/inventory_state.c:57: for (int i = 1; i < 19; i++)
 	inc	c
-	jr	00107$
+	jr	00123$
 00101$:
 ;src/states/inventory_state.c:60: if (inventory_count == 0) {
 	ld	a, (#_inventory_count)
 	or	a, a
-	jr	NZ, 00118$
+	jr	NZ, 00134$
 ;src/states/inventory_state.c:61: draw_text(7, 8, "VACIO");
 	ld	de, #___str_1
 	push	de
 	ld	e, #0x08
 	ld	a, #0x07
 	call	_draw_text
-	jp	00105$
+	jp	00121$
 ;src/states/inventory_state.c:64: for (uint8_t i = 0; i < inventory_count; i++) {
-00118$:
+00134$:
 	ld	c, #0x00
-00110$:
+00126$:
 	ld	a, c
 	ld	hl, #_inventory_count
 	sub	a, (hl)
@@ -452,13 +454,13 @@ _inventory_draw::
 	pop	bc
 ;src/states/inventory_state.c:64: for (uint8_t i = 0; i < inventory_count; i++) {
 	inc	c
-	jr	00110$
+	jr	00126$
 00102$:
 ;src/states/inventory_state.c:69: draw_text(3, 4 + selection, ">");
+	ld	bc, #___str_2+0
 	ld	a, (_selection)
 	add	a, #0x04
-	ld	de, #___str_2
-	push	de
+	push	bc
 	ld	e, a
 	ld	a, #0x03
 	call	_draw_text
@@ -492,7 +494,7 @@ _inventory_draw::
 	ld	e, #0x0d
 	ld	a, #0x05
 	call	_draw_text
-;src/states/inventory_state.c:77: draw_text(3, 14, inventory[selection].description);
+;src/states/inventory_state.c:78: const char *desc = inventory[selection].description;
 	ld	hl, #_selection
 	ld	c, (hl)
 	ld	b, #0x00
@@ -505,21 +507,221 @@ _inventory_draw::
 	add	hl, bc
 	inc	hl
 	inc	hl
+	ld	e, l
+	ld	d, h
+	ld	a, (de)
+	ldhl	sp,	#17
+	ld	(hl+), a
+	inc	de
+	ld	a, (de)
+	ld	(hl), a
+;src/states/inventory_state.c:79: uint8_t start = 0;
+	ldhl	sp,	#22
+;src/states/inventory_state.c:83: while (desc[start] != '\0' && line < 3) {
+	xor	a, a
+	ld	(hl+), a
+	ld	(hl), a
+00116$:
+	ldhl	sp,#17
 	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ldhl	sp,	#22
+	ld	l, (hl)
+	ld	h, #0x00
+	add	hl, de
+	ld	e, l
+	ld	d, h
+	ld	a, (de)
+	or	a, a
+	jp	Z, 00121$
+	ldhl	sp,	#23
+	ld	a, (hl)
+	sub	a, #0x03
+	jp	NC, 00121$
+;src/states/inventory_state.c:85: uint8_t last_space = 0;
+	ldhl	sp,	#19
+	ld	(hl), #0x00
+;src/states/inventory_state.c:88: while (desc[start + len] != '\0' && len < 15) {
+	ldhl	sp,	#24
+	ld	(hl), #0x00
+00106$:
+	ldhl	sp,	#22
+	ld	a, (hl+)
+	inc	hl
 	ld	c, a
-	ld	b, (hl)
+	ld	b, #0x00
+	ld	a, (hl)
+	ldhl	sp,	#20
+	ld	(hl+), a
+	xor	a, a
+	ld	(hl-), a
+	ld	a,	(hl+)
+	ld	h, (hl)
+	ld	l, a
+	add	hl, bc
+	ld	c, l
+	ld	b, h
+	ldhl	sp,	#17
+	ld	a,	(hl+)
+	ld	h, (hl)
+	ld	l, a
+	add	hl, bc
+	ld	c, l
+	ld	b, h
+	ld	a, (bc)
+	ld	c, a
+	or	a, a
+	jr	Z, 00108$
+	ldhl	sp,	#24
+	ld	a, (hl)
+	sub	a, #0x0f
+	jr	NC, 00108$
+;src/states/inventory_state.c:89: if (desc[start + len] == ' ')
+	ld	a, c
+	sub	a, #0x20
+	jr	NZ, 00104$
+;src/states/inventory_state.c:90: last_space = len;
+	ld	a, (hl)
+	ldhl	sp,	#19
+	ld	(hl), a
+00104$:
+;src/states/inventory_state.c:91: len++;
+	ldhl	sp,	#24
+	inc	(hl)
+	jr	00106$
+00108$:
+;src/states/inventory_state.c:95: if (desc[start + len] == '\0') {
+	ld	a, c
+	or	a, a
+	jr	NZ, 00113$
+;src/states/inventory_state.c:96: strncpy(line_buffer, &desc[start], len);
+	ldhl	sp,	#20
+	ld	c, (hl)
+	ld	b, #0x00
 	push	bc
-	ld	e, #0x0e
+	ld	c, e
+	ld	b, d
+	ld	hl, #2
+	add	hl, sp
+	ld	e, l
+	ld	d, h
+	call	_strncpy
+;src/states/inventory_state.c:97: line_buffer[len] = '\0';
+	push	hl
+	ld	hl, #2
+	add	hl, sp
+	ld	e, l
+	ld	d, h
+	pop	hl
+	ldhl	sp,	#24
+	ld	l, (hl)
+	ld	h, #0x00
+	add	hl, de
+	ld	c, l
+	ld	b, h
+	xor	a, a
+	ld	(bc), a
+;src/states/inventory_state.c:98: start += len;
+	ldhl	sp,	#22
+	ld	a, (hl+)
+	inc	hl
+	add	a, (hl)
+	dec	hl
+	dec	hl
+	ld	(hl), a
+	jr	00114$
+00113$:
+;src/states/inventory_state.c:104: start += (last_space + 1);
+	ldhl	sp,	#22
+	ld	a, (hl+)
+	inc	hl
+	ld	(hl), a
+;src/states/inventory_state.c:101: if (last_space > 0) {
+	ldhl	sp,	#19
+	ld	a, (hl)
+	or	a, a
+	jr	Z, 00110$
+;src/states/inventory_state.c:102: strncpy(line_buffer, &desc[start], last_space);
+	ld	c, (hl)
+	ld	b, #0x00
+	push	bc
+	ld	c, e
+	ld	b, d
+	ld	hl, #2
+	add	hl, sp
+	ld	e, l
+	ld	d, h
+	call	_strncpy
+;src/states/inventory_state.c:103: line_buffer[last_space] = '\0';
+	push	hl
+	ld	hl, #2
+	add	hl, sp
+	ld	e, l
+	ld	d, h
+	pop	hl
+	ldhl	sp,	#19
+	ld	l, (hl)
+	ld	h, #0x00
+	add	hl, de
+	ld	c, l
+	ld	b, h
+	xor	a, a
+	ld	(bc), a
+;src/states/inventory_state.c:104: start += (last_space + 1);
+	ldhl	sp,	#19
+	ld	a, (hl)
+	inc	a
+	ldhl	sp,	#24
+	add	a, (hl)
+	dec	hl
+	dec	hl
+	ld	(hl), a
+	jr	00114$
+00110$:
+;src/states/inventory_state.c:107: strncpy(line_buffer, &desc[start], 15);
+	ld	bc, #0x000f
+	push	bc
+	ld	c, e
+	ld	b, d
+	ld	hl, #2
+	add	hl, sp
+	ld	e, l
+	ld	d, h
+	call	_strncpy
+;src/states/inventory_state.c:108: line_buffer[15] = '\0';
+	ldhl	sp,	#15
+	ld	(hl), #0x00
+;src/states/inventory_state.c:109: start += 15;
+	ldhl	sp,	#24
+	ld	a, (hl-)
+	dec	hl
+	add	a, #0x0f
+	ld	(hl), a
+00114$:
+;src/states/inventory_state.c:112: draw_text(3, 14 + line, line_buffer);
+	ldhl	sp,	#23
+	ld	a, (hl)
+	add	a, #0x0e
+	ld	e, a
+	ld	hl, #0
+	add	hl, sp
+	push	hl
 	ld	a, #0x03
 	call	_draw_text
-00105$:
-;src/states/inventory_state.c:80: draw_text(1, 17, "(B) VOLVER");
+;src/states/inventory_state.c:113: line++;
+	ldhl	sp,	#23
+	inc	(hl)
+	jp	00116$
+00121$:
+;src/states/inventory_state.c:117: draw_text(1, 17, "(B) VOLVER");
 	ld	de, #___str_4
 	push	de
 	ld	e, #0x11
 	ld	a, #0x01
 	call	_draw_text
-;src/states/inventory_state.c:81: }
+;src/states/inventory_state.c:118: }
+	add	sp, #25
 	ret
 ___str_0:
 	.ascii "INVENTARIO"
@@ -536,14 +738,14 @@ ___str_3:
 ___str_4:
 	.ascii "(B) VOLVER"
 	.db 0x00
-;src/states/inventory_state.c:83: void inventory_state_init(void) {
+;src/states/inventory_state.c:120: void inventory_state_init(void) {
 ;	---------------------------------
 ; Function inventory_state_init
 ; ---------------------------------
 _inventory_state_init::
-;src/states/inventory_state.c:84: DISPLAY_OFF;
+;src/states/inventory_state.c:121: DISPLAY_OFF;
 	call	_display_off
-;src/states/inventory_state.c:85: BGP_REG = 0xE4;
+;src/states/inventory_state.c:122: BGP_REG = 0xE4;
 	ld	a, #0xe4
 	ldh	(_BGP_REG + 0), a
 ;./gbdk/include/gb/gb.h:1461: SCX_REG=x, SCY_REG=y;
@@ -551,47 +753,47 @@ _inventory_state_init::
 	ldh	(_SCX_REG + 0), a
 	xor	a, a
 	ldh	(_SCY_REG + 0), a
-;src/states/inventory_state.c:89: set_bkg_data(128, 39, font_data);
+;src/states/inventory_state.c:126: set_bkg_data(128, 39, font_data);
 	ld	de, #_font_data
 	push	de
 	ld	hl, #0x2780
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4
-;src/states/inventory_state.c:91: selection = 0;
+;src/states/inventory_state.c:128: selection = 0;
 	xor	a, a
 	ld	(#_selection),a
-;src/states/inventory_state.c:92: inventory_draw();
+;src/states/inventory_state.c:129: inventory_draw();
 	call	_inventory_draw
-;src/states/inventory_state.c:94: HIDE_SPRITES;
+;src/states/inventory_state.c:131: HIDE_SPRITES;
 	ldh	a, (_LCDC_REG + 0)
 	and	a, #0xfd
 	ldh	(_LCDC_REG + 0), a
-;src/states/inventory_state.c:95: SHOW_BKG;
+;src/states/inventory_state.c:132: SHOW_BKG;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x01
 	ldh	(_LCDC_REG + 0), a
-;src/states/inventory_state.c:96: DISPLAY_ON;
+;src/states/inventory_state.c:133: DISPLAY_ON;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x80
 	ldh	(_LCDC_REG + 0), a
-;src/states/inventory_state.c:97: }
+;src/states/inventory_state.c:134: }
 	ret
-;src/states/inventory_state.c:99: void inventory_state_update(void) {
+;src/states/inventory_state.c:136: void inventory_state_update(void) {
 ;	---------------------------------
 ; Function inventory_state_update
 ; ---------------------------------
 _inventory_state_update::
-;src/states/inventory_state.c:100: if (inventory_count > 0) {
+;src/states/inventory_state.c:137: if (inventory_count > 0) {
 	ld	a, (#_inventory_count)
 	or	a, a
 	jr	Z, 00110$
-;src/states/inventory_state.c:101: if (input_pressed(J_DOWN)) {
+;src/states/inventory_state.c:138: if (input_pressed(J_DOWN)) {
 	ld	a, #0x08
 	call	_input_pressed
 	or	a, a
 	jr	Z, 00104$
-;src/states/inventory_state.c:102: if (selection < inventory_count - 1) {
+;src/states/inventory_state.c:139: if (selection < inventory_count - 1) {
 	ld	a, (_inventory_count)
 	ld	b, #0x00
 	ld	c, a
@@ -617,36 +819,36 @@ _inventory_state_update::
 	scf
 00158$:
 	jr	NC, 00104$
-;src/states/inventory_state.c:103: selection++;
+;src/states/inventory_state.c:140: selection++;
 	ld	hl, #_selection
 	inc	(hl)
-;src/states/inventory_state.c:104: inventory_draw();
+;src/states/inventory_state.c:141: inventory_draw();
 	call	_inventory_draw
 00104$:
-;src/states/inventory_state.c:107: if (input_pressed(J_UP)) {
+;src/states/inventory_state.c:144: if (input_pressed(J_UP)) {
 	ld	a, #0x04
 	call	_input_pressed
 	or	a, a
 	jr	Z, 00110$
-;src/states/inventory_state.c:108: if (selection > 0) {
+;src/states/inventory_state.c:145: if (selection > 0) {
 	ld	hl, #_selection
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00110$
-;src/states/inventory_state.c:109: selection--;
+;src/states/inventory_state.c:146: selection--;
 	dec	(hl)
-;src/states/inventory_state.c:110: inventory_draw();
+;src/states/inventory_state.c:147: inventory_draw();
 	call	_inventory_draw
 00110$:
-;src/states/inventory_state.c:115: if (input_pressed(J_B)) {
+;src/states/inventory_state.c:152: if (input_pressed(J_B)) {
 	ld	a, #0x20
 	call	_input_pressed
 	or	a, a
 	ret	Z
-;src/states/inventory_state.c:116: game_state = STATE_GAME;
+;src/states/inventory_state.c:153: game_state = STATE_GAME;
 	ld	hl, #_game_state
 	ld	(hl), #0x02
-;src/states/inventory_state.c:118: }
+;src/states/inventory_state.c:155: }
 	ret
 	.area _CODE
 	.area _INITIALIZER
