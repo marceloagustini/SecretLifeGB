@@ -47,6 +47,9 @@ uint8_t player_dir = 0; // 0:D, 1:U, 2:L, 3:R
 uint8_t anim_frame = 0, anim_timer = 0;
 uint16_t camera_x = 0, camera_y = 0;
 
+// Quest state
+// Quest state (removed has_key global, now in inventory)
+
 // Env animation
 uint8_t env_anim_timer = 0, env_anim_frame = 0;
 
@@ -60,6 +63,19 @@ uint8_t get_tile_at(uint16_t x, uint16_t y) {
   if (tx >= current_map->w || ty >= current_map->h)
     return 0;
   return current_map->tiles[ty * current_map->w + tx];
+}
+
+void switch_map(map_info_t *new_map, uint16_t new_x, uint16_t new_y) {
+  fade_out();
+  player_x = new_x;
+  player_y = new_y;
+  load_map(new_map);
+  update_camera();
+  uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+  for (int i = 0; i < 4; i++)
+    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
+  update_player_sprite();
+  fade_in();
 }
 
 void update_camera() {
@@ -77,6 +93,27 @@ void update_camera() {
   if (camera_y > h - SCREEN_HEIGHT)
     camera_y = (h > SCREEN_HEIGHT) ? (h - SCREEN_HEIGHT) : 0;
   move_bkg(camera_x, camera_y);
+}
+
+void load_map(map_info_t *m) {
+  fade_out();
+  HIDE_BKG;
+  current_map = m;
+  for (int i = 4; i < 40; i++)
+    move_sprite(i, 0, 0); // Hide map sprites
+
+  if (m == &house_map_info)
+    fill_bkg_rect(0, 0, 32, 32, 26);
+  set_bkg_tiles(0, 0, m->w, m->h, m->tiles);
+  update_camera();
+
+  // Sync player sprites immediately
+  uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+  for (int i = 0; i < 4; i++)
+    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
+
+  SHOW_BKG;
+  fade_in();
 }
 
 void update_player_sprite() {
@@ -102,34 +139,6 @@ void update_player_sprite() {
   }
 }
 
-void load_map(map_info_t *m) {
-  HIDE_BKG;
-  current_map = m;
-  for (int i = 4; i < 40; i++)
-    move_sprite(i, 0, 0); // Hide map sprites
-
-  if (m == &house_map_info)
-    fill_bkg_rect(0, 0, 32, 32, 26);
-  set_bkg_tiles(0, 0, m->w, m->h, m->tiles);
-  update_camera();
-
-  // Sync player sprites immediately
-  uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
-  for (int i = 0; i < 4; i++)
-    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
-
-  SHOW_BKG;
-}
-
-void switch_map(map_info_t *new_map, uint16_t new_x, uint16_t new_y) {
-  fade_out();
-  player_x = new_x;
-  player_y = new_y;
-  load_map(new_map);
-  update_player_sprite();
-  fade_in();
-}
-
 uint8_t is_solid(uint16_t x, uint16_t y) {
   uint8_t tid = get_tile_at(x, y);
   for (int i = 0; i < 16; i++) {
@@ -142,15 +151,14 @@ uint8_t is_solid(uint16_t x, uint16_t y) {
 }
 
 uint8_t can_move(uint16_t nx, uint16_t ny) {
-  if (nx < 4 || ny < 4 || nx > (current_map->w * 8 - 12) ||
-      ny > (current_map->h * 8 - 12))
+  uint16_t w = current_map->w * 8, h = current_map->h * 8;
+  if (nx < 4 || nx > w - 20 || ny < 8 || ny > h - 20)
+    return 0;
+  if (is_solid(nx + 4, ny + 8) || is_solid(nx + 11, ny + 8) ||
+      is_solid(nx + 4, ny + 15) || is_solid(nx + 11, ny + 15))
     return 0;
 
-  if (is_solid(nx + 4, ny + 8) || is_solid(nx + 12, ny + 8) ||
-      is_solid(nx + 4, ny + 15) || is_solid(nx + 12, ny + 15)) {
-    return 0;
-  }
-
+  // NPC Collisions
   for (int i = 0; i < current_map->num_entities; i++) {
     entity_t *e = &current_map->entities[i];
     if (!e->active)
@@ -176,8 +184,15 @@ void game_init(void) {
 
   if (game_ready) {
     // Coming back from Inventory - Don't reset state
+    // Just sync display registers without full refresh if possible,
+    // or just let it load without DISPLAY_OFF/ON
     load_map(current_map);
+    update_camera();
+    uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+    for (int i = 0; i < 4; i++)
+      move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
     update_player_sprite();
+
     BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
     SHOW_SPRITES;
     DISPLAY_ON;
@@ -221,6 +236,12 @@ void game_init(void) {
   level2_map_info.num_entities = 0;
   uint8_t l2_pass[] = {0, 2, 3, 4, 255};
   memcpy(level2_map_info.solid_tiles, l2_pass, 5);
+
+  current_map = &world_map_info;
+  update_camera();
+  uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+  for (int i = 0; i < 4; i++)
+    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
 
   load_map(&world_map_info);
 
@@ -361,19 +382,31 @@ void game_update(void) {
         player_x = 124;
         player_y = 230;
         player_dir = 1;
-        switch_map(&level2_map_info, 128, 240);
+        load_map(&level2_map_info);
+        return;
       } else {
-        text_dialogue("EL PORTON ESTA\nCERRADO.");
+        text_dialogue("ESTA CERRADO.\nNECESITAS UNA LLAVE.");
       }
     }
   }
 
-  if ((env_anim_timer % 32) == 0) {
-    env_anim_frame = !env_anim_frame;
-    set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
-    set_bkg_data(4, 4, env_anim_frame ? &tiles_anim_data[16] : &tiles_data[64]);
-    set_bkg_data(12, 1,
-                 env_anim_frame ? &tiles_anim_data[64] : &tiles_data[192]);
+  if (current_map == &world_map_info) {
+    if (++env_anim_timer >= 40) {
+      env_anim_timer = 0;
+      env_anim_frame = !env_anim_frame;
+      if (env_anim_frame) {
+        set_bkg_data(2, 1, &tiles_anim_data[0]);
+        set_bkg_data(4, 1, &tiles_anim_data[16]);
+        set_bkg_data(5, 1, &tiles_anim_data[32]);
+        set_bkg_data(6, 1, &tiles_anim_data[48]);
+        set_bkg_data(12, 1, &tiles_anim_data[64]);
+      } else {
+        set_bkg_data(2, 1, &tiles_data[32]);
+        set_bkg_data(4, 1, &tiles_data[64]);
+        set_bkg_data(5, 1, &tiles_data[80]);
+        set_bkg_data(6, 1, &tiles_data[96]);
+        set_bkg_data(12, 1, &tiles_data[192]);
+      }
+    }
   }
-  env_anim_timer++;
 }
