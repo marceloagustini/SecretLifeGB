@@ -50,3 +50,21 @@ python3 tools/gen_tiles.py > src/tiles_data.c
 
 > [!NOTE]
 > Estas herramientas están optimizadas para el flujo de trabajo de este proyecto específico, generando arrays `unsigned char` listos para ser usados con funciones de GBDK como `set_bkg_data` o `set_sprite_data`.
+
+## Paso a paso para agregar un sprite
+
+Dibuja el Sprite: Crea un PNG de 16x16 píxeles usando solo 4 colores (Blanco, Gris Claro, Gris Oscuro, Negro).
+Convierte la Imagen: Usa la herramienta incluida en el proyecto: python3 tools/img_to_c.py tu_imagen.png nombre_variable
+Agrega los Datos: Copia el resultado en 
+res/assets.c
+ y decláralo en 
+res/assets.h
+.
+Carga en VRAM: En 
+game_init
+ (en 
+src/states/game.c
+), usa set_sprite_data para cargar tus nuevos gráficos.
+Crea la Entidad: Usa el índice donde cargaste el sprite al crear tu entidad en 
+src/data/map_config.c
+.

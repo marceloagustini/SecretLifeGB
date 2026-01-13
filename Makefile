@@ -34,7 +34,7 @@ endif
 BINS	= game.gb
 
 # Source files
-CSOURCES   := $(wildcard src/*.c) $(wildcard src/states/*.c) $(wildcard src/utils/*.c) $(wildcard res/*.c)
+CSOURCES   := $(wildcard src/*.c) $(wildcard src/states/*.c) $(wildcard src/utils/*.c) $(wildcard src/data/*.c) $(wildcard res/*.c)
 ASMSOURCES := $(wildcard src/*.s)
 
 # Object files (automatically derived from source files)

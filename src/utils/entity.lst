@@ -1,0 +1,837 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.1 #15267 (Mac OS X ppc)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module entity
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _entity_init
+                                     11 	.globl _ai_npc_static
+                                     12 	.globl _ai_enemy_random_walk
+                                     13 	.globl _entity_update_all
+                                     14 	.globl _entity_render_all
+                                     15 ;--------------------------------------------------------
+                                     16 ; special function registers
+                                     17 ;--------------------------------------------------------
+                                     18 	.area _HRAM
+                                     19 ;--------------------------------------------------------
+                                     20 ; ram data
+                                     21 ;--------------------------------------------------------
+                                     22 	.area _DATA
+                                     23 ;--------------------------------------------------------
+                                     24 ; ram data
+                                     25 ;--------------------------------------------------------
+                                     26 	.area _INITIALIZED
+                                     27 ;--------------------------------------------------------
+                                     28 ; absolute external ram data
+                                     29 ;--------------------------------------------------------
+                                     30 	.area _DABS (ABS)
+                                     31 ;--------------------------------------------------------
+                                     32 ; global & static initialisations
+                                     33 ;--------------------------------------------------------
+                                     34 	.area _HOME
+                                     35 	.area _GSINIT
+                                     36 	.area _GSFINAL
+                                     37 	.area _GSINIT
+                                     38 ;--------------------------------------------------------
+                                     39 ; Home
+                                     40 ;--------------------------------------------------------
+                                     41 	.area _HOME
+                                     42 	.area _HOME
+                                     43 ;--------------------------------------------------------
+                                     44 ; code
+                                     45 ;--------------------------------------------------------
+                                     46 	.area _CODE
+                                     47 ;src/utils/entity.c:5: void entity_init(entity_t *e, ent_type_t type, uint16_t x, uint16_t y,
+                                     48 ;	---------------------------------
+                                     49 ; Function entity_init
+                                     50 ; ---------------------------------
+    00000000                         51 _entity_init::
+    00000000 4F               [ 4]   52 	ld	c, a
+                                     53 ;src/utils/entity.c:7: e->type = type;
+    00000001 21 04 00         [12]   54 	ld	hl, #0x0004
+    00000004 19               [ 8]   55 	add	hl, de
+    00000005 71               [ 8]   56 	ld	(hl), c
+                                     57 ;src/utils/entity.c:8: e->x = x;
+    00000006 F8 02            [12]   58 	ldhl	sp,	#2
+    00000008 2A               [ 8]   59 	ld	a, (hl+)
+    00000009 12               [ 8]   60 	ld	(de), a
+    0000000A 13               [ 8]   61 	inc	de
+    0000000B 7E               [ 8]   62 	ld	a, (hl)
+    0000000C 12               [ 8]   63 	ld	(de), a
+    0000000D 1B               [ 8]   64 	dec	de
+                                     65 ;src/utils/entity.c:9: e->y = y;
+    0000000E 6B               [ 4]   66 	ld	l, e
+    0000000F 62               [ 4]   67 	ld	h, d
+    00000010 23               [ 8]   68 	inc	hl
+    00000011 23               [ 8]   69 	inc	hl
+    00000012 E5               [16]   70 	push	hl
+    00000013 F8 06            [12]   71 	ldhl	sp,	#6
+    00000015 7E               [ 8]   72 	ld	a, (hl)
+    00000016 E1               [12]   73 	pop	hl
+    00000017 22               [ 8]   74 	ld	(hl+), a
+    00000018 E5               [16]   75 	push	hl
+    00000019 F8 07            [12]   76 	ldhl	sp,	#7
+    0000001B 7E               [ 8]   77 	ld	a, (hl)
+    0000001C E1               [12]   78 	pop	hl
+    0000001D 77               [ 8]   79 	ld	(hl), a
+                                     80 ;src/utils/entity.c:10: e->sprite_base = sprite_base;
+    0000001E 21 07 00         [12]   81 	ld	hl, #0x0007
+    00000021 19               [ 8]   82 	add	hl, de
+    00000022 E5               [16]   83 	push	hl
+    00000023 F8 08            [12]   84 	ldhl	sp,	#8
+    00000025 7E               [ 8]   85 	ld	a, (hl)
+    00000026 E1               [12]   86 	pop	hl
+    00000027 77               [ 8]   87 	ld	(hl), a
+                                     88 ;src/utils/entity.c:11: e->dialogue = dialogue;
+    00000028 21 05 00         [12]   89 	ld	hl, #0x0005
+    0000002B 19               [ 8]   90 	add	hl, de
+    0000002C E5               [16]   91 	push	hl
+    0000002D F8 09            [12]   92 	ldhl	sp,	#9
+    0000002F 7E               [ 8]   93 	ld	a, (hl)
+    00000030 E1               [12]   94 	pop	hl
+    00000031 22               [ 8]   95 	ld	(hl+), a
+    00000032 E5               [16]   96 	push	hl
+    00000033 F8 0A            [12]   97 	ldhl	sp,	#10
+    00000035 7E               [ 8]   98 	ld	a, (hl)
+    00000036 E1               [12]   99 	pop	hl
+    00000037 77               [ 8]  100 	ld	(hl), a
+                                    101 ;src/utils/entity.c:12: e->active = 1;
+    00000038 21 08 00         [12]  102 	ld	hl, #0x0008
+    0000003B 19               [ 8]  103 	add	hl, de
+    0000003C 36 01            [12]  104 	ld	(hl), #0x01
+                                    105 ;src/utils/entity.c:13: e->dir = 0;
+    0000003E 21 09 00         [12]  106 	ld	hl, #0x0009
+    00000041 19               [ 8]  107 	add	hl, de
+    00000042 36 00            [12]  108 	ld	(hl), #0x00
+                                    109 ;src/utils/entity.c:14: e->anim_frame = 0;
+    00000044 21 0A 00         [12]  110 	ld	hl, #0x000a
+    00000047 19               [ 8]  111 	add	hl, de
+    00000048 36 00            [12]  112 	ld	(hl), #0x00
+                                    113 ;src/utils/entity.c:15: e->anim_timer = 0;
+    0000004A 21 0B 00         [12]  114 	ld	hl, #0x000b
+    0000004D 19               [ 8]  115 	add	hl, de
+    0000004E 36 00            [12]  116 	ld	(hl), #0x00
+                                    117 ;src/utils/entity.c:16: e->move_timer = 0;
+    00000050 21 0C 00         [12]  118 	ld	hl, #0x000c
+    00000053 19               [ 8]  119 	add	hl, de
+    00000054 36 00            [12]  120 	ld	(hl), #0x00
+                                    121 ;src/utils/entity.c:19: e->update = ai_enemy_random_walk;
+    00000056 21 0D 00         [12]  122 	ld	hl, #0x000d
+    00000059 19               [ 8]  123 	add	hl, de
+                                    124 ;src/utils/entity.c:18: if (type == ENT_ENEMY) {
+    0000005A 79               [ 4]  125 	ld	a, c
+    0000005B D6 03            [ 8]  126 	sub	a, #0x03
+    0000005D 20 07            [12]  127 	jr	NZ, 00102$
+                                    128 ;src/utils/entity.c:19: e->update = ai_enemy_random_walk;
+    0000005F 36r70            [12]  129 	ld	(hl), #<(_ai_enemy_random_walk)
+    00000061 23               [ 8]  130 	inc	hl
+    00000062 36s00            [12]  131 	ld	(hl), #>(_ai_enemy_random_walk)
+    00000064 18 05            [12]  132 	jr	00104$
+    00000066                        133 00102$:
+                                    134 ;src/utils/entity.c:21: e->update = ai_npc_static;
+    00000066 36r6F            [12]  135 	ld	(hl), #<(_ai_npc_static)
+    00000068 23               [ 8]  136 	inc	hl
+    00000069 36s00            [12]  137 	ld	(hl), #>(_ai_npc_static)
+    0000006B                        138 00104$:
+                                    139 ;src/utils/entity.c:23: }
+    0000006B E1               [12]  140 	pop	hl
+    0000006C E8 07            [16]  141 	add	sp, #7
+    0000006E E9               [ 4]  142 	jp	(hl)
+                                    143 ;src/utils/entity.c:25: void ai_npc_static(entity_t *self) {
+                                    144 ;	---------------------------------
+                                    145 ; Function ai_npc_static
+                                    146 ; ---------------------------------
+    0000006F                        147 _ai_npc_static::
+                                    148 ;src/utils/entity.c:28: }
+    0000006F C9               [16]  149 	ret
+                                    150 ;src/utils/entity.c:30: void ai_enemy_random_walk(entity_t *self) {
+                                    151 ;	---------------------------------
+                                    152 ; Function ai_enemy_random_walk
+                                    153 ; ---------------------------------
+    00000070                        154 _ai_enemy_random_walk::
+    00000070 E8 FC            [16]  155 	add	sp, #-4
+    00000072 F8 02            [12]  156 	ldhl	sp,	#2
+    00000074 7B               [ 4]  157 	ld	a, e
+    00000075 22               [ 8]  158 	ld	(hl+), a
+                                    159 ;src/utils/entity.c:31: if (self->move_timer > 0) {
+    00000076 7A               [ 4]  160 	ld	a, d
+    00000077 32               [ 8]  161 	ld	(hl-), a
+    00000078 2A               [ 8]  162 	ld	a, (hl+)
+    00000079 5F               [ 4]  163 	ld	e, a
+    0000007A 56               [ 8]  164 	ld	d, (hl)
+    0000007B 21 0C 00         [12]  165 	ld	hl, #0x000c
+    0000007E 19               [ 8]  166 	add	hl, de
+    0000007F 33               [ 8]  167 	inc	sp
+    00000080 33               [ 8]  168 	inc	sp
+    00000081 5D               [ 4]  169 	ld	e, l
+    00000082 54               [ 4]  170 	ld	d, h
+    00000083 D5               [16]  171 	push	de
+    00000084 1A               [ 8]  172 	ld	a, (de)
+    00000085 4F               [ 4]  173 	ld	c, a
+    00000086 B7               [ 4]  174 	or	a, a
+    00000087 CAr4Fr01         [16]  175 	jp	Z, 00130$
+                                    176 ;src/utils/entity.c:32: self->move_timer--;
+    0000008A 0D               [ 4]  177 	dec	c
+    0000008B E1               [12]  178 	pop	hl
+    0000008C E5               [16]  179 	push	hl
+    0000008D 71               [ 8]  180 	ld	(hl), c
+                                    181 ;src/utils/entity.c:33: if (self->dir == 0) { // Down
+    0000008E F8 02            [12]  182 	ldhl	sp,#2
+    00000090 2A               [ 8]  183 	ld	a, (hl+)
+    00000091 5F               [ 4]  184 	ld	e, a
+    00000092 56               [ 8]  185 	ld	d, (hl)
+    00000093 21 09 00         [12]  186 	ld	hl, #0x0009
+    00000096 19               [ 8]  187 	add	hl, de
+    00000097 4D               [ 4]  188 	ld	c, l
+    00000098 44               [ 4]  189 	ld	b, h
+    00000099 0A               [ 8]  190 	ld	a, (bc)
+                                    191 ;src/utils/entity.c:34: if (self->y < 240)
+    0000009A F8 02            [12]  192 	ldhl	sp,	#2
+    0000009C 4E               [ 8]  193 	ld	c, (hl)
+    0000009D 23               [ 8]  194 	inc	hl
+    0000009E 46               [ 8]  195 	ld	b, (hl)
+    0000009F 03               [ 8]  196 	inc	bc
+    000000A0 03               [ 8]  197 	inc	bc
+                                    198 ;src/utils/entity.c:33: if (self->dir == 0) { // Down
+    000000A1 B7               [ 4]  199 	or	a, a
+    000000A2 20 1D            [12]  200 	jr	NZ, 00122$
+                                    201 ;src/utils/entity.c:34: if (self->y < 240)
+    000000A4 69               [ 4]  202 	ld	l, c
+    000000A5 60               [ 4]  203 	ld	h, b
+    000000A6 2A               [ 8]  204 	ld	a,	(hl+)
+    000000A7 66               [ 8]  205 	ld	h, (hl)
+    000000A8 6F               [ 4]  206 	ld	l, a
+    000000A9 5D               [ 4]  207 	ld	e, l
+    000000AA 54               [ 4]  208 	ld	d, h
+    000000AB 7B               [ 4]  209 	ld	a, e
+    000000AC D6 F0            [ 8]  210 	sub	a, #0xf0
+    000000AE 7A               [ 4]  211 	ld	a, d
+    000000AF DE 00            [ 8]  212 	sbc	a, #0x00
+    000000B1 30 08            [12]  213 	jr	NC, 00102$
+                                    214 ;src/utils/entity.c:35: self->y++;
+    000000B3 23               [ 8]  215 	inc	hl
+    000000B4 7D               [ 4]  216 	ld	a, l
+    000000B5 02               [ 8]  217 	ld	(bc), a
+    000000B6 03               [ 8]  218 	inc	bc
+    000000B7 7C               [ 4]  219 	ld	a, h
+    000000B8 02               [ 8]  220 	ld	(bc), a
+    000000B9 18 6C            [12]  221 	jr	00123$
+    000000BB                        222 00102$:
+                                    223 ;src/utils/entity.c:37: self->move_timer = 0;
+    000000BB E1               [12]  224 	pop	hl
+    000000BC 36 00            [12]  225 	ld	(hl), #0x00
+    000000BE E5               [16]  226 	push	hl
+    000000BF 18 66            [12]  227 	jr	00123$
+    000000C1                        228 00122$:
+                                    229 ;src/utils/entity.c:38: } else if (self->dir == 1) { // Up
+    000000C1 FE 01            [ 8]  230 	cp	a, #0x01
+    000000C3 20 1D            [12]  231 	jr	NZ, 00119$
+                                    232 ;src/utils/entity.c:39: if (self->y > 16)
+    000000C5 69               [ 4]  233 	ld	l, c
+    000000C6 60               [ 4]  234 	ld	h, b
+    000000C7 2A               [ 8]  235 	ld	a,	(hl+)
+    000000C8 66               [ 8]  236 	ld	h, (hl)
+    000000C9 6F               [ 4]  237 	ld	l, a
+    000000CA 5D               [ 4]  238 	ld	e, l
+    000000CB 54               [ 4]  239 	ld	d, h
+    000000CC 3E 10            [ 8]  240 	ld	a, #0x10
+    000000CE BB               [ 4]  241 	cp	a, e
+    000000CF 3E 00            [ 8]  242 	ld	a, #0x00
+    000000D1 9A               [ 4]  243 	sbc	a, d
+    000000D2 30 08            [12]  244 	jr	NC, 00105$
+                                    245 ;src/utils/entity.c:40: self->y--;
+    000000D4 2B               [ 8]  246 	dec	hl
+    000000D5 7D               [ 4]  247 	ld	a, l
+    000000D6 02               [ 8]  248 	ld	(bc), a
+    000000D7 03               [ 8]  249 	inc	bc
+    000000D8 7C               [ 4]  250 	ld	a, h
+    000000D9 02               [ 8]  251 	ld	(bc), a
+    000000DA 18 4B            [12]  252 	jr	00123$
+    000000DC                        253 00105$:
+                                    254 ;src/utils/entity.c:42: self->move_timer = 0;
+    000000DC E1               [12]  255 	pop	hl
+    000000DD 36 00            [12]  256 	ld	(hl), #0x00
+    000000DF E5               [16]  257 	push	hl
+    000000E0 18 45            [12]  258 	jr	00123$
+    000000E2                        259 00119$:
+                                    260 ;src/utils/entity.c:44: if (self->x > 16)
+    000000E2 F8 02            [12]  261 	ldhl	sp,	#2
+    000000E4 4E               [ 8]  262 	ld	c, (hl)
+    000000E5 23               [ 8]  263 	inc	hl
+    000000E6 46               [ 8]  264 	ld	b, (hl)
+                                    265 ;src/utils/entity.c:43: } else if (self->dir == 2) { // Left
+    000000E7 FE 02            [ 8]  266 	cp	a, #0x02
+    000000E9 20 1D            [12]  267 	jr	NZ, 00116$
+                                    268 ;src/utils/entity.c:44: if (self->x > 16)
+    000000EB 69               [ 4]  269 	ld	l, c
+    000000EC 60               [ 4]  270 	ld	h, b
+    000000ED 2A               [ 8]  271 	ld	a,	(hl+)
+    000000EE 66               [ 8]  272 	ld	h, (hl)
+    000000EF 6F               [ 4]  273 	ld	l, a
+    000000F0 5D               [ 4]  274 	ld	e, l
+    000000F1 54               [ 4]  275 	ld	d, h
+    000000F2 3E 10            [ 8]  276 	ld	a, #0x10
+    000000F4 BB               [ 4]  277 	cp	a, e
+    000000F5 3E 00            [ 8]  278 	ld	a, #0x00
+    000000F7 9A               [ 4]  279 	sbc	a, d
+    000000F8 30 08            [12]  280 	jr	NC, 00108$
+                                    281 ;src/utils/entity.c:45: self->x--;
+    000000FA 2B               [ 8]  282 	dec	hl
+    000000FB 7D               [ 4]  283 	ld	a, l
+    000000FC 02               [ 8]  284 	ld	(bc), a
+    000000FD 03               [ 8]  285 	inc	bc
+    000000FE 7C               [ 4]  286 	ld	a, h
+    000000FF 02               [ 8]  287 	ld	(bc), a
+    00000100 18 25            [12]  288 	jr	00123$
+    00000102                        289 00108$:
+                                    290 ;src/utils/entity.c:47: self->move_timer = 0;
+    00000102 E1               [12]  291 	pop	hl
+    00000103 36 00            [12]  292 	ld	(hl), #0x00
+    00000105 E5               [16]  293 	push	hl
+    00000106 18 1F            [12]  294 	jr	00123$
+    00000108                        295 00116$:
+                                    296 ;src/utils/entity.c:48: } else if (self->dir == 3) { // Right
+    00000108 D6 03            [ 8]  297 	sub	a, #0x03
+    0000010A 20 1B            [12]  298 	jr	NZ, 00123$
+                                    299 ;src/utils/entity.c:49: if (self->x < 240)
+    0000010C 69               [ 4]  300 	ld	l, c
+    0000010D 60               [ 4]  301 	ld	h, b
+    0000010E 2A               [ 8]  302 	ld	a,	(hl+)
+    0000010F 66               [ 8]  303 	ld	h, (hl)
+    00000110 6F               [ 4]  304 	ld	l, a
+    00000111 5D               [ 4]  305 	ld	e, l
+    00000112 54               [ 4]  306 	ld	d, h
+    00000113 7B               [ 4]  307 	ld	a, e
+    00000114 D6 F0            [ 8]  308 	sub	a, #0xf0
+    00000116 7A               [ 4]  309 	ld	a, d
+    00000117 DE 00            [ 8]  310 	sbc	a, #0x00
+    00000119 30 08            [12]  311 	jr	NC, 00111$
+                                    312 ;src/utils/entity.c:50: self->x++;
+    0000011B 23               [ 8]  313 	inc	hl
+    0000011C 7D               [ 4]  314 	ld	a, l
+    0000011D 02               [ 8]  315 	ld	(bc), a
+    0000011E 03               [ 8]  316 	inc	bc
+    0000011F 7C               [ 4]  317 	ld	a, h
+    00000120 02               [ 8]  318 	ld	(bc), a
+    00000121 18 04            [12]  319 	jr	00123$
+    00000123                        320 00111$:
+                                    321 ;src/utils/entity.c:52: self->move_timer = 0;
+    00000123 E1               [12]  322 	pop	hl
+    00000124 36 00            [12]  323 	ld	(hl), #0x00
+    00000126 E5               [16]  324 	push	hl
+    00000127                        325 00123$:
+                                    326 ;src/utils/entity.c:55: if (++self->anim_timer > 8) {
+    00000127 F8 02            [12]  327 	ldhl	sp,#2
+    00000129 2A               [ 8]  328 	ld	a, (hl+)
+    0000012A 5F               [ 4]  329 	ld	e, a
+    0000012B 56               [ 8]  330 	ld	d, (hl)
+    0000012C 21 0B 00         [12]  331 	ld	hl, #0x000b
+    0000012F 19               [ 8]  332 	add	hl, de
+    00000130 4D               [ 4]  333 	ld	c, l
+    00000131 44               [ 4]  334 	ld	b, h
+    00000132 0A               [ 8]  335 	ld	a, (bc)
+    00000133 3C               [ 4]  336 	inc	a
+    00000134 02               [ 8]  337 	ld	(bc), a
+    00000135 FE 09            [ 8]  338 	cp	a, #0x09
+    00000137 38 3A            [12]  339 	jr	C, 00132$
+                                    340 ;src/utils/entity.c:56: self->anim_frame = !self->anim_frame;
+    00000139 F8 02            [12]  341 	ldhl	sp,#2
+    0000013B 2A               [ 8]  342 	ld	a, (hl+)
+    0000013C 5F               [ 4]  343 	ld	e, a
+    0000013D 56               [ 8]  344 	ld	d, (hl)
+    0000013E 21 0A 00         [12]  345 	ld	hl, #0x000a
+    00000141 19               [ 8]  346 	add	hl, de
+    00000142 5D               [ 4]  347 	ld	e, l
+    00000143 54               [ 4]  348 	ld	d, h
+    00000144 1A               [ 8]  349 	ld	a, (de)
+    00000145 D6 01            [ 8]  350 	sub	a, #0x01
+    00000147 3E 00            [ 8]  351 	ld	a, #0x00
+    00000149 17               [ 4]  352 	rla
+    0000014A 12               [ 8]  353 	ld	(de), a
+                                    354 ;src/utils/entity.c:57: self->anim_timer = 0;
+    0000014B AF               [ 4]  355 	xor	a, a
+    0000014C 02               [ 8]  356 	ld	(bc), a
+    0000014D 18 24            [12]  357 	jr	00132$
+    0000014F                        358 00130$:
+                                    359 ;src/utils/entity.c:61: uint8_t r = DIV_REG & 0x0F;
+    0000014F F0r00            [12]  360 	ldh	a, (_DIV_REG + 0)
+    00000151 E6 0F            [ 8]  361 	and	a, #0x0f
+    00000153 4F               [ 4]  362 	ld	c, a
+                                    363 ;src/utils/entity.c:33: if (self->dir == 0) { // Down
+    00000154 F8 02            [12]  364 	ldhl	sp,#2
+    00000156 2A               [ 8]  365 	ld	a, (hl+)
+    00000157 5F               [ 4]  366 	ld	e, a
+    00000158 56               [ 8]  367 	ld	d, (hl)
+    00000159 21 09 00         [12]  368 	ld	hl, #0x0009
+    0000015C 19               [ 8]  369 	add	hl, de
+    0000015D 5D               [ 4]  370 	ld	e, l
+    0000015E 54               [ 4]  371 	ld	d, h
+                                    372 ;src/utils/entity.c:62: if (r < 4)
+                                    373 ;src/utils/entity.c:63: self->dir = r; // 0=D, 1=U, 2=L, 3=R
+    0000015F 79               [ 4]  374 	ld	a,c
+    00000160 FE 04            [ 8]  375 	cp	a,#0x04
+    00000162 30 03            [12]  376 	jr	NC, 00127$
+    00000164 12               [ 8]  377 	ld	(de), a
+    00000165 18 03            [12]  378 	jr	00128$
+    00000167                        379 00127$:
+                                    380 ;src/utils/entity.c:65: self->dir = -1; // Wait/Idle
+    00000167 3E FF            [ 8]  381 	ld	a, #0xff
+    00000169 12               [ 8]  382 	ld	(de), a
+    0000016A                        383 00128$:
+                                    384 ;src/utils/entity.c:66: self->move_timer = 30 + (DIV_REG & 0x1F);
+    0000016A F0r00            [12]  385 	ldh	a, (_DIV_REG + 0)
+    0000016C E6 1F            [ 8]  386 	and	a, #0x1f
+    0000016E C6 1E            [ 8]  387 	add	a, #0x1e
+    00000170 E1               [12]  388 	pop	hl
+    00000171 E5               [16]  389 	push	hl
+    00000172 77               [ 8]  390 	ld	(hl), a
+    00000173                        391 00132$:
+                                    392 ;src/utils/entity.c:68: }
+    00000173 E8 04            [16]  393 	add	sp, #4
+    00000175 C9               [16]  394 	ret
+                                    395 ;src/utils/entity.c:70: void entity_update_all(entity_t *entities, uint8_t count) {
+                                    396 ;	---------------------------------
+                                    397 ; Function entity_update_all
+                                    398 ; ---------------------------------
+    00000176                        399 _entity_update_all::
+    00000176 E8 F8            [16]  400 	add	sp, #-8
+    00000178 F8 05            [12]  401 	ldhl	sp,	#5
+    0000017A 73               [ 8]  402 	ld	(hl), e
+    0000017B 23               [ 8]  403 	inc	hl
+    0000017C 72               [ 8]  404 	ld	(hl), d
+    0000017D 2B               [ 8]  405 	dec	hl
+    0000017E 2B               [ 8]  406 	dec	hl
+    0000017F 77               [ 8]  407 	ld	(hl), a
+                                    408 ;src/utils/entity.c:71: for (uint8_t i = 0; i < count; i++) {
+    00000180 F8 07            [12]  409 	ldhl	sp,	#7
+    00000182 36 00            [12]  410 	ld	(hl), #0x00
+    00000184                        411 00106$:
+    00000184 F8 07            [12]  412 	ldhl	sp,	#7
+    00000186 7E               [ 8]  413 	ld	a, (hl)
+    00000187 F8 04            [12]  414 	ldhl	sp,	#4
+    00000189 96               [ 8]  415 	sub	a, (hl)
+    0000018A 30 4E            [12]  416 	jr	NC, 00108$
+                                    417 ;src/utils/entity.c:72: if (entities[i].active && entities[i].update) {
+    0000018C F8 07            [12]  418 	ldhl	sp,	#7
+    0000018E 4E               [ 8]  419 	ld	c, (hl)
+    0000018F 06 00            [ 8]  420 	ld	b, #0x00
+    00000191 69               [ 4]  421 	ld	l, c
+    00000192 60               [ 4]  422 	ld	h, b
+    00000193 29               [ 8]  423 	add	hl, hl
+    00000194 09               [ 8]  424 	add	hl, bc
+    00000195 29               [ 8]  425 	add	hl, hl
+    00000196 09               [ 8]  426 	add	hl, bc
+    00000197 29               [ 8]  427 	add	hl, hl
+    00000198 09               [ 8]  428 	add	hl, bc
+    00000199 33               [ 8]  429 	inc	sp
+    0000019A 33               [ 8]  430 	inc	sp
+    0000019B 5D               [ 4]  431 	ld	e, l
+    0000019C 54               [ 4]  432 	ld	d, h
+    0000019D D5               [16]  433 	push	de
+    0000019E F8 05            [12]  434 	ldhl	sp,	#5
+    000001A0 2A               [ 8]  435 	ld	a,	(hl+)
+    000001A1 66               [ 8]  436 	ld	h, (hl)
+    000001A2 6F               [ 4]  437 	ld	l, a
+    000001A3 19               [ 8]  438 	add	hl, de
+    000001A4 E5               [16]  439 	push	hl
+    000001A5 7D               [ 4]  440 	ld	a, l
+    000001A6 F8 04            [12]  441 	ldhl	sp,	#4
+    000001A8 77               [ 8]  442 	ld	(hl), a
+    000001A9 E1               [12]  443 	pop	hl
+    000001AA 7C               [ 4]  444 	ld	a, h
+    000001AB F8 03            [12]  445 	ldhl	sp,	#3
+    000001AD 32               [ 8]  446 	ld	(hl-), a
+    000001AE 2A               [ 8]  447 	ld	a, (hl+)
+    000001AF 5F               [ 4]  448 	ld	e, a
+    000001B0 56               [ 8]  449 	ld	d, (hl)
+    000001B1 21 08 00         [12]  450 	ld	hl, #0x0008
+    000001B4 19               [ 8]  451 	add	hl, de
+    000001B5 4D               [ 4]  452 	ld	c, l
+    000001B6 44               [ 4]  453 	ld	b, h
+    000001B7 0A               [ 8]  454 	ld	a, (bc)
+    000001B8 B7               [ 4]  455 	or	a, a
+    000001B9 28 1A            [12]  456 	jr	Z, 00107$
+    000001BB F8 02            [12]  457 	ldhl	sp,#2
+    000001BD 2A               [ 8]  458 	ld	a, (hl+)
+    000001BE 5F               [ 4]  459 	ld	e, a
+    000001BF 56               [ 8]  460 	ld	d, (hl)
+    000001C0 21 0D 00         [12]  461 	ld	hl, #0x000d
+    000001C3 19               [ 8]  462 	add	hl, de
+    000001C4 2A               [ 8]  463 	ld	a, (hl+)
+    000001C5 4F               [ 4]  464 	ld	c, a
+    000001C6 46               [ 8]  465 	ld	b, (hl)
+    000001C7 78               [ 4]  466 	ld	a, b
+    000001C8 B1               [ 4]  467 	or	a, c
+    000001C9 28 0A            [12]  468 	jr	Z, 00107$
+                                    469 ;src/utils/entity.c:73: entities[i].update(&entities[i]);
+    000001CB F8 02            [12]  470 	ldhl	sp,	#2
+    000001CD 2A               [ 8]  471 	ld	a, (hl+)
+    000001CE 5F               [ 4]  472 	ld	e, a
+    000001CF 56               [ 8]  473 	ld	d, (hl)
+    000001D0 69               [ 4]  474 	ld	l, c
+    000001D1 60               [ 4]  475 	ld	h, b
+    000001D2 CDr00r00         [24]  476 	call	___sdcc_call_hl
+    000001D5                        477 00107$:
+                                    478 ;src/utils/entity.c:71: for (uint8_t i = 0; i < count; i++) {
+    000001D5 F8 07            [12]  479 	ldhl	sp,	#7
+    000001D7 34               [12]  480 	inc	(hl)
+    000001D8 18 AA            [12]  481 	jr	00106$
+    000001DA                        482 00108$:
+                                    483 ;src/utils/entity.c:76: }
+    000001DA E8 08            [16]  484 	add	sp, #8
+    000001DC C9               [16]  485 	ret
+                                    486 ;src/utils/entity.c:78: void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
+                                    487 ;	---------------------------------
+                                    488 ; Function entity_render_all
+                                    489 ; ---------------------------------
+    000001DD                        490 _entity_render_all::
+    000001DD E8 F2            [16]  491 	add	sp, #-14
+    000001DF F8 0A            [12]  492 	ldhl	sp,	#10
+    000001E1 73               [ 8]  493 	ld	(hl), e
+    000001E2 23               [ 8]  494 	inc	hl
+    000001E3 72               [ 8]  495 	ld	(hl), d
+    000001E4 2B               [ 8]  496 	dec	hl
+    000001E5 2B               [ 8]  497 	dec	hl
+    000001E6 77               [ 8]  498 	ld	(hl), a
+                                    499 ;src/utils/entity.c:80: for (uint8_t i = 0; i < count; i++) {
+    000001E7 F8 0C            [12]  500 	ldhl	sp,	#12
+    000001E9 36 00            [12]  501 	ld	(hl), #0x00
+    000001EB                        502 00126$:
+    000001EB F8 0C            [12]  503 	ldhl	sp,	#12
+    000001ED 7E               [ 8]  504 	ld	a, (hl)
+    000001EE F8 09            [12]  505 	ldhl	sp,	#9
+    000001F0 96               [ 8]  506 	sub	a, (hl)
+    000001F1 D2r6Er03         [16]  507 	jp	NC, 00127$
+                                    508 ;src/utils/entity.c:81: entity_t *e = &entities[i];
+    000001F4 F8 0C            [12]  509 	ldhl	sp,	#12
+    000001F6 4E               [ 8]  510 	ld	c, (hl)
+    000001F7 06 00            [ 8]  511 	ld	b, #0x00
+    000001F9 69               [ 4]  512 	ld	l, c
+    000001FA 60               [ 4]  513 	ld	h, b
+    000001FB 29               [ 8]  514 	add	hl, hl
+    000001FC 09               [ 8]  515 	add	hl, bc
+    000001FD 29               [ 8]  516 	add	hl, hl
+    000001FE 09               [ 8]  517 	add	hl, bc
+    000001FF 29               [ 8]  518 	add	hl, hl
+    00000200 09               [ 8]  519 	add	hl, bc
+    00000201 E5               [16]  520 	push	hl
+    00000202 7D               [ 4]  521 	ld	a, l
+    00000203 F8 07            [12]  522 	ldhl	sp,	#7
+    00000205 77               [ 8]  523 	ld	(hl), a
+    00000206 E1               [12]  524 	pop	hl
+    00000207 7C               [ 4]  525 	ld	a, h
+    00000208 F8 06            [12]  526 	ldhl	sp,	#6
+    0000020A 32               [ 8]  527 	ld	(hl-), a
+    0000020B 2A               [ 8]  528 	ld	a, (hl+)
+    0000020C 5F               [ 4]  529 	ld	e, a
+    0000020D 56               [ 8]  530 	ld	d, (hl)
+    0000020E F8 0A            [12]  531 	ldhl	sp,	#10
+    00000210 2A               [ 8]  532 	ld	a,	(hl+)
+    00000211 66               [ 8]  533 	ld	h, (hl)
+    00000212 6F               [ 4]  534 	ld	l, a
+    00000213 19               [ 8]  535 	add	hl, de
+    00000214 E5               [16]  536 	push	hl
+    00000215 7D               [ 4]  537 	ld	a, l
+    00000216 F8 09            [12]  538 	ldhl	sp,	#9
+    00000218 77               [ 8]  539 	ld	(hl), a
+    00000219 E1               [12]  540 	pop	hl
+    0000021A 7C               [ 4]  541 	ld	a, h
+    0000021B F8 08            [12]  542 	ldhl	sp,	#8
+                                    543 ;src/utils/entity.c:82: if (!e->active) {
+    0000021D 32               [ 8]  544 	ld	(hl-), a
+    0000021E 2A               [ 8]  545 	ld	a, (hl+)
+    0000021F 5F               [ 4]  546 	ld	e, a
+    00000220 56               [ 8]  547 	ld	d, (hl)
+    00000221 21 08 00         [12]  548 	ld	hl, #0x0008
+    00000224 19               [ 8]  549 	add	hl, de
+    00000225 4D               [ 4]  550 	ld	c, l
+    00000226 44               [ 4]  551 	ld	b, h
+    00000227 0A               [ 8]  552 	ld	a, (bc)
+                                    553 ;src/utils/entity.c:83: for (int j = 0; j < 4; j++)
+    00000228 B7               [ 4]  554 	or	a, a
+    00000229 20 22            [12]  555 	jr	NZ, 00103$
+    0000022B 4F               [ 4]  556 	ld	c, a
+    0000022C                        557 00117$:
+    0000022C 79               [ 4]  558 	ld	a, c
+    0000022D D6 04            [ 8]  559 	sub	a, #0x04
+    0000022F D2r68r03         [16]  560 	jp	NC, 00110$
+                                    561 ;src/utils/entity.c:84: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+    00000232 F8 0C            [12]  562 	ldhl	sp,	#12
+    00000234 7E               [ 8]  563 	ld	a, (hl)
+    00000235 87               [ 4]  564 	add	a, a
+    00000236 87               [ 4]  565 	add	a, a
+    00000237 F8 14            [12]  566 	ldhl	sp,	#20
+    00000239 46               [ 8]  567 	ld	b, (hl)
+    0000023A 80               [ 4]  568 	add	a, b
+    0000023B 41               [ 4]  569 	ld	b, c
+    0000023C 80               [ 4]  570 	add	a, b
+    0000023D 5F               [ 4]  571 	ld	e, a
+                                    572 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    0000023E AF               [ 4]  573 	xor	a, a
+    0000023F 6B               [ 4]  574 	ld	l, e
+    00000240 67               [ 4]  575 	ld	h, a
+    00000241 29               [ 8]  576 	add	hl, hl
+    00000242 29               [ 8]  577 	add	hl, hl
+    00000243 11r00r00         [12]  578 	ld	de, #_shadow_OAM
+    00000246 19               [ 8]  579 	add	hl, de
+                                    580 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000247 AF               [ 4]  581 	xor	a, a
+    00000248 22               [ 8]  582 	ld	(hl+), a
+    00000249 77               [ 8]  583 	ld	(hl), a
+                                    584 ;src/utils/entity.c:83: for (int j = 0; j < 4; j++)
+    0000024A 0C               [ 4]  585 	inc	c
+    0000024B 18 DF            [12]  586 	jr	00117$
+                                    587 ;src/utils/entity.c:85: continue;
+    0000024D                        588 00103$:
+                                    589 ;src/utils/entity.c:88: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
+    0000024D F8 07            [12]  590 	ldhl	sp,#7
+    0000024F 2A               [ 8]  591 	ld	a, (hl+)
+    00000250 5F               [ 4]  592 	ld	e, a
+    00000251 56               [ 8]  593 	ld	d, (hl)
+    00000252 1A               [ 8]  594 	ld	a, (de)
+    00000253 4F               [ 4]  595 	ld	c, a
+    00000254 13               [ 8]  596 	inc	de
+    00000255 1A               [ 8]  597 	ld	a, (de)
+    00000256 47               [ 4]  598 	ld	b, a
+    00000257 F8 10            [12]  599 	ldhl	sp,#16
+    00000259 2A               [ 8]  600 	ld	a, (hl+)
+    0000025A 5F               [ 4]  601 	ld	e, a
+    0000025B 56               [ 8]  602 	ld	d, (hl)
+    0000025C 79               [ 4]  603 	ld	a, c
+    0000025D 93               [ 4]  604 	sub	a, e
+    0000025E 5F               [ 4]  605 	ld	e, a
+    0000025F 78               [ 4]  606 	ld	a, b
+    00000260 9A               [ 4]  607 	sbc	a, d
+    00000261 4B               [ 4]  608 	ld	c, e
+    00000262 47               [ 4]  609 	ld	b, a
+    00000263 21 08 00         [12]  610 	ld	hl, #0x0008
+    00000266 09               [ 8]  611 	add	hl, bc
+    00000267 4D               [ 4]  612 	ld	c, l
+    00000268 7C               [ 4]  613 	ld	a, h
+    00000269 F8 00            [12]  614 	ldhl	sp,	#0
+    0000026B 71               [ 8]  615 	ld	(hl), c
+    0000026C 23               [ 8]  616 	inc	hl
+    0000026D 77               [ 8]  617 	ld	(hl), a
+    0000026E F8 07            [12]  618 	ldhl	sp,	#7
+    00000270 2A               [ 8]  619 	ld	a, (hl+)
+    00000271 66               [ 8]  620 	ld	h, (hl)
+    00000272 6F               [ 4]  621 	ld	l, a
+    00000273 23               [ 8]  622 	inc	hl
+    00000274 23               [ 8]  623 	inc	hl
+    00000275 2A               [ 8]  624 	ld	a, (hl+)
+    00000276 46               [ 8]  625 	ld	b, (hl)
+    00000277 5F               [ 4]  626 	ld	e, a
+    00000278 50               [ 4]  627 	ld	d, b
+    00000279 F8 12            [12]  628 	ldhl	sp,	#18
+    0000027B 2A               [ 8]  629 	ld	a,	(hl+)
+    0000027C 66               [ 8]  630 	ld	h, (hl)
+    0000027D 6F               [ 4]  631 	ld	l, a
+    0000027E 7B               [ 4]  632 	ld	a, e
+    0000027F 95               [ 4]  633 	sub	a, l
+    00000280 5F               [ 4]  634 	ld	e, a
+    00000281 7A               [ 4]  635 	ld	a, d
+    00000282 9C               [ 4]  636 	sbc	a, h
+    00000283 4B               [ 4]  637 	ld	c, e
+    00000284 47               [ 4]  638 	ld	b, a
+    00000285 21 10 00         [12]  639 	ld	hl, #0x0010
+    00000288 09               [ 8]  640 	add	hl, bc
+    00000289 4D               [ 4]  641 	ld	c, l
+    0000028A 7C               [ 4]  642 	ld	a, h
+    0000028B F8 02            [12]  643 	ldhl	sp,	#2
+    0000028D 71               [ 8]  644 	ld	(hl), c
+    0000028E 23               [ 8]  645 	inc	hl
+    0000028F 77               [ 8]  646 	ld	(hl), a
+                                    647 ;src/utils/entity.c:89: if (esx < 168 && esy < 160) {
+    00000290 C1               [12]  648 	pop	bc
+    00000291 C5               [16]  649 	push	bc
+    00000292 79               [ 4]  650 	ld	a, c
+    00000293 D6 A8            [ 8]  651 	sub	a, #0xa8
+    00000295 78               [ 4]  652 	ld	a, b
+    00000296 DE 00            [ 8]  653 	sbc	a, #0x00
+    00000298 D2r46r03         [16]  654 	jp	NC, 00144$
+    0000029B 2B               [ 8]  655 	dec	hl
+    0000029C 2A               [ 8]  656 	ld	a, (hl+)
+    0000029D 4F               [ 4]  657 	ld	c, a
+    0000029E 46               [ 8]  658 	ld	b, (hl)
+    0000029F 79               [ 4]  659 	ld	a, c
+    000002A0 D6 A0            [ 8]  660 	sub	a, #0xa0
+    000002A2 78               [ 4]  661 	ld	a, b
+    000002A3 DE 00            [ 8]  662 	sbc	a, #0x00
+    000002A5 D2r46r03         [16]  663 	jp	NC, 00144$
+                                    664 ;src/utils/entity.c:90: uint8_t frame_offset = (e->anim_frame * 4);
+    000002A8 F8 07            [12]  665 	ldhl	sp,#7
+    000002AA 2A               [ 8]  666 	ld	a, (hl+)
+    000002AB 5F               [ 4]  667 	ld	e, a
+    000002AC 56               [ 8]  668 	ld	d, (hl)
+    000002AD 21 0A 00         [12]  669 	ld	hl, #0x000a
+    000002B0 19               [ 8]  670 	add	hl, de
+    000002B1 4D               [ 4]  671 	ld	c, l
+    000002B2 44               [ 4]  672 	ld	b, h
+    000002B3 0A               [ 8]  673 	ld	a, (bc)
+    000002B4 87               [ 4]  674 	add	a, a
+    000002B5 87               [ 4]  675 	add	a, a
+    000002B6 F8 04            [12]  676 	ldhl	sp,	#4
+    000002B8 77               [ 8]  677 	ld	(hl), a
+                                    678 ;src/utils/entity.c:91: for (int j = 0; j < 4; j++) {
+    000002B9 F8 07            [12]  679 	ldhl	sp,#7
+    000002BB 2A               [ 8]  680 	ld	a, (hl+)
+    000002BC 5F               [ 4]  681 	ld	e, a
+    000002BD 56               [ 8]  682 	ld	d, (hl)
+    000002BE 21 07 00         [12]  683 	ld	hl, #0x0007
+    000002C1 19               [ 8]  684 	add	hl, de
+    000002C2 E5               [16]  685 	push	hl
+    000002C3 7D               [ 4]  686 	ld	a, l
+    000002C4 F8 07            [12]  687 	ldhl	sp,	#7
+    000002C6 77               [ 8]  688 	ld	(hl), a
+    000002C7 E1               [12]  689 	pop	hl
+    000002C8 7C               [ 4]  690 	ld	a, h
+    000002C9 F8 06            [12]  691 	ldhl	sp,	#6
+    000002CB 77               [ 8]  692 	ld	(hl), a
+    000002CC F8 0D            [12]  693 	ldhl	sp,	#13
+    000002CE 36 00            [12]  694 	ld	(hl), #0x00
+    000002D0                        695 00120$:
+    000002D0 F8 0D            [12]  696 	ldhl	sp,	#13
+    000002D2 7E               [ 8]  697 	ld	a, (hl)
+    000002D3 D6 04            [ 8]  698 	sub	a, #0x04
+    000002D5 D2r68r03         [16]  699 	jp	NC, 00110$
+                                    700 ;src/utils/entity.c:92: uint8_t sprite_id = sprite_offset + (i * 4) + j;
+    000002D8 2B               [ 8]  701 	dec	hl
+    000002D9 7E               [ 8]  702 	ld	a, (hl)
+    000002DA 87               [ 4]  703 	add	a, a
+    000002DB 87               [ 4]  704 	add	a, a
+    000002DC F8 14            [12]  705 	ldhl	sp,	#20
+    000002DE 4E               [ 8]  706 	ld	c, (hl)
+    000002DF 81               [ 4]  707 	add	a, c
+    000002E0 F8 0D            [12]  708 	ldhl	sp,	#13
+    000002E2 4E               [ 8]  709 	ld	c, (hl)
+    000002E3 81               [ 4]  710 	add	a, c
+    000002E4 F8 07            [12]  711 	ldhl	sp,	#7
+    000002E6 77               [ 8]  712 	ld	(hl), a
+                                    713 ;src/utils/entity.c:93: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+    000002E7 F8 02            [12]  714 	ldhl	sp,	#2
+    000002E9 7E               [ 8]  715 	ld	a, (hl)
+    000002EA F8 08            [12]  716 	ldhl	sp,	#8
+    000002EC 77               [ 8]  717 	ld	(hl), a
+    000002ED F8 0D            [12]  718 	ldhl	sp,	#13
+    000002EF 7E               [ 8]  719 	ld	a, (hl)
+    000002F0 D6 02            [ 8]  720 	sub	a, #0x02
+    000002F2 38 04            [12]  721 	jr	C, 00129$
+    000002F4 3E 08            [ 8]  722 	ld	a, #0x08
+    000002F6 18 01            [12]  723 	jr	00130$
+    000002F8                        724 00129$:
+    000002F8 AF               [ 4]  725 	xor	a, a
+    000002F9                        726 00130$:
+    000002F9 F8 08            [12]  727 	ldhl	sp,	#8
+    000002FB 4E               [ 8]  728 	ld	c, (hl)
+    000002FC 81               [ 4]  729 	add	a, c
+    000002FD 4F               [ 4]  730 	ld	c, a
+    000002FE F8 00            [12]  731 	ldhl	sp,	#0
+    00000300 46               [ 8]  732 	ld	b, (hl)
+    00000301 F8 0D            [12]  733 	ldhl	sp,	#13
+    00000303 7E               [ 8]  734 	ld	a, (hl)
+    00000304 E6 01            [ 8]  735 	and	a, #0x01
+    00000306 3E 08            [ 8]  736 	ld	a, #0x08
+    00000308 20 01            [12]  737 	jr	NZ, 00132$
+    0000030A AF               [ 4]  738 	xor	a, a
+    0000030B                        739 00132$:
+    0000030B 80               [ 4]  740 	add	a, b
+    0000030C 47               [ 4]  741 	ld	b, a
+                                    742 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    0000030D F8 07            [12]  743 	ldhl	sp,	#7
+    0000030F 5E               [ 8]  744 	ld	e, (hl)
+    00000310 AF               [ 4]  745 	xor	a, a
+    00000311 CB 23            [ 8]  746 	sla	e
+    00000313 8F               [ 4]  747 	adc	a, a
+    00000314 CB 23            [ 8]  748 	sla	e
+    00000316 8F               [ 4]  749 	adc	a, a
+    00000317 73               [ 8]  750 	ld	(hl), e
+    00000318 23               [ 8]  751 	inc	hl
+    00000319 77               [ 8]  752 	ld	(hl), a
+    0000031A 11r00r00         [12]  753 	ld	de, #_shadow_OAM
+    0000031D 3A               [ 8]  754 	ld	a, (hl-)
+    0000031E 6E               [ 8]  755 	ld	l, (hl)
+    0000031F 67               [ 4]  756 	ld	h, a
+    00000320 19               [ 8]  757 	add	hl, de
+                                    758 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000321 79               [ 4]  759 	ld	a, c
+    00000322 22               [ 8]  760 	ld	(hl+), a
+    00000323 70               [ 8]  761 	ld	(hl), b
+                                    762 ;src/utils/entity.c:94: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+    00000324 F8 05            [12]  763 	ldhl	sp,#5
+    00000326 2A               [ 8]  764 	ld	a, (hl+)
+    00000327 5F               [ 4]  765 	ld	e, a
+    00000328 3A               [ 8]  766 	ld	a, (hl-)
+    00000329 2B               [ 8]  767 	dec	hl
+    0000032A 57               [ 4]  768 	ld	d, a
+    0000032B 1A               [ 8]  769 	ld	a, (de)
+    0000032C 86               [ 8]  770 	add	a, (hl)
+    0000032D F8 0D            [12]  771 	ldhl	sp,	#13
+    0000032F 4E               [ 8]  772 	ld	c, (hl)
+    00000330 81               [ 4]  773 	add	a, c
+    00000331 4F               [ 4]  774 	ld	c, a
+                                    775 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    00000332 11r00r00         [12]  776 	ld	de, #_shadow_OAM
+    00000335 F8 07            [12]  777 	ldhl	sp,	#7
+    00000337 2A               [ 8]  778 	ld	a,	(hl+)
+    00000338 66               [ 8]  779 	ld	h, (hl)
+    00000339 6F               [ 4]  780 	ld	l, a
+    0000033A 19               [ 8]  781 	add	hl, de
+    0000033B 23               [ 8]  782 	inc	hl
+    0000033C 23               [ 8]  783 	inc	hl
+    0000033D 5D               [ 4]  784 	ld	e, l
+    0000033E 54               [ 4]  785 	ld	d, h
+    0000033F 79               [ 4]  786 	ld	a, c
+    00000340 12               [ 8]  787 	ld	(de), a
+                                    788 ;src/utils/entity.c:91: for (int j = 0; j < 4; j++) {
+    00000341 F8 0D            [12]  789 	ldhl	sp,	#13
+    00000343 34               [12]  790 	inc	(hl)
+    00000344 18 8A            [12]  791 	jr	00120$
+                                    792 ;src/utils/entity.c:97: for (int j = 0; j < 4; j++)
+    00000346                        793 00144$:
+    00000346 0E 00            [ 8]  794 	ld	c, #0x00
+    00000348                        795 00123$:
+    00000348 79               [ 4]  796 	ld	a, c
+    00000349 D6 04            [ 8]  797 	sub	a, #0x04
+    0000034B 30 1B            [12]  798 	jr	NC, 00110$
+                                    799 ;src/utils/entity.c:98: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+    0000034D F8 0C            [12]  800 	ldhl	sp,	#12
+    0000034F 7E               [ 8]  801 	ld	a, (hl)
+    00000350 87               [ 4]  802 	add	a, a
+    00000351 87               [ 4]  803 	add	a, a
+    00000352 F8 14            [12]  804 	ldhl	sp,	#20
+    00000354 46               [ 8]  805 	ld	b, (hl)
+    00000355 80               [ 4]  806 	add	a, b
+    00000356 41               [ 4]  807 	ld	b, c
+    00000357 80               [ 4]  808 	add	a, b
+    00000358 47               [ 4]  809 	ld	b, a
+                                    810 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000359 11r00r00         [12]  811 	ld	de, #_shadow_OAM+0
+    0000035C 68               [ 4]  812 	ld	l, b
+    0000035D 26 00            [ 8]  813 	ld	h, #0x00
+    0000035F 29               [ 8]  814 	add	hl, hl
+    00000360 29               [ 8]  815 	add	hl, hl
+    00000361 19               [ 8]  816 	add	hl, de
+                                    817 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000362 AF               [ 4]  818 	xor	a, a
+    00000363 22               [ 8]  819 	ld	(hl+), a
+    00000364 77               [ 8]  820 	ld	(hl), a
+                                    821 ;src/utils/entity.c:97: for (int j = 0; j < 4; j++)
+    00000365 0C               [ 4]  822 	inc	c
+    00000366 18 E0            [12]  823 	jr	00123$
+    00000368                        824 00110$:
+                                    825 ;src/utils/entity.c:80: for (uint8_t i = 0; i < count; i++) {
+    00000368 F8 0C            [12]  826 	ldhl	sp,	#12
+    0000036A 34               [12]  827 	inc	(hl)
+    0000036B C3rEBr01         [16]  828 	jp	00126$
+    0000036E                        829 00127$:
+                                    830 ;src/utils/entity.c:101: }
+    0000036E E8 0E            [16]  831 	add	sp, #14
+    00000370 E1               [12]  832 	pop	hl
+    00000371 E8 05            [16]  833 	add	sp, #5
+    00000373 E9               [ 4]  834 	jp	(hl)
+                                    835 	.area _CODE
+                                    836 	.area _INITIALIZER
+                                    837 	.area _CABS (ABS)
