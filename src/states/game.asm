@@ -1514,10 +1514,10 @@ _game_update::
 ;src/states/game.c:250: ny++;
 	ldhl	sp,	#10
 	inc	(hl)
-	jr	NZ, 00628$
+	jr	NZ, 00610$
 	inc	hl
 	inc	(hl)
-00628$:
+00610$:
 ;src/states/game.c:251: player_dir = 0;
 	xor	a, a
 	ld	(#_player_dir),a
@@ -1559,10 +1559,10 @@ _game_update::
 ;src/states/game.c:258: nx++;
 	ldhl	sp,	#8
 	inc	(hl)
-	jr	NZ, 00629$
+	jr	NZ, 00611$
 	inc	hl
 	inc	(hl)
-00629$:
+00611$:
 ;src/states/game.c:259: player_dir = 3;
 	ld	hl, #_player_dir
 	ld	(hl), #0x03
@@ -1584,7 +1584,7 @@ _game_update::
 	ld	d, (hl)
 	call	_can_move
 	or	a, a
-	jp	Z, 00252$
+	jp	Z, 00248$
 ;src/states/game.c:265: player_x = nx;
 	ldhl	sp,	#8
 	ld	a, (hl)
@@ -1681,7 +1681,7 @@ _game_update::
 	inc	(hl)
 	ld	a, #0x06
 	sub	a, (hl)
-	jp	NC, 00252$
+	jp	NC, 00248$
 ;src/states/game.c:273: anim_frame = !anim_frame;
 	ld	hl, #_anim_frame
 	ld	a, (hl)
@@ -1694,7 +1694,7 @@ _game_update::
 	ld	(#_anim_timer),a
 ;src/states/game.c:275: update_player_sprite();
 	call	_update_player_sprite
-	jp	00252$
+	jp	00248$
 00140$:
 ;src/states/game.c:279: if (anim_frame != 0) {
 	ld	hl, #_anim_frame
@@ -1734,9 +1734,9 @@ _game_update::
 	ld	d, (hl)
 	add	a, #0x08
 	ld	e, a
-	jr	NC, 00630$
+	jr	NC, 00612$
 	inc	d
-00630$:
+00612$:
 	call	_get_tile_at
 	ldhl	sp,	#9
 	ld	(hl), a
@@ -1869,13 +1869,13 @@ _game_update::
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<(_level2_map_info)
-	jr	NZ, 00252$
+	jr	NZ, 00248$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>(_level2_map_info)
-	jr	NZ, 00252$
+	jr	NZ, 00248$
 	or	a, c
-	jr	NZ, 00252$
+	jr	NZ, 00248$
 	ld	a, (_player_y)
 	ld	c, a
 	ld	hl, #_player_y + 1
@@ -1884,7 +1884,7 @@ _game_update::
 	cp	a, c
 	ld	a, #0x00
 	sbc	a, b
-	jr	NC, 00252$
+	jr	NC, 00248$
 ;src/states/game.c:311: switch_map(&world_map_info, 124, 32);
 	ld	de, #0x0020
 	push	de
@@ -1894,7 +1894,7 @@ _game_update::
 ;src/states/game.c:312: return;
 	jp	00201$
 ;src/states/game.c:317: for (int i = 0; i < current_map->num_entities; i++) {
-00252$:
+00248$:
 	xor	a, a
 	ldhl	sp,	#10
 	ld	(hl+), a
@@ -1924,16 +1924,16 @@ _game_update::
 	ld	d, (hl)
 	ld	a, b
 	bit	7,a
-	jr	Z, 00646$
+	jr	Z, 00628$
 	bit	7, d
-	jr	NZ, 00647$
+	jr	NZ, 00629$
 	cp	a, a
-	jr	00647$
-00646$:
+	jr	00629$
+00628$:
 	bit	7, d
-	jr	Z, 00647$
+	jr	Z, 00629$
 	scf
-00647$:
+00629$:
 	jp	NC, 00148$
 ;src/states/game.c:318: entity_t *e = &current_map->entities[i];
 	ldhl	sp,#6
@@ -2043,7 +2043,7 @@ _game_update::
 	sub	a, #0xa8
 	ld	a, b
 	sbc	a, #0x00
-	jp	NC, 00251$
+	jp	NC, 00247$
 	inc	hl
 	ld	a, (hl+)
 	ld	c, a
@@ -2052,7 +2052,7 @@ _game_update::
 	sub	a, #0xa0
 	ld	a, b
 	sbc	a, #0x00
-	jr	NC, 00251$
+	jr	NC, 00247$
 ;src/states/game.c:321: for (int j = 0; j < 4; j++) {
 	ldhl	sp,#8
 	ld	a, (hl+)
@@ -2153,7 +2153,7 @@ _game_update::
 	inc	c
 	jr	00190$
 ;src/states/game.c:326: for (int j = 0; j < 4; j++)
-00251$:
+00247$:
 	ld	c, #0x00
 00193$:
 ;src/states/game.c:327: move_sprite(4 + j, 0, 0);
@@ -2189,7 +2189,6 @@ _game_update::
 ;src/states/game.c:331: if (input_pressed(J_A | J_B)) {
 	ld	a, #0x30
 	call	_input_pressed
-	ld	c, a
 	or	a, a
 	jp	Z, 00179$
 ;src/states/game.c:332: for (int i = 0; i < current_map->num_entities; i++) {
@@ -2224,16 +2223,16 @@ _game_update::
 	ld	d, (hl)
 	ld	a, b
 	bit	7,a
-	jr	Z, 00649$
+	jr	Z, 00631$
 	bit	7, d
-	jr	NZ, 00650$
+	jr	NZ, 00632$
 	cp	a, a
-	jr	00650$
-00649$:
+	jr	00632$
+00631$:
 	bit	7, d
-	jr	Z, 00650$
+	jr	Z, 00632$
 	scf
-00650$:
+00632$:
 	jp	NC, 00157$
 ;src/states/game.c:333: entity_t *e = &current_map->entities[i];
 	ldhl	sp,#8
@@ -2456,13 +2455,13 @@ _game_update::
 00157$:
 ;src/states/game.c:343: uint8_t tid = get_tile_at(player_x + 8, player_y);
 	ld	a, (_player_x)
+	ld	c, a
 	ld	hl, #_player_x + 1
-	ld	d, (hl)
-	add	a, #0x08
-	ld	e, a
-	jr	NC, 00652$
-	inc	d
-00652$:
+	ld	b, (hl)
+	ld	hl, #0x0008
+	add	hl, bc
+	ld	e, l
+	ld	d, h
 	ld	a, (_player_y)
 	ld	c, a
 	ld	hl, #_player_y + 1
@@ -2651,7 +2650,7 @@ _game_update::
 	ld	a, #0x00
 	rla
 	ld	(hl), a
-;src/states/game.c:373: set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
+;src/states/game.c:376: set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00211$
@@ -2662,35 +2661,6 @@ _game_update::
 00212$:
 	push	bc
 	ld	hl, #0x102
-	push	hl
-	call	_set_bkg_data
-	add	sp, #4
-;src/states/game.c:374: set_bkg_data(4, 4, env_anim_frame ? &tiles_anim_data[16] : &tiles_data[64]);
-	ld	a, (#_env_anim_frame)
-	or	a, a
-	jr	Z, 00213$
-	ld	bc, #_tiles_anim_data+16
-	jr	00214$
-00213$:
-	ld	bc, #_tiles_data+64
-00214$:
-	push	bc
-	ld	hl, #0x404
-	push	hl
-	call	_set_bkg_data
-	add	sp, #4
-;src/states/game.c:376: env_anim_frame ? &tiles_anim_data[64] : &tiles_data[192]);
-	ld	a, (#_env_anim_frame)
-	or	a, a
-	jr	Z, 00215$
-	ld	bc, #_tiles_anim_data+64
-	jr	00216$
-00215$:
-	ld	bc, #_tiles_data+192
-00216$:
-;src/states/game.c:375: set_bkg_data(12, 1,
-	push	bc
-	ld	hl, #0x10c
 	push	hl
 	call	_set_bkg_data
 	add	sp, #4

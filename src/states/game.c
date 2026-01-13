@@ -370,10 +370,10 @@ void game_update(void) {
 
   if ((env_anim_timer % 32) == 0) {
     env_anim_frame = !env_anim_frame;
+    // Walk through Tile 2 (Grass) Animation:
+    // Frame 0: Original Grass (tiles_data[32] - offset for Tile 2)
+    // Frame 1: Animated Grass (tiles_anim_data[0])
     set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
-    set_bkg_data(4, 4, env_anim_frame ? &tiles_anim_data[16] : &tiles_data[64]);
-    set_bkg_data(12, 1,
-                 env_anim_frame ? &tiles_anim_data[64] : &tiles_data[192]);
   }
   env_anim_timer++;
 }
