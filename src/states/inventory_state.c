@@ -62,6 +62,7 @@ void inventory_state_init(void) {
   selection = 0;
   inventory_draw();
 
+  HIDE_SPRITES;
   SHOW_BKG;
   DISPLAY_ON;
 }

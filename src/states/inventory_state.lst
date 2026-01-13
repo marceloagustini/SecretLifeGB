@@ -298,89 +298,93 @@
     00000151 EAr00r00         [16]  294 	ld	(#_selection),a
                                     295 ;src/states/inventory_state.c:63: inventory_draw();
     00000154 CDr5Ar00         [24]  296 	call	_inventory_draw
-                                    297 ;src/states/inventory_state.c:65: SHOW_BKG;
+                                    297 ;src/states/inventory_state.c:65: HIDE_SPRITES;
     00000157 F0r00            [12]  298 	ldh	a, (_LCDC_REG + 0)
-    00000159 F6 01            [ 8]  299 	or	a, #0x01
+    00000159 E6 FD            [ 8]  299 	and	a, #0xfd
     0000015B E0r00            [12]  300 	ldh	(_LCDC_REG + 0), a
-                                    301 ;src/states/inventory_state.c:66: DISPLAY_ON;
+                                    301 ;src/states/inventory_state.c:66: SHOW_BKG;
     0000015D F0r00            [12]  302 	ldh	a, (_LCDC_REG + 0)
-    0000015F F6 80            [ 8]  303 	or	a, #0x80
+    0000015F F6 01            [ 8]  303 	or	a, #0x01
     00000161 E0r00            [12]  304 	ldh	(_LCDC_REG + 0), a
-                                    305 ;src/states/inventory_state.c:67: }
-    00000163 C9               [16]  306 	ret
-                                    307 ;src/states/inventory_state.c:69: void inventory_state_update(void) {
-                                    308 ;	---------------------------------
-                                    309 ; Function inventory_state_update
-                                    310 ; ---------------------------------
-    00000164                        311 _inventory_state_update::
-                                    312 ;src/states/inventory_state.c:70: if (inventory_count > 0) {
-    00000164 FAr00r00         [16]  313 	ld	a, (#_inventory_count)
-    00000167 B7               [ 4]  314 	or	a, a
-    00000168 28 47            [12]  315 	jr	Z, 00110$
-                                    316 ;src/states/inventory_state.c:71: if (input_pressed(J_DOWN)) {
-    0000016A 3E 08            [ 8]  317 	ld	a, #0x08
-    0000016C CDr00r00         [24]  318 	call	_input_pressed
-    0000016F B7               [ 4]  319 	or	a, a
-    00000170 28 2C            [12]  320 	jr	Z, 00104$
-                                    321 ;src/states/inventory_state.c:72: if (selection < inventory_count - 1) {
-    00000172 FAr00r00         [16]  322 	ld	a, (_inventory_count)
-    00000175 06 00            [ 8]  323 	ld	b, #0x00
-    00000177 4F               [ 4]  324 	ld	c, a
-    00000178 0B               [ 8]  325 	dec	bc
-    00000179 FAr00r00         [16]  326 	ld	a, (_selection)
-    0000017C 6F               [ 4]  327 	ld	l, a
-    0000017D 26 00            [ 8]  328 	ld	h, #0x00
-    0000017F 58               [ 4]  329 	ld	e, b
-    00000180 54               [ 4]  330 	ld	d, h
-    00000181 7D               [ 4]  331 	ld	a, l
-    00000182 91               [ 4]  332 	sub	a, c
-    00000183 7C               [ 4]  333 	ld	a, h
-    00000184 98               [ 4]  334 	sbc	a, b
-    00000185 CB 7B            [ 8]  335 	bit	7, e
-    00000187 28 07            [12]  336 	jr	Z, 00157$
-    00000189 CB 7A            [ 8]  337 	bit	7, d
-    0000018B 20 08            [12]  338 	jr	NZ, 00158$
-    0000018D BF               [ 4]  339 	cp	a, a
-    0000018E 18 05            [12]  340 	jr	00158$
-    00000190                        341 00157$:
-    00000190 CB 7A            [ 8]  342 	bit	7, d
-    00000192 28 01            [12]  343 	jr	Z, 00158$
-    00000194 37               [ 4]  344 	scf
-    00000195                        345 00158$:
-    00000195 30 07            [12]  346 	jr	NC, 00104$
-                                    347 ;src/states/inventory_state.c:73: selection++;
-    00000197 21r00r00         [12]  348 	ld	hl, #_selection
-    0000019A 34               [12]  349 	inc	(hl)
-                                    350 ;src/states/inventory_state.c:74: inventory_draw();
-    0000019B CDr5Ar00         [24]  351 	call	_inventory_draw
-    0000019E                        352 00104$:
-                                    353 ;src/states/inventory_state.c:77: if (input_pressed(J_UP)) {
-    0000019E 3E 04            [ 8]  354 	ld	a, #0x04
-    000001A0 CDr00r00         [24]  355 	call	_input_pressed
-    000001A3 B7               [ 4]  356 	or	a, a
-    000001A4 28 0B            [12]  357 	jr	Z, 00110$
-                                    358 ;src/states/inventory_state.c:78: if (selection > 0) {
-    000001A6 21r00r00         [12]  359 	ld	hl, #_selection
-    000001A9 7E               [ 8]  360 	ld	a, (hl)
-    000001AA B7               [ 4]  361 	or	a, a
-    000001AB 28 04            [12]  362 	jr	Z, 00110$
-                                    363 ;src/states/inventory_state.c:79: selection--;
-    000001AD 35               [12]  364 	dec	(hl)
-                                    365 ;src/states/inventory_state.c:80: inventory_draw();
-    000001AE CDr5Ar00         [24]  366 	call	_inventory_draw
-    000001B1                        367 00110$:
-                                    368 ;src/states/inventory_state.c:85: if (input_pressed(J_B)) {
-    000001B1 3E 20            [ 8]  369 	ld	a, #0x20
-    000001B3 CDr00r00         [24]  370 	call	_input_pressed
-    000001B6 B7               [ 4]  371 	or	a, a
-    000001B7 C8               [20]  372 	ret	Z
-                                    373 ;src/states/inventory_state.c:86: game_state = STATE_GAME;
-    000001B8 21r00r00         [12]  374 	ld	hl, #_game_state
-    000001BB 36 02            [12]  375 	ld	(hl), #0x02
-                                    376 ;src/states/inventory_state.c:88: }
-    000001BD C9               [16]  377 	ret
-                                    378 	.area _CODE
-                                    379 	.area _INITIALIZER
-    00000000                        380 __xinit__selection:
-    00000000 00                     381 	.db #0x00	; 0
-                                    382 	.area _CABS (ABS)
+                                    305 ;src/states/inventory_state.c:67: DISPLAY_ON;
+    00000163 F0r00            [12]  306 	ldh	a, (_LCDC_REG + 0)
+    00000165 F6 80            [ 8]  307 	or	a, #0x80
+    00000167 E0r00            [12]  308 	ldh	(_LCDC_REG + 0), a
+                                    309 ;src/states/inventory_state.c:68: }
+    00000169 C9               [16]  310 	ret
+                                    311 ;src/states/inventory_state.c:70: void inventory_state_update(void) {
+                                    312 ;	---------------------------------
+                                    313 ; Function inventory_state_update
+                                    314 ; ---------------------------------
+    0000016A                        315 _inventory_state_update::
+                                    316 ;src/states/inventory_state.c:71: if (inventory_count > 0) {
+    0000016A FAr00r00         [16]  317 	ld	a, (#_inventory_count)
+    0000016D B7               [ 4]  318 	or	a, a
+    0000016E 28 47            [12]  319 	jr	Z, 00110$
+                                    320 ;src/states/inventory_state.c:72: if (input_pressed(J_DOWN)) {
+    00000170 3E 08            [ 8]  321 	ld	a, #0x08
+    00000172 CDr00r00         [24]  322 	call	_input_pressed
+    00000175 B7               [ 4]  323 	or	a, a
+    00000176 28 2C            [12]  324 	jr	Z, 00104$
+                                    325 ;src/states/inventory_state.c:73: if (selection < inventory_count - 1) {
+    00000178 FAr00r00         [16]  326 	ld	a, (_inventory_count)
+    0000017B 06 00            [ 8]  327 	ld	b, #0x00
+    0000017D 4F               [ 4]  328 	ld	c, a
+    0000017E 0B               [ 8]  329 	dec	bc
+    0000017F FAr00r00         [16]  330 	ld	a, (_selection)
+    00000182 6F               [ 4]  331 	ld	l, a
+    00000183 26 00            [ 8]  332 	ld	h, #0x00
+    00000185 58               [ 4]  333 	ld	e, b
+    00000186 54               [ 4]  334 	ld	d, h
+    00000187 7D               [ 4]  335 	ld	a, l
+    00000188 91               [ 4]  336 	sub	a, c
+    00000189 7C               [ 4]  337 	ld	a, h
+    0000018A 98               [ 4]  338 	sbc	a, b
+    0000018B CB 7B            [ 8]  339 	bit	7, e
+    0000018D 28 07            [12]  340 	jr	Z, 00157$
+    0000018F CB 7A            [ 8]  341 	bit	7, d
+    00000191 20 08            [12]  342 	jr	NZ, 00158$
+    00000193 BF               [ 4]  343 	cp	a, a
+    00000194 18 05            [12]  344 	jr	00158$
+    00000196                        345 00157$:
+    00000196 CB 7A            [ 8]  346 	bit	7, d
+    00000198 28 01            [12]  347 	jr	Z, 00158$
+    0000019A 37               [ 4]  348 	scf
+    0000019B                        349 00158$:
+    0000019B 30 07            [12]  350 	jr	NC, 00104$
+                                    351 ;src/states/inventory_state.c:74: selection++;
+    0000019D 21r00r00         [12]  352 	ld	hl, #_selection
+    000001A0 34               [12]  353 	inc	(hl)
+                                    354 ;src/states/inventory_state.c:75: inventory_draw();
+    000001A1 CDr5Ar00         [24]  355 	call	_inventory_draw
+    000001A4                        356 00104$:
+                                    357 ;src/states/inventory_state.c:78: if (input_pressed(J_UP)) {
+    000001A4 3E 04            [ 8]  358 	ld	a, #0x04
+    000001A6 CDr00r00         [24]  359 	call	_input_pressed
+    000001A9 B7               [ 4]  360 	or	a, a
+    000001AA 28 0B            [12]  361 	jr	Z, 00110$
+                                    362 ;src/states/inventory_state.c:79: if (selection > 0) {
+    000001AC 21r00r00         [12]  363 	ld	hl, #_selection
+    000001AF 7E               [ 8]  364 	ld	a, (hl)
+    000001B0 B7               [ 4]  365 	or	a, a
+    000001B1 28 04            [12]  366 	jr	Z, 00110$
+                                    367 ;src/states/inventory_state.c:80: selection--;
+    000001B3 35               [12]  368 	dec	(hl)
+                                    369 ;src/states/inventory_state.c:81: inventory_draw();
+    000001B4 CDr5Ar00         [24]  370 	call	_inventory_draw
+    000001B7                        371 00110$:
+                                    372 ;src/states/inventory_state.c:86: if (input_pressed(J_B)) {
+    000001B7 3E 20            [ 8]  373 	ld	a, #0x20
+    000001B9 CDr00r00         [24]  374 	call	_input_pressed
+    000001BC B7               [ 4]  375 	or	a, a
+    000001BD C8               [20]  376 	ret	Z
+                                    377 ;src/states/inventory_state.c:87: game_state = STATE_GAME;
+    000001BE 21r00r00         [12]  378 	ld	hl, #_game_state
+    000001C1 36 02            [12]  379 	ld	(hl), #0x02
+                                    380 ;src/states/inventory_state.c:89: }
+    000001C3 C9               [16]  381 	ret
+                                    382 	.area _CODE
+                                    383 	.area _INITIALIZER
+    00000000                        384 __xinit__selection:
+    00000000 00                     385 	.db #0x00	; 0
+                                    386 	.area _CABS (ABS)

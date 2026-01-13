@@ -179,6 +179,7 @@ void game_init(void) {
     update_player_sprite();
 
     BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
+    SHOW_SPRITES;
     DISPLAY_ON;
     return;
   }

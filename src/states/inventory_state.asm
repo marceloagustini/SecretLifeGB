@@ -294,31 +294,35 @@ _inventory_state_init::
 	ld	(#_selection),a
 ;src/states/inventory_state.c:63: inventory_draw();
 	call	_inventory_draw
-;src/states/inventory_state.c:65: SHOW_BKG;
+;src/states/inventory_state.c:65: HIDE_SPRITES;
+	ldh	a, (_LCDC_REG + 0)
+	and	a, #0xfd
+	ldh	(_LCDC_REG + 0), a
+;src/states/inventory_state.c:66: SHOW_BKG;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x01
 	ldh	(_LCDC_REG + 0), a
-;src/states/inventory_state.c:66: DISPLAY_ON;
+;src/states/inventory_state.c:67: DISPLAY_ON;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x80
 	ldh	(_LCDC_REG + 0), a
-;src/states/inventory_state.c:67: }
+;src/states/inventory_state.c:68: }
 	ret
-;src/states/inventory_state.c:69: void inventory_state_update(void) {
+;src/states/inventory_state.c:70: void inventory_state_update(void) {
 ;	---------------------------------
 ; Function inventory_state_update
 ; ---------------------------------
 _inventory_state_update::
-;src/states/inventory_state.c:70: if (inventory_count > 0) {
+;src/states/inventory_state.c:71: if (inventory_count > 0) {
 	ld	a, (#_inventory_count)
 	or	a, a
 	jr	Z, 00110$
-;src/states/inventory_state.c:71: if (input_pressed(J_DOWN)) {
+;src/states/inventory_state.c:72: if (input_pressed(J_DOWN)) {
 	ld	a, #0x08
 	call	_input_pressed
 	or	a, a
 	jr	Z, 00104$
-;src/states/inventory_state.c:72: if (selection < inventory_count - 1) {
+;src/states/inventory_state.c:73: if (selection < inventory_count - 1) {
 	ld	a, (_inventory_count)
 	ld	b, #0x00
 	ld	c, a
@@ -344,36 +348,36 @@ _inventory_state_update::
 	scf
 00158$:
 	jr	NC, 00104$
-;src/states/inventory_state.c:73: selection++;
+;src/states/inventory_state.c:74: selection++;
 	ld	hl, #_selection
 	inc	(hl)
-;src/states/inventory_state.c:74: inventory_draw();
+;src/states/inventory_state.c:75: inventory_draw();
 	call	_inventory_draw
 00104$:
-;src/states/inventory_state.c:77: if (input_pressed(J_UP)) {
+;src/states/inventory_state.c:78: if (input_pressed(J_UP)) {
 	ld	a, #0x04
 	call	_input_pressed
 	or	a, a
 	jr	Z, 00110$
-;src/states/inventory_state.c:78: if (selection > 0) {
+;src/states/inventory_state.c:79: if (selection > 0) {
 	ld	hl, #_selection
 	ld	a, (hl)
 	or	a, a
 	jr	Z, 00110$
-;src/states/inventory_state.c:79: selection--;
+;src/states/inventory_state.c:80: selection--;
 	dec	(hl)
-;src/states/inventory_state.c:80: inventory_draw();
+;src/states/inventory_state.c:81: inventory_draw();
 	call	_inventory_draw
 00110$:
-;src/states/inventory_state.c:85: if (input_pressed(J_B)) {
+;src/states/inventory_state.c:86: if (input_pressed(J_B)) {
 	ld	a, #0x20
 	call	_input_pressed
 	or	a, a
 	ret	Z
-;src/states/inventory_state.c:86: game_state = STATE_GAME;
+;src/states/inventory_state.c:87: game_state = STATE_GAME;
 	ld	hl, #_game_state
 	ld	(hl), #0x02
-;src/states/inventory_state.c:88: }
+;src/states/inventory_state.c:89: }
 	ret
 	.area _CODE
 	.area _INITIALIZER
