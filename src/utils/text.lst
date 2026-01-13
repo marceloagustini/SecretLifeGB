@@ -238,7 +238,7 @@
     000000C5 3E 80            [ 8]  238 	ld	a, #0x80
                                     239 ;src/utils/text.c:52: }
     000000C7 C9               [16]  240 	ret
-                                    241 ;src/utils/text.c:56: void clear_dialog_buf() {
+                                    241 ;src/utils/text.c:56: void clear_dialog_buf(void) {
                                     242 ;	---------------------------------
                                     243 ; Function clear_dialog_buf
                                     244 ; ---------------------------------

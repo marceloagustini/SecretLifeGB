@@ -53,7 +53,7 @@ uint8_t get_tile_for_char(char c) {
 
 unsigned char dialog_buf[120];
 
-void clear_dialog_buf() {
+void clear_dialog_buf(void) {
   for (int i = 0; i < 120; i++)
     dialog_buf[i] = (uint8_t)FONT_BASE_TILE;
   dialog_buf[0] = get_tile_for_char(1);

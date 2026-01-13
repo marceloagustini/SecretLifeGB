@@ -238,7 +238,7 @@ _get_tile_for_char::
 	ld	a, #0x80
 ;src/utils/text.c:52: }
 	ret
-;src/utils/text.c:56: void clear_dialog_buf() {
+;src/utils/text.c:56: void clear_dialog_buf(void) {
 ;	---------------------------------
 ; Function clear_dialog_buf
 ; ---------------------------------
