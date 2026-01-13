@@ -4,11 +4,12 @@
 #include <stdio.h>
 
 // State definitions
-#define STATE_MENU 0
-#define STATE_GAME 1
+#define STATE_INTRO 0
+#define STATE_MENU 1
+#define STATE_GAME 2
 
 // Global state tracking
-uint8_t game_state = STATE_MENU;
+uint8_t game_state = STATE_INTRO;
 uint8_t current_state = 255; // Force init on first loop
 
 void main(void) {
@@ -24,7 +25,9 @@ void main(void) {
     if (game_state != current_state) {
       // State change detected, run init
       current_state = game_state;
-      if (game_state == STATE_MENU) {
+      if (game_state == STATE_INTRO) {
+        intro_init();
+      } else if (game_state == STATE_MENU) {
         menu_init();
       } else if (game_state == STATE_GAME) {
         game_init();
@@ -32,9 +35,10 @@ void main(void) {
     }
 
     // Run update
-    if (game_state == STATE_MENU) {
+    if (game_state == STATE_INTRO) {
+      intro_update();
+    } else if (game_state == STATE_MENU) {
       menu_update();
-      // Check transition condition inside main for simplicity
       if (input_pressed(J_START)) {
         game_state = STATE_GAME;
       }

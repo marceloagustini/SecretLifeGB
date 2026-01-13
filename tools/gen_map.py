@@ -35,16 +35,16 @@ def generate_map():
     set_tile(15, 2, 43); set_tile(16, 2, 44)
 
     house_t1 = [
-        [7, 8, 9, 10],
-        [11, 13, 14, 15],
-        [16, 17, 18, 19],
-        [20, 21, 22, 24]
+        [9, 7, 8, 10],   # Peak
+        [11, 14, 15, 13], # Roof
+        [16, 17, 19, 18], # Walls
+        [20, 21, 22, 24]  # Door
     ]
     house_t2 = [
-        [45, 46, 47, 48],
-        [49, 50, 51, 52],
-        [53, 54, 55, 56],
-        [57, 58, 59, 60]
+        [47, 45, 46, 48], # Variant Peak
+        [49, 51, 52, 50], # Variant Roof (matching the same structural logic)
+        [53, 54, 56, 55], # Walls
+        [57, 58, 59, 60]  # Door
     ]
 
     def set_house(x, y, tiles):

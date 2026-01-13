@@ -15,18 +15,19 @@ Symbol Table
     _game_update                                                    ******** GX
     _input_pressed                                                  ******** GX
     _input_update                                                   ******** GX
+    _intro_init                                                     ******** GX
+    _intro_update                                                   ******** GX
   0 _main                                                           00000000 GR
     _menu_init                                                      ******** GX
     _menu_update                                                    ******** GX
     _wait_vbl_done                                                  ******** GX
-
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size       4C   flags    0
+   0 _CODE                                      size       64   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        2   flags    0
