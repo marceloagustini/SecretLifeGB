@@ -12,7 +12,7 @@
 #define TEXT_LINES 4  // Internal lines
 
 void text_init(void) {
-  set_win_data(FONT_BASE_TILE, 35, font_data);
+  set_win_data(FONT_BASE_TILE, 38, font_data);
   move_win(7, 144);
 }
 
@@ -28,24 +28,25 @@ uint8_t get_tile_for_char(char c) {
   if (c == '?')
     return (uint8_t)(FONT_BASE_TILE + 28);
   if (c == '!')
-    return (uint8_t)(FONT_BASE_TILE +
-                     14); // 'O' used as placeholder or find ! in asset
-  if (c == '.')
-    return (uint8_t)(FONT_BASE_TILE + 0);
-
-  // Box drawing
-  if (c == 1)
     return (uint8_t)(FONT_BASE_TILE + 29);
-  if (c == 2)
+  if (c == (char)0xA1 || c == (char)-95) // '¡' in many encodings
     return (uint8_t)(FONT_BASE_TILE + 30);
-  if (c == 3)
+  if (c == '.')
     return (uint8_t)(FONT_BASE_TILE + 31);
-  if (c == 4)
+
+  // Box drawing - shifted by 3 due to new chars
+  if (c == 1)
     return (uint8_t)(FONT_BASE_TILE + 32);
-  if (c == 5)
+  if (c == 2)
     return (uint8_t)(FONT_BASE_TILE + 33);
-  if (c == 6)
+  if (c == 3)
     return (uint8_t)(FONT_BASE_TILE + 34);
+  if (c == 4)
+    return (uint8_t)(FONT_BASE_TILE + 35);
+  if (c == 5)
+    return (uint8_t)(FONT_BASE_TILE + 36);
+  if (c == 6)
+    return (uint8_t)(FONT_BASE_TILE + 37);
 
   return (uint8_t)(FONT_BASE_TILE + 0);
 }
