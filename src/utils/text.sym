@@ -17,17 +17,19 @@ Symbol Table
   0 _get_tile_for_char                                              00000016 GR
     _set_win_data                                                   ******** GX
     _set_win_tiles                                                  ******** GX
+    _shadow_OAM                                                     ******** GX
   0 _text_dialogue                                                  00000164 GR
   0 _text_init                                                      00000000 GR
     _waitpad                                                        ******** GX
     _waitpadup                                                      ******** GX
+
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      31F   flags    0
+   0 _CODE                                      size      336   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size       78   flags    0
    3 _INITIALIZED                               size        0   flags    0

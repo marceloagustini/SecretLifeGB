@@ -6,6 +6,7 @@
 #include "../utils/inventory.h"
 #include "../utils/map_manager.h"
 #include "../utils/music.h"
+#include "../utils/projectile.h"
 #include "../utils/text.h"
 #include "states.h"
 #include <gb/gb.h>
@@ -162,9 +163,12 @@ void game_init(void) {
   set_sprite_data(0, 24, player_sprites);
   set_sprite_data(24, 4, npc_child_sprite);
   set_sprite_data(28, 8, guard_sprite_data);
+  set_sprite_data(36, 4, npc_woman_sprite);
+  set_sprite_data(40, 1, projectile_sprite);
   update_player_sprite();
   text_init();
   music_init();
+  projectile_init();
   SHOW_BKG;
   SHOW_SPRITES;
   DISPLAY_ON;
@@ -249,6 +253,33 @@ void game_update(void) {
 
   // Render entities & AI
   entity_update_all(current_map->entities, current_map->num_entities);
+
+  // Level 2 enemy shooter AI
+  if (current_map == &maps[2]) { // LEVEL2_MAP
+    for (int i = 0; i < current_map->num_entities; i++) {
+      entity_t *e = &current_map->entities[i];
+      if (e->active && e->type == ENT_ENEMY) {
+        ai_enemy_shooter(e, player_x, player_y);
+      }
+    }
+  }
+
+  // Update and render projectiles
+  projectile_update_all();
+  projectile_render_all(camera_x, camera_y);
+
+  // Check projectile collision with player
+  if (projectile_check_collision(player_x + 8, player_y + 8)) {
+    // Restart level on hit
+    fade_out();
+    delay(500);
+    player_x = 128;
+    player_y = 224;
+    load_map(&maps[2]); // LEVEL2_MAP
+    update_player_sprite();
+    fade_in();
+    return;
+  }
 
   // Collision with enemy check (simplified for now, could be in entity_update)
   for (int i = 0; i < current_map->num_entities; i++) {

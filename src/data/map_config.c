@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 // --- Entity Instances ---
-entity_t world_entities[1];
+entity_t world_entities[2];
 entity_t house_entities[1];
 entity_t level2_entities[1];
 
@@ -26,7 +26,7 @@ map_t maps[] = {{
                     MAP_WIDTH,
                     MAP_HEIGHT,
                     world_entities,
-                    1,
+                    2,
                     {0, 2, 3, 4, 5, 21, 22, 58, 59, 70, 71, 255},
                     NULL,
                     0 // Portals managed manually for now or via this list
@@ -52,6 +52,7 @@ map_t maps[] = {{
 
 void map_init_data() {
   entity_init(&world_entities[0], ENT_NPC, 210, 230, 24, DIALOGUE_NPC_CHILD);
+  entity_init(&world_entities[1], ENT_NPC, 160, 120, 36, DIALOGUE_NPC_WOMAN);
   entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
   entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
 }

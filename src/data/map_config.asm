@@ -25,7 +25,7 @@
 ;--------------------------------------------------------
 	.area _DATA
 _world_entities::
-	.ds 15
+	.ds 30
 _house_entities::
 	.ds 15
 _level2_entities::
@@ -80,8 +80,22 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_world_entities
 	call	_entity_init
-;src/data/map_config.c:55: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
+;src/data/map_config.c:55: entity_init(&world_entities[1], ENT_NPC, 160, 120, 36, DIALOGUE_NPC_WOMAN);
 	ld	de, #___str_1
+	push	de
+	ld	a, #0x24
+	push	af
+	inc	sp
+	ld	de, #0x0078
+	push	de
+	xor	a, a
+	and	a
+	push	af
+	xor	a, a
+	ld	de, #(_world_entities + 15)
+	call	_entity_init
+;src/data/map_config.c:56: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
+	ld	de, #___str_2
 	push	de
 	ld	a, #0x18
 	push	af
@@ -93,7 +107,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_house_entities
 	call	_entity_init
-;src/data/map_config.c:56: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
+;src/data/map_config.c:57: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
 	ld	de, #0x0000
 	push	de
 	ld	a, #0x1c
@@ -105,23 +119,118 @@ _map_init_data::
 	ld	a, #0x03
 	ld	de, #_level2_entities
 	call	_entity_init
-;src/data/map_config.c:57: }
+;src/data/map_config.c:58: }
 	ret
 ___str_0:
-	.ascii "MI CASA ES LA DE"
+	.ascii "Hola aventurero!"
 	.db 0x0a
-	.ascii "AQUI ARRIBA."
+	.ascii "Bienvenido a este"
 	.db 0x0a
-	.ascii "BUSCA LA LLAVE EN"
+	.ascii "lugar misterioso."
 	.db 0x0a
-	.ascii "MI ROPERO."
+	.ascii "Mi casa es la de"
+	.db 0x0a
+	.ascii "aqui arriba, junto"
+	.db 0x0a
+	.ascii "al gran arbol."
+	.db 0x0a
+	.ascii "Si necesitas algo"
+	.db 0x0a
+	.ascii "busca la llave en"
+	.db 0x0a
+	.ascii "mi ropero."
+	.db 0x0a
+	.ascii "Pero ten cuidado"
+	.db 0x0a
+	.ascii "con los enemigos"
+	.db 0x0a
+	.ascii "que rondan por"
+	.db 0x0a
+	.ascii "la zona. Son muy"
+	.db 0x0a
+	.ascii "peligrosos!"
+	.db 0x0a
+	.ascii "Buena suerte en"
+	.db 0x0a
+	.ascii "tu aventura!"
 	.db 0x00
 ___str_1:
-	.ascii "PUEDES DESCANSAR,"
+	.ascii "Hola viajero."
 	.db 0x0a
-	.ascii "PERO NO TOQUES"
+	.ascii "Bienvenido a estas"
 	.db 0x0a
-	.ascii "MIS COSAS!"
+	.ascii "tierras olvidadas."
+	.db 0x0a
+	.ascii "Hace mucho tiempo,"
+	.db 0x0a
+	.ascii "este lugar era un"
+	.db 0x0a
+	.ascii "reino prospero."
+	.db 0x0a
+	.ascii "Pero un dia, una"
+	.db 0x0a
+	.ascii "oscura maldicion"
+	.db 0x0a
+	.ascii "cayo sobre nosotros."
+	.db 0x0a
+	.ascii "Los guardianes se"
+	.db 0x0a
+	.ascii "volvieron hostiles"
+	.db 0x0a
+	.ascii "y la gente huyo."
+	.db 0x0a
+	.ascii "Solo quedamos unos"
+	.db 0x0a
+	.ascii "pocos que aun"
+	.db 0x0a
+	.ascii "resistimos aqui."
+	.db 0x0a
+	.ascii "Si encuentras la"
+	.db 0x0a
+	.ascii "reliquia sagrada,"
+	.db 0x0a
+	.ascii "podras romper el"
+	.db 0x0a
+	.ascii "hechizo que nos"
+	.db 0x0a
+	.ascii "atormenta a todos"
+	.db 0x0a
+	.ascii "los habitantes."
+	.db 0x0a
+	.ascii "Ten cuidado en tu"
+	.db 0x0a
+	.ascii "aventura, valiente"
+	.db 0x0a
+	.ascii "heroe. Que la"
+	.db 0x0a
+	.ascii "fortuna te acompane"
+	.db 0x0a
+	.ascii "en tu camino hacia"
+	.db 0x0a
+	.ascii "la victoria."
+	.db 0x00
+___str_2:
+	.ascii "Bienvenido a mi"
+	.db 0x0a
+	.ascii "humilde hogar."
+	.db 0x0a
+	.ascii "Puedes descansar"
+	.db 0x0a
+	.ascii "aqui si lo"
+	.db 0x0a
+	.ascii "necesitas."
+	.db 0x0a
+	.ascii "Pero por favor,"
+	.db 0x0a
+	.ascii "no toques mis"
+	.db 0x0a
+	.ascii "cosas personales."
+	.db 0x0a
+	.ascii "Respeta mi"
+	.db 0x0a
+	.ascii "espacio y todo"
+	.db 0x0a
+	.ascii "estara bien."
 	.db 0x00
 	.area _CODE
 	.area _INITIALIZER
@@ -148,7 +257,7 @@ __xinit__maps:
 	.db #0x20	; 32
 	.db #0x20	; 32
 	.dw _world_entities
-	.db #0x01	; 1
+	.db #0x02	; 2
 	.db #0x00	; 0
 	.db #0x02	; 2
 	.db #0x03	; 3

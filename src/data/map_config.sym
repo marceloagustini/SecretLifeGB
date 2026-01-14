@@ -7,17 +7,18 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 ___str_0                                                        00000044 R
-  0 ___str_1                                                        0000007F R
+  0 ___str_0                                                        0000005A R
+  0 ___str_1                                                        0000015C R
+  0 ___str_2                                                        00000331 R
   8 __xinit__house_portals                                          00000007 R
   8 __xinit__level2_portals                                         0000000E R
   8 __xinit__maps                                                   00000015 R
   8 __xinit__world_portals                                          00000000 R
     _entity_init                                                    ******** GX
-  2 _house_entities                                                 0000000F GR
+  2 _house_entities                                                 0000001E GR
     _house_map                                                      ******** GX
   3 _house_portals                                                  00000007 GR
-  2 _level2_entities                                                0000001E GR
+  2 _level2_entities                                                0000002D GR
     _level2_map                                                     ******** GX
   3 _level2_portals                                                 0000000E GR
     _map_data                                                       ******** GX
@@ -32,9 +33,9 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size       AB   flags    0
+   0 _CODE                                      size      3CE   flags    0
    1 _HRAM                                      size        0   flags    0
-   2 _DATA                                      size       2D   flags    0
+   2 _DATA                                      size       3C   flags    0
    3 _INITIALIZED                               size       63   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0

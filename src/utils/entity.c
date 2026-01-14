@@ -67,6 +67,34 @@ void ai_enemy_random_walk(entity_t *self) {
   }
 }
 
+void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y) {
+  // Shoot projectiles toward player periodically
+  extern void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy);
+
+  if (++self->move_timer > 60) { // Shoot every 60 frames (~1 second)
+    self->move_timer = 0;
+
+    // Calculate direction to player
+    int16_t dx = (int16_t)player_x - (int16_t)self->x;
+    int16_t dy = (int16_t)player_y - (int16_t)self->y;
+
+    // Normalize to velocity (-2, -1, 0, 1, 2)
+    int8_t vx = 0, vy = 0;
+    if (dx > 10)
+      vx = 2;
+    else if (dx < -10)
+      vx = -2;
+    if (dy > 10)
+      vy = 2;
+    else if (dy < -10)
+      vy = -2;
+
+    if (vx != 0 || vy != 0) {
+      projectile_spawn(self->x + 8, self->y + 8, vx, vy);
+    }
+  }
+}
+
 void entity_update_all(entity_t *entities, uint8_t count) {
   for (uint8_t i = 0; i < count; i++) {
     if (entities[i].active && entities[i].update) {

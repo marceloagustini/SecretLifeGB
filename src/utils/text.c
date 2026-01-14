@@ -12,7 +12,9 @@
 #define TEXT_LINES 4  // Internal lines
 
 void text_init(void) {
-  set_win_data(FONT_BASE_TILE, 39, font_data);
+  set_win_data(FONT_BASE_TILE, 65,
+               font_data); // Load 65 tiles: space + 26 upper + 26 lower + 6
+                           // special + 6 box
   move_win(7, 144);
 }
 
@@ -22,33 +24,33 @@ uint8_t get_tile_for_char(char c) {
   if (c >= 'A' && c <= 'Z')
     return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'A'));
   if (c >= 'a' && c <= 'z')
-    return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'a'));
+    return (uint8_t)(FONT_BASE_TILE + 27 + (c - 'a')); // Lowercase at offset 27
   if (c == ',')
-    return (uint8_t)(FONT_BASE_TILE + 27);
+    return (uint8_t)(FONT_BASE_TILE + 53);
   if (c == '?')
-    return (uint8_t)(FONT_BASE_TILE + 28);
+    return (uint8_t)(FONT_BASE_TILE + 54);
   if (c == '!')
-    return (uint8_t)(FONT_BASE_TILE + 29);
+    return (uint8_t)(FONT_BASE_TILE + 55);
   if (c == '.')
-    return (uint8_t)(FONT_BASE_TILE + 30);
+    return (uint8_t)(FONT_BASE_TILE + 56);
   if (c == '>')
-    return (uint8_t)(FONT_BASE_TILE + 31);
+    return (uint8_t)(FONT_BASE_TILE + 57);
   if (c == '#')
-    return (uint8_t)(FONT_BASE_TILE + 32);
+    return (uint8_t)(FONT_BASE_TILE + 58);
 
   // Box drawing - shifted
   if (c == 1)
-    return (uint8_t)(FONT_BASE_TILE + 33); // ┌
+    return (uint8_t)(FONT_BASE_TILE + 59); // ┌
   if (c == 2)
-    return (uint8_t)(FONT_BASE_TILE + 34); // ─
+    return (uint8_t)(FONT_BASE_TILE + 60); // ─
   if (c == 3)
-    return (uint8_t)(FONT_BASE_TILE + 35); // ┐
+    return (uint8_t)(FONT_BASE_TILE + 61); // ┐
   if (c == 4)
-    return (uint8_t)(FONT_BASE_TILE + 36); // │
+    return (uint8_t)(FONT_BASE_TILE + 62); // │
   if (c == 5)
-    return (uint8_t)(FONT_BASE_TILE + 37); // └
+    return (uint8_t)(FONT_BASE_TILE + 63); // └
   if (c == 6)
-    return (uint8_t)(FONT_BASE_TILE + 38); // ┘
+    return (uint8_t)(FONT_BASE_TILE + 64); // ┘
 
   return (uint8_t)(FONT_BASE_TILE + 0);
 }
@@ -74,7 +76,9 @@ void clear_dialog_buf(void) {
 
 void text_dialogue(const char *str) {
   waitpadup();
-  HIDE_SPRITES; // Ensure box is on top
+  // Hide ALL sprites during dialogue (including player)
+  for (int i = 0; i < 40; i++)
+    move_sprite(i, 0, 0);
   const char *ptr = str;
   while (*ptr != '\0') {
     clear_dialog_buf();
@@ -117,5 +121,4 @@ void text_dialogue(const char *str) {
   }
   HIDE_WIN;
   move_win(7, 144);
-  SHOW_SPRITES;
 }

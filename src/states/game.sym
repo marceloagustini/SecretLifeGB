@@ -13,12 +13,12 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000B5F R
-  0 ___str_1                                                        00000B65 R
-  0 ___str_2                                                        00000B89 R
-  0 ___str_3                                                        00000B9E R
-  0 ___str_4                                                        00000BB4 R
-  0 ___str_5                                                        00000BD8 R
+  0 ___str_0                                                        00000C69 R
+  0 ___str_1                                                        00000C6F R
+  0 ___str_2                                                        00000CF1 R
+  0 ___str_3                                                        00000D06 R
+  0 ___str_4                                                        00000D67 R
+  0 ___str_5                                                        00000DFE R
     __mulint                                                        ******** GX
   8 __xinit__anim_frame                                             00000005 R
   8 __xinit__anim_timer                                             00000006 R
@@ -30,6 +30,7 @@ Symbol Table
   8 __xinit__player_dir                                             00000004 R
   8 __xinit__player_x                                               00000000 R
   8 __xinit__player_y                                               00000002 R
+    _ai_enemy_shooter                                               ******** GX
   3 _anim_frame                                                     00000005 GR
   3 _anim_timer                                                     00000006 GR
   3 _camera_x                                                       00000007 GR
@@ -48,7 +49,7 @@ Symbol Table
   0 _game_init                                                      000004C8 GR
   3 _game_ready                                                     0000000D R
     _game_state                                                     ******** GX
-  0 _game_update                                                    00000568 GR
+  0 _game_update                                                    00000585 GR
   0 _get_tile_at                                                    00000000 GR
     _guard_sprite_data                                              ******** GX
     _input_held                                                     ******** GX
@@ -57,21 +58,27 @@ Symbol Table
     _inventory_has_item                                             ******** GX
   0 _is_solid                                                       000002D5 GR
   0 _load_map                                                       000001F2 GR
-    _map_init_data                                                  ******** GX
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _map_init_data                                                  ******** GX
     _map_is_solid                                                   ******** GX
     _maps                                                           ******** GX
     _music_init                                                     ******** GX
     _music_update                                                   ******** GX
     _npc_child_sprite                                               ******** GX
+    _npc_woman_sprite                                               ******** GX
   3 _player_dir                                                     00000004 GR
     _player_sprites                                                 ******** GX
   3 _player_x                                                       00000000 GR
   3 _player_y                                                       00000002 GR
+    _projectile_check_collision                                     ******** GX
+    _projectile_init                                                ******** GX
+    _projectile_render_all                                          ******** GX
+    _projectile_sprite                                              ******** GX
+    _projectile_update_all                                          ******** GX
   2 _saved_world_x                                                  00000000 GR
   2 _saved_world_y                                                  00000002 GR
     _set_bkg_data                                                   ******** GX
@@ -86,13 +93,12 @@ Symbol Table
   0 _update_camera                                                  00000070 GR
   0 _update_player_sprite                                           0000014C GR
 
-
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 3
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      BF0   flags    0
+   0 _CODE                                      size      E76   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        4   flags    0
    3 _INITIALIZED                               size        E   flags    0

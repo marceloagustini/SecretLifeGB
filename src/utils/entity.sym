@@ -10,18 +10,21 @@ Symbol Table
     _DIV_REG                                                        ******** GX
     ___sdcc_call_hl                                                 ******** GX
   0 _ai_enemy_random_walk                                           00000070 GR
+  0 _ai_enemy_shooter                                               00000176 GR
   0 _ai_npc_static                                                  0000006F GR
   0 _entity_init                                                    00000000 GR
-  0 _entity_render_all                                              000001DD GR
-  0 _entity_update_all                                              00000176 GR
+  0 _entity_render_all                                              00000361 GR
+  0 _entity_update_all                                              000002FA GR
+    _projectile_spawn                                               ******** GX
     _shadow_OAM                                                     ******** GX
+
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      374   flags    0
+   0 _CODE                                      size      4F8   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0
