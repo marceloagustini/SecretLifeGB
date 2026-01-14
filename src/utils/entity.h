@@ -31,6 +31,7 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
 
 // AI Behaviors
 void ai_npc_static(entity_t *self);
+void ai_anim_simple(entity_t *self);
 void ai_enemy_random_walk(entity_t *self);
 void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y);
 

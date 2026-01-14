@@ -13,6 +13,8 @@
 	.globl _bg_music
 	.globl _music_init
 	.globl _music_update
+	.globl _sfx_pickup
+	.globl _sfx_success
 ;--------------------------------------------------------
 ; special function registers
 ;--------------------------------------------------------
@@ -233,6 +235,50 @@ _music_update::
 	dec	(hl)
 ;src/utils/music.c:45: }
 	add	sp, #4
+	ret
+;src/utils/music.c:47: void sfx_pickup() {
+;	---------------------------------
+; Function sfx_pickup
+; ---------------------------------
+_sfx_pickup::
+;src/utils/music.c:49: NR10_REG = 0x16; // Sweep time 1, increase, shift 6
+	ld	a, #0x16
+	ldh	(_NR10_REG + 0), a
+;src/utils/music.c:50: NR11_REG = 0x80; // 50% duty
+	ld	a, #0x80
+	ldh	(_NR11_REG + 0), a
+;src/utils/music.c:51: NR12_REG = 0xF0; // Init vol 15, no env
+	ld	a, #0xf0
+	ldh	(_NR12_REG + 0), a
+;src/utils/music.c:52: NR13_REG = 0x00; // Low bits
+	xor	a, a
+	ldh	(_NR13_REG + 0), a
+;src/utils/music.c:53: NR14_REG = 0xC4; // Trigger, high bits (freq ~1024)
+	ld	a, #0xc4
+	ldh	(_NR14_REG + 0), a
+;src/utils/music.c:54: }
+	ret
+;src/utils/music.c:56: void sfx_success() {
+;	---------------------------------
+; Function sfx_success
+; ---------------------------------
+_sfx_success::
+;src/utils/music.c:58: NR10_REG = 0x00; // No sweep
+	xor	a, a
+	ldh	(_NR10_REG + 0), a
+;src/utils/music.c:59: NR11_REG = 0x80; // 50% duty
+	ld	a, #0x80
+	ldh	(_NR11_REG + 0), a
+;src/utils/music.c:60: NR12_REG = 0xF2; // Init vol 15, fade 2
+	ld	a, #0xf2
+	ldh	(_NR12_REG + 0), a
+;src/utils/music.c:61: NR13_REG = 0x00;
+	xor	a, a
+	ldh	(_NR13_REG + 0), a
+;src/utils/music.c:62: NR14_REG = 0xC7; // Trigger, freq ~1792 (High pitch)
+	ld	a, #0xc7
+	ldh	(_NR14_REG + 0), a
+;src/utils/music.c:66: }
 	ret
 	.area _CODE
 	.area _INITIALIZER

@@ -43,3 +43,24 @@ void music_update() {
   }
   music_timer--;
 }
+
+void sfx_pickup() {
+  // Channel 1: Sweep up (Coin-like)
+  NR10_REG = 0x16; // Sweep time 1, increase, shift 6
+  NR11_REG = 0x80; // 50% duty
+  NR12_REG = 0xF0; // Init vol 15, no env
+  NR13_REG = 0x00; // Low bits
+  NR14_REG = 0xC4; // Trigger, high bits (freq ~1024)
+}
+
+void sfx_success() {
+  // Channel 1: Long rising tone
+  NR10_REG = 0x00; // No sweep
+  NR11_REG = 0x80; // 50% duty
+  NR12_REG = 0xF2; // Init vol 15, fade 2
+  NR13_REG = 0x00;
+  NR14_REG = 0xC7; // Trigger, freq ~1792 (High pitch)
+
+  // Note: This interrupts the music on Channel 1 slightly, which is expected
+  // behavior for simple engines
+}

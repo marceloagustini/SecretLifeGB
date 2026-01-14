@@ -11,14 +11,14 @@ Symbol Table
     _LCDC_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000352 R
-  0 ___str_1                                                        0000035D R
-  0 ___str_2                                                        00000363 R
-  0 ___str_3                                                        00000365 R
-  0 ___str_4                                                        00000367 R
+  0 ___str_0                                                        00000367 R
+  0 ___str_1                                                        00000372 R
+  0 ___str_2                                                        00000378 R
+  0 ___str_3                                                        0000037A R
+  0 ___str_4                                                        0000037C R
   8 __xinit__selection                                              00000000 R
     _display_off                                                    ******** GX
-  0 _draw_box                                                       000000AA R
+  0 _draw_box                                                       000000D2 R
   0 _draw_text                                                      00000000 R
     _fill_bkg_rect                                                  ******** GX
     _font_data                                                      ******** GX
@@ -26,9 +26,9 @@ Symbol Table
     _input_pressed                                                  ******** GX
     _inventory                                                      ******** GX
     _inventory_count                                                ******** GX
-  0 _inventory_draw                                                 0000018A GR
-  0 _inventory_state_init                                           00000372 GR
-  0 _inventory_state_update                                         000003A6 GR
+  0 _inventory_draw                                                 000001B2 GR
+  0 _inventory_state_init                                           00000387 GR
+  0 _inventory_state_update                                         000003BB GR
   3 _selection                                                      00000000 R
     _set_bkg_data                                                   ******** GX
     _set_bkg_tile_xy                                                ******** GX
@@ -39,7 +39,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      400   flags    0
+   0 _CODE                                      size      415   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        1   flags    0

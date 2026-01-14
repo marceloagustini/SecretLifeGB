@@ -144,7 +144,7 @@ static uint8_t game_ready = 0;
 
 void game_init(void) {
   DISPLAY_OFF;
-  set_bkg_data(0, 77, tiles_data); // All tiles (now 77)
+  set_bkg_data(0, 40, tiles_data); // All tiles (now 40)
 
   if (game_ready) {
     load_map(current_map);
@@ -165,6 +165,7 @@ void game_init(void) {
   set_sprite_data(28, 8, guard_sprite_data);
   set_sprite_data(36, 4, npc_woman_sprite);
   set_sprite_data(40, 1, projectile_sprite);
+  set_sprite_data(41, 2, flower_sprite);
   update_player_sprite();
   text_init();
   music_init();
@@ -203,9 +204,6 @@ void game_update(void) {
       player_x = nx;
       player_y = ny;
       update_camera();
-      uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
-      for (int i = 0; i < 4; i++)
-        move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
 
       if (++anim_timer > 6) {
         anim_frame = !anim_frame;
@@ -229,8 +227,7 @@ void game_update(void) {
     // Automatic Transitions
     uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
     if (current_map == &maps[0] && // WORLD_MAP
-        (tid == 21 || tid == 22 || tid == 58 || tid == 59 || tid == 70 ||
-         tid == 71)) {
+        (tid == 21 || tid == 22)) {
       if (player_x > 160 && player_y > 160) {
         saved_world_x = player_x;
         saved_world_y = player_y + 16;
@@ -250,6 +247,12 @@ void game_update(void) {
       return;
     }
   }
+
+  // Ensure player sprites are positioned correctly (restores visibility after
+  // dialogue)
+  uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
+  for (int i = 0; i < 4; i++)
+    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
 
   // Render entities & AI
   entity_update_all(current_map->entities, current_map->num_entities);
@@ -316,8 +319,32 @@ void game_update(void) {
         dx = -dx;
       if (dy < 0)
         dy = -dy;
-      if (dx < 24 && dy < 24 && input_pressed(J_A))
-        text_dialogue(e->dialogue);
+      if (dx < 24 && dy < 24) {
+        if (input_pressed(J_A)) {
+          if (e->type == ENT_NPC) {
+            // Check for Woman NPC (Sprite 36) and Flower
+            if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
+              text_dialogue(DIALOGUE_FLOWER_THANKS);
+            } else {
+              text_dialogue(e->dialogue);
+            }
+          } else if (e->type == ENT_ITEM) {
+            // Basic interaction if wanted, but pickup is on B usually
+          }
+        }
+        if (input_pressed(J_B)) {
+          if (e->type == ENT_ITEM && e->active) {
+            // Assuming it's the flower based on sprite 41 or just generic item
+            // pickup
+            if (e->sprite_base == 41) {
+              inventory_add_item("FLOR", "UNA HERMOSA\nFLOR SILVESTRE", 41);
+              sfx_pickup();
+              e->active = 0; // Remove from map
+                             // Optional: text_dialogue("Recogiste una flor!");
+            }
+          }
+        }
+      }
     }
 
     uint8_t tid = get_tile_at(player_x + 8, player_y);
@@ -330,14 +357,16 @@ void game_update(void) {
         if (!inventory_has_item("LLAVE")) {
           text_dialogue(DIALOGUE_FOUND_KEY);
           inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
+          sfx_pickup();
         } else
           text_dialogue(DIALOGUE_EMPTY_CHEST);
       }
     }
 
-    if (current_map == &maps[0] && (tid == 43 || tid == 44)) { // WORLD_MAP
+    if (current_map == &maps[0] && (tid == 38 || tid == 39)) { // WORLD_MAP
       if (inventory_has_item("LLAVE")) {
         text_dialogue(DIALOGUE_USE_KEY);
+        sfx_success();
         switch_map(&maps[2], 128, 224); // LEVEL2_MAP
         return;
       } else {

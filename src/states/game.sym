@@ -13,12 +13,15 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000C69 R
-  0 ___str_1                                                        00000C6F R
-  0 ___str_2                                                        00000CF1 R
-  0 ___str_3                                                        00000D06 R
-  0 ___str_4                                                        00000D67 R
-  0 ___str_5                                                        00000DFE R
+  0 ___str_0                                                        00000D07 R
+  0 ___str_1                                                        00000D0C R
+  0 ___str_2                                                        00000DB6 R
+  0 ___str_3                                                        00000DD1 R
+  0 ___str_4                                                        00000DD7 R
+  0 ___str_5                                                        00000E59 R
+  0 ___str_6                                                        00000E6E R
+  0 ___str_7                                                        00000ECF R
+  0 ___str_8                                                        00000F66 R
     __mulint                                                        ******** GX
   8 __xinit__anim_frame                                             00000005 R
   8 __xinit__anim_timer                                             00000006 R
@@ -46,23 +49,24 @@ Symbol Table
     _fade_in                                                        ******** GX
     _fade_out                                                       ******** GX
     _fill_bkg_rect                                                  ******** GX
+    _flower_sprite                                                  ******** GX
   0 _game_init                                                      000004C8 GR
   3 _game_ready                                                     0000000D R
     _game_state                                                     ******** GX
-  0 _game_update                                                    00000585 GR
+  0 _game_update                                                    00000592 GR
   0 _get_tile_at                                                    00000000 GR
     _guard_sprite_data                                              ******** GX
     _input_held                                                     ******** GX
     _input_pressed                                                  ******** GX
-    _inventory_add_item                                             ******** GX
-    _inventory_has_item                                             ******** GX
-  0 _is_solid                                                       000002D5 GR
-  0 _load_map                                                       000001F2 GR
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _inventory_add_item                                             ******** GX
+    _inventory_has_item                                             ******** GX
+  0 _is_solid                                                       000002D5 GR
+  0 _load_map                                                       000001F2 GR
     _map_init_data                                                  ******** GX
     _map_is_solid                                                   ******** GX
     _maps                                                           ******** GX
@@ -84,6 +88,8 @@ Symbol Table
     _set_bkg_data                                                   ******** GX
     _set_bkg_tiles                                                  ******** GX
     _set_sprite_data                                                ******** GX
+    _sfx_pickup                                                     ******** GX
+    _sfx_success                                                    ******** GX
     _shadow_OAM                                                     ******** GX
   0 _switch_map                                                     000002B0 GR
     _text_dialogue                                                  ******** GX
@@ -98,7 +104,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      E76   flags    0
+   0 _CODE                                      size      FDE   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        4   flags    0
    3 _INITIALIZED                               size        E   flags    0

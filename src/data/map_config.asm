@@ -8,6 +8,7 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _map_init_data
+	.globl _ai_anim_simple
 	.globl _entity_init
 	.globl _maps
 	.globl _level2_portals
@@ -25,7 +26,7 @@
 ;--------------------------------------------------------
 	.area _DATA
 _world_entities::
-	.ds 30
+	.ds 45
 _house_entities::
 	.ds 15
 _level2_entities::
@@ -94,7 +95,25 @@ _map_init_data::
 	xor	a, a
 	ld	de, #(_world_entities + 15)
 	call	_entity_init
-;src/data/map_config.c:56: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
+;src/data/map_config.c:56: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 41, NULL); // Flower
+	ld	de, #0x0000
+	push	de
+	ld	a, #0x29
+	push	af
+	inc	sp
+	ld	de, #0x008c
+	push	de
+	ld	de, #0x00b4
+	push	de
+	ld	a, #0x01
+	ld	de, #(_world_entities + 30)
+	call	_entity_init
+;src/data/map_config.c:57: world_entities[2].update = ai_anim_simple;
+	ld	hl, #(_world_entities + 43)
+	ld	(hl), #<(_ai_anim_simple)
+	inc	hl
+	ld	(hl), #>(_ai_anim_simple)
+;src/data/map_config.c:58: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
 	ld	de, #___str_2
 	push	de
 	ld	a, #0x18
@@ -107,7 +126,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_house_entities
 	call	_entity_init
-;src/data/map_config.c:57: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
+;src/data/map_config.c:59: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
 	ld	de, #0x0000
 	push	de
 	ld	a, #0x1c
@@ -119,7 +138,7 @@ _map_init_data::
 	ld	a, #0x03
 	ld	de, #_level2_entities
 	call	_entity_init
-;src/data/map_config.c:58: }
+;src/data/map_config.c:60: }
 	ret
 ___str_0:
 	.ascii "Hola aventurero!"
@@ -197,12 +216,6 @@ ___str_1:
 	.db 0x0a
 	.ascii "los habitantes."
 	.db 0x0a
-	.ascii "Ten cuidado en tu"
-	.db 0x0a
-	.ascii "aventura, valiente"
-	.db 0x0a
-	.ascii "heroe. Que la"
-	.db 0x0a
 	.ascii "fortuna te acompane"
 	.db 0x0a
 	.ascii "en tu camino hacia"
@@ -257,7 +270,7 @@ __xinit__maps:
 	.db #0x20	; 32
 	.db #0x20	; 32
 	.dw _world_entities
-	.db #0x02	; 2
+	.db #0x03	; 3
 	.db #0x00	; 0
 	.db #0x02	; 2
 	.db #0x03	; 3
@@ -265,11 +278,11 @@ __xinit__maps:
 	.db #0x05	; 5
 	.db #0x15	; 21
 	.db #0x16	; 22
-	.db #0x3a	; 58
-	.db #0x3b	; 59
-	.db #0x46	; 70	'F'
-	.db #0x47	; 71	'G'
 	.db #0xff	; 255
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
 	.db 0x00
 	.db 0x00
 	.db 0x00

@@ -44,7 +44,12 @@
   "Solo quedamos unos\npocos que aun\nresistimos aqui.\n"                      \
   "Si encuentras la\nreliquia sagrada,\npodras romper el\n"                    \
   "hechizo que nos\natormenta a todos\nlos habitantes.\n"                      \
-  "Ten cuidado en tu\naventura, valiente\nheroe. Que la\n"                     \
   "fortuna te acompane\nen tu camino hacia\nla victoria."
+
+#define DIALOGUE_FLOWER_THANKS                                                 \
+  "Gracias! Esta flor\nme recuerda a mi\nhogar.\n"                             \
+  "Te dire lo que se.\nBusca la cueva al\neste del rio.\n"                     \
+  "Alli encontraras\nlo que buscas.\n"                                         \
+  "Sigue el camino\nde piedras y no\nte pierdas."
 
 #endif

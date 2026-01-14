@@ -27,6 +27,13 @@ void ai_npc_static(entity_t *self) {
   // But we could add idle animations here
 }
 
+void ai_anim_simple(entity_t *self) {
+  if (++self->anim_timer > 16) {
+    self->anim_frame = !self->anim_frame;
+    self->anim_timer = 0;
+  }
+}
+
 void ai_enemy_random_walk(entity_t *self) {
   if (self->move_timer > 0) {
     self->move_timer--;
@@ -115,11 +122,22 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
 
     uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
     if (esx < 168 && esy < 160) {
-      uint8_t frame_offset = (e->anim_frame * 4);
-      for (int j = 0; j < 4; j++) {
-        uint8_t sprite_id = sprite_offset + (i * 4) + j;
-        move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-        set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+      if (e->type == ENT_ITEM) {
+        // Single tile rendering for items (8x8)
+        uint8_t sprite_id = sprite_offset + (i * 4);
+        move_sprite(sprite_id, esx + 4, esy + 4); // Center it
+        set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
+
+        // Hide unused sprites
+        for (int j = 1; j < 4; j++)
+          move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+      } else {
+        uint8_t frame_offset = (e->anim_frame * 4);
+        for (int j = 0; j < 4; j++) {
+          uint8_t sprite_id = sprite_offset + (i * 4) + j;
+          move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+          set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+        }
       }
     } else {
       for (int j = 0; j < 4; j++)

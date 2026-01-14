@@ -32,5 +32,7 @@ extern const note_t bg_music[];
 
 void music_init();
 void music_update();
+void sfx_pickup();
+void sfx_success();
 
 #endif

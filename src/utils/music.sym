@@ -23,6 +23,8 @@ Symbol Table
   3 _music_timer                                                    00000001 GR
   0 _music_update                                                   00000068 GR
   0 _play_note                                                      0000004D GR
+  0 _sfx_pickup                                                     000000DC GR
+  0 _sfx_success                                                    000000F0 GR
 
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
@@ -30,7 +32,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size       DC   flags    0
+   0 _CODE                                      size      103   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        2   flags    0
