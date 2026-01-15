@@ -13,58 +13,62 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000C77 R
-  0 ___str_1                                                        00000C7C R
-  0 ___str_2                                                        00000D26 R
-  0 ___str_3                                                        00000D41 R
-  0 ___str_4                                                        00000D47 R
-  0 ___str_5                                                        00000DC9 R
-  0 ___str_6                                                        00000DDE R
-  0 ___str_7                                                        00000E3F R
-  0 ___str_8                                                        00000ED6 R
+  0 ___str_0                                                        00000CB8 R
+  0 ___str_1                                                        00000CBD R
+  0 ___str_2                                                        00000D67 R
+  0 ___str_3                                                        00000D82 R
+  0 ___str_4                                                        00000D88 R
+  0 ___str_5                                                        00000E0A R
+  0 ___str_6                                                        00000E1F R
+  0 ___str_7                                                        00000E80 R
+  0 ___str_8                                                        00000F17 R
     __mulint                                                        ******** GX
-  8 __xinit__anim_frame                                             00000005 R
-  8 __xinit__anim_timer                                             00000006 R
-  8 __xinit__camera_x                                               00000007 R
-  8 __xinit__camera_y                                               00000009 R
-  8 __xinit__env_anim_frame                                         0000000C R
-  8 __xinit__env_anim_timer                                         0000000B R
-  8 __xinit__game_ready                                             0000000D R
-  8 __xinit__player_dir                                             00000004 R
+  8 __xinit__anim_frame                                             00000009 R
+  8 __xinit__anim_timer                                             0000000A R
+  8 __xinit__camera_x                                               0000000B R
+  8 __xinit__camera_y                                               0000000D R
+  8 __xinit__enter_x                                                00000004 R
+  8 __xinit__enter_y                                                00000006 R
+  8 __xinit__env_anim_frame                                         00000010 R
+  8 __xinit__env_anim_timer                                         0000000F R
+  8 __xinit__game_ready                                             00000011 R
+  8 __xinit__player_dir                                             00000008 R
   8 __xinit__player_x                                               00000000 R
   8 __xinit__player_y                                               00000002 R
-  3 _anim_frame                                                     00000005 GR
-  3 _anim_timer                                                     00000006 GR
-  3 _camera_x                                                       00000007 GR
-  3 _camera_y                                                       00000009 GR
-  0 _can_move                                                       000002D8 GR
+  3 _anim_frame                                                     00000009 GR
+  3 _anim_timer                                                     0000000A GR
+  3 _camera_x                                                       0000000B GR
+  3 _camera_y                                                       0000000D GR
+  0 _can_move                                                       000002EA GR
     _current_map                                                    ******** GX
     _delay                                                          ******** GX
     _display_off                                                    ******** GX
+  3 _enter_x                                                        00000004 GR
+  3 _enter_y                                                        00000006 GR
     _entity_render_all                                              ******** GX
     _entity_update_all                                              ******** GX
-  3 _env_anim_frame                                                 0000000C GR
-  3 _env_anim_timer                                                 0000000B GR
+  3 _env_anim_frame                                                 00000010 GR
+  3 _env_anim_timer                                                 0000000F GR
     _fade_in                                                        ******** GX
     _fade_out                                                       ******** GX
     _fill_bkg_rect                                                  ******** GX
     _flower_sprite                                                  ******** GX
-  0 _game_init                                                      000004C0 GR
-  3 _game_ready                                                     0000000D R
+  0 _game_init                                                      000004D2 GR
+  3 _game_ready                                                     00000011 R
     _game_state                                                     ******** GX
-  0 _game_update                                                    0000058A GR
+  0 _game_update                                                    0000060F GR
   0 _get_tile_at                                                    00000000 GR
-    _guard_sprite_data                                              ******** GX
-    _input_held                                                     ******** GX
-    _input_pressed                                                  ******** GX
-    _inventory_add_item                                             ******** GX
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _guard_sprite_data                                              ******** GX
+    _input_held                                                     ******** GX
+    _input_pressed                                                  ******** GX
+    _inventory_add_item                                             ******** GX
     _inventory_has_item                                             ******** GX
-  0 _is_solid                                                       000002D5 GR
+  0 _is_solid                                                       000002E7 GR
   0 _load_map                                                       000001F2 GR
     _map_init_data                                                  ******** GX
     _map_is_solid                                                   ******** GX
@@ -73,7 +77,8 @@ Symbol Table
     _music_update                                                   ******** GX
     _npc_child_sprite                                               ******** GX
     _npc_woman_sprite                                               ******** GX
-  3 _player_dir                                                     00000004 GR
+  3 _player_dir                                                     00000008 GR
+  0 _player_hit                                                     000005D7 GR
     _player_sprites                                                 ******** GX
   3 _player_x                                                       00000000 GR
   3 _player_y                                                       00000002 GR
@@ -104,14 +109,14 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      F4E   flags    0
+   0 _CODE                                      size      F8F   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        4   flags    0
-   3 _INITIALIZED                               size        E   flags    0
+   3 _INITIALIZED                               size       12   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0
    6 _GSINIT                                    size        0   flags    0
    7 _GSFINAL                                   size        0   flags    0
-   8 _INITIALIZER                               size        E   flags    0
+   8 _INITIALIZER                               size       12   flags    0
    9 _CABS                                      size        0   flags    8
 

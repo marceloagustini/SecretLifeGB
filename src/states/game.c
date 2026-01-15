@@ -23,6 +23,7 @@ extern uint8_t game_state;
 
 // Player state
 uint16_t player_x = 128, player_y = 128;
+uint16_t enter_x = 128, enter_y = 128; // Spawn point for current map
 uint16_t saved_world_x, saved_world_y;
 uint8_t player_dir = 0; // 0:D, 1:U, 2:L, 3:R
 uint8_t anim_frame = 0, anim_timer = 0;
@@ -106,6 +107,8 @@ void switch_map(map_t *new_map, uint16_t new_x, uint16_t new_y) {
   fade_out();
   player_x = new_x;
   player_y = new_y;
+  enter_x = new_x; // Remember map entrance
+  enter_y = new_y;
   load_map(new_map);
   update_player_sprite();
   fade_in();
@@ -147,6 +150,11 @@ void game_init(void) {
   set_bkg_data(0, 40, tiles_data); // All tiles (now 40)
 
   if (game_ready) {
+    player_x = 128;
+    player_y = 128;
+    enter_x = 128;
+    enter_y = 128;
+    map_init_data();
     load_map(current_map);
     update_player_sprite();
     BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
@@ -170,10 +178,31 @@ void game_init(void) {
   text_init();
   music_init();
   projectile_init();
+  enter_x = player_x;
+  enter_y = player_y;
   SHOW_BKG;
   SHOW_SPRITES;
   DISPLAY_ON;
   game_ready = 1;
+}
+
+void player_hit() {
+  fade_out();
+  delay(1000);
+
+  // Reset world data
+  map_init_data();
+  projectile_init();
+
+  // Reset player position
+  player_x = enter_x;
+  player_y = enter_y;
+
+  // Reload current map
+  load_map(current_map);
+  update_player_sprite();
+
+  fade_in();
 }
 
 void game_update(void) {
@@ -273,14 +302,7 @@ void game_update(void) {
 
   // Check projectile collision with player
   if (projectile_check_collision(player_x + 8, player_y + 8)) {
-    // Restart level on hit
-    fade_out();
-    delay(500);
-    player_x = 128;
-    player_y = 224;
-    load_map(&maps[2]); // LEVEL2_MAP
-    update_player_sprite();
-    fade_in();
+    player_hit();
     return;
   }
 
@@ -295,13 +317,7 @@ void game_update(void) {
       if (dy < 0)
         dy = -dy;
       if (dx < 10 && dy < 10) {
-        fade_out();
-        delay(1000);
-        player_x = 128;
-        player_y = 224;
-        load_map(&maps[2]); // LEVEL2_MAP
-        update_player_sprite();
-        fade_in();
+        player_hit();
         return;
       }
     }
