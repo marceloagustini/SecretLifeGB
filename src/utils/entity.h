@@ -20,6 +20,7 @@ typedef struct entity_t {
   uint8_t anim_frame;
   uint8_t anim_timer;
   uint8_t move_timer;
+  uint8_t shoot_timer;
   entity_update_fn update;
 } entity_t;
 
@@ -33,6 +34,8 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
 void ai_npc_static(entity_t *self);
 void ai_anim_simple(entity_t *self);
 void ai_enemy_random_walk(entity_t *self);
+void ai_enemy_random_walk(entity_t *self);
 void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y);
+void ai_enemy_chaser_shooter(entity_t *self);
 
 #endif

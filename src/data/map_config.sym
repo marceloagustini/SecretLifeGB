@@ -7,19 +7,20 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 ___str_0                                                        0000007A R
-  0 ___str_1                                                        0000017C R
-  0 ___str_2                                                        0000031E R
+  0 ___str_0                                                        00000086 R
+  0 ___str_1                                                        00000188 R
+  0 ___str_2                                                        0000032A R
   8 __xinit__house_portals                                          00000007 R
   8 __xinit__level2_portals                                         0000000E R
   8 __xinit__maps                                                   00000015 R
   8 __xinit__world_portals                                          00000000 R
     _ai_anim_simple                                                 ******** GX
+    _ai_enemy_chaser_shooter                                        ******** GX
     _entity_init                                                    ******** GX
-  2 _house_entities                                                 0000002D GR
+  2 _house_entities                                                 00000030 GR
     _house_map                                                      ******** GX
   3 _house_portals                                                  00000007 GR
-  2 _level2_entities                                                0000003C GR
+  2 _level2_entities                                                00000040 GR
     _level2_map                                                     ******** GX
   3 _level2_portals                                                 0000000E GR
     _map_data                                                       ******** GX
@@ -28,14 +29,15 @@ Symbol Table
   2 _world_entities                                                 00000000 GR
   3 _world_portals                                                  00000000 GR
 
+
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      3BB   flags    0
+   0 _CODE                                      size      3C7   flags    0
    1 _HRAM                                      size        0   flags    0
-   2 _DATA                                      size       4B   flags    0
+   2 _DATA                                      size       50   flags    0
    3 _INITIALIZED                               size       63   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0

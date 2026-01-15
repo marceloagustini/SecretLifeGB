@@ -102,6 +102,69 @@ void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y) {
   }
 }
 
+void ai_enemy_chaser_shooter(entity_t *self) {
+  extern uint16_t player_x, player_y;
+  extern void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy);
+
+  // 1. Chasing Logic
+  // Move every 2nd frame (slower than player)
+  if (++self->move_timer > 1) {
+    self->move_timer = 0;
+
+    int16_t dx = (int16_t)player_x - (int16_t)self->x;
+    int16_t dy = (int16_t)player_y - (int16_t)self->y;
+
+    // Simple axis-aligned movement
+    if (dx > 8) {
+      self->x++;
+      self->dir = 3; // Right
+    } else if (dx < -8) {
+      self->x--;
+      self->dir = 2; // Left
+    }
+
+    if (dy > 8) {
+      self->y++;
+      self->dir = 0; // Down
+    } else if (dy < -8) {
+      self->y--;
+      self->dir = 1; // Up
+    }
+
+    // Animate when moving
+    if (++self->anim_timer > 8) {
+      self->anim_frame = !self->anim_frame;
+      self->anim_timer = 0;
+    }
+  }
+
+  // 2. Shooting Logic
+  if (self->shoot_timer > 0) {
+    self->shoot_timer--;
+  } else {
+    // Shoot!
+    // Calculate velocity towards player
+    int16_t dx = (int16_t)player_x - (int16_t)self->x;
+    int16_t dy = (int16_t)player_y - (int16_t)self->y;
+
+    int8_t vx = 0, vy = 0;
+    if (dx > 0)
+      vx = 2;
+    else if (dx < 0)
+      vx = -2;
+    if (dy > 0)
+      vy = 2;
+    else if (dy < 0)
+      vy = -2;
+
+    projectile_spawn(self->x + 8, self->y + 8, vx, vy);
+
+    // Reset timer to random interval (60-120 frames per second = 1-2 seconds)
+    // basic rand: DIV_REG
+    self->shoot_timer = 60 + (DIV_REG & 0x3F);
+  }
+}
+
 void entity_update_all(entity_t *entities, uint8_t count) {
   for (uint8_t i = 0; i < count; i++) {
     if (entities[i].active && entities[i].update) {

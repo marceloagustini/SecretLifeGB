@@ -257,15 +257,15 @@ void game_update(void) {
   // Render entities & AI
   entity_update_all(current_map->entities, current_map->num_entities);
 
-  // Level 2 enemy shooter AI
-  if (current_map == &maps[2]) { // LEVEL2_MAP
-    for (int i = 0; i < current_map->num_entities; i++) {
-      entity_t *e = &current_map->entities[i];
-      if (e->active && e->type == ENT_ENEMY) {
-        ai_enemy_shooter(e, player_x, player_y);
-      }
-    }
-  }
+  // Level 2 enemy shooter AI - Now handled by entity_update_all
+  // if (current_map == &maps[2]) { // LEVEL2_MAP
+  //   for (int i = 0; i < current_map->num_entities; i++) {
+  //     entity_t *e = &current_map->entities[i];
+  //     if (e->active && e->type == ENT_ENEMY) {
+  //       ai_enemy_shooter(e, player_x, player_y);
+  //     }
+  //   }
+  // }
 
   // Update and render projectiles
   projectile_update_all();

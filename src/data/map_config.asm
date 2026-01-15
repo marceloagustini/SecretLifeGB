@@ -8,6 +8,7 @@
 ; Public variables in this module
 ;--------------------------------------------------------
 	.globl _map_init_data
+	.globl _ai_enemy_chaser_shooter
 	.globl _ai_anim_simple
 	.globl _entity_init
 	.globl _maps
@@ -26,11 +27,11 @@
 ;--------------------------------------------------------
 	.area _DATA
 _world_entities::
-	.ds 45
+	.ds 48
 _house_entities::
-	.ds 15
+	.ds 16
 _level2_entities::
-	.ds 15
+	.ds 16
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -93,7 +94,7 @@ _map_init_data::
 	and	a
 	push	af
 	xor	a, a
-	ld	de, #(_world_entities + 15)
+	ld	de, #(_world_entities + 16)
 	call	_entity_init
 ;src/data/map_config.c:56: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 41, NULL); // Flower
 	ld	de, #0x0000
@@ -106,10 +107,10 @@ _map_init_data::
 	ld	de, #0x00b4
 	push	de
 	ld	a, #0x01
-	ld	de, #(_world_entities + 30)
+	ld	de, #(_world_entities + 32)
 	call	_entity_init
 ;src/data/map_config.c:57: world_entities[2].update = ai_anim_simple;
-	ld	hl, #(_world_entities + 43)
+	ld	hl, #(_world_entities + 46)
 	ld	(hl), #<(_ai_anim_simple)
 	inc	hl
 	ld	(hl), #>(_ai_anim_simple)
@@ -138,7 +139,16 @@ _map_init_data::
 	ld	a, #0x03
 	ld	de, #_level2_entities
 	call	_entity_init
-;src/data/map_config.c:60: }
+;src/data/map_config.c:60: level2_entities[0].update = ai_enemy_chaser_shooter;
+	ld	hl, #(_level2_entities + 14)
+	ld	(hl), #<(_ai_enemy_chaser_shooter)
+	inc	hl
+	ld	(hl), #>(_ai_enemy_chaser_shooter)
+;src/data/map_config.c:61: level2_entities[0].shoot_timer = 60;
+	dec	hl
+	dec	hl
+	ld	(hl), #0x3c
+;src/data/map_config.c:62: }
 	ret
 ___str_0:
 	.ascii "Hola aventurero!"

@@ -57,4 +57,6 @@ void map_init_data() {
   world_entities[2].update = ai_anim_simple;
   entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
   entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
+  level2_entities[0].update = ai_enemy_chaser_shooter;
+  level2_entities[0].shoot_timer = 60;
 }

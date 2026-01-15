@@ -10,12 +10,15 @@ Symbol Table
     _DIV_REG                                                        ******** GX
     ___sdcc_call_hl                                                 ******** GX
   0 _ai_anim_simple                                                 00000070 GR
+  0 _ai_enemy_chaser_shooter                                        00000314 GR
   0 _ai_enemy_random_walk                                           0000008A GR
   0 _ai_enemy_shooter                                               00000190 GR
   0 _ai_npc_static                                                  0000006F GR
   0 _entity_init                                                    00000000 GR
-  0 _entity_render_all                                              0000037B GR
-  0 _entity_update_all                                              00000314 GR
+  0 _entity_render_all                                              00000623 GR
+  0 _entity_update_all                                              000005B3 GR
+    _player_x                                                       ******** GX
+    _player_y                                                       ******** GX
     _projectile_spawn                                               ******** GX
     _shadow_OAM                                                     ******** GX
 
@@ -24,7 +27,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      58D   flags    0
+   0 _CODE                                      size      838   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0

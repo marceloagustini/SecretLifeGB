@@ -12,6 +12,7 @@
 	.globl _ai_anim_simple
 	.globl _ai_enemy_random_walk
 	.globl _ai_enemy_shooter
+	.globl _ai_enemy_chaser_shooter
 	.globl _entity_update_all
 	.globl _entity_render_all
 ;--------------------------------------------------------
@@ -121,7 +122,7 @@ _entity_init::
 	add	hl, de
 	ld	(hl), #0x00
 ;src/utils/entity.c:19: e->update = ai_enemy_random_walk;
-	ld	hl, #0x000d
+	ld	hl, #0x000e
 	add	hl, de
 ;src/utils/entity.c:18: if (type == ENT_ENEMY) {
 	ld	a, c
@@ -741,7 +742,562 @@ _ai_enemy_shooter::
 	pop	hl
 	pop	af
 	jp	(hl)
-;src/utils/entity.c:105: void entity_update_all(entity_t *entities, uint8_t count) {
+;src/utils/entity.c:105: void ai_enemy_chaser_shooter(entity_t *self) {
+;	---------------------------------
+; Function ai_enemy_chaser_shooter
+; ---------------------------------
+_ai_enemy_chaser_shooter::
+	add	sp, #-14
+	ldhl	sp,	#12
+	ld	a, e
+	ld	(hl+), a
+;src/utils/entity.c:111: if (++self->move_timer > 1) {
+	ld	a, d
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x000c
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#8
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#7
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ld	c, a
+	inc	c
+	ld	a, (hl-)
+	ld	l, (hl)
+	ld	h, a
+	ld	(hl), c
+;src/utils/entity.c:114: int16_t dx = (int16_t)player_x - (int16_t)self->x;
+	ldhl	sp,	#12
+	ld	a, (hl)
+	ldhl	sp,	#8
+	ld	(hl), a
+	ldhl	sp,	#13
+	ld	a, (hl)
+	ldhl	sp,	#9
+	ld	(hl), a
+;src/utils/entity.c:115: int16_t dy = (int16_t)player_y - (int16_t)self->y;
+	ldhl	sp,#12
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0002
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#12
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#11
+	ld	(hl), a
+;src/utils/entity.c:111: if (++self->move_timer > 1) {
+	ld	a, #0x01
+	sub	a, c
+	jp	NC, 00114$
+;src/utils/entity.c:112: self->move_timer = 0;
+	ldhl	sp,	#6
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	(hl), #0x00
+;src/utils/entity.c:114: int16_t dx = (int16_t)player_x - (int16_t)self->x;
+	ld	a, (_player_x)
+	ld	b, a
+	ld	hl, #_player_x + 1
+	ld	c, (hl)
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ldhl	sp,	#0
+	ld	(hl+), a
+	inc	de
+	ld	a, (de)
+	ld	(hl-), a
+	ld	a, (hl)
+	ldhl	sp,	#6
+	ld	(hl), a
+	ldhl	sp,	#1
+	ld	a, (hl)
+	ldhl	sp,	#7
+	ld	(hl), a
+	ld	e, b
+	ld	d, c
+	ld	a, (hl-)
+	ld	l, (hl)
+	ld	h, a
+	ld	a, e
+	sub	a, l
+	ld	e, a
+	ld	a, d
+	sbc	a, h
+	ldhl	sp,	#3
+	ld	(hl-), a
+	ld	(hl), e
+;src/utils/entity.c:115: int16_t dy = (int16_t)player_y - (int16_t)self->y;
+	ld	a, (#_player_y)
+	ldhl	sp,	#6
+	ld	(hl), a
+	ld	a, (#_player_y + 1)
+	ldhl	sp,	#7
+	ld	(hl), a
+	ldhl	sp,#10
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ld	c, a
+	inc	de
+	ld	a, (de)
+	ld	b, a
+	ldhl	sp,#6
+	ld	a, (hl+)
+	ld	e, a
+	ld	a, (hl-)
+	dec	hl
+	ld	d, a
+	ld	a, e
+	sub	a, c
+	ld	e, a
+	ld	a, d
+	sbc	a, b
+	ld	(hl-), a
+;src/utils/entity.c:118: if (dx > 8) {
+	ld	a, e
+	ld	(hl-), a
+	dec	hl
+	ld	a, (hl+)
+	ld	c, a
+	ld	b, (hl)
+;src/utils/entity.c:120: self->dir = 3; // Right
+	ldhl	sp,#12
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0009
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#8
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#7
+	ld	(hl), a
+;src/utils/entity.c:118: if (dx > 8) {
+	ld	e, b
+	ld	d, #0x00
+	ld	a, #0x08
+	cp	a, c
+	ld	a, #0x00
+	sbc	a, b
+	bit	7, e
+	jr	Z, 00207$
+	bit	7, d
+	jr	NZ, 00208$
+	cp	a, a
+	jr	00208$
+00207$:
+	bit	7, d
+	jr	Z, 00208$
+	scf
+00208$:
+	jr	NC, 00104$
+;src/utils/entity.c:119: self->x++;
+	pop	bc
+	push	bc
+	inc	bc
+	ldhl	sp,	#8
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	a, c
+	ld	(hl+), a
+	ld	(hl), b
+;src/utils/entity.c:120: self->dir = 3; // Right
+	ldhl	sp,	#6
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	(hl), #0x03
+	jr	00105$
+00104$:
+;src/utils/entity.c:121: } else if (dx < -8) {
+	ldhl	sp,	#2
+	ld	a, (hl+)
+	sub	a, #0xf8
+	ld	a, (hl)
+	sbc	a, #0xff
+	ld	d, (hl)
+	ld	a, #0xff
+	bit	7,a
+	jr	Z, 00209$
+	bit	7, d
+	jr	NZ, 00210$
+	cp	a, a
+	jr	00210$
+00209$:
+	bit	7, d
+	jr	Z, 00210$
+	scf
+00210$:
+	jr	NC, 00105$
+;src/utils/entity.c:122: self->x--;
+	pop	bc
+	push	bc
+	dec	bc
+	ldhl	sp,	#8
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	a, c
+	ld	(hl+), a
+	ld	(hl), b
+;src/utils/entity.c:123: self->dir = 2; // Left
+	ldhl	sp,	#6
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	(hl), #0x02
+00105$:
+;src/utils/entity.c:126: if (dy > 8) {
+	ldhl	sp,	#4
+	ld	a, (hl+)
+	ld	c, a
+	ld	b, (hl)
+	ld	e, b
+	ld	d, #0x00
+	ld	a, #0x08
+	cp	a, c
+	ld	a, #0x00
+	sbc	a, b
+	bit	7, e
+	jr	Z, 00211$
+	bit	7, d
+	jr	NZ, 00212$
+	cp	a, a
+	jr	00212$
+00211$:
+	bit	7, d
+	jr	Z, 00212$
+	scf
+00212$:
+	jr	NC, 00109$
+;src/utils/entity.c:127: self->y++;
+	ldhl	sp,#10
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ld	c, a
+	inc	de
+	ld	a, (de)
+	ld	b, a
+	inc	bc
+	ld	a, (hl-)
+	ld	l, (hl)
+	ld	h, a
+	ld	a, c
+	ld	(hl+), a
+	ld	(hl), b
+;src/utils/entity.c:128: self->dir = 0; // Down
+	ldhl	sp,	#6
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	(hl), #0x00
+	jr	00110$
+00109$:
+;src/utils/entity.c:129: } else if (dy < -8) {
+	ldhl	sp,	#4
+	ld	a, (hl+)
+	sub	a, #0xf8
+	ld	a, (hl)
+	sbc	a, #0xff
+	ld	d, (hl)
+	ld	a, #0xff
+	bit	7,a
+	jr	Z, 00213$
+	bit	7, d
+	jr	NZ, 00214$
+	cp	a, a
+	jr	00214$
+00213$:
+	bit	7, d
+	jr	Z, 00214$
+	scf
+00214$:
+	jr	NC, 00110$
+;src/utils/entity.c:130: self->y--;
+	ldhl	sp,#10
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ld	c, a
+	inc	de
+	ld	a, (de)
+	ld	b, a
+	dec	bc
+	ld	a, (hl-)
+	ld	l, (hl)
+	ld	h, a
+	ld	a, c
+	ld	(hl+), a
+	ld	(hl), b
+;src/utils/entity.c:131: self->dir = 1; // Up
+	ldhl	sp,	#6
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	(hl), #0x01
+00110$:
+;src/utils/entity.c:135: if (++self->anim_timer > 8) {
+	ldhl	sp,#12
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x000b
+	add	hl, de
+	ld	c, l
+	ld	b, h
+	ld	a, (bc)
+	inc	a
+	ld	(bc), a
+	cp	a, #0x09
+	jr	C, 00114$
+;src/utils/entity.c:136: self->anim_frame = !self->anim_frame;
+	ldhl	sp,#12
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x000a
+	add	hl, de
+	ld	e, l
+	ld	d, h
+	ld	a, (de)
+	sub	a, #0x01
+	ld	a, #0x00
+	rla
+	ld	(de), a
+;src/utils/entity.c:137: self->anim_timer = 0;
+	xor	a, a
+	ld	(bc), a
+00114$:
+;src/utils/entity.c:142: if (self->shoot_timer > 0) {
+	ldhl	sp,#12
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x000d
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#4
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#3
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ld	c, a
+	or	a, a
+	jr	Z, 00126$
+;src/utils/entity.c:143: self->shoot_timer--;
+	dec	c
+	ld	a, (hl-)
+	ld	l, (hl)
+	ld	h, a
+	ld	(hl), c
+	jp	00128$
+00126$:
+;src/utils/entity.c:147: int16_t dx = (int16_t)player_x - (int16_t)self->x;
+	ld	a, (_player_x)
+	ld	c, a
+	ld	hl, #_player_x + 1
+	ld	b, (hl)
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ldhl	sp,	#4
+	ld	(hl+), a
+	inc	de
+	ld	a, (de)
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, c
+	sub	a, e
+	ld	c, a
+	ld	a, b
+	sbc	a, d
+	ld	b, a
+;src/utils/entity.c:148: int16_t dy = (int16_t)player_y - (int16_t)self->y;
+	ld	a, (#_player_y)
+	ldhl	sp,	#0
+	ld	(hl), a
+	ld	a, (#_player_y + 1)
+	ldhl	sp,	#1
+	ld	(hl), a
+	ldhl	sp,#10
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+	ldhl	sp,	#6
+	ld	(hl+), a
+	inc	de
+	ld	a, (de)
+	ld	(hl-), a
+	ld	a, (hl+)
+	inc	hl
+	ld	(hl-), a
+	ld	a, (hl+)
+	inc	hl
+	ld	(hl), a
+	pop	de
+	push	de
+	ld	a, (hl-)
+	ld	l, (hl)
+	ld	h, a
+	ld	a, e
+	sub	a, l
+	ld	e, a
+	ld	a, d
+	sbc	a, h
+	ldhl	sp,	#11
+	ld	(hl-), a
+;src/utils/entity.c:150: int8_t vx = 0, vy = 0;
+	ld	a, e
+	ld	(hl-), a
+	dec	hl
+	xor	a, a
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/entity.c:151: if (dx > 0)
+	ld	e, b
+	xor	a, a
+	ld	d, a
+	cp	a, c
+	sbc	a, b
+	bit	7, e
+	jr	Z, 00215$
+	bit	7, d
+	jr	NZ, 00216$
+	cp	a, a
+	jr	00216$
+00215$:
+	bit	7, d
+	jr	Z, 00216$
+	scf
+00216$:
+	jr	NC, 00118$
+;src/utils/entity.c:152: vx = 2;
+	ldhl	sp,	#8
+	ld	(hl), #0x02
+	jr	00119$
+00118$:
+;src/utils/entity.c:153: else if (dx < 0)
+	bit	7, b
+	jr	Z, 00119$
+;src/utils/entity.c:154: vx = -2;
+	ldhl	sp,	#8
+	ld	(hl), #0xfe
+00119$:
+;src/utils/entity.c:155: if (dy > 0)
+	ldhl	sp,	#10
+	xor	a, a
+	sub	a, (hl)
+	inc	hl
+	ld	a, #0x00
+	sbc	a, (hl)
+	ld	a, #0x00
+	ld	d, a
+	ld	e, (hl)
+	bit	7, e
+	jr	Z, 00217$
+	bit	7, d
+	jr	NZ, 00218$
+	cp	a, a
+	jr	00218$
+00217$:
+	bit	7, d
+	jr	Z, 00218$
+	scf
+00218$:
+	jr	NC, 00123$
+;src/utils/entity.c:156: vy = 2;
+	ldhl	sp,	#9
+	ld	(hl), #0x02
+	jr	00124$
+00123$:
+;src/utils/entity.c:157: else if (dy < 0)
+	ldhl	sp,	#11
+	bit	7, (hl)
+	jr	Z, 00124$
+;src/utils/entity.c:158: vy = -2;
+	dec	hl
+	dec	hl
+	ld	(hl), #0xfe
+00124$:
+;src/utils/entity.c:160: projectile_spawn(self->x + 8, self->y + 8, vx, vy);
+	ldhl	sp,	#6
+	ld	a, (hl+)
+	ld	c, a
+	ld	b, (hl)
+	ld	hl, #0x0008
+	add	hl, bc
+	ld	c, l
+	ld	b, h
+	ldhl	sp,	#4
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0008
+	add	hl, de
+	ld	e, l
+	ld	d, h
+	ldhl	sp,	#9
+	ld	a, (hl-)
+	push	af
+	inc	sp
+	ld	a, (hl)
+	push	af
+	inc	sp
+	call	_projectile_spawn
+;src/utils/entity.c:164: self->shoot_timer = 60 + (DIV_REG & 0x3F);
+	ldh	a, (_DIV_REG + 0)
+	and	a, #0x3f
+	add	a, #0x3c
+	ldhl	sp,	#2
+	ld	e, (hl)
+	inc	hl
+	ld	h, (hl)
+	ld	l, e
+	ld	(hl), a
+00128$:
+;src/utils/entity.c:166: }
+	add	sp, #14
+	ret
+;src/utils/entity.c:168: void entity_update_all(entity_t *entities, uint8_t count) {
 ;	---------------------------------
 ; Function entity_update_all
 ; ---------------------------------
@@ -754,7 +1310,7 @@ _entity_update_all::
 	dec	hl
 	dec	hl
 	ld	(hl), a
-;src/utils/entity.c:106: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:169: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#7
 	ld	(hl), #0x00
 00106$:
@@ -763,22 +1319,26 @@ _entity_update_all::
 	ldhl	sp,	#4
 	sub	a, (hl)
 	jr	NC, 00108$
-;src/utils/entity.c:107: if (entities[i].active && entities[i].update) {
+;src/utils/entity.c:170: if (entities[i].active && entities[i].update) {
 	ldhl	sp,	#7
-	ld	c, (hl)
-	ld	b, #0x00
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, bc
-	add	hl, hl
-	add	hl, bc
-	add	hl, hl
-	add	hl, bc
-	inc	sp
-	inc	sp
-	ld	e, l
-	ld	d, h
+	ld	a, (hl)
+	ldhl	sp,	#2
+	ld	(hl+), a
+	xor	a, a
+	ld	(hl-), a
+	ld	a, (hl-)
+	dec	hl
+	ld	(hl+), a
+	ld	(hl), #0x00
+	ld	a, #0x04
+00139$:
+	ldhl	sp,	#0
+	sla	(hl)
+	inc	hl
+	rl	(hl)
+	dec	a
+	jr	NZ, 00139$
+	pop	de
 	push	de
 	ldhl	sp,	#5
 	ld	a,	(hl+)
@@ -807,7 +1367,7 @@ _entity_update_all::
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
-	ld	hl, #0x000d
+	ld	hl, #0x000e
 	add	hl, de
 	ld	a, (hl+)
 	ld	c, a
@@ -815,7 +1375,7 @@ _entity_update_all::
 	ld	a, b
 	or	a, c
 	jr	Z, 00107$
-;src/utils/entity.c:108: entities[i].update(&entities[i]);
+;src/utils/entity.c:171: entities[i].update(&entities[i]);
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	ld	e, a
@@ -824,15 +1384,15 @@ _entity_update_all::
 	ld	h, b
 	call	___sdcc_call_hl
 00107$:
-;src/utils/entity.c:106: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:169: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#7
 	inc	(hl)
 	jr	00106$
 00108$:
-;src/utils/entity.c:111: }
+;src/utils/entity.c:174: }
 	add	sp, #8
 	ret
-;src/utils/entity.c:113: void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
+;src/utils/entity.c:176: void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
 ;	---------------------------------
 ; Function entity_render_all
 ; ---------------------------------
@@ -845,7 +1405,7 @@ _entity_render_all::
 	dec	hl
 	dec	hl
 	ld	(hl), a
-;src/utils/entity.c:115: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:178: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#12
 	ld	(hl), #0x00
 00136$:
@@ -854,26 +1414,26 @@ _entity_render_all::
 	ldhl	sp,	#9
 	sub	a, (hl)
 	jp	NC, 00137$
-;src/utils/entity.c:116: entity_t *e = &entities[i];
+;src/utils/entity.c:179: entity_t *e = &entities[i];
 	ldhl	sp,	#12
-	ld	c, (hl)
-	ld	b, #0x00
-	ld	l, c
-	ld	h, b
-	add	hl, hl
-	add	hl, bc
-	add	hl, hl
-	add	hl, bc
-	add	hl, hl
-	add	hl, bc
-	push	hl
-	ld	a, l
+	ld	a, (hl)
 	ldhl	sp,	#7
-	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#6
+	ld	(hl+), a
+	xor	a, a
 	ld	(hl-), a
+	ld	a, (hl-)
+	dec	hl
+	ld	(hl+), a
+	ld	(hl), #0x00
+	ld	a, #0x04
+00260$:
+	ldhl	sp,	#5
+	sla	(hl)
+	inc	hl
+	rl	(hl)
+	dec	a
+	jr	NZ, 00260$
+	dec	hl
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
@@ -889,7 +1449,7 @@ _entity_render_all::
 	pop	hl
 	ld	a, h
 	ldhl	sp,	#8
-;src/utils/entity.c:117: if (!e->active) {
+;src/utils/entity.c:180: if (!e->active) {
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
@@ -899,7 +1459,7 @@ _entity_render_all::
 	ld	c, l
 	ld	b, h
 	ld	a, (bc)
-;src/utils/entity.c:118: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:181: for (int j = 0; j < 4; j++)
 	or	a, a
 	jr	NZ, 00103$
 	ld	c, a
@@ -907,7 +1467,7 @@ _entity_render_all::
 	ld	a, c
 	sub	a, #0x04
 	jp	NC, 00114$
-;src/utils/entity.c:119: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+;src/utils/entity.c:182: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
 	ldhl	sp,	#12
 	ld	a, (hl)
 	add	a, a
@@ -930,12 +1490,12 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:118: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:181: for (int j = 0; j < 4; j++)
 	inc	c
 	jr	00124$
-;src/utils/entity.c:120: continue;
+;src/utils/entity.c:183: continue;
 00103$:
-;src/utils/entity.c:123: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
+;src/utils/entity.c:186: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -993,7 +1553,7 @@ _entity_render_all::
 	ld	(hl), c
 	inc	hl
 	ld	(hl), a
-;src/utils/entity.c:124: if (esx < 168 && esy < 160) {
+;src/utils/entity.c:187: if (esx < 168 && esy < 160) {
 	pop	bc
 	push	bc
 	ld	a, c
@@ -1010,7 +1570,7 @@ _entity_render_all::
 	ld	a, b
 	sbc	a, #0x00
 	jp	NC, 00157$
-;src/utils/entity.c:125: if (e->type == ENT_ITEM) {
+;src/utils/entity.c:188: if (e->type == ENT_ITEM) {
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -1022,7 +1582,7 @@ _entity_render_all::
 	ld	a, (bc)
 	dec	a
 	jr	NZ, 00107$
-;src/utils/entity.c:127: uint8_t sprite_id = sprite_offset + (i * 4);
+;src/utils/entity.c:190: uint8_t sprite_id = sprite_offset + (i * 4);
 	ldhl	sp,	#12
 	ld	a, (hl)
 	add	a, a
@@ -1033,7 +1593,7 @@ _entity_render_all::
 	ldhl	sp,	#13
 	ld	(hl), a
 	ld	c, (hl)
-;src/utils/entity.c:128: move_sprite(sprite_id, esx + 4, esy + 4); // Center it
+;src/utils/entity.c:191: move_sprite(sprite_id, esx + 4, esy + 4); // Center it
 	ldhl	sp,	#2
 	ld	a, (hl-)
 	dec	hl
@@ -1058,7 +1618,7 @@ _entity_render_all::
 	ld	e, l
 	ld	d, h
 	ldhl	sp,	#6
-;src/utils/entity.c:129: set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
+;src/utils/entity.c:192: set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
 	ld	a, (hl+)
 	ld	(de), a
 	ld	a, (hl+)
@@ -1087,10 +1647,10 @@ _entity_render_all::
 	add	hl,bc
 	inc	hl
 	ld	(hl), e
-;src/utils/entity.c:132: for (int j = 1; j < 4; j++)
+;src/utils/entity.c:195: for (int j = 1; j < 4; j++)
 	ld	c, #0x01
 00127$:
-;src/utils/entity.c:133: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+;src/utils/entity.c:196: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
 	ld	a,c
 	cp	a,#0x04
 	jp	NC,00114$
@@ -1108,11 +1668,11 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:132: for (int j = 1; j < 4; j++)
+;src/utils/entity.c:195: for (int j = 1; j < 4; j++)
 	inc	c
 	jr	00127$
 00107$:
-;src/utils/entity.c:135: uint8_t frame_offset = (e->anim_frame * 4);
+;src/utils/entity.c:198: uint8_t frame_offset = (e->anim_frame * 4);
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -1126,7 +1686,7 @@ _entity_render_all::
 	add	a, a
 	ldhl	sp,	#4
 	ld	(hl), a
-;src/utils/entity.c:136: for (int j = 0; j < 4; j++) {
+;src/utils/entity.c:199: for (int j = 0; j < 4; j++) {
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -1148,7 +1708,7 @@ _entity_render_all::
 	ld	a, (hl)
 	sub	a, #0x04
 	jp	NC, 00114$
-;src/utils/entity.c:137: uint8_t sprite_id = sprite_offset + (i * 4) + j;
+;src/utils/entity.c:200: uint8_t sprite_id = sprite_offset + (i * 4) + j;
 	dec	hl
 	ld	a, (hl)
 	add	a, a
@@ -1161,7 +1721,7 @@ _entity_render_all::
 	add	a, c
 	ldhl	sp,	#7
 	ld	(hl), a
-;src/utils/entity.c:138: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+;src/utils/entity.c:201: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
 	ldhl	sp,	#2
 	ld	a, (hl)
 	ldhl	sp,	#8
@@ -1214,7 +1774,7 @@ _entity_render_all::
 	inc	de
 	ld	a, b
 	ld	(de), a
-;src/utils/entity.c:139: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+;src/utils/entity.c:202: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
 	ldhl	sp,#5
 	ld	a, (hl+)
 	ld	e, a
@@ -1240,18 +1800,18 @@ _entity_render_all::
 	ld	d, h
 	ld	a, c
 	ld	(de), a
-;src/utils/entity.c:136: for (int j = 0; j < 4; j++) {
+;src/utils/entity.c:199: for (int j = 0; j < 4; j++) {
 	ldhl	sp,	#13
 	inc	(hl)
 	jr	00130$
-;src/utils/entity.c:143: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:206: for (int j = 0; j < 4; j++)
 00157$:
 	ld	c, #0x00
 00133$:
 	ld	a, c
 	sub	a, #0x04
 	jr	NC, 00114$
-;src/utils/entity.c:144: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+;src/utils/entity.c:207: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
 	ldhl	sp,	#12
 	ld	a, (hl)
 	add	a, a
@@ -1274,16 +1834,16 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:143: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:206: for (int j = 0; j < 4; j++)
 	inc	c
 	jr	00133$
 00114$:
-;src/utils/entity.c:115: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:178: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#12
 	inc	(hl)
 	jp	00136$
 00137$:
-;src/utils/entity.c:147: }
+;src/utils/entity.c:210: }
 	add	sp, #14
 	pop	hl
 	add	sp, #5
