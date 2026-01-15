@@ -10,16 +10,20 @@ Symbol Table
     _LCDC_REG                                                       ******** GX
     _WX_REG                                                         ******** GX
     _WY_REG                                                         ******** GX
-  0 _clear_dialog_buf                                               000000C7 GR
+  0 _clear_dialog_buf                                               000000F1 GR
     _delay                                                          ******** GX
   2 _dialog_buf                                                     00000000 GR
+    _fill_bkg_rect                                                  ******** GX
     _font_data                                                      ******** GX
   0 _get_tile_for_char                                              00000016 GR
+    _set_bkg_tile_xy                                                ******** GX
     _set_win_data                                                   ******** GX
     _set_win_tiles                                                  ******** GX
     _shadow_OAM                                                     ******** GX
-  0 _text_dialogue                                                  00000164 GR
+  0 _text_clear                                                     00000391 GR
+  0 _text_dialogue                                                  0000018E GR
   0 _text_init                                                      00000000 GR
+  0 _text_print                                                     00000360 GR
     _waitpad                                                        ******** GX
     _waitpadup                                                      ******** GX
 
@@ -29,7 +33,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      336   flags    0
+   0 _CODE                                      size      3A7   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size       78   flags    0
    3 _INITIALIZED                               size        0   flags    0

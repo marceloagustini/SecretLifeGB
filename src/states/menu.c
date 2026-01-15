@@ -11,39 +11,33 @@ extern uint8_t game_state;
 
 static uint8_t selection = 0; // 0: START, 1: ABOUT
 
-void draw_text(uint8_t x, uint8_t y, const char *txt) {
-  for (int i = 0; txt[i] != '\0'; i++) {
-    uint8_t tile = 128; // Space
-    if (txt[i] >= 'A' && txt[i] <= 'Z')
-      tile = 128 + 1 + (txt[i] - 'A');
-    set_bkg_tile_xy(x + i, y, tile);
-  }
-}
+#include "../utils/text.h"
 
 void menu_draw(void) {
   // Clear BKG with space (tile 128+0)
   fill_bkg_rect(0, 0, 20, 18, 128 + 0);
 
   // Title
-  draw_text(4, 4, "SECRET LIFE");
+  text_print(4, 4, "SECRET LIFE");
 
   // Options
-  draw_text(7, 8, "START");
-  draw_text(7, 10, "ABOUT");
+  text_print(7, 8, "START");
+  text_print(7, 10, "ABOUT");
 
   // Cursor
-  set_bkg_tile_xy(5, 8 + (selection * 2), 128 + 32); // Use '>' or similar char
+  set_bkg_tile_xy(5, 8 + (selection * 2), get_tile_for_char('>'));
 }
 
 void menu_init(void) {
   DISPLAY_OFF;
   BGP_REG = 0xE4;
 
-  // Reset scroll position (might be offset from intro)
+  // Reset scroll and hide sprites
   move_bkg(0, 0);
+  HIDE_SPRITES;
 
-  // Load font data to BKG tiles starting at 128
-  set_bkg_data(128, 35, font_data);
+  // Load font data using common text system
+  text_init();
 
   menu_draw();
 

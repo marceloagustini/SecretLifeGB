@@ -1,0 +1,134 @@
+                                      1 ;--------------------------------------------------------
+                                      2 ; File Created by SDCC : free open source ISO C Compiler
+                                      3 ; Version 4.5.1 #15267 (Mac OS X ppc)
+                                      4 ;--------------------------------------------------------
+                                      5 	.module gameover
+                                      6 	
+                                      7 ;--------------------------------------------------------
+                                      8 ; Public variables in this module
+                                      9 ;--------------------------------------------------------
+                                     10 	.globl _game_reset
+                                     11 	.globl _text_clear
+                                     12 	.globl _text_print
+                                     13 	.globl _text_init
+                                     14 	.globl _input_pressed
+                                     15 	.globl _fade_in
+                                     16 	.globl _fade_out
+                                     17 	.globl _display_off
+                                     18 	.globl _gameover_init
+                                     19 	.globl _gameover_update
+                                     20 ;--------------------------------------------------------
+                                     21 ; special function registers
+                                     22 ;--------------------------------------------------------
+                                     23 	.area _HRAM
+                                     24 ;--------------------------------------------------------
+                                     25 ; ram data
+                                     26 ;--------------------------------------------------------
+                                     27 	.area _DATA
+                                     28 ;--------------------------------------------------------
+                                     29 ; ram data
+                                     30 ;--------------------------------------------------------
+                                     31 	.area _INITIALIZED
+                                     32 ;--------------------------------------------------------
+                                     33 ; absolute external ram data
+                                     34 ;--------------------------------------------------------
+                                     35 	.area _DABS (ABS)
+                                     36 ;--------------------------------------------------------
+                                     37 ; global & static initialisations
+                                     38 ;--------------------------------------------------------
+                                     39 	.area _HOME
+                                     40 	.area _GSINIT
+                                     41 	.area _GSFINAL
+                                     42 	.area _GSINIT
+                                     43 ;--------------------------------------------------------
+                                     44 ; Home
+                                     45 ;--------------------------------------------------------
+                                     46 	.area _HOME
+                                     47 	.area _HOME
+                                     48 ;--------------------------------------------------------
+                                     49 ; code
+                                     50 ;--------------------------------------------------------
+                                     51 	.area _CODE
+                                     52 ;src/states/gameover.c:11: void gameover_init(void) {
+                                     53 ;	---------------------------------
+                                     54 ; Function gameover_init
+                                     55 ; ---------------------------------
+    00000000                         56 _gameover_init::
+                                     57 ;src/states/gameover.c:12: fade_out();
+    00000000 CDr00r00         [24]   58 	call	_fade_out
+                                     59 ;src/states/gameover.c:13: DISPLAY_OFF;
+    00000003 CDr00r00         [24]   60 	call	_display_off
+                                     61 ;src/states/gameover.c:16: BGP_REG = 0xE4;
+    00000006 3E E4            [ 8]   62 	ld	a, #0xe4
+    00000008 E0r00            [12]   63 	ldh	(_BGP_REG + 0), a
+                                     64 ;./gbdk/include/gb/gb.h:1461: SCX_REG=x, SCY_REG=y;
+    0000000A AF               [ 4]   65 	xor	a, a
+    0000000B E0r00            [12]   66 	ldh	(_SCX_REG + 0), a
+    0000000D AF               [ 4]   67 	xor	a, a
+    0000000E E0r00            [12]   68 	ldh	(_SCY_REG + 0), a
+                                     69 ;src/states/gameover.c:20: HIDE_SPRITES;
+    00000010 F0r00            [12]   70 	ldh	a, (_LCDC_REG + 0)
+    00000012 E6 FD            [ 8]   71 	and	a, #0xfd
+    00000014 E0r00            [12]   72 	ldh	(_LCDC_REG + 0), a
+                                     73 ;src/states/gameover.c:23: text_init();
+    00000016 CDr00r00         [24]   74 	call	_text_init
+                                     75 ;src/states/gameover.c:24: text_clear();
+    00000019 CDr00r00         [24]   76 	call	_text_clear
+                                     77 ;src/states/gameover.c:27: text_print(5, 7, "GAME OVER");
+    0000001C 11r49r00         [12]   78 	ld	de, #___str_0
+    0000001F D5               [16]   79 	push	de
+    00000020 1E 07            [ 8]   80 	ld	e, #0x07
+    00000022 3E 05            [ 8]   81 	ld	a, #0x05
+    00000024 CDr00r00         [24]   82 	call	_text_print
+                                     83 ;src/states/gameover.c:28: text_print(4, 10, "PRESS A OR B");
+    00000027 11r53r00         [12]   84 	ld	de, #___str_1
+    0000002A D5               [16]   85 	push	de
+    0000002B 1E 0A            [ 8]   86 	ld	e, #0x0a
+    0000002D 3E 04            [ 8]   87 	ld	a, #0x04
+    0000002F CDr00r00         [24]   88 	call	_text_print
+                                     89 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
+    00000032 3E 07            [ 8]   90 	ld	a, #0x07
+    00000034 E0r00            [12]   91 	ldh	(_WX_REG + 0), a
+    00000036 3E 90            [ 8]   92 	ld	a, #0x90
+    00000038 E0r00            [12]   93 	ldh	(_WY_REG + 0), a
+                                     94 ;src/states/gameover.c:32: HIDE_WIN;
+    0000003A F0r00            [12]   95 	ldh	a, (_LCDC_REG + 0)
+    0000003C E6 DF            [ 8]   96 	and	a, #0xdf
+    0000003E E0r00            [12]   97 	ldh	(_LCDC_REG + 0), a
+                                     98 ;src/states/gameover.c:34: DISPLAY_ON;
+    00000040 F0r00            [12]   99 	ldh	a, (_LCDC_REG + 0)
+    00000042 F6 80            [ 8]  100 	or	a, #0x80
+    00000044 E0r00            [12]  101 	ldh	(_LCDC_REG + 0), a
+                                    102 ;src/states/gameover.c:35: fade_in();
+                                    103 ;src/states/gameover.c:36: }
+    00000046 C3r00r00         [16]  104 	jp	_fade_in
+    00000049                        105 ___str_0:
+    00000049 47 41 4D 45 20 4F 56   106 	.ascii "GAME OVER"
+             45 52
+    00000052 00                     107 	.db 0x00
+    00000053                        108 ___str_1:
+    00000053 50 52 45 53 53 20 41   109 	.ascii "PRESS A OR B"
+             20 4F 52 20 42
+    0000005F 00                     110 	.db 0x00
+                                    111 ;src/states/gameover.c:38: void gameover_update(void) {
+                                    112 ;	---------------------------------
+                                    113 ; Function gameover_update
+                                    114 ; ---------------------------------
+    00000060                        115 _gameover_update::
+                                    116 ;src/states/gameover.c:39: if (input_pressed(J_A | J_B)) {
+    00000060 3E 30            [ 8]  117 	ld	a, #0x30
+    00000062 CDr00r00         [24]  118 	call	_input_pressed
+    00000065 B7               [ 4]  119 	or	a, a
+    00000066 C8               [20]  120 	ret	Z
+                                    121 ;src/states/gameover.c:40: fade_out();
+    00000067 CDr00r00         [24]  122 	call	_fade_out
+                                    123 ;src/states/gameover.c:41: game_reset();
+    0000006A CDr00r00         [24]  124 	call	_game_reset
+                                    125 ;src/states/gameover.c:42: game_state = STATE_MENU;
+    0000006D 21r00r00         [12]  126 	ld	hl, #_game_state
+    00000070 36 01            [12]  127 	ld	(hl), #0x01
+                                    128 ;src/states/gameover.c:44: }
+    00000072 C9               [16]  129 	ret
+                                    130 	.area _CODE
+                                    131 	.area _INITIALIZER
+                                    132 	.area _CABS (ABS)

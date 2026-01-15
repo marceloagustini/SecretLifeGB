@@ -7,19 +7,10 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 _flower_sprite                                                  00000000 GR
-  0 _font_data                                                      00001088 GR
-  0 _guard_sprite_data                                              00001008 GR
-  0 _house_map                                                      000008E0 GR
-  0 _level2_map                                                     00000A48 GR
-  0 _level3_map                                                     000013F8 GR
-  0 _map_data                                                       000004E0 GR
-  0 _npc_child_sprite                                               00000FC8 GR
-  0 _npc_woman_sprite                                               000013A8 GR
-  0 _player_sprites                                                 00000E48 GR
-  0 _projectile_sprite                                              000013E8 GR
-  0 _tiles_anim_data                                                00000490 GR
-  0 _tiles_data                                                     00000010 GR
+  0 _level3_map                                                     00000090 GR
+  0 _npc_oldman_sprite                                              00000040 GR
+  0 _npc_woman_sprite                                               00000000 GR
+  0 _projectile_sprite                                              00000080 GR
 
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
@@ -27,7 +18,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     1811   flags    0
+   0 _CODE                                      size      4A9   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0

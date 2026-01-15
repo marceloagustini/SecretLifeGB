@@ -5,7 +5,7 @@ import struct
 
 # Import the design from the other script
 sys.path.append(os.path.dirname(__file__))
-from gen_tiles import tiles_design
+from gen_tiles import tiles_design, anim_design
 
 # GameBoy Palette (B, G, R for BMP)
 COLORS_BGR = [
@@ -36,7 +36,11 @@ def write_bmp(width, height, pixels_2d, output_path):
 def generate_tileset_image():
     tile_size = 8
     grid_width = 16
-    max_idx = max(tiles_design.keys())
+    
+    # Merge designs for export
+    all_tiles = {**tiles_design, **anim_design}
+    
+    max_idx = max(all_tiles.keys())
     grid_height = (max_idx // grid_width) + 1
     
     img_w = grid_width * tile_size
@@ -45,7 +49,7 @@ def generate_tileset_image():
     # Initialize with Magenta (255, 0, 255)
     pixels_2d = [[(255, 0, 255) for _ in range(img_w)] for _ in range(img_h)]
     
-    for idx, rows in tiles_design.items():
+    for idx, rows in all_tiles.items():
         base_x = (idx % grid_width) * tile_size
         base_y = (idx // grid_width) * tile_size
         
@@ -54,9 +58,25 @@ def generate_tileset_image():
                 color_idx = int(char)
                 pixels_2d[base_y + y][base_x + x] = COLORS_BGR[color_idx]
                 
-    output_path = os.path.join(os.path.dirname(__file__), '../res/tileset.bmp')
-    write_bmp(img_w, img_h, pixels_2d, output_path)
-    print(f"Tileset image saved to {output_path}")
+    output_path_bmp = os.path.join(os.path.dirname(__file__), '../res/tileset.bmp')
+    write_bmp(img_w, img_h, pixels_2d, output_path_bmp)
+    print(f"Tileset image saved to {output_path_bmp}")
+    
+    # Also save as PNG if possible
+    try:
+        from PIL import Image
+        # Flatten pixels_2d and convert to bytes
+        img_data = []
+        for row in pixels_2d:
+            for b, g, r in row:
+                img_data.extend([r, g, b])
+        
+        img = Image.frombytes('RGB', (img_w, img_h), bytes(img_data))
+        output_path_png = os.path.join(os.path.dirname(__file__), '../res/tileset.png')
+        img.save(output_path_png)
+        print(f"Tileset PNG saved to {output_path_png}")
+    except ImportError:
+        print("Pillow not installed, skipping PNG generation")
 
 if __name__ == "__main__":
     generate_tileset_image()

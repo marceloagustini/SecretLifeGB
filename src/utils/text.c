@@ -12,9 +12,8 @@
 #define TEXT_LINES 4  // Internal lines
 
 void text_init(void) {
-  set_win_data(FONT_BASE_TILE, 65,
-               font_data); // Load 65 tiles: space + 26 upper + 26 lower + 6
-                           // special + 6 box
+  set_win_data(FONT_BASE_TILE, 50,
+               font_data); // Load 50 tiles
   move_win(7, 144);
 }
 
@@ -24,33 +23,41 @@ uint8_t get_tile_for_char(char c) {
   if (c >= 'A' && c <= 'Z')
     return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'A'));
   if (c >= 'a' && c <= 'z')
-    return (uint8_t)(FONT_BASE_TILE + 27 + (c - 'a')); // Lowercase at offset 27
+    return (uint8_t)(FONT_BASE_TILE + 1 +
+                     (c - 'a')); // Map lowercase to uppercase
   if (c == ',')
-    return (uint8_t)(FONT_BASE_TILE + 53);
+    return (uint8_t)(FONT_BASE_TILE + 27);
   if (c == '?')
-    return (uint8_t)(FONT_BASE_TILE + 54);
+    return (uint8_t)(FONT_BASE_TILE + 28);
   if (c == '!')
-    return (uint8_t)(FONT_BASE_TILE + 55);
+    return (uint8_t)(FONT_BASE_TILE + 29);
   if (c == '.')
-    return (uint8_t)(FONT_BASE_TILE + 56);
+    return (uint8_t)(FONT_BASE_TILE + 30);
   if (c == '>')
-    return (uint8_t)(FONT_BASE_TILE + 57);
+    return (uint8_t)(FONT_BASE_TILE + 31);
   if (c == '#')
-    return (uint8_t)(FONT_BASE_TILE + 58);
+    return (uint8_t)(FONT_BASE_TILE + 32);
 
-  // Box drawing - shifted
+  // Box drawing
   if (c == 1)
-    return (uint8_t)(FONT_BASE_TILE + 59); // ┌
+    return (uint8_t)(FONT_BASE_TILE + 33); // ┌
   if (c == 2)
-    return (uint8_t)(FONT_BASE_TILE + 60); // ─
+    return (uint8_t)(FONT_BASE_TILE + 34); // ─
   if (c == 3)
-    return (uint8_t)(FONT_BASE_TILE + 61); // ┐
+    return (uint8_t)(FONT_BASE_TILE + 35); // ┐
   if (c == 4)
-    return (uint8_t)(FONT_BASE_TILE + 62); // │
+    return (uint8_t)(FONT_BASE_TILE + 36); // │
   if (c == 5)
-    return (uint8_t)(FONT_BASE_TILE + 63); // └
+    return (uint8_t)(FONT_BASE_TILE + 37); // └
   if (c == 6)
-    return (uint8_t)(FONT_BASE_TILE + 64); // ┘
+    return (uint8_t)(FONT_BASE_TILE + 38); // ┘
+
+  // Numbers
+  if (c >= '0' && c <= '9')
+    return (uint8_t)(FONT_BASE_TILE + 39 + (c - '0'));
+
+  if (c == ':')
+    return (uint8_t)(FONT_BASE_TILE + 49);
 
   return (uint8_t)(FONT_BASE_TILE + 0);
 }
@@ -122,3 +129,11 @@ void text_dialogue(const char *str) {
   HIDE_WIN;
   move_win(7, 144);
 }
+
+void text_print(uint8_t x, uint8_t y, const char *str) {
+  for (int i = 0; str[i] != '\0'; i++) {
+    set_bkg_tile_xy(x + i, y, get_tile_for_char(str[i]));
+  }
+}
+
+void text_clear(void) { fill_bkg_rect(0, 0, 20, 18, get_tile_for_char(' ')); }

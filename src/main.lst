@@ -12,149 +12,167 @@
                                      12 	.globl _input_pressed
                                      13 	.globl _input_update
                                      14 	.globl _wait_vbl_done
-                                     15 	.globl _inventory_state_update
-                                     16 	.globl _inventory_state_init
-                                     17 	.globl _game_update
-                                     18 	.globl _game_init
-                                     19 	.globl _menu_update
-                                     20 	.globl _menu_init
-                                     21 	.globl _intro_update
-                                     22 	.globl _intro_init
-                                     23 	.globl _current_state
-                                     24 	.globl _game_state
-                                     25 ;--------------------------------------------------------
-                                     26 ; special function registers
+                                     15 	.globl _gameover_update
+                                     16 	.globl _gameover_init
+                                     17 	.globl _inventory_state_update
+                                     18 	.globl _inventory_state_init
+                                     19 	.globl _game_update
+                                     20 	.globl _game_init
+                                     21 	.globl _menu_update
+                                     22 	.globl _menu_init
+                                     23 	.globl _intro_update
+                                     24 	.globl _intro_init
+                                     25 	.globl _current_state
+                                     26 	.globl _game_state
                                      27 ;--------------------------------------------------------
-                                     28 	.area _HRAM
+                                     28 ; special function registers
                                      29 ;--------------------------------------------------------
-                                     30 ; ram data
+                                     30 	.area _HRAM
                                      31 ;--------------------------------------------------------
-                                     32 	.area _DATA
+                                     32 ; ram data
                                      33 ;--------------------------------------------------------
-                                     34 ; ram data
+                                     34 	.area _DATA
                                      35 ;--------------------------------------------------------
-                                     36 	.area _INITIALIZED
-    00000000                         37 _game_state::
-    00000000                         38 	.ds 1
-    00000001                         39 _current_state::
-    00000001                         40 	.ds 1
-                                     41 ;--------------------------------------------------------
-                                     42 ; absolute external ram data
+                                     36 ; ram data
+                                     37 ;--------------------------------------------------------
+                                     38 	.area _INITIALIZED
+    00000000                         39 _game_state::
+    00000000                         40 	.ds 1
+    00000001                         41 _current_state::
+    00000001                         42 	.ds 1
                                      43 ;--------------------------------------------------------
-                                     44 	.area _DABS (ABS)
+                                     44 ; absolute external ram data
                                      45 ;--------------------------------------------------------
-                                     46 ; global & static initialisations
+                                     46 	.area _DABS (ABS)
                                      47 ;--------------------------------------------------------
-                                     48 	.area _HOME
-                                     49 	.area _GSINIT
-                                     50 	.area _GSFINAL
+                                     48 ; global & static initialisations
+                                     49 ;--------------------------------------------------------
+                                     50 	.area _HOME
                                      51 	.area _GSINIT
-                                     52 ;--------------------------------------------------------
-                                     53 ; Home
+                                     52 	.area _GSFINAL
+                                     53 	.area _GSINIT
                                      54 ;--------------------------------------------------------
-                                     55 	.area _HOME
-                                     56 	.area _HOME
-                                     57 ;--------------------------------------------------------
-                                     58 ; code
+                                     55 ; Home
+                                     56 ;--------------------------------------------------------
+                                     57 	.area _HOME
+                                     58 	.area _HOME
                                      59 ;--------------------------------------------------------
-                                     60 	.area _CODE
-                                     61 ;src/main.c:17: void main(void) {
-                                     62 ;	---------------------------------
-                                     63 ; Function main
-                                     64 ; ---------------------------------
-    00000000                         65 _main::
-                                     66 ;src/main.c:19: inventory_init();
-    00000000 CDr00r00         [24]   67 	call	_inventory_init
-                                     68 ;src/main.c:22: while (1) {
-    00000003                         69 00128$:
-                                     70 ;src/main.c:24: input_update();
-    00000003 CDr00r00         [24]   71 	call	_input_update
-                                     72 ;src/main.c:27: if (game_state != current_state) {
-    00000006 FAr00r00         [16]   73 	ld	a, (#_game_state)
-    00000009 21r01r00         [12]   74 	ld	hl, #_current_state
-    0000000C 96               [ 8]   75 	sub	a, (hl)
-    0000000D 28 32            [12]   76 	jr	Z, 00113$
-                                     77 ;src/main.c:29: current_state = game_state;
-    0000000F FAr00r00         [16]   78 	ld	a, (#_game_state)
-    00000012 EAr01r00         [16]   79 	ld	(#_current_state),a
-                                     80 ;src/main.c:30: if (game_state == STATE_INTRO) {
-    00000015 FAr00r00         [16]   81 	ld	a, (#_game_state)
-    00000018 B7               [ 4]   82 	or	a, a
-    00000019 20 05            [12]   83 	jr	NZ, 00110$
-                                     84 ;src/main.c:31: intro_init();
-    0000001B CDr00r00         [24]   85 	call	_intro_init
-    0000001E 18 21            [12]   86 	jr	00113$
-    00000020                         87 00110$:
-                                     88 ;src/main.c:32: } else if (game_state == STATE_MENU) {
-    00000020 FAr00r00         [16]   89 	ld	a, (#_game_state)
-    00000023 3D               [ 4]   90 	dec	a
-    00000024 20 05            [12]   91 	jr	NZ, 00107$
-                                     92 ;src/main.c:33: menu_init();
-    00000026 CDr00r00         [24]   93 	call	_menu_init
-    00000029 18 16            [12]   94 	jr	00113$
-    0000002B                         95 00107$:
-                                     96 ;src/main.c:34: } else if (game_state == STATE_GAME) {
-    0000002B FAr00r00         [16]   97 	ld	a, (#_game_state)
-    0000002E D6 02            [ 8]   98 	sub	a, #0x02
-    00000030 20 05            [12]   99 	jr	NZ, 00104$
-                                    100 ;src/main.c:35: game_init();
-    00000032 CDr00r00         [24]  101 	call	_game_init
-    00000035 18 0A            [12]  102 	jr	00113$
-    00000037                        103 00104$:
-                                    104 ;src/main.c:36: } else if (game_state == STATE_INVENTORY) {
-    00000037 FAr00r00         [16]  105 	ld	a, (#_game_state)
-    0000003A D6 03            [ 8]  106 	sub	a, #0x03
-    0000003C 20 03            [12]  107 	jr	NZ, 00113$
-                                    108 ;src/main.c:37: inventory_state_init();
-    0000003E CDr00r00         [24]  109 	call	_inventory_state_init
-    00000041                        110 00113$:
-                                    111 ;src/main.c:42: if (game_state == STATE_INTRO) {
-    00000041 FAr00r00         [16]  112 	ld	a, (#_game_state)
-    00000044 B7               [ 4]  113 	or	a, a
-    00000045 20 05            [12]  114 	jr	NZ, 00125$
-                                    115 ;src/main.c:43: intro_update();
-    00000047 CDr00r00         [24]  116 	call	_intro_update
-    0000004A 18 2E            [12]  117 	jr	00126$
-    0000004C                        118 00125$:
-                                    119 ;src/main.c:44: } else if (game_state == STATE_MENU) {
-    0000004C FAr00r00         [16]  120 	ld	a, (#_game_state)
-    0000004F 3D               [ 4]  121 	dec	a
-    00000050 20 12            [12]  122 	jr	NZ, 00122$
-                                    123 ;src/main.c:45: menu_update();
-    00000052 CDr00r00         [24]  124 	call	_menu_update
-                                    125 ;src/main.c:46: if (input_pressed(J_START)) {
-    00000055 3E 80            [ 8]  126 	ld	a, #0x80
-    00000057 CDr00r00         [24]  127 	call	_input_pressed
-    0000005A B7               [ 4]  128 	or	a, a
-    0000005B 28 1D            [12]  129 	jr	Z, 00126$
-                                    130 ;src/main.c:47: game_state = STATE_GAME;
-    0000005D 21r00r00         [12]  131 	ld	hl, #_game_state
-    00000060 36 02            [12]  132 	ld	(hl), #0x02
-    00000062 18 16            [12]  133 	jr	00126$
-    00000064                        134 00122$:
-                                    135 ;src/main.c:49: } else if (game_state == STATE_GAME) {
-    00000064 FAr00r00         [16]  136 	ld	a, (#_game_state)
-    00000067 D6 02            [ 8]  137 	sub	a, #0x02
-    00000069 20 05            [12]  138 	jr	NZ, 00119$
-                                    139 ;src/main.c:50: game_update();
-    0000006B CDr00r00         [24]  140 	call	_game_update
-    0000006E 18 0A            [12]  141 	jr	00126$
-    00000070                        142 00119$:
-                                    143 ;src/main.c:51: } else if (game_state == STATE_INVENTORY) {
-    00000070 FAr00r00         [16]  144 	ld	a, (#_game_state)
-    00000073 D6 03            [ 8]  145 	sub	a, #0x03
-    00000075 20 03            [12]  146 	jr	NZ, 00126$
-                                    147 ;src/main.c:52: inventory_state_update();
-    00000077 CDr00r00         [24]  148 	call	_inventory_state_update
-    0000007A                        149 00126$:
-                                    150 ;src/main.c:56: wait_vbl_done();
-    0000007A CDr00r00         [24]  151 	call	_wait_vbl_done
-                                    152 ;src/main.c:58: }
-    0000007D 18 84            [12]  153 	jr	00128$
-                                    154 	.area _CODE
-                                    155 	.area _INITIALIZER
-    00000000                        156 __xinit__game_state:
-    00000000 00                     157 	.db #0x00	; 0
-    00000001                        158 __xinit__current_state:
-    00000001 FF                     159 	.db #0xff	; 255
-                                    160 	.area _CABS (ABS)
+                                     60 ; code
+                                     61 ;--------------------------------------------------------
+                                     62 	.area _CODE
+                                     63 ;src/main.c:11: void main(void) {
+                                     64 ;	---------------------------------
+                                     65 ; Function main
+                                     66 ; ---------------------------------
+    00000000                         67 _main::
+                                     68 ;src/main.c:13: inventory_init();
+    00000000 CDr00r00         [24]   69 	call	_inventory_init
+                                     70 ;src/main.c:16: while (1) {
+    00000003                         71 00134$:
+                                     72 ;src/main.c:18: input_update();
+    00000003 CDr00r00         [24]   73 	call	_input_update
+                                     74 ;src/main.c:21: if (game_state != current_state) {
+    00000006 FAr00r00         [16]   75 	ld	a, (#_game_state)
+    00000009 21r01r00         [12]   76 	ld	hl, #_current_state
+    0000000C 96               [ 8]   77 	sub	a, (hl)
+    0000000D 28 3E            [12]   78 	jr	Z, 00116$
+                                     79 ;src/main.c:23: current_state = game_state;
+    0000000F FAr00r00         [16]   80 	ld	a, (#_game_state)
+    00000012 EAr01r00         [16]   81 	ld	(#_current_state),a
+                                     82 ;src/main.c:24: if (game_state == STATE_INTRO) {
+    00000015 FAr00r00         [16]   83 	ld	a, (#_game_state)
+    00000018 B7               [ 4]   84 	or	a, a
+    00000019 20 05            [12]   85 	jr	NZ, 00113$
+                                     86 ;src/main.c:25: intro_init();
+    0000001B CDr00r00         [24]   87 	call	_intro_init
+    0000001E 18 2D            [12]   88 	jr	00116$
+    00000020                         89 00113$:
+                                     90 ;src/main.c:26: } else if (game_state == STATE_MENU) {
+    00000020 FAr00r00         [16]   91 	ld	a, (#_game_state)
+    00000023 3D               [ 4]   92 	dec	a
+    00000024 20 05            [12]   93 	jr	NZ, 00110$
+                                     94 ;src/main.c:27: menu_init();
+    00000026 CDr00r00         [24]   95 	call	_menu_init
+    00000029 18 22            [12]   96 	jr	00116$
+    0000002B                         97 00110$:
+                                     98 ;src/main.c:28: } else if (game_state == STATE_GAME) {
+    0000002B FAr00r00         [16]   99 	ld	a, (#_game_state)
+    0000002E D6 02            [ 8]  100 	sub	a, #0x02
+    00000030 20 05            [12]  101 	jr	NZ, 00107$
+                                    102 ;src/main.c:29: game_init();
+    00000032 CDr00r00         [24]  103 	call	_game_init
+    00000035 18 16            [12]  104 	jr	00116$
+    00000037                        105 00107$:
+                                    106 ;src/main.c:30: } else if (game_state == STATE_INVENTORY) {
+    00000037 FAr00r00         [16]  107 	ld	a, (#_game_state)
+    0000003A D6 03            [ 8]  108 	sub	a, #0x03
+    0000003C 20 05            [12]  109 	jr	NZ, 00104$
+                                    110 ;src/main.c:31: inventory_state_init();
+    0000003E CDr00r00         [24]  111 	call	_inventory_state_init
+    00000041 18 0A            [12]  112 	jr	00116$
+    00000043                        113 00104$:
+                                    114 ;src/main.c:32: } else if (game_state == STATE_GAMEOVER) {
+    00000043 FAr00r00         [16]  115 	ld	a, (#_game_state)
+    00000046 D6 04            [ 8]  116 	sub	a, #0x04
+    00000048 20 03            [12]  117 	jr	NZ, 00116$
+                                    118 ;src/main.c:33: gameover_init();
+    0000004A CDr00r00         [24]  119 	call	_gameover_init
+    0000004D                        120 00116$:
+                                    121 ;src/main.c:38: if (game_state == STATE_INTRO) {
+    0000004D FAr00r00         [16]  122 	ld	a, (#_game_state)
+    00000050 B7               [ 4]  123 	or	a, a
+    00000051 20 05            [12]  124 	jr	NZ, 00131$
+                                    125 ;src/main.c:39: intro_update();
+    00000053 CDr00r00         [24]  126 	call	_intro_update
+    00000056 18 3A            [12]  127 	jr	00132$
+    00000058                        128 00131$:
+                                    129 ;src/main.c:40: } else if (game_state == STATE_MENU) {
+    00000058 FAr00r00         [16]  130 	ld	a, (#_game_state)
+    0000005B 3D               [ 4]  131 	dec	a
+    0000005C 20 12            [12]  132 	jr	NZ, 00128$
+                                    133 ;src/main.c:41: menu_update();
+    0000005E CDr00r00         [24]  134 	call	_menu_update
+                                    135 ;src/main.c:42: if (input_pressed(J_START)) {
+    00000061 3E 80            [ 8]  136 	ld	a, #0x80
+    00000063 CDr00r00         [24]  137 	call	_input_pressed
+    00000066 B7               [ 4]  138 	or	a, a
+    00000067 28 29            [12]  139 	jr	Z, 00132$
+                                    140 ;src/main.c:43: game_state = STATE_GAME;
+    00000069 21r00r00         [12]  141 	ld	hl, #_game_state
+    0000006C 36 02            [12]  142 	ld	(hl), #0x02
+    0000006E 18 22            [12]  143 	jr	00132$
+    00000070                        144 00128$:
+                                    145 ;src/main.c:45: } else if (game_state == STATE_GAME) {
+    00000070 FAr00r00         [16]  146 	ld	a, (#_game_state)
+    00000073 D6 02            [ 8]  147 	sub	a, #0x02
+    00000075 20 05            [12]  148 	jr	NZ, 00125$
+                                    149 ;src/main.c:46: game_update();
+    00000077 CDr00r00         [24]  150 	call	_game_update
+    0000007A 18 16            [12]  151 	jr	00132$
+    0000007C                        152 00125$:
+                                    153 ;src/main.c:47: } else if (game_state == STATE_INVENTORY) {
+    0000007C FAr00r00         [16]  154 	ld	a, (#_game_state)
+    0000007F D6 03            [ 8]  155 	sub	a, #0x03
+    00000081 20 05            [12]  156 	jr	NZ, 00122$
+                                    157 ;src/main.c:48: inventory_state_update();
+    00000083 CDr00r00         [24]  158 	call	_inventory_state_update
+    00000086 18 0A            [12]  159 	jr	00132$
+    00000088                        160 00122$:
+                                    161 ;src/main.c:49: } else if (game_state == STATE_GAMEOVER) {
+    00000088 FAr00r00         [16]  162 	ld	a, (#_game_state)
+    0000008B D6 04            [ 8]  163 	sub	a, #0x04
+    0000008D 20 03            [12]  164 	jr	NZ, 00132$
+                                    165 ;src/main.c:50: gameover_update();
+    0000008F CDr00r00         [24]  166 	call	_gameover_update
+    00000092                        167 00132$:
+                                    168 ;src/main.c:54: wait_vbl_done();
+    00000092 CDr00r00         [24]  169 	call	_wait_vbl_done
+                                    170 ;src/main.c:56: }
+    00000095 C3r03r00         [16]  171 	jp	00134$
+                                    172 	.area _CODE
+                                    173 	.area _INITIALIZER
+    00000000                        174 __xinit__game_state:
+    00000000 00                     175 	.db #0x00	; 0
+    00000001                        176 __xinit__current_state:
+    00000001 FF                     177 	.db #0xff	; 255
+                                    178 	.area _CABS (ABS)

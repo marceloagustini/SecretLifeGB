@@ -8,743 +8,849 @@
                                       8 ; Public variables in this module
                                       9 ;--------------------------------------------------------
                                      10 	.globl _clear_dialog_buf
-                                     11 	.globl _get_tile_for_char
+                                     11 	.globl _fill_bkg_rect
                                      12 	.globl _set_win_tiles
                                      13 	.globl _set_win_data
-                                     14 	.globl _waitpadup
-                                     15 	.globl _waitpad
-                                     16 	.globl _delay
-                                     17 	.globl _dialog_buf
-                                     18 	.globl _text_init
-                                     19 	.globl _text_dialogue
-                                     20 ;--------------------------------------------------------
-                                     21 ; special function registers
-                                     22 ;--------------------------------------------------------
-                                     23 	.area _HRAM
+                                     14 	.globl _set_bkg_tile_xy
+                                     15 	.globl _waitpadup
+                                     16 	.globl _waitpad
+                                     17 	.globl _delay
+                                     18 	.globl _dialog_buf
+                                     19 	.globl _text_init
+                                     20 	.globl _get_tile_for_char
+                                     21 	.globl _text_dialogue
+                                     22 	.globl _text_print
+                                     23 	.globl _text_clear
                                      24 ;--------------------------------------------------------
-                                     25 ; ram data
+                                     25 ; special function registers
                                      26 ;--------------------------------------------------------
-                                     27 	.area _DATA
-    00000000                         28 _dialog_buf::
-    00000000                         29 	.ds 120
+                                     27 	.area _HRAM
+                                     28 ;--------------------------------------------------------
+                                     29 ; ram data
                                      30 ;--------------------------------------------------------
-                                     31 ; ram data
-                                     32 ;--------------------------------------------------------
-                                     33 	.area _INITIALIZED
+                                     31 	.area _DATA
+    00000000                         32 _dialog_buf::
+    00000000                         33 	.ds 120
                                      34 ;--------------------------------------------------------
-                                     35 ; absolute external ram data
+                                     35 ; ram data
                                      36 ;--------------------------------------------------------
-                                     37 	.area _DABS (ABS)
+                                     37 	.area _INITIALIZED
                                      38 ;--------------------------------------------------------
-                                     39 ; global & static initialisations
+                                     39 ; absolute external ram data
                                      40 ;--------------------------------------------------------
-                                     41 	.area _HOME
-                                     42 	.area _GSINIT
-                                     43 	.area _GSFINAL
-                                     44 	.area _GSINIT
-                                     45 ;--------------------------------------------------------
-                                     46 ; Home
-                                     47 ;--------------------------------------------------------
-                                     48 	.area _HOME
-                                     49 	.area _HOME
-                                     50 ;--------------------------------------------------------
-                                     51 ; code
-                                     52 ;--------------------------------------------------------
-                                     53 	.area _CODE
-                                     54 ;src/utils/text.c:14: void text_init(void) {
-                                     55 ;	---------------------------------
-                                     56 ; Function text_init
-                                     57 ; ---------------------------------
-    00000000                         58 _text_init::
-                                     59 ;src/utils/text.c:16: font_data); // Load 65 tiles: space + 26 upper + 26 lower + 6
-                                     60 ;src/utils/text.c:15: set_win_data(FONT_BASE_TILE, 65,
-    00000000 11r00r00         [12]   61 	ld	de, #_font_data
-    00000003 D5               [16]   62 	push	de
-    00000004 21 80 41         [12]   63 	ld	hl, #0x4180
-    00000007 E5               [16]   64 	push	hl
-    00000008 CDr00r00         [24]   65 	call	_set_win_data
-    0000000B E8 04            [16]   66 	add	sp, #4
-                                     67 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
-    0000000D 3E 07            [ 8]   68 	ld	a, #0x07
-    0000000F E0r00            [12]   69 	ldh	(_WX_REG + 0), a
-    00000011 3E 90            [ 8]   70 	ld	a, #0x90
-    00000013 E0r00            [12]   71 	ldh	(_WY_REG + 0), a
-                                     72 ;src/utils/text.c:18: move_win(7, 144);
-                                     73 ;src/utils/text.c:19: }
-    00000015 C9               [16]   74 	ret
-                                     75 ;src/utils/text.c:21: uint8_t get_tile_for_char(char c) {
-                                     76 ;	---------------------------------
-                                     77 ; Function get_tile_for_char
-                                     78 ; ---------------------------------
-    00000016                         79 _get_tile_for_char::
-                                     80 ;src/utils/text.c:22: if (c == ' ' || c == '\n')
-    00000016 4F               [ 4]   81 	ld	c, a
-    00000017 D6 20            [ 8]   82 	sub	a, #0x20
-    00000019 28 05            [12]   83 	jr	Z, 00101$
-    0000001B 79               [ 4]   84 	ld	a, c
-    0000001C D6 0A            [ 8]   85 	sub	a, #0x0a
-    0000001E 20 03            [12]   86 	jr	NZ, 00102$
-    00000020                         87 00101$:
-                                     88 ;src/utils/text.c:23: return (uint8_t)(FONT_BASE_TILE + 0);
-    00000020 3E 80            [ 8]   89 	ld	a, #0x80
-    00000022 C9               [16]   90 	ret
-    00000023                         91 00102$:
-                                     92 ;src/utils/text.c:24: if (c >= 'A' && c <= 'Z')
-    00000023 79               [ 4]   93 	ld	a, c
-    00000024 EE 80            [ 8]   94 	xor	a, #0x80
-    00000026 D6 C1            [ 8]   95 	sub	a, #0xc1
-    00000028 38 1B            [12]   96 	jr	C, 00105$
-    0000002A 59               [ 4]   97 	ld	e, c
-    0000002B 3E 5A            [ 8]   98 	ld	a,#0x5a
-    0000002D 57               [ 4]   99 	ld	d,a
-    0000002E 91               [ 4]  100 	sub	a, c
-    0000002F CB 7B            [ 8]  101 	bit	7, e
-    00000031 28 07            [12]  102 	jr	Z, 00258$
-    00000033 CB 7A            [ 8]  103 	bit	7, d
-    00000035 20 08            [12]  104 	jr	NZ, 00259$
-    00000037 BF               [ 4]  105 	cp	a, a
-    00000038 18 05            [12]  106 	jr	00259$
-    0000003A                        107 00258$:
-    0000003A CB 7A            [ 8]  108 	bit	7, d
-    0000003C 28 01            [12]  109 	jr	Z, 00259$
-    0000003E 37               [ 4]  110 	scf
-    0000003F                        111 00259$:
-    0000003F 38 04            [12]  112 	jr	C, 00105$
-                                    113 ;src/utils/text.c:25: return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'A'));
-    00000041 79               [ 4]  114 	ld	a, c
-    00000042 C6 40            [ 8]  115 	add	a, #0x40
-    00000044 C9               [16]  116 	ret
-    00000045                        117 00105$:
-                                    118 ;src/utils/text.c:26: if (c >= 'a' && c <= 'z')
-    00000045 79               [ 4]  119 	ld	a, c
-    00000046 EE 80            [ 8]  120 	xor	a, #0x80
-    00000048 D6 E1            [ 8]  121 	sub	a, #0xe1
-    0000004A 38 1B            [12]  122 	jr	C, 00108$
-    0000004C 59               [ 4]  123 	ld	e, c
-    0000004D 3E 7A            [ 8]  124 	ld	a,#0x7a
-    0000004F 57               [ 4]  125 	ld	d,a
-    00000050 91               [ 4]  126 	sub	a, c
-    00000051 CB 7B            [ 8]  127 	bit	7, e
-    00000053 28 07            [12]  128 	jr	Z, 00260$
-    00000055 CB 7A            [ 8]  129 	bit	7, d
-    00000057 20 08            [12]  130 	jr	NZ, 00261$
-    00000059 BF               [ 4]  131 	cp	a, a
-    0000005A 18 05            [12]  132 	jr	00261$
-    0000005C                        133 00260$:
-    0000005C CB 7A            [ 8]  134 	bit	7, d
-    0000005E 28 01            [12]  135 	jr	Z, 00261$
-    00000060 37               [ 4]  136 	scf
-    00000061                        137 00261$:
-    00000061 38 04            [12]  138 	jr	C, 00108$
-                                    139 ;src/utils/text.c:27: return (uint8_t)(FONT_BASE_TILE + 27 + (c - 'a')); // Lowercase at offset 27
-    00000063 79               [ 4]  140 	ld	a, c
-    00000064 C6 3A            [ 8]  141 	add	a, #0x3a
-    00000066 C9               [16]  142 	ret
-    00000067                        143 00108$:
-                                    144 ;src/utils/text.c:28: if (c == ',')
-    00000067 79               [ 4]  145 	ld	a, c
-    00000068 D6 2C            [ 8]  146 	sub	a, #0x2c
-    0000006A 20 03            [12]  147 	jr	NZ, 00111$
-                                    148 ;src/utils/text.c:29: return (uint8_t)(FONT_BASE_TILE + 53);
-    0000006C 3E B5            [ 8]  149 	ld	a, #0xb5
-    0000006E C9               [16]  150 	ret
-    0000006F                        151 00111$:
-                                    152 ;src/utils/text.c:30: if (c == '?')
-    0000006F 79               [ 4]  153 	ld	a, c
-    00000070 D6 3F            [ 8]  154 	sub	a, #0x3f
-    00000072 20 03            [12]  155 	jr	NZ, 00113$
-                                    156 ;src/utils/text.c:31: return (uint8_t)(FONT_BASE_TILE + 54);
-    00000074 3E B6            [ 8]  157 	ld	a, #0xb6
-    00000076 C9               [16]  158 	ret
-    00000077                        159 00113$:
-                                    160 ;src/utils/text.c:32: if (c == '!')
-    00000077 79               [ 4]  161 	ld	a, c
-    00000078 D6 21            [ 8]  162 	sub	a, #0x21
-    0000007A 20 03            [12]  163 	jr	NZ, 00115$
-                                    164 ;src/utils/text.c:33: return (uint8_t)(FONT_BASE_TILE + 55);
-    0000007C 3E B7            [ 8]  165 	ld	a, #0xb7
-    0000007E C9               [16]  166 	ret
-    0000007F                        167 00115$:
-                                    168 ;src/utils/text.c:34: if (c == '.')
-    0000007F 79               [ 4]  169 	ld	a, c
-    00000080 D6 2E            [ 8]  170 	sub	a, #0x2e
-    00000082 20 03            [12]  171 	jr	NZ, 00117$
-                                    172 ;src/utils/text.c:35: return (uint8_t)(FONT_BASE_TILE + 56);
-    00000084 3E B8            [ 8]  173 	ld	a, #0xb8
-    00000086 C9               [16]  174 	ret
-    00000087                        175 00117$:
-                                    176 ;src/utils/text.c:36: if (c == '>')
-    00000087 79               [ 4]  177 	ld	a, c
-    00000088 D6 3E            [ 8]  178 	sub	a, #0x3e
-    0000008A 20 03            [12]  179 	jr	NZ, 00119$
-                                    180 ;src/utils/text.c:37: return (uint8_t)(FONT_BASE_TILE + 57);
-    0000008C 3E B9            [ 8]  181 	ld	a, #0xb9
-    0000008E C9               [16]  182 	ret
-    0000008F                        183 00119$:
-                                    184 ;src/utils/text.c:38: if (c == '#')
-    0000008F 79               [ 4]  185 	ld	a, c
-    00000090 D6 23            [ 8]  186 	sub	a, #0x23
-    00000092 20 03            [12]  187 	jr	NZ, 00121$
-                                    188 ;src/utils/text.c:39: return (uint8_t)(FONT_BASE_TILE + 58);
-    00000094 3E BA            [ 8]  189 	ld	a, #0xba
-    00000096 C9               [16]  190 	ret
-    00000097                        191 00121$:
-                                    192 ;src/utils/text.c:42: if (c == 1)
-    00000097 79               [ 4]  193 	ld	a, c
-    00000098 3D               [ 4]  194 	dec	a
-    00000099 20 03            [12]  195 	jr	NZ, 00123$
-                                    196 ;src/utils/text.c:43: return (uint8_t)(FONT_BASE_TILE + 59); // ┌
-    0000009B 3E BB            [ 8]  197 	ld	a, #0xbb
-    0000009D C9               [16]  198 	ret
-    0000009E                        199 00123$:
-                                    200 ;src/utils/text.c:44: if (c == 2)
-    0000009E 79               [ 4]  201 	ld	a, c
-    0000009F D6 02            [ 8]  202 	sub	a, #0x02
-    000000A1 20 03            [12]  203 	jr	NZ, 00125$
-                                    204 ;src/utils/text.c:45: return (uint8_t)(FONT_BASE_TILE + 60); // ─
-    000000A3 3E BC            [ 8]  205 	ld	a, #0xbc
-    000000A5 C9               [16]  206 	ret
-    000000A6                        207 00125$:
-                                    208 ;src/utils/text.c:46: if (c == 3)
-    000000A6 79               [ 4]  209 	ld	a, c
-    000000A7 D6 03            [ 8]  210 	sub	a, #0x03
-    000000A9 20 03            [12]  211 	jr	NZ, 00127$
-                                    212 ;src/utils/text.c:47: return (uint8_t)(FONT_BASE_TILE + 61); // ┐
-    000000AB 3E BD            [ 8]  213 	ld	a, #0xbd
-    000000AD C9               [16]  214 	ret
-    000000AE                        215 00127$:
-                                    216 ;src/utils/text.c:48: if (c == 4)
-    000000AE 79               [ 4]  217 	ld	a, c
-    000000AF D6 04            [ 8]  218 	sub	a, #0x04
-    000000B1 20 03            [12]  219 	jr	NZ, 00129$
-                                    220 ;src/utils/text.c:49: return (uint8_t)(FONT_BASE_TILE + 62); // │
-    000000B3 3E BE            [ 8]  221 	ld	a, #0xbe
-    000000B5 C9               [16]  222 	ret
-    000000B6                        223 00129$:
-                                    224 ;src/utils/text.c:50: if (c == 5)
-    000000B6 79               [ 4]  225 	ld	a, c
-    000000B7 D6 05            [ 8]  226 	sub	a, #0x05
-    000000B9 20 03            [12]  227 	jr	NZ, 00131$
-                                    228 ;src/utils/text.c:51: return (uint8_t)(FONT_BASE_TILE + 63); // └
-    000000BB 3E BF            [ 8]  229 	ld	a, #0xbf
-    000000BD C9               [16]  230 	ret
-    000000BE                        231 00131$:
-                                    232 ;src/utils/text.c:52: if (c == 6)
-    000000BE 79               [ 4]  233 	ld	a, c
-    000000BF D6 06            [ 8]  234 	sub	a, #0x06
-                                    235 ;src/utils/text.c:53: return (uint8_t)(FONT_BASE_TILE + 64); // ┘
-                                    236 ;src/utils/text.c:55: return (uint8_t)(FONT_BASE_TILE + 0);
-    000000C1 3E C0            [ 8]  237 	ld	a, #0xc0
-    000000C3 C8               [20]  238 	ret	Z
-    000000C4 3E 80            [ 8]  239 	ld	a, #0x80
-                                    240 ;src/utils/text.c:56: }
-    000000C6 C9               [16]  241 	ret
-                                    242 ;src/utils/text.c:60: void clear_dialog_buf(void) {
-                                    243 ;	---------------------------------
-                                    244 ; Function clear_dialog_buf
-                                    245 ; ---------------------------------
-    000000C7                        246 _clear_dialog_buf::
-                                    247 ;src/utils/text.c:61: for (int i = 0; i < 120; i++)
-    000000C7 0E 00            [ 8]  248 	ld	c, #0x00
-    000000C9                        249 00106$:
-    000000C9 79               [ 4]  250 	ld	a, c
-    000000CA D6 78            [ 8]  251 	sub	a, #0x78
-    000000CC 30 0B            [12]  252 	jr	NC, 00101$
-                                    253 ;src/utils/text.c:62: dialog_buf[i] = (uint8_t)FONT_BASE_TILE;
-    000000CE 21r00r00         [12]  254 	ld	hl, #_dialog_buf
-    000000D1 06 00            [ 8]  255 	ld	b, #0x00
-    000000D3 09               [ 8]  256 	add	hl, bc
-    000000D4 36 80            [12]  257 	ld	(hl), #0x80
-                                    258 ;src/utils/text.c:61: for (int i = 0; i < 120; i++)
-    000000D6 0C               [ 4]  259 	inc	c
-    000000D7 18 F0            [12]  260 	jr	00106$
-    000000D9                        261 00101$:
-                                    262 ;src/utils/text.c:63: dialog_buf[0] = get_tile_for_char(1);
-    000000D9 3E 01            [ 8]  263 	ld	a, #0x01
-    000000DB CDr16r00         [24]  264 	call	_get_tile_for_char
-    000000DE EAr00r00         [16]  265 	ld	(#_dialog_buf),a
-                                    266 ;src/utils/text.c:64: for (int i = 1; i < 19; i++)
-    000000E1 0E 01            [ 8]  267 	ld	c, #0x01
-    000000E3                        268 00109$:
-    000000E3 79               [ 4]  269 	ld	a, c
-    000000E4 D6 13            [ 8]  270 	sub	a, #0x13
-    000000E6 30 13            [12]  271 	jr	NC, 00102$
-                                    272 ;src/utils/text.c:65: dialog_buf[i] = get_tile_for_char(2);
-    000000E8 21r00r00         [12]  273 	ld	hl, #_dialog_buf
-    000000EB 06 00            [ 8]  274 	ld	b, #0x00
-    000000ED 09               [ 8]  275 	add	hl, bc
-    000000EE E5               [16]  276 	push	hl
-    000000EF C5               [16]  277 	push	bc
-    000000F0 3E 02            [ 8]  278 	ld	a, #0x02
-    000000F2 CDr16r00         [24]  279 	call	_get_tile_for_char
-    000000F5 C1               [12]  280 	pop	bc
-    000000F6 E1               [12]  281 	pop	hl
-    000000F7 77               [ 8]  282 	ld	(hl), a
-                                    283 ;src/utils/text.c:64: for (int i = 1; i < 19; i++)
-    000000F8 0C               [ 4]  284 	inc	c
-    000000F9 18 E8            [12]  285 	jr	00109$
-    000000FB                        286 00102$:
-                                    287 ;src/utils/text.c:66: dialog_buf[19] = get_tile_for_char(3);
-    000000FB 3E 03            [ 8]  288 	ld	a, #0x03
-    000000FD CDr16r00         [24]  289 	call	_get_tile_for_char
-    00000100 EAr13r00         [16]  290 	ld	(#(_dialog_buf + 19)),a
-                                    291 ;src/utils/text.c:67: for (int y = 1; y < 5; y++) {
-    00000103 0E 01            [ 8]  292 	ld	c, #0x01
-    00000105                        293 00112$:
-                                    294 ;src/utils/text.c:68: dialog_buf[y * 20] = get_tile_for_char(4);
-    00000105 79               [ 4]  295 	ld	a,c
-    00000106 FE 05            [ 8]  296 	cp	a,#0x05
-    00000108 30 2F            [12]  297 	jr	NC, 00103$
-    0000010A 5F               [ 4]  298 	ld	e, a
-    0000010B 87               [ 4]  299 	add	a, a
-    0000010C 87               [ 4]  300 	add	a, a
-    0000010D 83               [ 4]  301 	add	a, e
-    0000010E 87               [ 4]  302 	add	a, a
-    0000010F 87               [ 4]  303 	add	a, a
-    00000110 47               [ 4]  304 	ld	b, a
-    00000111 68               [ 4]  305 	ld	l, b
-    00000112 26 00            [ 8]  306 	ld	h, #0x00
-    00000114 11r00r00         [12]  307 	ld	de, #_dialog_buf
-    00000117 19               [ 8]  308 	add	hl, de
-    00000118 E5               [16]  309 	push	hl
-    00000119 C5               [16]  310 	push	bc
-    0000011A 3E 04            [ 8]  311 	ld	a, #0x04
-    0000011C CDr16r00         [24]  312 	call	_get_tile_for_char
-    0000011F C1               [12]  313 	pop	bc
-    00000120 E1               [12]  314 	pop	hl
-    00000121 77               [ 8]  315 	ld	(hl), a
-                                    316 ;src/utils/text.c:69: dialog_buf[y * 20 + 19] = get_tile_for_char(4);
-    00000122 78               [ 4]  317 	ld	a, b
-    00000123 C6 13            [ 8]  318 	add	a, #0x13
-    00000125 6F               [ 4]  319 	ld	l, a
-    00000126 26 00            [ 8]  320 	ld	h, #0x00
-    00000128 11r00r00         [12]  321 	ld	de, #_dialog_buf
-    0000012B 19               [ 8]  322 	add	hl, de
-    0000012C E5               [16]  323 	push	hl
-    0000012D C5               [16]  324 	push	bc
-    0000012E 3E 04            [ 8]  325 	ld	a, #0x04
-    00000130 CDr16r00         [24]  326 	call	_get_tile_for_char
-    00000133 C1               [12]  327 	pop	bc
-    00000134 E1               [12]  328 	pop	hl
-    00000135 77               [ 8]  329 	ld	(hl), a
-                                    330 ;src/utils/text.c:67: for (int y = 1; y < 5; y++) {
-    00000136 0C               [ 4]  331 	inc	c
-    00000137 18 CC            [12]  332 	jr	00112$
-    00000139                        333 00103$:
-                                    334 ;src/utils/text.c:71: dialog_buf[100] = get_tile_for_char(5);
-    00000139 3E 05            [ 8]  335 	ld	a, #0x05
-    0000013B CDr16r00         [24]  336 	call	_get_tile_for_char
-    0000013E EAr64r00         [16]  337 	ld	(#(_dialog_buf + 100)),a
-                                    338 ;src/utils/text.c:72: for (int i = 101; i < 119; i++)
-    00000141 0E 65            [ 8]  339 	ld	c, #0x65
-    00000143                        340 00115$:
-    00000143 79               [ 4]  341 	ld	a, c
-    00000144 D6 77            [ 8]  342 	sub	a, #0x77
-    00000146 30 13            [12]  343 	jr	NC, 00104$
-                                    344 ;src/utils/text.c:73: dialog_buf[i] = get_tile_for_char(2);
-    00000148 21r00r00         [12]  345 	ld	hl, #_dialog_buf
-    0000014B 06 00            [ 8]  346 	ld	b, #0x00
-    0000014D 09               [ 8]  347 	add	hl, bc
-    0000014E E5               [16]  348 	push	hl
-    0000014F C5               [16]  349 	push	bc
-    00000150 3E 02            [ 8]  350 	ld	a, #0x02
-    00000152 CDr16r00         [24]  351 	call	_get_tile_for_char
-    00000155 C1               [12]  352 	pop	bc
-    00000156 E1               [12]  353 	pop	hl
-    00000157 77               [ 8]  354 	ld	(hl), a
-                                    355 ;src/utils/text.c:72: for (int i = 101; i < 119; i++)
-    00000158 0C               [ 4]  356 	inc	c
-    00000159 18 E8            [12]  357 	jr	00115$
-    0000015B                        358 00104$:
-                                    359 ;src/utils/text.c:74: dialog_buf[119] = get_tile_for_char(6);
-    0000015B 3E 06            [ 8]  360 	ld	a, #0x06
-    0000015D CDr16r00         [24]  361 	call	_get_tile_for_char
-    00000160 EAr77r00         [16]  362 	ld	(#(_dialog_buf + 119)),a
-                                    363 ;src/utils/text.c:75: }
-    00000163 C9               [16]  364 	ret
-                                    365 ;src/utils/text.c:77: void text_dialogue(const char *str) {
-                                    366 ;	---------------------------------
-                                    367 ; Function text_dialogue
-                                    368 ; ---------------------------------
-    00000164                        369 _text_dialogue::
-    00000164 E8 ED            [16]  370 	add	sp, #-19
-    00000166 F8 0B            [12]  371 	ldhl	sp,	#11
-    00000168 7B               [ 4]  372 	ld	a, e
-    00000169 22               [ 8]  373 	ld	(hl+), a
-    0000016A 72               [ 8]  374 	ld	(hl), d
-                                    375 ;src/utils/text.c:78: waitpadup();
-    0000016B CDr00r00         [24]  376 	call	_waitpadup
-                                    377 ;src/utils/text.c:80: for (int i = 0; i < 40; i++)
-    0000016E 01 00 00         [12]  378 	ld	bc, #0x0000
-    00000171                        379 00129$:
-    00000171 79               [ 4]  380 	ld	a, c
-    00000172 D6 28            [ 8]  381 	sub	a, #0x28
-    00000174 30 0F            [12]  382 	jr	NC, 00101$
-                                    383 ;src/utils/text.c:81: move_sprite(i, 0, 0);
-                                    384 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    00000176 69               [ 4]  385 	ld	l, c
-    00000177 AF               [ 4]  386 	xor	a, a
-    00000178 67               [ 4]  387 	ld	h, a
-    00000179 29               [ 8]  388 	add	hl, hl
-    0000017A 29               [ 8]  389 	add	hl, hl
-    0000017B 11r00r00         [12]  390 	ld	de, #_shadow_OAM
-    0000017E 19               [ 8]  391 	add	hl, de
-                                    392 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    0000017F AF               [ 4]  393 	xor	a, a
-    00000180 22               [ 8]  394 	ld	(hl+), a
-    00000181 77               [ 8]  395 	ld	(hl), a
-                                    396 ;src/utils/text.c:80: for (int i = 0; i < 40; i++)
-    00000182 03               [ 8]  397 	inc	bc
-    00000183 18 EC            [12]  398 	jr	00129$
-    00000185                        399 00101$:
-                                    400 ;src/utils/text.c:82: const char *ptr = str;
-    00000185 F8 0B            [12]  401 	ldhl	sp,	#11
-    00000187 7E               [ 8]  402 	ld	a, (hl)
-    00000188 F8 11            [12]  403 	ldhl	sp,	#17
-    0000018A 77               [ 8]  404 	ld	(hl), a
-    0000018B F8 0C            [12]  405 	ldhl	sp,	#12
-    0000018D 7E               [ 8]  406 	ld	a, (hl)
-    0000018E F8 12            [12]  407 	ldhl	sp,	#18
-    00000190 77               [ 8]  408 	ld	(hl), a
-                                    409 ;src/utils/text.c:83: while (*ptr != '\0') {
-    00000191                        410 00122$:
-    00000191 F8 11            [12]  411 	ldhl	sp,#17
-    00000193 2A               [ 8]  412 	ld	a, (hl+)
-    00000194 5F               [ 4]  413 	ld	e, a
-    00000195 56               [ 8]  414 	ld	d, (hl)
-    00000196 1A               [ 8]  415 	ld	a, (de)
-    00000197 B7               [ 4]  416 	or	a, a
-    00000198 CAr25r03         [16]  417 	jp	Z, 00124$
-                                    418 ;src/utils/text.c:84: clear_dialog_buf();
-    0000019B CDrC7r00         [24]  419 	call	_clear_dialog_buf
-                                    420 ;src/utils/text.c:85: int cur_line = 0, cur_col = 0;
-    0000019E AF               [ 4]  421 	xor	a, a
-    0000019F F8 0D            [12]  422 	ldhl	sp,	#13
-    000001A1 22               [ 8]  423 	ld	(hl+), a
-    000001A2 77               [ 8]  424 	ld	(hl), a
-    000001A3 AF               [ 4]  425 	xor	a, a
-    000001A4 F8 00            [12]  426 	ldhl	sp,	#0
-    000001A6 22               [ 8]  427 	ld	(hl+), a
-    000001A7 77               [ 8]  428 	ld	(hl), a
-                                    429 ;src/utils/text.c:86: while (*ptr != '\0' && cur_line < TEXT_LINES) {
-    000001A8                        430 00119$:
-    000001A8 F8 11            [12]  431 	ldhl	sp,#17
-    000001AA 2A               [ 8]  432 	ld	a, (hl+)
-    000001AB 5F               [ 4]  433 	ld	e, a
-    000001AC 3A               [ 8]  434 	ld	a, (hl-)
-    000001AD 2B               [ 8]  435 	dec	hl
-    000001AE 57               [ 4]  436 	ld	d, a
-    000001AF 1A               [ 8]  437 	ld	a, (de)
-    000001B0 77               [ 8]  438 	ld	(hl), a
-    000001B1 7E               [ 8]  439 	ld	a, (hl)
-    000001B2 B7               [ 4]  440 	or	a, a
-    000001B3 CArF6r02         [16]  441 	jp	Z, 00121$
-    000001B6 F8 0D            [12]  442 	ldhl	sp,	#13
-    000001B8 2A               [ 8]  443 	ld	a, (hl+)
-    000001B9 D6 04            [ 8]  444 	sub	a, #0x04
-    000001BB 7E               [ 8]  445 	ld	a, (hl)
-    000001BC DE 00            [ 8]  446 	sbc	a, #0x00
-    000001BE D2rF6r02         [16]  447 	jp	NC, 00121$
-                                    448 ;src/utils/text.c:89: while (*word_end != '\0' && *word_end != ' ' && *word_end != '\n') {
-    000001C1 01 00 00         [12]  449 	ld	bc, #0x0000
-    000001C4 F8 11            [12]  450 	ldhl	sp,	#17
-    000001C6 2A               [ 8]  451 	ld	a, (hl+)
-    000001C7 5F               [ 4]  452 	ld	e, a
-    000001C8 56               [ 8]  453 	ld	d, (hl)
-    000001C9                        454 00104$:
-    000001C9 1A               [ 8]  455 	ld	a, (de)
-    000001CA B7               [ 4]  456 	or	a, a
-    000001CB 28 0C            [12]  457 	jr	Z, 00153$
-    000001CD FE 20            [ 8]  458 	cp	a, #0x20
-    000001CF 28 08            [12]  459 	jr	Z, 00153$
-    000001D1 D6 0A            [ 8]  460 	sub	a, #0x0a
-    000001D3 28 04            [12]  461 	jr	Z, 00153$
-                                    462 ;src/utils/text.c:90: word_len++;
-    000001D5 03               [ 8]  463 	inc	bc
-                                    464 ;src/utils/text.c:91: word_end++;
-    000001D6 13               [ 8]  465 	inc	de
-    000001D7 18 F0            [12]  466 	jr	00104$
-    000001D9                        467 00153$:
-    000001D9 F8 02            [12]  468 	ldhl	sp,	#2
-    000001DB 79               [ 4]  469 	ld	a, c
-    000001DC 22               [ 8]  470 	ld	(hl+), a
-    000001DD 70               [ 8]  471 	ld	(hl), b
-                                    472 ;src/utils/text.c:93: if (cur_col + word_len > TEXT_WIDTH) {
-    000001DE E1               [12]  473 	pop	hl
-    000001DF E5               [16]  474 	push	hl
-    000001E0 09               [ 8]  475 	add	hl, bc
-    000001E1 4D               [ 4]  476 	ld	c, l
-    000001E2 44               [ 4]  477 	ld	b, h
-    000001E3 58               [ 4]  478 	ld	e, b
-    000001E4 16 00            [ 8]  479 	ld	d, #0x00
-    000001E6 3E 12            [ 8]  480 	ld	a, #0x12
-    000001E8 B9               [ 4]  481 	cp	a, c
-    000001E9 3E 00            [ 8]  482 	ld	a, #0x00
-    000001EB 98               [ 4]  483 	sbc	a, b
-    000001EC CB 7B            [ 8]  484 	bit	7, e
-    000001EE 28 07            [12]  485 	jr	Z, 00253$
-    000001F0 CB 7A            [ 8]  486 	bit	7, d
-    000001F2 20 08            [12]  487 	jr	NZ, 00254$
-    000001F4 BF               [ 4]  488 	cp	a, a
-    000001F5 18 05            [12]  489 	jr	00254$
-    000001F7                        490 00253$:
-    000001F7 CB 7A            [ 8]  491 	bit	7, d
-    000001F9 28 01            [12]  492 	jr	Z, 00254$
-    000001FB 37               [ 4]  493 	scf
-    000001FC                        494 00254$:
-    000001FC 30 13            [12]  495 	jr	NC, 00147$
-                                    496 ;src/utils/text.c:94: cur_line++;
-    000001FE F8 0D            [12]  497 	ldhl	sp,	#13
-    00000200 34               [12]  498 	inc	(hl)
-                                    499 ;src/utils/text.c:95: cur_col = 0;
-    00000201 AF               [ 4]  500 	xor	a, a
-    00000202 F8 00            [12]  501 	ldhl	sp,	#0
-    00000204 22               [ 8]  502 	ld	(hl+), a
-    00000205 77               [ 8]  503 	ld	(hl), a
-                                    504 ;src/utils/text.c:96: if (cur_line >= TEXT_LINES)
-    00000206 F8 0D            [12]  505 	ldhl	sp,	#13
-    00000208 2A               [ 8]  506 	ld	a, (hl+)
-    00000209 D6 04            [ 8]  507 	sub	a, #0x04
-    0000020B 7E               [ 8]  508 	ld	a, (hl)
-    0000020C DE 00            [ 8]  509 	sbc	a, #0x00
-    0000020E D2rF6r02         [16]  510 	jp	NC, 00121$
-                                    511 ;src/utils/text.c:99: for (int i = 0; i < word_len; i++) {
-    00000211                        512 00147$:
-                                    513 ;src/utils/text.c:94: cur_line++;
-    00000211 F8 0D            [12]  514 	ldhl	sp,#13
-    00000213 2A               [ 8]  515 	ld	a, (hl+)
-    00000214 5F               [ 4]  516 	ld	e, a
-    00000215 56               [ 8]  517 	ld	d, (hl)
-    00000216 6B               [ 4]  518 	ld	l, e
-    00000217 62               [ 4]  519 	ld	h, d
-    00000218 23               [ 8]  520 	inc	hl
-    00000219 E5               [16]  521 	push	hl
-    0000021A 7D               [ 4]  522 	ld	a, l
-    0000021B F8 06            [12]  523 	ldhl	sp,	#6
-    0000021D 77               [ 8]  524 	ld	(hl), a
-    0000021E E1               [12]  525 	pop	hl
-    0000021F 7C               [ 4]  526 	ld	a, h
-    00000220 F8 05            [12]  527 	ldhl	sp,	#5
-                                    528 ;src/utils/text.c:99: for (int i = 0; i < word_len; i++) {
-    00000222 32               [ 8]  529 	ld	(hl-), a
-    00000223 2A               [ 8]  530 	ld	a, (hl+)
-    00000224 4F               [ 4]  531 	ld	c, a
-    00000225 46               [ 8]  532 	ld	b, (hl)
-    00000226 69               [ 4]  533 	ld	l, c
-    00000227 60               [ 4]  534 	ld	h, b
-    00000228 29               [ 8]  535 	add	hl, hl
-    00000229 29               [ 8]  536 	add	hl, hl
-    0000022A 09               [ 8]  537 	add	hl, bc
-    0000022B 29               [ 8]  538 	add	hl, hl
-    0000022C 29               [ 8]  539 	add	hl, hl
-    0000022D E5               [16]  540 	push	hl
-    0000022E 7D               [ 4]  541 	ld	a, l
-    0000022F F8 08            [12]  542 	ldhl	sp,	#8
-    00000231 77               [ 8]  543 	ld	(hl), a
-    00000232 E1               [12]  544 	pop	hl
-    00000233 7C               [ 4]  545 	ld	a, h
-    00000234 F8 07            [12]  546 	ldhl	sp,	#7
-    00000236 77               [ 8]  547 	ld	(hl), a
-    00000237 F8 11            [12]  548 	ldhl	sp,	#17
-    00000239 3A               [ 8]  549 	ld	a, (hl-)
-    0000023A 2B               [ 8]  550 	dec	hl
-    0000023B 77               [ 8]  551 	ld	(hl), a
-    0000023C F8 12            [12]  552 	ldhl	sp,	#18
-    0000023E 3A               [ 8]  553 	ld	a, (hl-)
-    0000023F 2B               [ 8]  554 	dec	hl
-    00000240 22               [ 8]  555 	ld	(hl+), a
-    00000241 AF               [ 4]  556 	xor	a, a
-    00000242 22               [ 8]  557 	ld	(hl+), a
-    00000243 77               [ 8]  558 	ld	(hl), a
-    00000244                        559 00132$:
-                                    560 ;src/utils/text.c:100: int pos = (cur_line + 1) * 20 + (cur_col + 1);
-    00000244 D1               [12]  561 	pop	de
-    00000245 D5               [16]  562 	push	de
-    00000246 6B               [ 4]  563 	ld	l, e
-    00000247 62               [ 4]  564 	ld	h, d
-    00000248 23               [ 8]  565 	inc	hl
-    00000249 E5               [16]  566 	push	hl
-    0000024A 7D               [ 4]  567 	ld	a, l
-    0000024B F8 0A            [12]  568 	ldhl	sp,	#10
-    0000024D 77               [ 8]  569 	ld	(hl), a
-    0000024E E1               [12]  570 	pop	hl
-    0000024F 7C               [ 4]  571 	ld	a, h
-    00000250 F8 09            [12]  572 	ldhl	sp,	#9
-    00000252 77               [ 8]  573 	ld	(hl), a
-                                    574 ;src/utils/text.c:101: dialog_buf[pos] = get_tile_for_char(*ptr);
-    00000253 F8 0F            [12]  575 	ldhl	sp,#15
-    00000255 2A               [ 8]  576 	ld	a, (hl+)
-    00000256 5F               [ 4]  577 	ld	e, a
-    00000257 56               [ 8]  578 	ld	d, (hl)
-    00000258 1A               [ 8]  579 	ld	a, (de)
-    00000259 F8 0A            [12]  580 	ldhl	sp,	#10
+                                     41 	.area _DABS (ABS)
+                                     42 ;--------------------------------------------------------
+                                     43 ; global & static initialisations
+                                     44 ;--------------------------------------------------------
+                                     45 	.area _HOME
+                                     46 	.area _GSINIT
+                                     47 	.area _GSFINAL
+                                     48 	.area _GSINIT
+                                     49 ;--------------------------------------------------------
+                                     50 ; Home
+                                     51 ;--------------------------------------------------------
+                                     52 	.area _HOME
+                                     53 	.area _HOME
+                                     54 ;--------------------------------------------------------
+                                     55 ; code
+                                     56 ;--------------------------------------------------------
+                                     57 	.area _CODE
+                                     58 ;src/utils/text.c:14: void text_init(void) {
+                                     59 ;	---------------------------------
+                                     60 ; Function text_init
+                                     61 ; ---------------------------------
+    00000000                         62 _text_init::
+                                     63 ;src/utils/text.c:16: font_data); // Load 50 tiles
+                                     64 ;src/utils/text.c:15: set_win_data(FONT_BASE_TILE, 50,
+    00000000 11r00r00         [12]   65 	ld	de, #_font_data
+    00000003 D5               [16]   66 	push	de
+    00000004 21 80 32         [12]   67 	ld	hl, #0x3280
+    00000007 E5               [16]   68 	push	hl
+    00000008 CDr00r00         [24]   69 	call	_set_win_data
+    0000000B E8 04            [16]   70 	add	sp, #4
+                                     71 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
+    0000000D 3E 07            [ 8]   72 	ld	a, #0x07
+    0000000F E0r00            [12]   73 	ldh	(_WX_REG + 0), a
+    00000011 3E 90            [ 8]   74 	ld	a, #0x90
+    00000013 E0r00            [12]   75 	ldh	(_WY_REG + 0), a
+                                     76 ;src/utils/text.c:17: move_win(7, 144);
+                                     77 ;src/utils/text.c:18: }
+    00000015 C9               [16]   78 	ret
+                                     79 ;src/utils/text.c:20: uint8_t get_tile_for_char(char c) {
+                                     80 ;	---------------------------------
+                                     81 ; Function get_tile_for_char
+                                     82 ; ---------------------------------
+    00000016                         83 _get_tile_for_char::
+                                     84 ;src/utils/text.c:21: if (c == ' ' || c == '\n')
+    00000016 4F               [ 4]   85 	ld	c, a
+    00000017 D6 20            [ 8]   86 	sub	a, #0x20
+    00000019 28 05            [12]   87 	jr	Z, 00101$
+    0000001B 79               [ 4]   88 	ld	a, c
+    0000001C D6 0A            [ 8]   89 	sub	a, #0x0a
+    0000001E 20 03            [12]   90 	jr	NZ, 00102$
+    00000020                         91 00101$:
+                                     92 ;src/utils/text.c:22: return (uint8_t)(FONT_BASE_TILE + 0);
+    00000020 3E 80            [ 8]   93 	ld	a, #0x80
+    00000022 C9               [16]   94 	ret
+    00000023                         95 00102$:
+                                     96 ;src/utils/text.c:23: if (c >= 'A' && c <= 'Z')
+    00000023 79               [ 4]   97 	ld	a, c
+    00000024 EE 80            [ 8]   98 	xor	a, #0x80
+    00000026 D6 C1            [ 8]   99 	sub	a, #0xc1
+    00000028 38 1B            [12]  100 	jr	C, 00105$
+    0000002A 59               [ 4]  101 	ld	e, c
+    0000002B 3E 5A            [ 8]  102 	ld	a,#0x5a
+    0000002D 57               [ 4]  103 	ld	d,a
+    0000002E 91               [ 4]  104 	sub	a, c
+    0000002F CB 7B            [ 8]  105 	bit	7, e
+    00000031 28 07            [12]  106 	jr	Z, 00284$
+    00000033 CB 7A            [ 8]  107 	bit	7, d
+    00000035 20 08            [12]  108 	jr	NZ, 00285$
+    00000037 BF               [ 4]  109 	cp	a, a
+    00000038 18 05            [12]  110 	jr	00285$
+    0000003A                        111 00284$:
+    0000003A CB 7A            [ 8]  112 	bit	7, d
+    0000003C 28 01            [12]  113 	jr	Z, 00285$
+    0000003E 37               [ 4]  114 	scf
+    0000003F                        115 00285$:
+    0000003F 38 04            [12]  116 	jr	C, 00105$
+                                    117 ;src/utils/text.c:24: return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'A'));
+    00000041 79               [ 4]  118 	ld	a, c
+    00000042 C6 40            [ 8]  119 	add	a, #0x40
+    00000044 C9               [16]  120 	ret
+    00000045                        121 00105$:
+                                    122 ;src/utils/text.c:25: if (c >= 'a' && c <= 'z')
+    00000045 79               [ 4]  123 	ld	a, c
+    00000046 EE 80            [ 8]  124 	xor	a, #0x80
+    00000048 D6 E1            [ 8]  125 	sub	a, #0xe1
+    0000004A 38 1B            [12]  126 	jr	C, 00108$
+    0000004C 59               [ 4]  127 	ld	e, c
+    0000004D 3E 7A            [ 8]  128 	ld	a,#0x7a
+    0000004F 57               [ 4]  129 	ld	d,a
+    00000050 91               [ 4]  130 	sub	a, c
+    00000051 CB 7B            [ 8]  131 	bit	7, e
+    00000053 28 07            [12]  132 	jr	Z, 00286$
+    00000055 CB 7A            [ 8]  133 	bit	7, d
+    00000057 20 08            [12]  134 	jr	NZ, 00287$
+    00000059 BF               [ 4]  135 	cp	a, a
+    0000005A 18 05            [12]  136 	jr	00287$
+    0000005C                        137 00286$:
+    0000005C CB 7A            [ 8]  138 	bit	7, d
+    0000005E 28 01            [12]  139 	jr	Z, 00287$
+    00000060 37               [ 4]  140 	scf
+    00000061                        141 00287$:
+    00000061 38 04            [12]  142 	jr	C, 00108$
+                                    143 ;src/utils/text.c:27: (c - 'a')); // Map lowercase to uppercase
+    00000063 79               [ 4]  144 	ld	a, c
+    00000064 C6 20            [ 8]  145 	add	a, #0x20
+    00000066 C9               [16]  146 	ret
+    00000067                        147 00108$:
+                                    148 ;src/utils/text.c:28: if (c == ',')
+    00000067 79               [ 4]  149 	ld	a, c
+    00000068 D6 2C            [ 8]  150 	sub	a, #0x2c
+    0000006A 20 03            [12]  151 	jr	NZ, 00111$
+                                    152 ;src/utils/text.c:29: return (uint8_t)(FONT_BASE_TILE + 27);
+    0000006C 3E 9B            [ 8]  153 	ld	a, #0x9b
+    0000006E C9               [16]  154 	ret
+    0000006F                        155 00111$:
+                                    156 ;src/utils/text.c:30: if (c == '?')
+    0000006F 79               [ 4]  157 	ld	a, c
+    00000070 D6 3F            [ 8]  158 	sub	a, #0x3f
+    00000072 20 03            [12]  159 	jr	NZ, 00113$
+                                    160 ;src/utils/text.c:31: return (uint8_t)(FONT_BASE_TILE + 28);
+    00000074 3E 9C            [ 8]  161 	ld	a, #0x9c
+    00000076 C9               [16]  162 	ret
+    00000077                        163 00113$:
+                                    164 ;src/utils/text.c:32: if (c == '!')
+    00000077 79               [ 4]  165 	ld	a, c
+    00000078 D6 21            [ 8]  166 	sub	a, #0x21
+    0000007A 20 03            [12]  167 	jr	NZ, 00115$
+                                    168 ;src/utils/text.c:33: return (uint8_t)(FONT_BASE_TILE + 29);
+    0000007C 3E 9D            [ 8]  169 	ld	a, #0x9d
+    0000007E C9               [16]  170 	ret
+    0000007F                        171 00115$:
+                                    172 ;src/utils/text.c:34: if (c == '.')
+    0000007F 79               [ 4]  173 	ld	a, c
+    00000080 D6 2E            [ 8]  174 	sub	a, #0x2e
+    00000082 20 03            [12]  175 	jr	NZ, 00117$
+                                    176 ;src/utils/text.c:35: return (uint8_t)(FONT_BASE_TILE + 30);
+    00000084 3E 9E            [ 8]  177 	ld	a, #0x9e
+    00000086 C9               [16]  178 	ret
+    00000087                        179 00117$:
+                                    180 ;src/utils/text.c:36: if (c == '>')
+    00000087 79               [ 4]  181 	ld	a, c
+    00000088 D6 3E            [ 8]  182 	sub	a, #0x3e
+    0000008A 20 03            [12]  183 	jr	NZ, 00119$
+                                    184 ;src/utils/text.c:37: return (uint8_t)(FONT_BASE_TILE + 31);
+    0000008C 3E 9F            [ 8]  185 	ld	a, #0x9f
+    0000008E C9               [16]  186 	ret
+    0000008F                        187 00119$:
+                                    188 ;src/utils/text.c:38: if (c == '#')
+    0000008F 79               [ 4]  189 	ld	a, c
+    00000090 D6 23            [ 8]  190 	sub	a, #0x23
+    00000092 20 03            [12]  191 	jr	NZ, 00121$
+                                    192 ;src/utils/text.c:39: return (uint8_t)(FONT_BASE_TILE + 32);
+    00000094 3E A0            [ 8]  193 	ld	a, #0xa0
+    00000096 C9               [16]  194 	ret
+    00000097                        195 00121$:
+                                    196 ;src/utils/text.c:42: if (c == 1)
+    00000097 79               [ 4]  197 	ld	a, c
+    00000098 3D               [ 4]  198 	dec	a
+    00000099 20 03            [12]  199 	jr	NZ, 00123$
+                                    200 ;src/utils/text.c:43: return (uint8_t)(FONT_BASE_TILE + 33); // ┌
+    0000009B 3E A1            [ 8]  201 	ld	a, #0xa1
+    0000009D C9               [16]  202 	ret
+    0000009E                        203 00123$:
+                                    204 ;src/utils/text.c:44: if (c == 2)
+    0000009E 79               [ 4]  205 	ld	a, c
+    0000009F D6 02            [ 8]  206 	sub	a, #0x02
+    000000A1 20 03            [12]  207 	jr	NZ, 00125$
+                                    208 ;src/utils/text.c:45: return (uint8_t)(FONT_BASE_TILE + 34); // ─
+    000000A3 3E A2            [ 8]  209 	ld	a, #0xa2
+    000000A5 C9               [16]  210 	ret
+    000000A6                        211 00125$:
+                                    212 ;src/utils/text.c:46: if (c == 3)
+    000000A6 79               [ 4]  213 	ld	a, c
+    000000A7 D6 03            [ 8]  214 	sub	a, #0x03
+    000000A9 20 03            [12]  215 	jr	NZ, 00127$
+                                    216 ;src/utils/text.c:47: return (uint8_t)(FONT_BASE_TILE + 35); // ┐
+    000000AB 3E A3            [ 8]  217 	ld	a, #0xa3
+    000000AD C9               [16]  218 	ret
+    000000AE                        219 00127$:
+                                    220 ;src/utils/text.c:48: if (c == 4)
+    000000AE 79               [ 4]  221 	ld	a, c
+    000000AF D6 04            [ 8]  222 	sub	a, #0x04
+    000000B1 20 03            [12]  223 	jr	NZ, 00129$
+                                    224 ;src/utils/text.c:49: return (uint8_t)(FONT_BASE_TILE + 36); // │
+    000000B3 3E A4            [ 8]  225 	ld	a, #0xa4
+    000000B5 C9               [16]  226 	ret
+    000000B6                        227 00129$:
+                                    228 ;src/utils/text.c:50: if (c == 5)
+    000000B6 79               [ 4]  229 	ld	a, c
+    000000B7 D6 05            [ 8]  230 	sub	a, #0x05
+    000000B9 20 03            [12]  231 	jr	NZ, 00131$
+                                    232 ;src/utils/text.c:51: return (uint8_t)(FONT_BASE_TILE + 37); // └
+    000000BB 3E A5            [ 8]  233 	ld	a, #0xa5
+    000000BD C9               [16]  234 	ret
+    000000BE                        235 00131$:
+                                    236 ;src/utils/text.c:52: if (c == 6)
+    000000BE 79               [ 4]  237 	ld	a, c
+    000000BF D6 06            [ 8]  238 	sub	a, #0x06
+    000000C1 20 03            [12]  239 	jr	NZ, 00133$
+                                    240 ;src/utils/text.c:53: return (uint8_t)(FONT_BASE_TILE + 38); // ┘
+    000000C3 3E A6            [ 8]  241 	ld	a, #0xa6
+    000000C5 C9               [16]  242 	ret
+    000000C6                        243 00133$:
+                                    244 ;src/utils/text.c:56: if (c >= '0' && c <= '9')
+    000000C6 79               [ 4]  245 	ld	a, c
+    000000C7 EE 80            [ 8]  246 	xor	a, #0x80
+    000000C9 D6 B0            [ 8]  247 	sub	a, #0xb0
+    000000CB 38 1B            [12]  248 	jr	C, 00135$
+    000000CD 59               [ 4]  249 	ld	e, c
+    000000CE 3E 39            [ 8]  250 	ld	a,#0x39
+    000000D0 57               [ 4]  251 	ld	d,a
+    000000D1 91               [ 4]  252 	sub	a, c
+    000000D2 CB 7B            [ 8]  253 	bit	7, e
+    000000D4 28 07            [12]  254 	jr	Z, 00312$
+    000000D6 CB 7A            [ 8]  255 	bit	7, d
+    000000D8 20 08            [12]  256 	jr	NZ, 00313$
+    000000DA BF               [ 4]  257 	cp	a, a
+    000000DB 18 05            [12]  258 	jr	00313$
+    000000DD                        259 00312$:
+    000000DD CB 7A            [ 8]  260 	bit	7, d
+    000000DF 28 01            [12]  261 	jr	Z, 00313$
+    000000E1 37               [ 4]  262 	scf
+    000000E2                        263 00313$:
+    000000E2 38 04            [12]  264 	jr	C, 00135$
+                                    265 ;src/utils/text.c:57: return (uint8_t)(FONT_BASE_TILE + 39 + (c - '0'));
+    000000E4 79               [ 4]  266 	ld	a, c
+    000000E5 C6 77            [ 8]  267 	add	a, #0x77
+    000000E7 C9               [16]  268 	ret
+    000000E8                        269 00135$:
+                                    270 ;src/utils/text.c:59: if (c == ':')
+    000000E8 79               [ 4]  271 	ld	a, c
+    000000E9 D6 3A            [ 8]  272 	sub	a, #0x3a
+                                    273 ;src/utils/text.c:60: return (uint8_t)(FONT_BASE_TILE + 49);
+                                    274 ;src/utils/text.c:62: return (uint8_t)(FONT_BASE_TILE + 0);
+    000000EB 3E B1            [ 8]  275 	ld	a, #0xb1
+    000000ED C8               [20]  276 	ret	Z
+    000000EE 3E 80            [ 8]  277 	ld	a, #0x80
+                                    278 ;src/utils/text.c:63: }
+    000000F0 C9               [16]  279 	ret
+                                    280 ;src/utils/text.c:67: void clear_dialog_buf(void) {
+                                    281 ;	---------------------------------
+                                    282 ; Function clear_dialog_buf
+                                    283 ; ---------------------------------
+    000000F1                        284 _clear_dialog_buf::
+                                    285 ;src/utils/text.c:68: for (int i = 0; i < 120; i++)
+    000000F1 0E 00            [ 8]  286 	ld	c, #0x00
+    000000F3                        287 00106$:
+    000000F3 79               [ 4]  288 	ld	a, c
+    000000F4 D6 78            [ 8]  289 	sub	a, #0x78
+    000000F6 30 0B            [12]  290 	jr	NC, 00101$
+                                    291 ;src/utils/text.c:69: dialog_buf[i] = (uint8_t)FONT_BASE_TILE;
+    000000F8 21r00r00         [12]  292 	ld	hl, #_dialog_buf
+    000000FB 06 00            [ 8]  293 	ld	b, #0x00
+    000000FD 09               [ 8]  294 	add	hl, bc
+    000000FE 36 80            [12]  295 	ld	(hl), #0x80
+                                    296 ;src/utils/text.c:68: for (int i = 0; i < 120; i++)
+    00000100 0C               [ 4]  297 	inc	c
+    00000101 18 F0            [12]  298 	jr	00106$
+    00000103                        299 00101$:
+                                    300 ;src/utils/text.c:70: dialog_buf[0] = get_tile_for_char(1);
+    00000103 3E 01            [ 8]  301 	ld	a, #0x01
+    00000105 CDr16r00         [24]  302 	call	_get_tile_for_char
+    00000108 EAr00r00         [16]  303 	ld	(#_dialog_buf),a
+                                    304 ;src/utils/text.c:71: for (int i = 1; i < 19; i++)
+    0000010B 0E 01            [ 8]  305 	ld	c, #0x01
+    0000010D                        306 00109$:
+    0000010D 79               [ 4]  307 	ld	a, c
+    0000010E D6 13            [ 8]  308 	sub	a, #0x13
+    00000110 30 13            [12]  309 	jr	NC, 00102$
+                                    310 ;src/utils/text.c:72: dialog_buf[i] = get_tile_for_char(2);
+    00000112 21r00r00         [12]  311 	ld	hl, #_dialog_buf
+    00000115 06 00            [ 8]  312 	ld	b, #0x00
+    00000117 09               [ 8]  313 	add	hl, bc
+    00000118 E5               [16]  314 	push	hl
+    00000119 C5               [16]  315 	push	bc
+    0000011A 3E 02            [ 8]  316 	ld	a, #0x02
+    0000011C CDr16r00         [24]  317 	call	_get_tile_for_char
+    0000011F C1               [12]  318 	pop	bc
+    00000120 E1               [12]  319 	pop	hl
+    00000121 77               [ 8]  320 	ld	(hl), a
+                                    321 ;src/utils/text.c:71: for (int i = 1; i < 19; i++)
+    00000122 0C               [ 4]  322 	inc	c
+    00000123 18 E8            [12]  323 	jr	00109$
+    00000125                        324 00102$:
+                                    325 ;src/utils/text.c:73: dialog_buf[19] = get_tile_for_char(3);
+    00000125 3E 03            [ 8]  326 	ld	a, #0x03
+    00000127 CDr16r00         [24]  327 	call	_get_tile_for_char
+    0000012A EAr13r00         [16]  328 	ld	(#(_dialog_buf + 19)),a
+                                    329 ;src/utils/text.c:74: for (int y = 1; y < 5; y++) {
+    0000012D 0E 01            [ 8]  330 	ld	c, #0x01
+    0000012F                        331 00112$:
+                                    332 ;src/utils/text.c:75: dialog_buf[y * 20] = get_tile_for_char(4);
+    0000012F 79               [ 4]  333 	ld	a,c
+    00000130 FE 05            [ 8]  334 	cp	a,#0x05
+    00000132 30 2F            [12]  335 	jr	NC, 00103$
+    00000134 5F               [ 4]  336 	ld	e, a
+    00000135 87               [ 4]  337 	add	a, a
+    00000136 87               [ 4]  338 	add	a, a
+    00000137 83               [ 4]  339 	add	a, e
+    00000138 87               [ 4]  340 	add	a, a
+    00000139 87               [ 4]  341 	add	a, a
+    0000013A 47               [ 4]  342 	ld	b, a
+    0000013B 68               [ 4]  343 	ld	l, b
+    0000013C 26 00            [ 8]  344 	ld	h, #0x00
+    0000013E 11r00r00         [12]  345 	ld	de, #_dialog_buf
+    00000141 19               [ 8]  346 	add	hl, de
+    00000142 E5               [16]  347 	push	hl
+    00000143 C5               [16]  348 	push	bc
+    00000144 3E 04            [ 8]  349 	ld	a, #0x04
+    00000146 CDr16r00         [24]  350 	call	_get_tile_for_char
+    00000149 C1               [12]  351 	pop	bc
+    0000014A E1               [12]  352 	pop	hl
+    0000014B 77               [ 8]  353 	ld	(hl), a
+                                    354 ;src/utils/text.c:76: dialog_buf[y * 20 + 19] = get_tile_for_char(4);
+    0000014C 78               [ 4]  355 	ld	a, b
+    0000014D C6 13            [ 8]  356 	add	a, #0x13
+    0000014F 6F               [ 4]  357 	ld	l, a
+    00000150 26 00            [ 8]  358 	ld	h, #0x00
+    00000152 11r00r00         [12]  359 	ld	de, #_dialog_buf
+    00000155 19               [ 8]  360 	add	hl, de
+    00000156 E5               [16]  361 	push	hl
+    00000157 C5               [16]  362 	push	bc
+    00000158 3E 04            [ 8]  363 	ld	a, #0x04
+    0000015A CDr16r00         [24]  364 	call	_get_tile_for_char
+    0000015D C1               [12]  365 	pop	bc
+    0000015E E1               [12]  366 	pop	hl
+    0000015F 77               [ 8]  367 	ld	(hl), a
+                                    368 ;src/utils/text.c:74: for (int y = 1; y < 5; y++) {
+    00000160 0C               [ 4]  369 	inc	c
+    00000161 18 CC            [12]  370 	jr	00112$
+    00000163                        371 00103$:
+                                    372 ;src/utils/text.c:78: dialog_buf[100] = get_tile_for_char(5);
+    00000163 3E 05            [ 8]  373 	ld	a, #0x05
+    00000165 CDr16r00         [24]  374 	call	_get_tile_for_char
+    00000168 EAr64r00         [16]  375 	ld	(#(_dialog_buf + 100)),a
+                                    376 ;src/utils/text.c:79: for (int i = 101; i < 119; i++)
+    0000016B 0E 65            [ 8]  377 	ld	c, #0x65
+    0000016D                        378 00115$:
+    0000016D 79               [ 4]  379 	ld	a, c
+    0000016E D6 77            [ 8]  380 	sub	a, #0x77
+    00000170 30 13            [12]  381 	jr	NC, 00104$
+                                    382 ;src/utils/text.c:80: dialog_buf[i] = get_tile_for_char(2);
+    00000172 21r00r00         [12]  383 	ld	hl, #_dialog_buf
+    00000175 06 00            [ 8]  384 	ld	b, #0x00
+    00000177 09               [ 8]  385 	add	hl, bc
+    00000178 E5               [16]  386 	push	hl
+    00000179 C5               [16]  387 	push	bc
+    0000017A 3E 02            [ 8]  388 	ld	a, #0x02
+    0000017C CDr16r00         [24]  389 	call	_get_tile_for_char
+    0000017F C1               [12]  390 	pop	bc
+    00000180 E1               [12]  391 	pop	hl
+    00000181 77               [ 8]  392 	ld	(hl), a
+                                    393 ;src/utils/text.c:79: for (int i = 101; i < 119; i++)
+    00000182 0C               [ 4]  394 	inc	c
+    00000183 18 E8            [12]  395 	jr	00115$
+    00000185                        396 00104$:
+                                    397 ;src/utils/text.c:81: dialog_buf[119] = get_tile_for_char(6);
+    00000185 3E 06            [ 8]  398 	ld	a, #0x06
+    00000187 CDr16r00         [24]  399 	call	_get_tile_for_char
+    0000018A EAr77r00         [16]  400 	ld	(#(_dialog_buf + 119)),a
+                                    401 ;src/utils/text.c:82: }
+    0000018D C9               [16]  402 	ret
+                                    403 ;src/utils/text.c:84: void text_dialogue(const char *str) {
+                                    404 ;	---------------------------------
+                                    405 ; Function text_dialogue
+                                    406 ; ---------------------------------
+    0000018E                        407 _text_dialogue::
+    0000018E E8 ED            [16]  408 	add	sp, #-19
+    00000190 F8 0B            [12]  409 	ldhl	sp,	#11
+    00000192 7B               [ 4]  410 	ld	a, e
+    00000193 22               [ 8]  411 	ld	(hl+), a
+    00000194 72               [ 8]  412 	ld	(hl), d
+                                    413 ;src/utils/text.c:85: waitpadup();
+    00000195 CDr00r00         [24]  414 	call	_waitpadup
+                                    415 ;src/utils/text.c:87: for (int i = 0; i < 40; i++)
+    00000198 01 00 00         [12]  416 	ld	bc, #0x0000
+    0000019B                        417 00129$:
+    0000019B 79               [ 4]  418 	ld	a, c
+    0000019C D6 28            [ 8]  419 	sub	a, #0x28
+    0000019E 30 0F            [12]  420 	jr	NC, 00101$
+                                    421 ;src/utils/text.c:88: move_sprite(i, 0, 0);
+                                    422 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    000001A0 69               [ 4]  423 	ld	l, c
+    000001A1 AF               [ 4]  424 	xor	a, a
+    000001A2 67               [ 4]  425 	ld	h, a
+    000001A3 29               [ 8]  426 	add	hl, hl
+    000001A4 29               [ 8]  427 	add	hl, hl
+    000001A5 11r00r00         [12]  428 	ld	de, #_shadow_OAM
+    000001A8 19               [ 8]  429 	add	hl, de
+                                    430 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    000001A9 AF               [ 4]  431 	xor	a, a
+    000001AA 22               [ 8]  432 	ld	(hl+), a
+    000001AB 77               [ 8]  433 	ld	(hl), a
+                                    434 ;src/utils/text.c:87: for (int i = 0; i < 40; i++)
+    000001AC 03               [ 8]  435 	inc	bc
+    000001AD 18 EC            [12]  436 	jr	00129$
+    000001AF                        437 00101$:
+                                    438 ;src/utils/text.c:89: const char *ptr = str;
+    000001AF F8 0B            [12]  439 	ldhl	sp,	#11
+    000001B1 7E               [ 8]  440 	ld	a, (hl)
+    000001B2 F8 11            [12]  441 	ldhl	sp,	#17
+    000001B4 77               [ 8]  442 	ld	(hl), a
+    000001B5 F8 0C            [12]  443 	ldhl	sp,	#12
+    000001B7 7E               [ 8]  444 	ld	a, (hl)
+    000001B8 F8 12            [12]  445 	ldhl	sp,	#18
+    000001BA 77               [ 8]  446 	ld	(hl), a
+                                    447 ;src/utils/text.c:90: while (*ptr != '\0') {
+    000001BB                        448 00122$:
+    000001BB F8 11            [12]  449 	ldhl	sp,#17
+    000001BD 2A               [ 8]  450 	ld	a, (hl+)
+    000001BE 5F               [ 4]  451 	ld	e, a
+    000001BF 56               [ 8]  452 	ld	d, (hl)
+    000001C0 1A               [ 8]  453 	ld	a, (de)
+    000001C1 B7               [ 4]  454 	or	a, a
+    000001C2 CAr4Fr03         [16]  455 	jp	Z, 00124$
+                                    456 ;src/utils/text.c:91: clear_dialog_buf();
+    000001C5 CDrF1r00         [24]  457 	call	_clear_dialog_buf
+                                    458 ;src/utils/text.c:92: int cur_line = 0, cur_col = 0;
+    000001C8 AF               [ 4]  459 	xor	a, a
+    000001C9 F8 0D            [12]  460 	ldhl	sp,	#13
+    000001CB 22               [ 8]  461 	ld	(hl+), a
+    000001CC 77               [ 8]  462 	ld	(hl), a
+    000001CD AF               [ 4]  463 	xor	a, a
+    000001CE F8 00            [12]  464 	ldhl	sp,	#0
+    000001D0 22               [ 8]  465 	ld	(hl+), a
+    000001D1 77               [ 8]  466 	ld	(hl), a
+                                    467 ;src/utils/text.c:93: while (*ptr != '\0' && cur_line < TEXT_LINES) {
+    000001D2                        468 00119$:
+    000001D2 F8 11            [12]  469 	ldhl	sp,#17
+    000001D4 2A               [ 8]  470 	ld	a, (hl+)
+    000001D5 5F               [ 4]  471 	ld	e, a
+    000001D6 3A               [ 8]  472 	ld	a, (hl-)
+    000001D7 2B               [ 8]  473 	dec	hl
+    000001D8 57               [ 4]  474 	ld	d, a
+    000001D9 1A               [ 8]  475 	ld	a, (de)
+    000001DA 77               [ 8]  476 	ld	(hl), a
+    000001DB 7E               [ 8]  477 	ld	a, (hl)
+    000001DC B7               [ 4]  478 	or	a, a
+    000001DD CAr20r03         [16]  479 	jp	Z, 00121$
+    000001E0 F8 0D            [12]  480 	ldhl	sp,	#13
+    000001E2 2A               [ 8]  481 	ld	a, (hl+)
+    000001E3 D6 04            [ 8]  482 	sub	a, #0x04
+    000001E5 7E               [ 8]  483 	ld	a, (hl)
+    000001E6 DE 00            [ 8]  484 	sbc	a, #0x00
+    000001E8 D2r20r03         [16]  485 	jp	NC, 00121$
+                                    486 ;src/utils/text.c:96: while (*word_end != '\0' && *word_end != ' ' && *word_end != '\n') {
+    000001EB 01 00 00         [12]  487 	ld	bc, #0x0000
+    000001EE F8 11            [12]  488 	ldhl	sp,	#17
+    000001F0 2A               [ 8]  489 	ld	a, (hl+)
+    000001F1 5F               [ 4]  490 	ld	e, a
+    000001F2 56               [ 8]  491 	ld	d, (hl)
+    000001F3                        492 00104$:
+    000001F3 1A               [ 8]  493 	ld	a, (de)
+    000001F4 B7               [ 4]  494 	or	a, a
+    000001F5 28 0C            [12]  495 	jr	Z, 00153$
+    000001F7 FE 20            [ 8]  496 	cp	a, #0x20
+    000001F9 28 08            [12]  497 	jr	Z, 00153$
+    000001FB D6 0A            [ 8]  498 	sub	a, #0x0a
+    000001FD 28 04            [12]  499 	jr	Z, 00153$
+                                    500 ;src/utils/text.c:97: word_len++;
+    000001FF 03               [ 8]  501 	inc	bc
+                                    502 ;src/utils/text.c:98: word_end++;
+    00000200 13               [ 8]  503 	inc	de
+    00000201 18 F0            [12]  504 	jr	00104$
+    00000203                        505 00153$:
+    00000203 F8 02            [12]  506 	ldhl	sp,	#2
+    00000205 79               [ 4]  507 	ld	a, c
+    00000206 22               [ 8]  508 	ld	(hl+), a
+    00000207 70               [ 8]  509 	ld	(hl), b
+                                    510 ;src/utils/text.c:100: if (cur_col + word_len > TEXT_WIDTH) {
+    00000208 E1               [12]  511 	pop	hl
+    00000209 E5               [16]  512 	push	hl
+    0000020A 09               [ 8]  513 	add	hl, bc
+    0000020B 4D               [ 4]  514 	ld	c, l
+    0000020C 44               [ 4]  515 	ld	b, h
+    0000020D 58               [ 4]  516 	ld	e, b
+    0000020E 16 00            [ 8]  517 	ld	d, #0x00
+    00000210 3E 12            [ 8]  518 	ld	a, #0x12
+    00000212 B9               [ 4]  519 	cp	a, c
+    00000213 3E 00            [ 8]  520 	ld	a, #0x00
+    00000215 98               [ 4]  521 	sbc	a, b
+    00000216 CB 7B            [ 8]  522 	bit	7, e
+    00000218 28 07            [12]  523 	jr	Z, 00253$
+    0000021A CB 7A            [ 8]  524 	bit	7, d
+    0000021C 20 08            [12]  525 	jr	NZ, 00254$
+    0000021E BF               [ 4]  526 	cp	a, a
+    0000021F 18 05            [12]  527 	jr	00254$
+    00000221                        528 00253$:
+    00000221 CB 7A            [ 8]  529 	bit	7, d
+    00000223 28 01            [12]  530 	jr	Z, 00254$
+    00000225 37               [ 4]  531 	scf
+    00000226                        532 00254$:
+    00000226 30 13            [12]  533 	jr	NC, 00147$
+                                    534 ;src/utils/text.c:101: cur_line++;
+    00000228 F8 0D            [12]  535 	ldhl	sp,	#13
+    0000022A 34               [12]  536 	inc	(hl)
+                                    537 ;src/utils/text.c:102: cur_col = 0;
+    0000022B AF               [ 4]  538 	xor	a, a
+    0000022C F8 00            [12]  539 	ldhl	sp,	#0
+    0000022E 22               [ 8]  540 	ld	(hl+), a
+    0000022F 77               [ 8]  541 	ld	(hl), a
+                                    542 ;src/utils/text.c:103: if (cur_line >= TEXT_LINES)
+    00000230 F8 0D            [12]  543 	ldhl	sp,	#13
+    00000232 2A               [ 8]  544 	ld	a, (hl+)
+    00000233 D6 04            [ 8]  545 	sub	a, #0x04
+    00000235 7E               [ 8]  546 	ld	a, (hl)
+    00000236 DE 00            [ 8]  547 	sbc	a, #0x00
+    00000238 D2r20r03         [16]  548 	jp	NC, 00121$
+                                    549 ;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+    0000023B                        550 00147$:
+                                    551 ;src/utils/text.c:101: cur_line++;
+    0000023B F8 0D            [12]  552 	ldhl	sp,#13
+    0000023D 2A               [ 8]  553 	ld	a, (hl+)
+    0000023E 5F               [ 4]  554 	ld	e, a
+    0000023F 56               [ 8]  555 	ld	d, (hl)
+    00000240 6B               [ 4]  556 	ld	l, e
+    00000241 62               [ 4]  557 	ld	h, d
+    00000242 23               [ 8]  558 	inc	hl
+    00000243 E5               [16]  559 	push	hl
+    00000244 7D               [ 4]  560 	ld	a, l
+    00000245 F8 06            [12]  561 	ldhl	sp,	#6
+    00000247 77               [ 8]  562 	ld	(hl), a
+    00000248 E1               [12]  563 	pop	hl
+    00000249 7C               [ 4]  564 	ld	a, h
+    0000024A F8 05            [12]  565 	ldhl	sp,	#5
+                                    566 ;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+    0000024C 32               [ 8]  567 	ld	(hl-), a
+    0000024D 2A               [ 8]  568 	ld	a, (hl+)
+    0000024E 4F               [ 4]  569 	ld	c, a
+    0000024F 46               [ 8]  570 	ld	b, (hl)
+    00000250 69               [ 4]  571 	ld	l, c
+    00000251 60               [ 4]  572 	ld	h, b
+    00000252 29               [ 8]  573 	add	hl, hl
+    00000253 29               [ 8]  574 	add	hl, hl
+    00000254 09               [ 8]  575 	add	hl, bc
+    00000255 29               [ 8]  576 	add	hl, hl
+    00000256 29               [ 8]  577 	add	hl, hl
+    00000257 E5               [16]  578 	push	hl
+    00000258 7D               [ 4]  579 	ld	a, l
+    00000259 F8 08            [12]  580 	ldhl	sp,	#8
     0000025B 77               [ 8]  581 	ld	(hl), a
-                                    582 ;src/utils/text.c:99: for (int i = 0; i < word_len; i++) {
-    0000025C F8 11            [12]  583 	ldhl	sp,	#17
-    0000025E 5D               [ 4]  584 	ld	e, l
-    0000025F 54               [ 4]  585 	ld	d, h
-    00000260 F8 02            [12]  586 	ldhl	sp,	#2
-    00000262 1A               [ 8]  587 	ld	a, (de)
-    00000263 13               [ 8]  588 	inc	de
-    00000264 96               [ 8]  589 	sub	a, (hl)
-    00000265 23               [ 8]  590 	inc	hl
-    00000266 1A               [ 8]  591 	ld	a, (de)
-    00000267 9E               [ 8]  592 	sbc	a, (hl)
-    00000268 1A               [ 8]  593 	ld	a, (de)
-    00000269 57               [ 4]  594 	ld	d, a
-    0000026A CB 7E            [12]  595 	bit	7, (hl)
-    0000026C 28 07            [12]  596 	jr	Z, 00256$
-    0000026E CB 7A            [ 8]  597 	bit	7, d
-    00000270 20 08            [12]  598 	jr	NZ, 00257$
-    00000272 BF               [ 4]  599 	cp	a, a
-    00000273 18 05            [12]  600 	jr	00257$
-    00000275                        601 00256$:
-    00000275 CB 7A            [ 8]  602 	bit	7, d
-    00000277 28 01            [12]  603 	jr	Z, 00257$
-    00000279 37               [ 4]  604 	scf
-    0000027A                        605 00257$:
-    0000027A 30 33            [12]  606 	jr	NC, 00154$
-                                    607 ;src/utils/text.c:100: int pos = (cur_line + 1) * 20 + (cur_col + 1);
-    0000027C F8 06            [12]  608 	ldhl	sp,#6
-    0000027E 2A               [ 8]  609 	ld	a, (hl+)
-    0000027F 5F               [ 4]  610 	ld	e, a
-    00000280 2A               [ 8]  611 	ld	a, (hl+)
-    00000281 57               [ 4]  612 	ld	d, a
-    00000282 2A               [ 8]  613 	ld	a,	(hl+)
-    00000283 66               [ 8]  614 	ld	h, (hl)
-    00000284 6F               [ 4]  615 	ld	l, a
-    00000285 19               [ 8]  616 	add	hl, de
-                                    617 ;src/utils/text.c:101: dialog_buf[pos] = get_tile_for_char(*ptr);
-    00000286 01r00r00         [12]  618 	ld	bc, #_dialog_buf
-    00000289 09               [ 8]  619 	add	hl, bc
-    0000028A E5               [16]  620 	push	hl
-    0000028B F8 0C            [12]  621 	ldhl	sp,	#12
-    0000028D 7E               [ 8]  622 	ld	a, (hl)
-    0000028E CDr16r00         [24]  623 	call	_get_tile_for_char
-    00000291 C1               [12]  624 	pop	bc
-    00000292 02               [ 8]  625 	ld	(bc), a
-                                    626 ;src/utils/text.c:102: ptr++;
-    00000293 F8 0F            [12]  627 	ldhl	sp,	#15
-    00000295 34               [12]  628 	inc	(hl)
-    00000296 20 02            [12]  629 	jr	NZ, 00258$
-    00000298 23               [ 8]  630 	inc	hl
-    00000299 34               [12]  631 	inc	(hl)
-    0000029A                        632 00258$:
-                                    633 ;src/utils/text.c:103: cur_col++;
-    0000029A F8 08            [12]  634 	ldhl	sp,	#8
-    0000029C 7E               [ 8]  635 	ld	a, (hl)
-    0000029D F8 00            [12]  636 	ldhl	sp,	#0
-    0000029F 77               [ 8]  637 	ld	(hl), a
-    000002A0 F8 09            [12]  638 	ldhl	sp,	#9
-    000002A2 7E               [ 8]  639 	ld	a, (hl)
-    000002A3 F8 01            [12]  640 	ldhl	sp,	#1
-    000002A5 77               [ 8]  641 	ld	(hl), a
-                                    642 ;src/utils/text.c:99: for (int i = 0; i < word_len; i++) {
-    000002A6 F8 11            [12]  643 	ldhl	sp,	#17
-    000002A8 34               [12]  644 	inc	(hl)
-    000002A9 20 99            [12]  645 	jr	NZ, 00132$
-    000002AB 23               [ 8]  646 	inc	hl
-    000002AC 34               [12]  647 	inc	(hl)
-    000002AD 18 95            [12]  648 	jr	00132$
-    000002AF                        649 00154$:
-    000002AF F8 0F            [12]  650 	ldhl	sp,	#15
-    000002B1 2A               [ 8]  651 	ld	a, (hl+)
-    000002B2 23               [ 8]  652 	inc	hl
-    000002B3 32               [ 8]  653 	ld	(hl-), a
-    000002B4 2A               [ 8]  654 	ld	a, (hl+)
-    000002B5 23               [ 8]  655 	inc	hl
-    000002B6 77               [ 8]  656 	ld	(hl), a
-                                    657 ;src/utils/text.c:105: if (*ptr == ' ' || *ptr == '\n') {
-    000002B7 F8 0A            [12]  658 	ldhl	sp,	#10
-    000002B9 7E               [ 8]  659 	ld	a, (hl)
-    000002BA D6 20            [ 8]  660 	sub	a, #0x20
-    000002BC 28 08            [12]  661 	jr	Z, 00115$
-    000002BE F8 0A            [12]  662 	ldhl	sp,	#10
-    000002C0 7E               [ 8]  663 	ld	a, (hl)
-    000002C1 D6 0A            [ 8]  664 	sub	a, #0x0a
-    000002C3 C2rA8r01         [16]  665 	jp	NZ, 00119$
-    000002C6                        666 00115$:
-                                    667 ;src/utils/text.c:106: if (*ptr == '\n') {
-    000002C6 F8 11            [12]  668 	ldhl	sp,#17
-    000002C8 2A               [ 8]  669 	ld	a, (hl+)
-    000002C9 5F               [ 4]  670 	ld	e, a
-    000002CA 56               [ 8]  671 	ld	d, (hl)
-    000002CB 1A               [ 8]  672 	ld	a, (de)
-    000002CC D6 0A            [ 8]  673 	sub	a, #0x0a
-    000002CE 20 0F            [12]  674 	jr	NZ, 00113$
-                                    675 ;src/utils/text.c:107: cur_line++;
-    000002D0 F8 04            [12]  676 	ldhl	sp,	#4
-    000002D2 7E               [ 8]  677 	ld	a, (hl)
-    000002D3 F8 0D            [12]  678 	ldhl	sp,	#13
-    000002D5 22               [ 8]  679 	ld	(hl+), a
-    000002D6 36 00            [12]  680 	ld	(hl), #0x00
-                                    681 ;src/utils/text.c:108: cur_col = 0;
-    000002D8 AF               [ 4]  682 	xor	a, a
-    000002D9 F8 00            [12]  683 	ldhl	sp,	#0
-    000002DB 22               [ 8]  684 	ld	(hl+), a
-    000002DC 77               [ 8]  685 	ld	(hl), a
-    000002DD 18 0C            [12]  686 	jr	00114$
-    000002DF                        687 00113$:
-                                    688 ;src/utils/text.c:110: cur_col++;
-    000002DF F8 08            [12]  689 	ldhl	sp,	#8
-    000002E1 7E               [ 8]  690 	ld	a, (hl)
-    000002E2 F8 00            [12]  691 	ldhl	sp,	#0
-    000002E4 77               [ 8]  692 	ld	(hl), a
-    000002E5 F8 09            [12]  693 	ldhl	sp,	#9
-    000002E7 7E               [ 8]  694 	ld	a, (hl)
-    000002E8 F8 01            [12]  695 	ldhl	sp,	#1
-    000002EA 77               [ 8]  696 	ld	(hl), a
-    000002EB                        697 00114$:
-                                    698 ;src/utils/text.c:112: ptr++;
-    000002EB F8 11            [12]  699 	ldhl	sp,	#17
-    000002ED 34               [12]  700 	inc	(hl)
-    000002EE C2rA8r01         [16]  701 	jp	NZ, 00119$
-    000002F1 23               [ 8]  702 	inc	hl
-    000002F2 34               [12]  703 	inc	(hl)
-    000002F3 C3rA8r01         [16]  704 	jp	00119$
-    000002F6                        705 00121$:
-                                    706 ;src/utils/text.c:115: set_win_tiles(0, 0, 20, 6, dialog_buf);
-    000002F6 11r00r00         [12]  707 	ld	de, #_dialog_buf
-    000002F9 D5               [16]  708 	push	de
-    000002FA 21 14 06         [12]  709 	ld	hl, #0x614
-    000002FD E5               [16]  710 	push	hl
-    000002FE AF               [ 4]  711 	xor	a, a
-    000002FF 0F               [ 4]  712 	rrca
-    00000300 F5               [16]  713 	push	af
-    00000301 CDr00r00         [24]  714 	call	_set_win_tiles
-    00000304 E8 06            [16]  715 	add	sp, #6
-                                    716 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
-    00000306 3E 07            [ 8]  717 	ld	a, #0x07
-    00000308 E0r00            [12]  718 	ldh	(_WX_REG + 0), a
-    0000030A 3E 60            [ 8]  719 	ld	a, #0x60
-    0000030C E0r00            [12]  720 	ldh	(_WY_REG + 0), a
-                                    721 ;src/utils/text.c:117: SHOW_WIN;
-    0000030E F0r00            [12]  722 	ldh	a, (_LCDC_REG + 0)
-    00000310 F6 20            [ 8]  723 	or	a, #0x20
-    00000312 E0r00            [12]  724 	ldh	(_LCDC_REG + 0), a
-                                    725 ;src/utils/text.c:118: waitpad(J_A);
-    00000314 3E 10            [ 8]  726 	ld	a, #0x10
-    00000316 CDr00r00         [24]  727 	call	_waitpad
-                                    728 ;src/utils/text.c:119: delay(100);
-    00000319 11 64 00         [12]  729 	ld	de, #0x0064
-    0000031C CDr00r00         [24]  730 	call	_delay
-                                    731 ;src/utils/text.c:120: waitpadup();
-    0000031F CDr00r00         [24]  732 	call	_waitpadup
-    00000322 C3r91r01         [16]  733 	jp	00122$
-    00000325                        734 00124$:
-                                    735 ;src/utils/text.c:122: HIDE_WIN;
-    00000325 F0r00            [12]  736 	ldh	a, (_LCDC_REG + 0)
-    00000327 E6 DF            [ 8]  737 	and	a, #0xdf
-    00000329 E0r00            [12]  738 	ldh	(_LCDC_REG + 0), a
-                                    739 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
-    0000032B 3E 07            [ 8]  740 	ld	a, #0x07
-    0000032D E0r00            [12]  741 	ldh	(_WX_REG + 0), a
-    0000032F 3E 90            [ 8]  742 	ld	a, #0x90
-    00000331 E0r00            [12]  743 	ldh	(_WY_REG + 0), a
-                                    744 ;src/utils/text.c:123: move_win(7, 144);
-                                    745 ;src/utils/text.c:124: }
-    00000333 E8 13            [16]  746 	add	sp, #19
-    00000335 C9               [16]  747 	ret
-                                    748 	.area _CODE
-                                    749 	.area _INITIALIZER
-                                    750 	.area _CABS (ABS)
+    0000025C E1               [12]  582 	pop	hl
+    0000025D 7C               [ 4]  583 	ld	a, h
+    0000025E F8 07            [12]  584 	ldhl	sp,	#7
+    00000260 77               [ 8]  585 	ld	(hl), a
+    00000261 F8 11            [12]  586 	ldhl	sp,	#17
+    00000263 3A               [ 8]  587 	ld	a, (hl-)
+    00000264 2B               [ 8]  588 	dec	hl
+    00000265 77               [ 8]  589 	ld	(hl), a
+    00000266 F8 12            [12]  590 	ldhl	sp,	#18
+    00000268 3A               [ 8]  591 	ld	a, (hl-)
+    00000269 2B               [ 8]  592 	dec	hl
+    0000026A 22               [ 8]  593 	ld	(hl+), a
+    0000026B AF               [ 4]  594 	xor	a, a
+    0000026C 22               [ 8]  595 	ld	(hl+), a
+    0000026D 77               [ 8]  596 	ld	(hl), a
+    0000026E                        597 00132$:
+                                    598 ;src/utils/text.c:107: int pos = (cur_line + 1) * 20 + (cur_col + 1);
+    0000026E D1               [12]  599 	pop	de
+    0000026F D5               [16]  600 	push	de
+    00000270 6B               [ 4]  601 	ld	l, e
+    00000271 62               [ 4]  602 	ld	h, d
+    00000272 23               [ 8]  603 	inc	hl
+    00000273 E5               [16]  604 	push	hl
+    00000274 7D               [ 4]  605 	ld	a, l
+    00000275 F8 0A            [12]  606 	ldhl	sp,	#10
+    00000277 77               [ 8]  607 	ld	(hl), a
+    00000278 E1               [12]  608 	pop	hl
+    00000279 7C               [ 4]  609 	ld	a, h
+    0000027A F8 09            [12]  610 	ldhl	sp,	#9
+    0000027C 77               [ 8]  611 	ld	(hl), a
+                                    612 ;src/utils/text.c:108: dialog_buf[pos] = get_tile_for_char(*ptr);
+    0000027D F8 0F            [12]  613 	ldhl	sp,#15
+    0000027F 2A               [ 8]  614 	ld	a, (hl+)
+    00000280 5F               [ 4]  615 	ld	e, a
+    00000281 56               [ 8]  616 	ld	d, (hl)
+    00000282 1A               [ 8]  617 	ld	a, (de)
+    00000283 F8 0A            [12]  618 	ldhl	sp,	#10
+    00000285 77               [ 8]  619 	ld	(hl), a
+                                    620 ;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+    00000286 F8 11            [12]  621 	ldhl	sp,	#17
+    00000288 5D               [ 4]  622 	ld	e, l
+    00000289 54               [ 4]  623 	ld	d, h
+    0000028A F8 02            [12]  624 	ldhl	sp,	#2
+    0000028C 1A               [ 8]  625 	ld	a, (de)
+    0000028D 13               [ 8]  626 	inc	de
+    0000028E 96               [ 8]  627 	sub	a, (hl)
+    0000028F 23               [ 8]  628 	inc	hl
+    00000290 1A               [ 8]  629 	ld	a, (de)
+    00000291 9E               [ 8]  630 	sbc	a, (hl)
+    00000292 1A               [ 8]  631 	ld	a, (de)
+    00000293 57               [ 4]  632 	ld	d, a
+    00000294 CB 7E            [12]  633 	bit	7, (hl)
+    00000296 28 07            [12]  634 	jr	Z, 00256$
+    00000298 CB 7A            [ 8]  635 	bit	7, d
+    0000029A 20 08            [12]  636 	jr	NZ, 00257$
+    0000029C BF               [ 4]  637 	cp	a, a
+    0000029D 18 05            [12]  638 	jr	00257$
+    0000029F                        639 00256$:
+    0000029F CB 7A            [ 8]  640 	bit	7, d
+    000002A1 28 01            [12]  641 	jr	Z, 00257$
+    000002A3 37               [ 4]  642 	scf
+    000002A4                        643 00257$:
+    000002A4 30 33            [12]  644 	jr	NC, 00154$
+                                    645 ;src/utils/text.c:107: int pos = (cur_line + 1) * 20 + (cur_col + 1);
+    000002A6 F8 06            [12]  646 	ldhl	sp,#6
+    000002A8 2A               [ 8]  647 	ld	a, (hl+)
+    000002A9 5F               [ 4]  648 	ld	e, a
+    000002AA 2A               [ 8]  649 	ld	a, (hl+)
+    000002AB 57               [ 4]  650 	ld	d, a
+    000002AC 2A               [ 8]  651 	ld	a,	(hl+)
+    000002AD 66               [ 8]  652 	ld	h, (hl)
+    000002AE 6F               [ 4]  653 	ld	l, a
+    000002AF 19               [ 8]  654 	add	hl, de
+                                    655 ;src/utils/text.c:108: dialog_buf[pos] = get_tile_for_char(*ptr);
+    000002B0 01r00r00         [12]  656 	ld	bc, #_dialog_buf
+    000002B3 09               [ 8]  657 	add	hl, bc
+    000002B4 E5               [16]  658 	push	hl
+    000002B5 F8 0C            [12]  659 	ldhl	sp,	#12
+    000002B7 7E               [ 8]  660 	ld	a, (hl)
+    000002B8 CDr16r00         [24]  661 	call	_get_tile_for_char
+    000002BB C1               [12]  662 	pop	bc
+    000002BC 02               [ 8]  663 	ld	(bc), a
+                                    664 ;src/utils/text.c:109: ptr++;
+    000002BD F8 0F            [12]  665 	ldhl	sp,	#15
+    000002BF 34               [12]  666 	inc	(hl)
+    000002C0 20 02            [12]  667 	jr	NZ, 00258$
+    000002C2 23               [ 8]  668 	inc	hl
+    000002C3 34               [12]  669 	inc	(hl)
+    000002C4                        670 00258$:
+                                    671 ;src/utils/text.c:110: cur_col++;
+    000002C4 F8 08            [12]  672 	ldhl	sp,	#8
+    000002C6 7E               [ 8]  673 	ld	a, (hl)
+    000002C7 F8 00            [12]  674 	ldhl	sp,	#0
+    000002C9 77               [ 8]  675 	ld	(hl), a
+    000002CA F8 09            [12]  676 	ldhl	sp,	#9
+    000002CC 7E               [ 8]  677 	ld	a, (hl)
+    000002CD F8 01            [12]  678 	ldhl	sp,	#1
+    000002CF 77               [ 8]  679 	ld	(hl), a
+                                    680 ;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+    000002D0 F8 11            [12]  681 	ldhl	sp,	#17
+    000002D2 34               [12]  682 	inc	(hl)
+    000002D3 20 99            [12]  683 	jr	NZ, 00132$
+    000002D5 23               [ 8]  684 	inc	hl
+    000002D6 34               [12]  685 	inc	(hl)
+    000002D7 18 95            [12]  686 	jr	00132$
+    000002D9                        687 00154$:
+    000002D9 F8 0F            [12]  688 	ldhl	sp,	#15
+    000002DB 2A               [ 8]  689 	ld	a, (hl+)
+    000002DC 23               [ 8]  690 	inc	hl
+    000002DD 32               [ 8]  691 	ld	(hl-), a
+    000002DE 2A               [ 8]  692 	ld	a, (hl+)
+    000002DF 23               [ 8]  693 	inc	hl
+    000002E0 77               [ 8]  694 	ld	(hl), a
+                                    695 ;src/utils/text.c:112: if (*ptr == ' ' || *ptr == '\n') {
+    000002E1 F8 0A            [12]  696 	ldhl	sp,	#10
+    000002E3 7E               [ 8]  697 	ld	a, (hl)
+    000002E4 D6 20            [ 8]  698 	sub	a, #0x20
+    000002E6 28 08            [12]  699 	jr	Z, 00115$
+    000002E8 F8 0A            [12]  700 	ldhl	sp,	#10
+    000002EA 7E               [ 8]  701 	ld	a, (hl)
+    000002EB D6 0A            [ 8]  702 	sub	a, #0x0a
+    000002ED C2rD2r01         [16]  703 	jp	NZ, 00119$
+    000002F0                        704 00115$:
+                                    705 ;src/utils/text.c:113: if (*ptr == '\n') {
+    000002F0 F8 11            [12]  706 	ldhl	sp,#17
+    000002F2 2A               [ 8]  707 	ld	a, (hl+)
+    000002F3 5F               [ 4]  708 	ld	e, a
+    000002F4 56               [ 8]  709 	ld	d, (hl)
+    000002F5 1A               [ 8]  710 	ld	a, (de)
+    000002F6 D6 0A            [ 8]  711 	sub	a, #0x0a
+    000002F8 20 0F            [12]  712 	jr	NZ, 00113$
+                                    713 ;src/utils/text.c:114: cur_line++;
+    000002FA F8 04            [12]  714 	ldhl	sp,	#4
+    000002FC 7E               [ 8]  715 	ld	a, (hl)
+    000002FD F8 0D            [12]  716 	ldhl	sp,	#13
+    000002FF 22               [ 8]  717 	ld	(hl+), a
+    00000300 36 00            [12]  718 	ld	(hl), #0x00
+                                    719 ;src/utils/text.c:115: cur_col = 0;
+    00000302 AF               [ 4]  720 	xor	a, a
+    00000303 F8 00            [12]  721 	ldhl	sp,	#0
+    00000305 22               [ 8]  722 	ld	(hl+), a
+    00000306 77               [ 8]  723 	ld	(hl), a
+    00000307 18 0C            [12]  724 	jr	00114$
+    00000309                        725 00113$:
+                                    726 ;src/utils/text.c:117: cur_col++;
+    00000309 F8 08            [12]  727 	ldhl	sp,	#8
+    0000030B 7E               [ 8]  728 	ld	a, (hl)
+    0000030C F8 00            [12]  729 	ldhl	sp,	#0
+    0000030E 77               [ 8]  730 	ld	(hl), a
+    0000030F F8 09            [12]  731 	ldhl	sp,	#9
+    00000311 7E               [ 8]  732 	ld	a, (hl)
+    00000312 F8 01            [12]  733 	ldhl	sp,	#1
+    00000314 77               [ 8]  734 	ld	(hl), a
+    00000315                        735 00114$:
+                                    736 ;src/utils/text.c:119: ptr++;
+    00000315 F8 11            [12]  737 	ldhl	sp,	#17
+    00000317 34               [12]  738 	inc	(hl)
+    00000318 C2rD2r01         [16]  739 	jp	NZ, 00119$
+    0000031B 23               [ 8]  740 	inc	hl
+    0000031C 34               [12]  741 	inc	(hl)
+    0000031D C3rD2r01         [16]  742 	jp	00119$
+    00000320                        743 00121$:
+                                    744 ;src/utils/text.c:122: set_win_tiles(0, 0, 20, 6, dialog_buf);
+    00000320 11r00r00         [12]  745 	ld	de, #_dialog_buf
+    00000323 D5               [16]  746 	push	de
+    00000324 21 14 06         [12]  747 	ld	hl, #0x614
+    00000327 E5               [16]  748 	push	hl
+    00000328 AF               [ 4]  749 	xor	a, a
+    00000329 0F               [ 4]  750 	rrca
+    0000032A F5               [16]  751 	push	af
+    0000032B CDr00r00         [24]  752 	call	_set_win_tiles
+    0000032E E8 06            [16]  753 	add	sp, #6
+                                    754 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
+    00000330 3E 07            [ 8]  755 	ld	a, #0x07
+    00000332 E0r00            [12]  756 	ldh	(_WX_REG + 0), a
+    00000334 3E 60            [ 8]  757 	ld	a, #0x60
+    00000336 E0r00            [12]  758 	ldh	(_WY_REG + 0), a
+                                    759 ;src/utils/text.c:124: SHOW_WIN;
+    00000338 F0r00            [12]  760 	ldh	a, (_LCDC_REG + 0)
+    0000033A F6 20            [ 8]  761 	or	a, #0x20
+    0000033C E0r00            [12]  762 	ldh	(_LCDC_REG + 0), a
+                                    763 ;src/utils/text.c:125: waitpad(J_A);
+    0000033E 3E 10            [ 8]  764 	ld	a, #0x10
+    00000340 CDr00r00         [24]  765 	call	_waitpad
+                                    766 ;src/utils/text.c:126: delay(100);
+    00000343 11 64 00         [12]  767 	ld	de, #0x0064
+    00000346 CDr00r00         [24]  768 	call	_delay
+                                    769 ;src/utils/text.c:127: waitpadup();
+    00000349 CDr00r00         [24]  770 	call	_waitpadup
+    0000034C C3rBBr01         [16]  771 	jp	00122$
+    0000034F                        772 00124$:
+                                    773 ;src/utils/text.c:129: HIDE_WIN;
+    0000034F F0r00            [12]  774 	ldh	a, (_LCDC_REG + 0)
+    00000351 E6 DF            [ 8]  775 	and	a, #0xdf
+    00000353 E0r00            [12]  776 	ldh	(_LCDC_REG + 0), a
+                                    777 ;./gbdk/include/gb/gb.h:1739: WX_REG=x, WY_REG=y;
+    00000355 3E 07            [ 8]  778 	ld	a, #0x07
+    00000357 E0r00            [12]  779 	ldh	(_WX_REG + 0), a
+    00000359 3E 90            [ 8]  780 	ld	a, #0x90
+    0000035B E0r00            [12]  781 	ldh	(_WY_REG + 0), a
+                                    782 ;src/utils/text.c:130: move_win(7, 144);
+                                    783 ;src/utils/text.c:131: }
+    0000035D E8 13            [16]  784 	add	sp, #19
+    0000035F C9               [16]  785 	ret
+                                    786 ;src/utils/text.c:133: void text_print(uint8_t x, uint8_t y, const char *str) {
+                                    787 ;	---------------------------------
+                                    788 ; Function text_print
+                                    789 ; ---------------------------------
+    00000360                        790 _text_print::
+    00000360 3B               [ 8]  791 	dec	sp
+    00000361 3B               [ 8]  792 	dec	sp
+    00000362 F8 01            [12]  793 	ldhl	sp,	#1
+    00000364 32               [ 8]  794 	ld	(hl-), a
+    00000365 73               [ 8]  795 	ld	(hl), e
+                                    796 ;src/utils/text.c:134: for (int i = 0; str[i] != '\0'; i++) {
+    00000366 01 00 00         [12]  797 	ld	bc, #0x0000
+    00000369                        798 00103$:
+    00000369 F8 04            [12]  799 	ldhl	sp,	#4
+    0000036B 2A               [ 8]  800 	ld	a,	(hl+)
+    0000036C 66               [ 8]  801 	ld	h, (hl)
+    0000036D 6F               [ 4]  802 	ld	l, a
+    0000036E 09               [ 8]  803 	add	hl, bc
+    0000036F 5D               [ 4]  804 	ld	e, l
+    00000370 54               [ 4]  805 	ld	d, h
+    00000371 1A               [ 8]  806 	ld	a, (de)
+    00000372 B7               [ 4]  807 	or	a, a
+    00000373 28 17            [12]  808 	jr	Z, 00105$
+                                    809 ;src/utils/text.c:135: set_bkg_tile_xy(x + i, y, get_tile_for_char(str[i]));
+    00000375 C5               [16]  810 	push	bc
+    00000376 CDr16r00         [24]  811 	call	_get_tile_for_char
+    00000379 57               [ 4]  812 	ld	d, a
+    0000037A C1               [12]  813 	pop	bc
+    0000037B 79               [ 4]  814 	ld	a, c
+    0000037C F8 01            [12]  815 	ldhl	sp,	#1
+    0000037E 5E               [ 8]  816 	ld	e, (hl)
+    0000037F 2B               [ 8]  817 	dec	hl
+    00000380 83               [ 4]  818 	add	a, e
+    00000381 C5               [16]  819 	push	bc
+    00000382 D5               [16]  820 	push	de
+    00000383 33               [ 8]  821 	inc	sp
+    00000384 5E               [ 8]  822 	ld	e, (hl)
+    00000385 CDr00r00         [24]  823 	call	_set_bkg_tile_xy
+    00000388 C1               [12]  824 	pop	bc
+                                    825 ;src/utils/text.c:134: for (int i = 0; str[i] != '\0'; i++) {
+    00000389 03               [ 8]  826 	inc	bc
+    0000038A 18 DD            [12]  827 	jr	00103$
+    0000038C                        828 00105$:
+                                    829 ;src/utils/text.c:137: }
+    0000038C 33               [ 8]  830 	inc	sp
+    0000038D 33               [ 8]  831 	inc	sp
+    0000038E E1               [12]  832 	pop	hl
+    0000038F F1               [12]  833 	pop	af
+    00000390 E9               [ 4]  834 	jp	(hl)
+                                    835 ;src/utils/text.c:139: void text_clear(void) { fill_bkg_rect(0, 0, 20, 18, get_tile_for_char(' ')); }
+                                    836 ;	---------------------------------
+                                    837 ; Function text_clear
+                                    838 ; ---------------------------------
+    00000391                        839 _text_clear::
+    00000391 3E 20            [ 8]  840 	ld	a, #0x20
+    00000393 CDr16r00         [24]  841 	call	_get_tile_for_char
+    00000396 67               [ 4]  842 	ld	h, a
+    00000397 2E 12            [ 8]  843 	ld	l, #0x12
+    00000399 E5               [16]  844 	push	hl
+    0000039A 3E 14            [ 8]  845 	ld	a, #0x14
+    0000039C F5               [16]  846 	push	af
+    0000039D 33               [ 8]  847 	inc	sp
+    0000039E AF               [ 4]  848 	xor	a, a
+    0000039F 0F               [ 4]  849 	rrca
+    000003A0 F5               [16]  850 	push	af
+    000003A1 CDr00r00         [24]  851 	call	_fill_bkg_rect
+    000003A4 E8 05            [16]  852 	add	sp, #5
+    000003A6 C9               [16]  853 	ret
+                                    854 	.area _CODE
+                                    855 	.area _INITIALIZER
+                                    856 	.area _CABS (ABS)

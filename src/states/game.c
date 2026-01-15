@@ -14,7 +14,7 @@
 
 // Externs from map_config.c
 extern map_t maps[];
-extern void map_init_data();
+extern void map_init_data(void);
 
 // --- GLOBALS ---
 extern uint8_t game_state;
@@ -35,6 +35,9 @@ uint16_t level2_door_x = 0, level2_door_y = 0;
 // Env animation
 uint8_t env_anim_timer = 0, env_anim_frame = 0;
 
+// Lives
+uint8_t player_lives = 3;
+
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 144
 
@@ -47,7 +50,7 @@ uint8_t get_tile_at(uint16_t x, uint16_t y) {
   return current_map->tiles[ty * current_map->w + tx];
 }
 
-void update_camera() {
+void update_camera(void) {
   uint16_t w = current_map->w * 8, h = current_map->h * 8;
   if (player_x > SCREEN_WIDTH / 2)
     camera_x = player_x - SCREEN_WIDTH / 2;
@@ -64,7 +67,25 @@ void update_camera() {
   move_bkg(camera_x, camera_y);
 }
 
-void update_player_sprite() {
+void hud_update(void) {
+  uint8_t hud_tiles[20];
+  for (int i = 0; i < 20; i++)
+    hud_tiles[i] = get_tile_for_char(' ');
+
+  hud_tiles[1] = get_tile_for_char('V');
+  hud_tiles[2] = get_tile_for_char('I');
+  hud_tiles[3] = get_tile_for_char('D');
+  hud_tiles[4] = get_tile_for_char('A');
+  hud_tiles[5] = get_tile_for_char('S');
+  hud_tiles[6] = get_tile_for_char(':');
+  hud_tiles[8] = get_tile_for_char('0' + player_lives);
+
+  set_win_tiles(0, 0, 20, 1, hud_tiles);
+  move_win(7, 136);
+  SHOW_WIN;
+}
+
+void update_player_sprite(void) {
   uint8_t base =
       (player_dir == 3 ? 16
                        : (player_dir == 2 ? 16 : (player_dir == 1 ? 8 : 0))) +
@@ -175,10 +196,6 @@ void game_init(void) {
   set_bkg_data(0, 40, tiles_data); // All tiles (now 40)
 
   if (game_ready) {
-    player_x = 128;
-    player_y = 128;
-    enter_x = 128;
-    enter_y = 128;
     map_init_data();
     load_map(current_map);
     update_player_sprite();
@@ -205,15 +222,26 @@ void game_init(void) {
   projectile_init();
   enter_x = player_x;
   enter_y = player_y;
+  hud_update();
+  move_win(7, 136);
+  SHOW_WIN;
   SHOW_BKG;
   SHOW_SPRITES;
   DISPLAY_ON;
   game_ready = 1;
 }
 
-void player_hit() {
+void player_hit(void) {
+  if (player_lives > 0)
+    player_lives--;
+
   fade_out();
   delay(1000);
+
+  if (player_lives == 0) {
+    game_state = STATE_GAMEOVER;
+    return;
+  }
 
   // Reset world data
   map_init_data();
@@ -226,6 +254,10 @@ void player_hit() {
   // Reload current map
   load_map(current_map);
   update_player_sprite();
+
+  hud_update();
+  move_win(7, 136);
+  SHOW_WIN;
 
   fade_in();
 }
@@ -372,6 +404,7 @@ void game_update(void) {
                     camera_y, 4);
 
   if (input_pressed(J_A | J_B)) {
+    uint8_t interacted = 0;
     for (int i = 0; i < current_map->num_entities; i++) {
       entity_t *e = &current_map->entities[i];
       int16_t dx = (int16_t)player_x - (int16_t)e->x,
@@ -380,37 +413,60 @@ void game_update(void) {
         dx = -dx;
       if (dy < 0)
         dy = -dy;
-      if (dx < 24 && dy < 24) {
+      if (dx < 28 && dy < 28) {
         if (input_pressed(J_A)) {
           if (e->type == ENT_NPC) {
+            interacted = 1;
             // Check for Woman NPC (Sprite 36) and Flower
             if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
               text_dialogue(DIALOGUE_FLOWER_THANKS);
             } else {
               text_dialogue(e->dialogue);
             }
-          } else if (e->type == ENT_ITEM) {
-            // Basic interaction if wanted, but pickup is on B usually
           }
         }
         if (input_pressed(J_B)) {
           if (e->type == ENT_ITEM && e->active) {
-            // Assuming it's the flower based on sprite 41 or just generic item
-            // pickup
+            interacted = 1;
             if (e->sprite_base == 41) {
               inventory_add_item("FLOR", "UNA HERMOSA\nFLOR SILVESTRE", 41);
               sfx_pickup();
-              e->active = 0; // Remove from map
-                             // Optional: text_dialogue("Recogiste una flor!");
+              e->active = 0;
             }
           }
         }
       }
     }
 
-    uint8_t tid = get_tile_at(player_x + 8, player_y);
-    if (player_dir == 1)
-      tid = get_tile_at(player_x + 8, player_y - 4);
+    if (interacted)
+      return;
+
+    // Environment Interaction
+    uint16_t ix = player_x + 8;
+    uint16_t iy = player_y + 8;
+    if (player_dir == 0) // DOWN
+      iy += 8;
+    else if (player_dir == 1) // UP
+      iy -= 8;
+    else if (player_dir == 2) // LEFT
+      ix -= 8;
+    else if (player_dir == 3) // RIGHT
+      ix += 8;
+
+    uint8_t tid = get_tile_at(ix, iy);
+
+    // Locked House Check
+    if (current_map == &maps[0]) { // WORLD_MAP
+      if (tid >= 6 && tid <= 24) {
+        // Only one house is open (bottom right area)
+        if (!((tid == 21 || tid == 22) && player_x > 160 && player_y > 160)) {
+          if (input_pressed(J_A)) {
+            text_dialogue(DIALOGUE_HOUSE_CLOSED);
+            return;
+          }
+        }
+      }
+    }
 
     if (current_map == &maps[1] && // HOUSE_MAP
         (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
@@ -443,5 +499,17 @@ void game_update(void) {
     // Frame 1: Animated Grass (tiles_anim_data[0])
     set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
   }
+  hud_update();
   env_anim_timer++;
+}
+
+void game_reset(void) {
+  player_x = 128;
+  player_y = 128;
+  enter_x = 128;
+  enter_y = 128;
+  player_lives = 3;
+  inventory_init();
+  projectile_init();
+  game_ready = 0;
 }

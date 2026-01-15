@@ -14,15 +14,18 @@ Symbol Table
     _OBP1_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        00000E04 R
-  0 ___str_1                                                        00000E09 R
-  0 ___str_2                                                        00000EB3 R
-  0 ___str_3                                                        00000ECE R
-  0 ___str_4                                                        00000ED4 R
-  0 ___str_5                                                        00000F56 R
-  0 ___str_6                                                        00000F6B R
-  0 ___str_7                                                        00000FCC R
-  0 ___str_8                                                        00001063 R
+    _WX_REG                                                         ******** GX
+    _WY_REG                                                         ******** GX
+  0 ___str_0                                                        00000F37 R
+  0 ___str_1                                                        00000F3C R
+  0 ___str_2                                                        00000FE6 R
+  0 ___str_3                                                        00001001 R
+  0 ___str_4                                                        00001019 R
+  0 ___str_5                                                        0000101F R
+  0 ___str_6                                                        000010A1 R
+  0 ___str_7                                                        000010B6 R
+  0 ___str_8                                                        00001117 R
+  0 ___str_9                                                        000011AE R
     __mulint                                                        ******** GX
   8 __xinit__anim_frame                                             00000009 R
   8 __xinit__anim_timer                                             0000000A R
@@ -32,17 +35,18 @@ Symbol Table
   8 __xinit__enter_y                                                00000006 R
   8 __xinit__env_anim_frame                                         00000014 R
   8 __xinit__env_anim_timer                                         00000013 R
-  8 __xinit__game_ready                                             00000015 R
+  8 __xinit__game_ready                                             00000016 R
   8 __xinit__level2_door_x                                          0000000F R
   8 __xinit__level2_door_y                                          00000011 R
   8 __xinit__player_dir                                             00000008 R
+  8 __xinit__player_lives                                           00000015 R
   8 __xinit__player_x                                               00000000 R
   8 __xinit__player_y                                               00000002 R
   3 _anim_frame                                                     00000009 GR
   3 _anim_timer                                                     0000000A GR
   3 _camera_x                                                       0000000B GR
   3 _camera_y                                                       0000000D GR
-  0 _can_move                                                       0000035D GR
+  0 _can_move                                                       000003D8 GR
     _current_map                                                    ******** GX
     _delay                                                          ******** GX
     _display_off                                                    ******** GX
@@ -54,27 +58,31 @@ Symbol Table
   3 _env_anim_timer                                                 00000013 GR
     _fade_in                                                        ******** GX
     _fade_out                                                       ******** GX
-    _fill_bkg_rect                                                  ******** GX
-    _flower_sprite                                                  ******** GX
-  0 _game_init                                                      00000545 GR
-  3 _game_ready                                                     00000015 R
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _fill_bkg_rect                                                  ******** GX
+    _flower_sprite                                                  ******** GX
+  0 _game_init                                                      000005C0 GR
+  3 _game_ready                                                     00000016 R
+  0 _game_reset                                                     00001226 GR
     _game_state                                                     ******** GX
-  0 _game_update                                                    00000682 GR
+  0 _game_update                                                    00000713 GR
   0 _get_tile_at                                                    00000000 GR
+    _get_tile_for_char                                              ******** GX
     _guard_sprite_data                                              ******** GX
+  0 _hud_update                                                     0000014C GR
     _input_held                                                     ******** GX
     _input_pressed                                                  ******** GX
     _inventory_add_item                                             ******** GX
     _inventory_has_item                                             ******** GX
-  0 _is_solid                                                       0000035A GR
+    _inventory_init                                                 ******** GX
+  0 _is_solid                                                       000003D5 GR
   3 _level2_door_x                                                  0000000F GR
   3 _level2_door_y                                                  00000011 GR
-  0 _load_map                                                       000001F2 GR
+  0 _load_map                                                       0000026D GR
     _map_init_data                                                  ******** GX
     _map_is_solid                                                   ******** GX
     _maps                                                           ******** GX
@@ -83,7 +91,8 @@ Symbol Table
     _npc_child_sprite                                               ******** GX
     _npc_woman_sprite                                               ******** GX
   3 _player_dir                                                     00000008 GR
-  0 _player_hit                                                     0000064A GR
+  0 _player_hit                                                     000006B6 GR
+  3 _player_lives                                                   00000015 GR
     _player_sprites                                                 ******** GX
   3 _player_x                                                       00000000 GR
   3 _player_y                                                       00000002 GR
@@ -98,31 +107,37 @@ Symbol Table
     _set_bkg_tile_xy                                                ******** GX
     _set_bkg_tiles                                                  ******** GX
     _set_sprite_data                                                ******** GX
+    _set_win_tiles                                                  ******** GX
     _sfx_pickup                                                     ******** GX
     _sfx_success                                                    ******** GX
     _shadow_OAM                                                     ******** GX
-  0 _switch_map                                                     00000323 GR
+  0 _switch_map                                                     0000039E GR
     _text_dialogue                                                  ******** GX
     _text_init                                                      ******** GX
     _tiles_anim_data                                                ******** GX
     _tiles_data                                                     ******** GX
   0 _update_camera                                                  00000070 GR
-  0 _update_player_sprite                                           0000014C GR
-
-
+  0 _update_player_sprite                                           000001C7 GR
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 3
+Hexadecimal [32-Bits]
+
+Symbol Table
+
+
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 4
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     10DB   flags    0
+   0 _CODE                                      size     1256   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        4   flags    0
-   3 _INITIALIZED                               size       16   flags    0
+   3 _INITIALIZED                               size       17   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0
    6 _GSINIT                                    size        0   flags    0
    7 _GSFINAL                                   size        0   flags    0
-   8 _INITIALIZER                               size       16   flags    0
+   8 _INITIALIZER                               size       17   flags    0
    9 _CABS                                      size        0   flags    8
 

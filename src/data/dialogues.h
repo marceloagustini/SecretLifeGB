@@ -52,4 +52,6 @@
   "Alli encontraras\nlo que buscas.\n"                                         \
   "Sigue el camino\nde piedras y no\nte pierdas."
 
+#define DIALOGUE_HOUSE_CLOSED "ESTA CASA ESTA\nCERRADA."
+
 #endif

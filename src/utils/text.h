@@ -7,5 +7,6 @@ void text_init(void);
 void text_print(uint8_t x, uint8_t y, const char *str);
 void text_dialogue(const char *str);
 void text_clear(void);
+uint8_t get_tile_for_char(char c);
 
 #endif

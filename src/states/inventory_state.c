@@ -12,41 +12,16 @@ extern uint8_t game_state;
 
 static uint8_t selection = 0;
 
-static void draw_text(uint8_t x, uint8_t y, const char *txt) {
-  for (int i = 0; txt[i] != '\0'; i++) {
-    uint8_t tile = (uint8_t)128; // Space (Index 0)
-    // A-Z (Index 1-26)
-    if (txt[i] >= 'A' && txt[i] <= 'Z')
-      tile = (uint8_t)(128 + 1 + (txt[i] - 'A'));
-    // a-z (Index 27-52)
-    else if (txt[i] >= 'a' && txt[i] <= 'z')
-      tile = (uint8_t)(128 + 27 + (txt[i] - 'a'));
-    // Symbols
-    else if (txt[i] == ',')
-      tile = (uint8_t)(128 + 53);
-    else if (txt[i] == '?')
-      tile = (uint8_t)(128 + 54);
-    else if (txt[i] == '!')
-      tile = (uint8_t)(128 + 55);
-    else if (txt[i] == '.')
-      tile = (uint8_t)(128 + 56);
-    else if (txt[i] == '>')
-      tile = (uint8_t)(128 + 57);
-    else if (txt[i] == '#')
-      tile = (uint8_t)(128 + 58);
-
-    set_bkg_tile_xy(x + i, y, tile);
-  }
-}
+#include "../utils/text.h"
 
 static void draw_box(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
-  // Box Tiles: 59-64 (TL, H, TR, V, BL, BR)
-  uint8_t tl = (uint8_t)(128 + 59);
-  uint8_t h_line = (uint8_t)(128 + 60);
-  uint8_t tr = (uint8_t)(128 + 61);
-  uint8_t v_line = (uint8_t)(128 + 62);
-  uint8_t bl = (uint8_t)(128 + 63);
-  uint8_t br = (uint8_t)(128 + 64);
+  // Box Tiles (1-6 in get_tile_for_char mapping)
+  uint8_t tl = get_tile_for_char(1);
+  uint8_t h_line = get_tile_for_char(2);
+  uint8_t tr = get_tile_for_char(3);
+  uint8_t v_line = get_tile_for_char(4);
+  uint8_t bl = get_tile_for_char(5);
+  uint8_t br = get_tile_for_char(6);
 
   set_bkg_tile_xy(x, y, tl);                 // ┌
   set_bkg_tile_xy(x + w - 1, y, tr);         // ┐
@@ -67,24 +42,24 @@ void inventory_draw(void) {
   fill_bkg_rect(0, 0, 20, 18, (uint8_t)128);
 
   // Header
-  draw_text(5, 1, "INVENTARIO");
+  text_print(5, 1, "INVENTARIO");
 
   if (inventory_count == 0) {
-    draw_text(7, 8, "VACIO");
+    text_print(7, 8, "VACIO");
   } else {
     // List part
     for (uint8_t i = 0; i < inventory_count; i++) {
-      draw_text(5, 4 + i, inventory[i].name);
+      text_print(5, 4 + i, inventory[i].name);
     }
 
     // Cursor
-    draw_text(3, 4 + selection, ">");
+    text_print(3, 4 + selection, ">");
 
     // Detail Box
     draw_box(1, 12, 18, 5);
     // Icon + Name
-    draw_text(3, 13, "#"); // Key Icon (always key for now)
-    draw_text(5, 13, inventory[selection].name);
+    text_print(3, 13, "#"); // Key Icon (always key for now)
+    text_print(5, 13, inventory[selection].name);
 
     // Multi-line Description
     const char *desc = inventory[selection].description;
@@ -121,12 +96,12 @@ void inventory_draw(void) {
           start += 15;
         }
       }
-      draw_text(3, 14 + line, line_buffer);
+      text_print(3, 14 + line, line_buffer);
       line++;
     }
   }
 
-  draw_text(1, 17, "(B) VOLVER");
+  text_print(1, 17, "(B) VOLVER");
 }
 
 void inventory_state_init(void) {
@@ -134,8 +109,8 @@ void inventory_state_init(void) {
   BGP_REG = 0xE4;
   move_bkg(0, 0);
 
-  // Use the text system mapping logic if possible, or just load data
-  set_bkg_data(128, 65, font_data);
+  // Use the standard text system mapping
+  text_init();
 
   selection = 0;
   inventory_draw();
