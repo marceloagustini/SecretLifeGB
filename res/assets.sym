@@ -12,6 +12,7 @@ Symbol Table
   0 _guard_sprite_data                                              00000E08 GR
   0 _house_map                                                      000006E0 GR
   0 _level2_map                                                     00000848 GR
+  0 _level3_map                                                     000012E8 GR
   0 _map_data                                                       000002E0 GR
   0 _npc_child_sprite                                               00000DC8 GR
   0 _npc_woman_sprite                                               00001298 GR
@@ -26,7 +27,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     12E8   flags    0
+   0 _CODE                                      size     1701   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0

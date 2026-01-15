@@ -7,6 +7,7 @@
 entity_t world_entities[3];
 entity_t house_entities[1];
 entity_t level2_entities[1];
+entity_t level3_entities[2];
 
 // --- Portal Instances ---
 portal_t world_portals[1] = {
@@ -48,6 +49,15 @@ map_t maps[] = {{
                  1,
                  {0, 2, 3, 4, 255},
                  NULL,
+                 0},
+                {// 3: LEVEL3_MAP
+                 level3_map,
+                 L3_WIDTH,
+                 L3_HEIGHT,
+                 level3_entities,
+                 2,
+                 {0, 2, 255},
+                 NULL,
                  0}};
 
 void map_init_data() {
@@ -59,4 +69,8 @@ void map_init_data() {
   entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
   level2_entities[0].update = ai_enemy_chaser_shooter;
   level2_entities[0].shoot_timer = 60;
+
+  entity_init(&level3_entities[0], ENT_NPC, 128, 128, 36,
+              "BIENVENIDO AL\nPUEBLO SENSEI");
+  entity_init(&level3_entities[1], ENT_NPC, 200, 100, 24, "HOLA VIAJERO");
 }

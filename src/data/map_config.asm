@@ -15,6 +15,7 @@
 	.globl _level2_portals
 	.globl _house_portals
 	.globl _world_portals
+	.globl _level3_entities
 	.globl _level2_entities
 	.globl _house_entities
 	.globl _world_entities
@@ -32,6 +33,8 @@ _house_entities::
 	.ds 16
 _level2_entities::
 	.ds 16
+_level3_entities::
+	.ds 32
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -43,7 +46,7 @@ _house_portals::
 _level2_portals::
 	.ds 7
 _maps::
-	.ds 78
+	.ds 104
 ;--------------------------------------------------------
 ; absolute external ram data
 ;--------------------------------------------------------
@@ -64,12 +67,12 @@ _maps::
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src/data/map_config.c:53: void map_init_data() {
+;src/data/map_config.c:63: void map_init_data() {
 ;	---------------------------------
 ; Function map_init_data
 ; ---------------------------------
 _map_init_data::
-;src/data/map_config.c:54: entity_init(&world_entities[0], ENT_NPC, 210, 230, 24, DIALOGUE_NPC_CHILD);
+;src/data/map_config.c:64: entity_init(&world_entities[0], ENT_NPC, 210, 230, 24, DIALOGUE_NPC_CHILD);
 	ld	de, #___str_0
 	push	de
 	ld	a, #0x18
@@ -82,7 +85,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_world_entities
 	call	_entity_init
-;src/data/map_config.c:55: entity_init(&world_entities[1], ENT_NPC, 160, 120, 36, DIALOGUE_NPC_WOMAN);
+;src/data/map_config.c:65: entity_init(&world_entities[1], ENT_NPC, 160, 120, 36, DIALOGUE_NPC_WOMAN);
 	ld	de, #___str_1
 	push	de
 	ld	a, #0x24
@@ -96,7 +99,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #(_world_entities + 16)
 	call	_entity_init
-;src/data/map_config.c:56: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 41, NULL); // Flower
+;src/data/map_config.c:66: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 41, NULL); // Flower
 	ld	de, #0x0000
 	push	de
 	ld	a, #0x29
@@ -109,12 +112,12 @@ _map_init_data::
 	ld	a, #0x01
 	ld	de, #(_world_entities + 32)
 	call	_entity_init
-;src/data/map_config.c:57: world_entities[2].update = ai_anim_simple;
+;src/data/map_config.c:67: world_entities[2].update = ai_anim_simple;
 	ld	hl, #(_world_entities + 46)
 	ld	(hl), #<(_ai_anim_simple)
 	inc	hl
 	ld	(hl), #>(_ai_anim_simple)
-;src/data/map_config.c:58: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
+;src/data/map_config.c:68: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
 	ld	de, #___str_2
 	push	de
 	ld	a, #0x18
@@ -127,7 +130,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_house_entities
 	call	_entity_init
-;src/data/map_config.c:59: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
+;src/data/map_config.c:69: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
 	ld	de, #0x0000
 	push	de
 	ld	a, #0x1c
@@ -139,16 +142,43 @@ _map_init_data::
 	ld	a, #0x03
 	ld	de, #_level2_entities
 	call	_entity_init
-;src/data/map_config.c:60: level2_entities[0].update = ai_enemy_chaser_shooter;
+;src/data/map_config.c:70: level2_entities[0].update = ai_enemy_chaser_shooter;
 	ld	hl, #(_level2_entities + 14)
-	ld	(hl), #<(_ai_enemy_chaser_shooter)
-	inc	hl
-	ld	(hl), #>(_ai_enemy_chaser_shooter)
-;src/data/map_config.c:61: level2_entities[0].shoot_timer = 60;
-	dec	hl
+	ld	a, #<(_ai_enemy_chaser_shooter)
+	ld	(hl+), a
+;src/data/map_config.c:71: level2_entities[0].shoot_timer = 60;
+	ld	a, #>(_ai_enemy_chaser_shooter)
+	ld	(hl-), a
 	dec	hl
 	ld	(hl), #0x3c
-;src/data/map_config.c:62: }
+;src/data/map_config.c:74: "BIENVENIDO AL\nPUEBLO SENSEI");
+;src/data/map_config.c:73: entity_init(&level3_entities[0], ENT_NPC, 128, 128, 36,
+	ld	de, #___str_3
+	push	de
+	ld	a, #0x24
+	push	af
+	inc	sp
+	xor	a, a
+	push	af
+	xor	a, a
+	push	af
+	xor	a, a
+	ld	de, #_level3_entities
+	call	_entity_init
+;src/data/map_config.c:75: entity_init(&level3_entities[1], ENT_NPC, 200, 100, 24, "HOLA VIAJERO");
+	ld	de, #___str_4
+	push	de
+	ld	a, #0x18
+	push	af
+	inc	sp
+	ld	de, #0x0064
+	push	de
+	ld	de, #0x00c8
+	push	de
+	xor	a, a
+	ld	de, #(_level3_entities + 16)
+	call	_entity_init
+;src/data/map_config.c:76: }
 	ret
 ___str_0:
 	.ascii "Hola aventurero!"
@@ -255,6 +285,14 @@ ___str_2:
 	.db 0x0a
 	.ascii "estara bien."
 	.db 0x00
+___str_3:
+	.ascii "BIENVENIDO AL"
+	.db 0x0a
+	.ascii "PUEBLO SENSEI"
+	.db 0x00
+___str_4:
+	.ascii "HOLA VIAJERO"
+	.db 0x00
 	.area _CODE
 	.area _INITIALIZER
 __xinit__world_portals:
@@ -332,6 +370,29 @@ __xinit__maps:
 	.db #0x03	; 3
 	.db #0x04	; 4
 	.db #0xff	; 255
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.db 0x00
+	.dw #0x0000
+	.db #0x00	; 0
+	.dw _level3_map
+	.db #0x20	; 32
+	.db #0x20	; 32
+	.dw _level3_entities
+	.db #0x02	; 2
+	.db #0x00	; 0
+	.db #0x02	; 2
+	.db #0xff	; 255
+	.db 0x00
+	.db 0x00
 	.db 0x00
 	.db 0x00
 	.db 0x00

@@ -21,5 +21,9 @@ extern const unsigned char flower_sprite[];
 #define HOUSE_HEIGHT 18
 #define L2_WIDTH 32
 #define L2_HEIGHT 32
+#define L3_WIDTH 32
+#define L3_HEIGHT 32
+
+extern const unsigned char level3_map[];
 
 #endif

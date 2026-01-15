@@ -29,6 +29,9 @@ uint8_t player_dir = 0; // 0:D, 1:U, 2:L, 3:R
 uint8_t anim_frame = 0, anim_timer = 0;
 uint16_t camera_x = 0, camera_y = 0;
 
+// Random door for Level 2
+uint16_t level2_door_x = 0, level2_door_y = 0;
+
 // Env animation
 uint8_t env_anim_timer = 0, env_anim_frame = 0;
 
@@ -92,7 +95,29 @@ void load_map(map_t *m) {
 
   if (m == &maps[1]) // HOUSE_MAP
     fill_bkg_rect(0, 0, 32, 32, 26);
+
   set_bkg_tiles(0, 0, m->w, m->h, m->tiles);
+
+  // If loading Level 2, place the random door
+  if (m == &maps[2]) {
+    // 2x2 Portal in top corners
+    uint16_t rx, ry = 2; // Top area
+    if (DIV_REG & 0x01) {
+      rx = 2; // Top-left
+    } else {
+      rx = m->w - 4; // Top-right
+    }
+
+    level2_door_x = rx * 8;
+    level2_door_y = ry * 8;
+
+    // Draw 2x2 portal
+    set_bkg_tile_xy(rx, ry, 31);
+    set_bkg_tile_xy(rx + 1, ry, 31);
+    set_bkg_tile_xy(rx, ry + 1, 31);
+    set_bkg_tile_xy(rx + 1, ry + 1, 31);
+  }
+
   update_camera();
 
   // Sync player sprites immediately
@@ -273,6 +298,26 @@ void game_update(void) {
     }
     if (current_map == &maps[2] && tid == 0 && player_y > 240) { // LEVEL2_MAP
       switch_map(&maps[0], 124, 48);                             // WORLD_MAP
+      return;
+    }
+
+    // Level 2 Random Door check (2x2 area)
+    if (current_map == &maps[2]) {
+      int16_t dx = (int16_t)player_x - (int16_t)level2_door_x;
+      int16_t dy = (int16_t)player_y - (int16_t)level2_door_y;
+      if (dx < 0)
+        dx = -dx;
+      if (dy < 0)
+        dy = -dy;
+      // 16x16 portal, check overlap
+      if (dx < 16 && dy < 16) {
+        switch_map(&maps[3], 128, 224); // To Level 3 (on the path)
+        return;
+      }
+    }
+
+    if (current_map == &maps[3] && tid == 0 && player_y > 240) { // LEVEL3_MAP
+      switch_map(&maps[2], 128, 224); // Return to Level 2 (entrance)
       return;
     }
   }
