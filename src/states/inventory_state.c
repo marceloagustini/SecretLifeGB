@@ -58,7 +58,7 @@ void inventory_draw(void) {
     // Detail Box
     draw_box(1, 12, 18, 5);
     // Icon + Name
-    text_print(3, 13, "#"); // Key Icon (always key for now)
+    text_print(3, 13, "#");
     text_print(5, 13, inventory[selection].name);
 
     // Multi-line Description

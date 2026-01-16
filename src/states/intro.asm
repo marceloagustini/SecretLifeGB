@@ -7,6 +7,8 @@
 ;--------------------------------------------------------
 ; Public variables in this module
 ;--------------------------------------------------------
+	.globl _strlen
+	.globl _get_tile_for_char
 	.globl _input_pressed
 	.globl _fade_in
 	.globl _fade_out
@@ -90,54 +92,98 @@ _intro_init::
 	add	sp, #4
 ;src/states/intro.c:30: const char *line1 = "SECRET";
 ;src/states/intro.c:31: const char *line2 = "LIFE";
-;src/states/intro.c:35: for (int i = 0; i < 6; i++) {
-	ld	c, #0x00
+;src/states/intro.c:35: for (int i = 0; i < strlen(line1); i++) {
+	ld	bc, #0x0000
 00105$:
+	ld	de, #___str_0
+	push	de
+	call	_strlen
+	pop	hl
+	ld	l, e
+	ld	h, d
+	ld	e, h
+	ld	d, b
 	ld	a, c
-	sub	a, #0x06
+	sub	a, l
+	ld	a, b
+	sbc	a, h
+	bit	7, e
+	jr	Z, 00142$
+	bit	7, d
+	jr	NZ, 00143$
+	cp	a, a
+	jr	00143$
+00142$:
+	bit	7, d
+	jr	Z, 00143$
+	scf
+00143$:
 	jr	NC, 00101$
-;src/states/intro.c:36: set_bkg_tile_xy(7 + i, 16, 128 + 1 + (line1[i] - 'A'));
+;src/states/intro.c:36: set_bkg_tile_xy(7 + i, 16, get_tile_for_char(line1[i]));
 	ld	hl, #___str_0
-	ld	b, #0x00
 	add	hl, bc
 	ld	a, (hl)
-	add	a, #0x40
-	ld	b, a
+	push	bc
+	call	_get_tile_for_char
+	ld	d, a
+	pop	bc
 	ld	a, c
 	add	a, #0x07
 	push	bc
-	push	bc
+	push	de
 	inc	sp
 	ld	e, #0x10
 	call	_set_bkg_tile_xy
 	pop	bc
-;src/states/intro.c:35: for (int i = 0; i < 6; i++) {
-	inc	c
+;src/states/intro.c:35: for (int i = 0; i < strlen(line1); i++) {
+	inc	bc
 	jr	00105$
 00101$:
-;src/states/intro.c:38: for (int i = 0; i < 4; i++) {
-	ld	c, #0x00
+;src/states/intro.c:38: for (int i = 0; i < strlen(line2); i++) {
+	ld	bc, #0x0000
 00108$:
+	ld	de, #___str_1
+	push	de
+	call	_strlen
+	pop	hl
+	ld	l, e
+	ld	h, d
+	ld	e, h
+	ld	d, b
 	ld	a, c
-	sub	a, #0x04
+	sub	a, l
+	ld	a, b
+	sbc	a, h
+	bit	7, e
+	jr	Z, 00144$
+	bit	7, d
+	jr	NZ, 00145$
+	cp	a, a
+	jr	00145$
+00144$:
+	bit	7, d
+	jr	Z, 00145$
+	scf
+00145$:
 	jr	NC, 00102$
-;src/states/intro.c:39: set_bkg_tile_xy(8 + i, 18, 128 + 1 + (line2[i] - 'A'));
+;src/states/intro.c:39: set_bkg_tile_xy(8 + i, 18, get_tile_for_char(line2[i]));
 	ld	hl, #___str_1
-	ld	b, #0x00
 	add	hl, bc
 	ld	a, (hl)
-	add	a, #0x40
-	ld	b, a
+	push	bc
+	call	_get_tile_for_char
+	ld	d, a
+	pop	bc
 	ld	a, c
 	add	a, #0x08
 	push	bc
-	push	bc
+	push	de
 	inc	sp
 	ld	e, #0x12
 	call	_set_bkg_tile_xy
 	pop	bc
-;src/states/intro.c:38: for (int i = 0; i < 4; i++) {
-	inc	c
+;src/states/intro.c:38: for (int i = 0; i < strlen(line2); i++) {
+	inc	bc
 	jr	00108$
 00102$:
 ;./gbdk/include/gb/gb.h:1461: SCX_REG=x, SCY_REG=y;

@@ -73,10 +73,10 @@ void hud_update(void) {
     hud_tiles[i] = get_tile_for_char(' ');
 
   hud_tiles[1] = get_tile_for_char('V');
-  hud_tiles[2] = get_tile_for_char('I');
-  hud_tiles[3] = get_tile_for_char('D');
-  hud_tiles[4] = get_tile_for_char('A');
-  hud_tiles[5] = get_tile_for_char('S');
+  hud_tiles[2] = get_tile_for_char('i');
+  hud_tiles[3] = get_tile_for_char('d');
+  hud_tiles[4] = get_tile_for_char('a');
+  hud_tiles[5] = get_tile_for_char('s');
   hud_tiles[6] = get_tile_for_char(':');
   hud_tiles[8] = get_tile_for_char('0' + player_lives);
 
@@ -429,7 +429,7 @@ void game_update(void) {
           if (e->type == ENT_ITEM && e->active) {
             interacted = 1;
             if (e->sprite_base == 41) {
-              inventory_add_item("FLOR", "UNA HERMOSA\nFLOR SILVESTRE", 41);
+              inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 41);
               sfx_pickup();
               e->active = 0;
             }
@@ -473,7 +473,7 @@ void game_update(void) {
       if (input_pressed(J_B)) {
         if (!inventory_has_item("LLAVE")) {
           text_dialogue(DIALOGUE_FOUND_KEY);
-          inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
+          inventory_add_item("LLAVE", "Abre el porton norte", 41);
           sfx_pickup();
         } else
           text_dialogue(DIALOGUE_EMPTY_CHEST);

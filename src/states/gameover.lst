@@ -74,13 +74,13 @@
     00000016 CDr00r00         [24]   74 	call	_text_init
                                      75 ;src/states/gameover.c:24: text_clear();
     00000019 CDr00r00         [24]   76 	call	_text_clear
-                                     77 ;src/states/gameover.c:27: text_print(5, 7, "GAME OVER");
+                                     77 ;src/states/gameover.c:27: text_print(5, 7, "Game Over");
     0000001C 11r49r00         [12]   78 	ld	de, #___str_0
     0000001F D5               [16]   79 	push	de
     00000020 1E 07            [ 8]   80 	ld	e, #0x07
     00000022 3E 05            [ 8]   81 	ld	a, #0x05
     00000024 CDr00r00         [24]   82 	call	_text_print
-                                     83 ;src/states/gameover.c:28: text_print(4, 10, "PRESS A OR B");
+                                     83 ;src/states/gameover.c:28: text_print(4, 10, "Press A or B");
     00000027 11r53r00         [12]   84 	ld	de, #___str_1
     0000002A D5               [16]   85 	push	de
     0000002B 1E 0A            [ 8]   86 	ld	e, #0x0a
@@ -103,12 +103,12 @@
                                     103 ;src/states/gameover.c:36: }
     00000046 C3r00r00         [16]  104 	jp	_fade_in
     00000049                        105 ___str_0:
-    00000049 47 41 4D 45 20 4F 56   106 	.ascii "GAME OVER"
-             45 52
+    00000049 47 61 6D 65 20 4F 76   106 	.ascii "Game Over"
+             65 72
     00000052 00                     107 	.db 0x00
     00000053                        108 ___str_1:
-    00000053 50 52 45 53 53 20 41   109 	.ascii "PRESS A OR B"
-             20 4F 52 20 42
+    00000053 50 72 65 73 73 20 41   109 	.ascii "Press A or B"
+             20 6F 72 20 42
     0000005F 00                     110 	.db 0x00
                                     111 ;src/states/gameover.c:38: void gameover_update(void) {
                                     112 ;	---------------------------------

@@ -32,11 +32,11 @@ void intro_init(void) {
 
   // Position lines on a "virtual" map that is 32 columns wide
   // We'll place them around row 15-18
-  for (int i = 0; i < 6; i++) {
-    set_bkg_tile_xy(7 + i, 16, 128 + 1 + (line1[i] - 'A'));
+  for (int i = 0; i < strlen(line1); i++) {
+    set_bkg_tile_xy(7 + i, 16, get_tile_for_char(line1[i]));
   }
-  for (int i = 0; i < 4; i++) {
-    set_bkg_tile_xy(8 + i, 18, 128 + 1 + (line2[i] - 'A'));
+  for (int i = 0; i < strlen(line2); i++) {
+    set_bkg_tile_xy(8 + i, 18, get_tile_for_char(line2[i]));
   }
 
   move_bkg(0, 144); // Move camera down so title is hidden

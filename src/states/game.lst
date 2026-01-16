@@ -429,23 +429,23 @@
     0000016C CDr00r00         [24]  429 	call	_get_tile_for_char
     0000016F F8 01            [12]  430 	ldhl	sp,	#1
     00000171 77               [ 8]  431 	ld	(hl), a
-                                    432 ;src/states/game.c:76: hud_tiles[2] = get_tile_for_char('I');
-    00000172 3E 49            [ 8]  433 	ld	a, #0x49
+                                    432 ;src/states/game.c:76: hud_tiles[2] = get_tile_for_char('i');
+    00000172 3E 69            [ 8]  433 	ld	a, #0x69
     00000174 CDr00r00         [24]  434 	call	_get_tile_for_char
     00000177 F8 02            [12]  435 	ldhl	sp,	#2
     00000179 77               [ 8]  436 	ld	(hl), a
-                                    437 ;src/states/game.c:77: hud_tiles[3] = get_tile_for_char('D');
-    0000017A 3E 44            [ 8]  438 	ld	a, #0x44
+                                    437 ;src/states/game.c:77: hud_tiles[3] = get_tile_for_char('d');
+    0000017A 3E 64            [ 8]  438 	ld	a, #0x64
     0000017C CDr00r00         [24]  439 	call	_get_tile_for_char
     0000017F F8 03            [12]  440 	ldhl	sp,	#3
     00000181 77               [ 8]  441 	ld	(hl), a
-                                    442 ;src/states/game.c:78: hud_tiles[4] = get_tile_for_char('A');
-    00000182 3E 41            [ 8]  443 	ld	a, #0x41
+                                    442 ;src/states/game.c:78: hud_tiles[4] = get_tile_for_char('a');
+    00000182 3E 61            [ 8]  443 	ld	a, #0x61
     00000184 CDr00r00         [24]  444 	call	_get_tile_for_char
     00000187 F8 04            [12]  445 	ldhl	sp,	#4
     00000189 77               [ 8]  446 	ld	(hl), a
-                                    447 ;src/states/game.c:79: hud_tiles[5] = get_tile_for_char('S');
-    0000018A 3E 53            [ 8]  448 	ld	a, #0x53
+                                    447 ;src/states/game.c:79: hud_tiles[5] = get_tile_for_char('s');
+    0000018A 3E 73            [ 8]  448 	ld	a, #0x73
     0000018C CDr00r00         [24]  449 	call	_get_tile_for_char
     0000018F F8 05            [12]  450 	ldhl	sp,	#5
     00000191 77               [ 8]  451 	ld	(hl), a
@@ -2756,7 +2756,7 @@
     00000D6A 0A               [ 8] 2756 	ld	a, (bc)
     00000D6B D6 29            [ 8] 2757 	sub	a, #0x29
     00000D6D 20 14            [12] 2758 	jr	NZ, 00243$
-                                   2759 ;src/states/game.c:432: inventory_add_item("FLOR", "UNA HERMOSA\nFLOR SILVESTRE", 41);
+                                   2759 ;src/states/game.c:432: inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 41);
     00000D6F D5               [16] 2760 	push	de
     00000D70 3E 29            [ 8] 2761 	ld	a, #0x29
     00000D72 F5               [16] 2762 	push	af
@@ -2978,7 +2978,7 @@
                                    2978 ;src/states/game.c:475: text_dialogue(DIALOGUE_FOUND_KEY);
     00000EA5 11r1Fr10         [12] 2979 	ld	de, #___str_5
     00000EA8 CDr00r00         [24] 2980 	call	_text_dialogue
-                                   2981 ;src/states/game.c:476: inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
+                                   2981 ;src/states/game.c:476: inventory_add_item("LLAVE", "Abre el porton norte", 41);
     00000EAB 3E 29            [ 8] 2982 	ld	a, #0x29
     00000EAD F5               [16] 2983 	push	af
     00000EAE 33               [ 8] 2984 	inc	sp
@@ -3113,17 +3113,17 @@
              64 61 73 2E
     00000FE5 00                    3097 	.db 0x00
     00000FE6                       3098 ___str_2:
-    00000FE6 55 4E 41 20 48 45 52  3099 	.ascii "UNA HERMOSA"
-             4D 4F 53 41
+    00000FE6 55 6E 61 20 68 65 72  3099 	.ascii "Una hermosa"
+             6D 6F 73 61
     00000FF1 0A                    3100 	.db 0x0a
-    00000FF2 46 4C 4F 52 20 53 49  3101 	.ascii "FLOR SILVESTRE"
-             4C 56 45 53 54 52 45
+    00000FF2 66 6C 6F 72 20 73 69  3101 	.ascii "flor silvestre"
+             6C 76 65 73 74 72 65
     00001000 00                    3102 	.db 0x00
     00001001                       3103 ___str_3:
-    00001001 45 53 54 41 20 43 41  3104 	.ascii "ESTA CASA ESTA"
-             53 41 20 45 53 54 41
+    00001001 45 73 74 61 20 63 61  3104 	.ascii "Esta casa esta"
+             73 61 20 65 73 74 61
     0000100F 0A                    3105 	.db 0x0a
-    00001010 43 45 52 52 41 44 41  3106 	.ascii "CERRADA."
+    00001010 63 65 72 72 61 64 61  3106 	.ascii "cerrada."
              2E
     00001018 00                    3107 	.db 0x00
     00001019                       3108 ___str_4:
@@ -3162,9 +3162,9 @@
              61 21
     000010A0 00                    3129 	.db 0x00
     000010A1                       3130 ___str_6:
-    000010A1 41 42 52 45 20 45 4C  3131 	.ascii "ABRE EL PORTON NORTE"
-             20 50 4F 52 54 4F 4E
-             20 4E 4F 52 54 45
+    000010A1 41 62 72 65 20 65 6C  3131 	.ascii "Abre el porton norte"
+             20 70 6F 72 74 6F 6E
+             20 6E 6F 72 74 65
     000010B5 00                    3132 	.db 0x00
     000010B6                       3133 ___str_7:
     000010B6 41 62 72 65 73 20 65  3134 	.ascii "Abres el ropero"

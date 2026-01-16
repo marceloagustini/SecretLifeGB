@@ -12,8 +12,8 @@
 #define TEXT_LINES 4  // Internal lines
 
 void text_init(void) {
-  set_win_data(FONT_BASE_TILE, 50,
-               font_data); // Load 50 tiles
+  set_win_data(FONT_BASE_TILE, 128,
+               font_data); // Load enough tiles for the expanded font
   move_win(7, 144);
 }
 
@@ -23,41 +23,42 @@ uint8_t get_tile_for_char(char c) {
   if (c >= 'A' && c <= 'Z')
     return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'A'));
   if (c >= 'a' && c <= 'z')
-    return (uint8_t)(FONT_BASE_TILE + 1 +
-                     (c - 'a')); // Map lowercase to uppercase
+    return (uint8_t)(FONT_BASE_TILE + 27 + (c - 'a'));
   if (c == ',')
-    return (uint8_t)(FONT_BASE_TILE + 27);
+    return (uint8_t)(FONT_BASE_TILE + 53);
   if (c == '?')
-    return (uint8_t)(FONT_BASE_TILE + 28);
+    return (uint8_t)(FONT_BASE_TILE + 54);
   if (c == '!')
-    return (uint8_t)(FONT_BASE_TILE + 29);
-  if (c == '.')
-    return (uint8_t)(FONT_BASE_TILE + 30);
+    return (uint8_t)(FONT_BASE_TILE + 55);
+  if (c == '*')
+    return (uint8_t)(FONT_BASE_TILE + 56);
   if (c == '>')
-    return (uint8_t)(FONT_BASE_TILE + 31);
+    return (uint8_t)(FONT_BASE_TILE + 57);
+  if (c == '.')
+    return (uint8_t)(FONT_BASE_TILE + 58);
   if (c == '#')
-    return (uint8_t)(FONT_BASE_TILE + 32);
+    return (uint8_t)(FONT_BASE_TILE + 59);
 
   // Box drawing
   if (c == 1)
-    return (uint8_t)(FONT_BASE_TILE + 33); // ┌
+    return (uint8_t)(FONT_BASE_TILE + 60); // ┌
   if (c == 2)
-    return (uint8_t)(FONT_BASE_TILE + 34); // ─
+    return (uint8_t)(FONT_BASE_TILE + 61); // ─
   if (c == 3)
-    return (uint8_t)(FONT_BASE_TILE + 35); // ┐
+    return (uint8_t)(FONT_BASE_TILE + 62); // ┐
   if (c == 4)
-    return (uint8_t)(FONT_BASE_TILE + 36); // │
+    return (uint8_t)(FONT_BASE_TILE + 63); // │
   if (c == 5)
-    return (uint8_t)(FONT_BASE_TILE + 37); // └
+    return (uint8_t)(FONT_BASE_TILE + 64); // └
   if (c == 6)
-    return (uint8_t)(FONT_BASE_TILE + 38); // ┘
+    return (uint8_t)(FONT_BASE_TILE + 65); // ┘
 
   // Numbers
   if (c >= '0' && c <= '9')
-    return (uint8_t)(FONT_BASE_TILE + 39 + (c - '0'));
+    return (uint8_t)(FONT_BASE_TILE + 66 + (c - '0'));
 
   if (c == ':')
-    return (uint8_t)(FONT_BASE_TILE + 49);
+    return (uint8_t)(FONT_BASE_TILE + 76);
 
   return (uint8_t)(FONT_BASE_TILE + 0);
 }

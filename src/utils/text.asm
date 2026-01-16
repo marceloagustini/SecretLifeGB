@@ -60,11 +60,11 @@ _dialog_buf::
 ; Function text_init
 ; ---------------------------------
 _text_init::
-;src/utils/text.c:16: font_data); // Load 50 tiles
-;src/utils/text.c:15: set_win_data(FONT_BASE_TILE, 50,
+;src/utils/text.c:16: font_data); // Load enough tiles for the expanded font
+;src/utils/text.c:15: set_win_data(FONT_BASE_TILE, 128,
 	ld	de, #_font_data
 	push	de
-	ld	hl, #0x3280
+	ld	hl, #0x8080
 	push	hl
 	call	_set_win_data
 	add	sp, #4
@@ -103,16 +103,16 @@ _get_tile_for_char::
 	ld	d,a
 	sub	a, c
 	bit	7, e
-	jr	Z, 00284$
+	jr	Z, 00293$
 	bit	7, d
-	jr	NZ, 00285$
+	jr	NZ, 00294$
 	cp	a, a
-	jr	00285$
-00284$:
+	jr	00294$
+00293$:
 	bit	7, d
-	jr	Z, 00285$
+	jr	Z, 00294$
 	scf
-00285$:
+00294$:
 	jr	C, 00105$
 ;src/utils/text.c:24: return (uint8_t)(FONT_BASE_TILE + 1 + (c - 'A'));
 	ld	a, c
@@ -129,185 +129,193 @@ _get_tile_for_char::
 	ld	d,a
 	sub	a, c
 	bit	7, e
-	jr	Z, 00286$
+	jr	Z, 00295$
 	bit	7, d
-	jr	NZ, 00287$
+	jr	NZ, 00296$
 	cp	a, a
-	jr	00287$
-00286$:
+	jr	00296$
+00295$:
 	bit	7, d
-	jr	Z, 00287$
+	jr	Z, 00296$
 	scf
-00287$:
+00296$:
 	jr	C, 00108$
-;src/utils/text.c:27: (c - 'a')); // Map lowercase to uppercase
+;src/utils/text.c:26: return (uint8_t)(FONT_BASE_TILE + 27 + (c - 'a'));
 	ld	a, c
-	add	a, #0x20
+	add	a, #0x3a
 	ret
 00108$:
-;src/utils/text.c:28: if (c == ',')
+;src/utils/text.c:27: if (c == ',')
 	ld	a, c
 	sub	a, #0x2c
 	jr	NZ, 00111$
-;src/utils/text.c:29: return (uint8_t)(FONT_BASE_TILE + 27);
-	ld	a, #0x9b
+;src/utils/text.c:28: return (uint8_t)(FONT_BASE_TILE + 53);
+	ld	a, #0xb5
 	ret
 00111$:
-;src/utils/text.c:30: if (c == '?')
+;src/utils/text.c:29: if (c == '?')
 	ld	a, c
 	sub	a, #0x3f
 	jr	NZ, 00113$
-;src/utils/text.c:31: return (uint8_t)(FONT_BASE_TILE + 28);
-	ld	a, #0x9c
+;src/utils/text.c:30: return (uint8_t)(FONT_BASE_TILE + 54);
+	ld	a, #0xb6
 	ret
 00113$:
-;src/utils/text.c:32: if (c == '!')
+;src/utils/text.c:31: if (c == '!')
 	ld	a, c
 	sub	a, #0x21
 	jr	NZ, 00115$
-;src/utils/text.c:33: return (uint8_t)(FONT_BASE_TILE + 29);
-	ld	a, #0x9d
+;src/utils/text.c:32: return (uint8_t)(FONT_BASE_TILE + 55);
+	ld	a, #0xb7
 	ret
 00115$:
-;src/utils/text.c:34: if (c == '.')
+;src/utils/text.c:33: if (c == '*')
 	ld	a, c
-	sub	a, #0x2e
+	sub	a, #0x2a
 	jr	NZ, 00117$
-;src/utils/text.c:35: return (uint8_t)(FONT_BASE_TILE + 30);
-	ld	a, #0x9e
+;src/utils/text.c:34: return (uint8_t)(FONT_BASE_TILE + 56);
+	ld	a, #0xb8
 	ret
 00117$:
-;src/utils/text.c:36: if (c == '>')
+;src/utils/text.c:35: if (c == '>')
 	ld	a, c
 	sub	a, #0x3e
 	jr	NZ, 00119$
-;src/utils/text.c:37: return (uint8_t)(FONT_BASE_TILE + 31);
-	ld	a, #0x9f
+;src/utils/text.c:36: return (uint8_t)(FONT_BASE_TILE + 57);
+	ld	a, #0xb9
 	ret
 00119$:
-;src/utils/text.c:38: if (c == '#')
+;src/utils/text.c:37: if (c == '.')
 	ld	a, c
-	sub	a, #0x23
+	sub	a, #0x2e
 	jr	NZ, 00121$
-;src/utils/text.c:39: return (uint8_t)(FONT_BASE_TILE + 32);
-	ld	a, #0xa0
+;src/utils/text.c:38: return (uint8_t)(FONT_BASE_TILE + 58);
+	ld	a, #0xba
 	ret
 00121$:
-;src/utils/text.c:42: if (c == 1)
+;src/utils/text.c:39: if (c == '#')
 	ld	a, c
-	dec	a
+	sub	a, #0x23
 	jr	NZ, 00123$
-;src/utils/text.c:43: return (uint8_t)(FONT_BASE_TILE + 33); // ┌
-	ld	a, #0xa1
+;src/utils/text.c:40: return (uint8_t)(FONT_BASE_TILE + 59);
+	ld	a, #0xbb
 	ret
 00123$:
-;src/utils/text.c:44: if (c == 2)
+;src/utils/text.c:43: if (c == 1)
 	ld	a, c
-	sub	a, #0x02
+	dec	a
 	jr	NZ, 00125$
-;src/utils/text.c:45: return (uint8_t)(FONT_BASE_TILE + 34); // ─
-	ld	a, #0xa2
+;src/utils/text.c:44: return (uint8_t)(FONT_BASE_TILE + 60); // ┌
+	ld	a, #0xbc
 	ret
 00125$:
-;src/utils/text.c:46: if (c == 3)
+;src/utils/text.c:45: if (c == 2)
 	ld	a, c
-	sub	a, #0x03
+	sub	a, #0x02
 	jr	NZ, 00127$
-;src/utils/text.c:47: return (uint8_t)(FONT_BASE_TILE + 35); // ┐
-	ld	a, #0xa3
+;src/utils/text.c:46: return (uint8_t)(FONT_BASE_TILE + 61); // ─
+	ld	a, #0xbd
 	ret
 00127$:
-;src/utils/text.c:48: if (c == 4)
+;src/utils/text.c:47: if (c == 3)
 	ld	a, c
-	sub	a, #0x04
+	sub	a, #0x03
 	jr	NZ, 00129$
-;src/utils/text.c:49: return (uint8_t)(FONT_BASE_TILE + 36); // │
-	ld	a, #0xa4
+;src/utils/text.c:48: return (uint8_t)(FONT_BASE_TILE + 62); // ┐
+	ld	a, #0xbe
 	ret
 00129$:
-;src/utils/text.c:50: if (c == 5)
+;src/utils/text.c:49: if (c == 4)
 	ld	a, c
-	sub	a, #0x05
+	sub	a, #0x04
 	jr	NZ, 00131$
-;src/utils/text.c:51: return (uint8_t)(FONT_BASE_TILE + 37); // └
-	ld	a, #0xa5
+;src/utils/text.c:50: return (uint8_t)(FONT_BASE_TILE + 63); // │
+	ld	a, #0xbf
 	ret
 00131$:
-;src/utils/text.c:52: if (c == 6)
+;src/utils/text.c:51: if (c == 5)
 	ld	a, c
-	sub	a, #0x06
+	sub	a, #0x05
 	jr	NZ, 00133$
-;src/utils/text.c:53: return (uint8_t)(FONT_BASE_TILE + 38); // ┘
-	ld	a, #0xa6
+;src/utils/text.c:52: return (uint8_t)(FONT_BASE_TILE + 64); // └
+	ld	a, #0xc0
 	ret
 00133$:
-;src/utils/text.c:56: if (c >= '0' && c <= '9')
+;src/utils/text.c:53: if (c == 6)
+	ld	a, c
+	sub	a, #0x06
+	jr	NZ, 00135$
+;src/utils/text.c:54: return (uint8_t)(FONT_BASE_TILE + 65); // ┘
+	ld	a, #0xc1
+	ret
+00135$:
+;src/utils/text.c:57: if (c >= '0' && c <= '9')
 	ld	a, c
 	xor	a, #0x80
 	sub	a, #0xb0
-	jr	C, 00135$
+	jr	C, 00137$
 	ld	e, c
 	ld	a,#0x39
 	ld	d,a
 	sub	a, c
 	bit	7, e
-	jr	Z, 00312$
+	jr	Z, 00323$
 	bit	7, d
-	jr	NZ, 00313$
+	jr	NZ, 00324$
 	cp	a, a
-	jr	00313$
-00312$:
+	jr	00324$
+00323$:
 	bit	7, d
-	jr	Z, 00313$
+	jr	Z, 00324$
 	scf
-00313$:
-	jr	C, 00135$
-;src/utils/text.c:57: return (uint8_t)(FONT_BASE_TILE + 39 + (c - '0'));
+00324$:
+	jr	C, 00137$
+;src/utils/text.c:58: return (uint8_t)(FONT_BASE_TILE + 66 + (c - '0'));
 	ld	a, c
-	add	a, #0x77
+	add	a, #0x92
 	ret
-00135$:
-;src/utils/text.c:59: if (c == ':')
+00137$:
+;src/utils/text.c:60: if (c == ':')
 	ld	a, c
 	sub	a, #0x3a
-;src/utils/text.c:60: return (uint8_t)(FONT_BASE_TILE + 49);
-;src/utils/text.c:62: return (uint8_t)(FONT_BASE_TILE + 0);
-	ld	a, #0xb1
+;src/utils/text.c:61: return (uint8_t)(FONT_BASE_TILE + 76);
+;src/utils/text.c:63: return (uint8_t)(FONT_BASE_TILE + 0);
+	ld	a, #0xcc
 	ret	Z
 	ld	a, #0x80
-;src/utils/text.c:63: }
+;src/utils/text.c:64: }
 	ret
-;src/utils/text.c:67: void clear_dialog_buf(void) {
+;src/utils/text.c:68: void clear_dialog_buf(void) {
 ;	---------------------------------
 ; Function clear_dialog_buf
 ; ---------------------------------
 _clear_dialog_buf::
-;src/utils/text.c:68: for (int i = 0; i < 120; i++)
+;src/utils/text.c:69: for (int i = 0; i < 120; i++)
 	ld	c, #0x00
 00106$:
 	ld	a, c
 	sub	a, #0x78
 	jr	NC, 00101$
-;src/utils/text.c:69: dialog_buf[i] = (uint8_t)FONT_BASE_TILE;
+;src/utils/text.c:70: dialog_buf[i] = (uint8_t)FONT_BASE_TILE;
 	ld	hl, #_dialog_buf
 	ld	b, #0x00
 	add	hl, bc
 	ld	(hl), #0x80
-;src/utils/text.c:68: for (int i = 0; i < 120; i++)
+;src/utils/text.c:69: for (int i = 0; i < 120; i++)
 	inc	c
 	jr	00106$
 00101$:
-;src/utils/text.c:70: dialog_buf[0] = get_tile_for_char(1);
+;src/utils/text.c:71: dialog_buf[0] = get_tile_for_char(1);
 	ld	a, #0x01
 	call	_get_tile_for_char
 	ld	(#_dialog_buf),a
-;src/utils/text.c:71: for (int i = 1; i < 19; i++)
+;src/utils/text.c:72: for (int i = 1; i < 19; i++)
 	ld	c, #0x01
 00109$:
 	ld	a, c
 	sub	a, #0x13
 	jr	NC, 00102$
-;src/utils/text.c:72: dialog_buf[i] = get_tile_for_char(2);
+;src/utils/text.c:73: dialog_buf[i] = get_tile_for_char(2);
 	ld	hl, #_dialog_buf
 	ld	b, #0x00
 	add	hl, bc
@@ -318,18 +326,18 @@ _clear_dialog_buf::
 	pop	bc
 	pop	hl
 	ld	(hl), a
-;src/utils/text.c:71: for (int i = 1; i < 19; i++)
+;src/utils/text.c:72: for (int i = 1; i < 19; i++)
 	inc	c
 	jr	00109$
 00102$:
-;src/utils/text.c:73: dialog_buf[19] = get_tile_for_char(3);
+;src/utils/text.c:74: dialog_buf[19] = get_tile_for_char(3);
 	ld	a, #0x03
 	call	_get_tile_for_char
 	ld	(#(_dialog_buf + 19)),a
-;src/utils/text.c:74: for (int y = 1; y < 5; y++) {
+;src/utils/text.c:75: for (int y = 1; y < 5; y++) {
 	ld	c, #0x01
 00112$:
-;src/utils/text.c:75: dialog_buf[y * 20] = get_tile_for_char(4);
+;src/utils/text.c:76: dialog_buf[y * 20] = get_tile_for_char(4);
 	ld	a,c
 	cp	a,#0x05
 	jr	NC, 00103$
@@ -351,7 +359,7 @@ _clear_dialog_buf::
 	pop	bc
 	pop	hl
 	ld	(hl), a
-;src/utils/text.c:76: dialog_buf[y * 20 + 19] = get_tile_for_char(4);
+;src/utils/text.c:77: dialog_buf[y * 20 + 19] = get_tile_for_char(4);
 	ld	a, b
 	add	a, #0x13
 	ld	l, a
@@ -365,21 +373,21 @@ _clear_dialog_buf::
 	pop	bc
 	pop	hl
 	ld	(hl), a
-;src/utils/text.c:74: for (int y = 1; y < 5; y++) {
+;src/utils/text.c:75: for (int y = 1; y < 5; y++) {
 	inc	c
 	jr	00112$
 00103$:
-;src/utils/text.c:78: dialog_buf[100] = get_tile_for_char(5);
+;src/utils/text.c:79: dialog_buf[100] = get_tile_for_char(5);
 	ld	a, #0x05
 	call	_get_tile_for_char
 	ld	(#(_dialog_buf + 100)),a
-;src/utils/text.c:79: for (int i = 101; i < 119; i++)
+;src/utils/text.c:80: for (int i = 101; i < 119; i++)
 	ld	c, #0x65
 00115$:
 	ld	a, c
 	sub	a, #0x77
 	jr	NC, 00104$
-;src/utils/text.c:80: dialog_buf[i] = get_tile_for_char(2);
+;src/utils/text.c:81: dialog_buf[i] = get_tile_for_char(2);
 	ld	hl, #_dialog_buf
 	ld	b, #0x00
 	add	hl, bc
@@ -390,17 +398,17 @@ _clear_dialog_buf::
 	pop	bc
 	pop	hl
 	ld	(hl), a
-;src/utils/text.c:79: for (int i = 101; i < 119; i++)
+;src/utils/text.c:80: for (int i = 101; i < 119; i++)
 	inc	c
 	jr	00115$
 00104$:
-;src/utils/text.c:81: dialog_buf[119] = get_tile_for_char(6);
+;src/utils/text.c:82: dialog_buf[119] = get_tile_for_char(6);
 	ld	a, #0x06
 	call	_get_tile_for_char
 	ld	(#(_dialog_buf + 119)),a
-;src/utils/text.c:82: }
+;src/utils/text.c:83: }
 	ret
-;src/utils/text.c:84: void text_dialogue(const char *str) {
+;src/utils/text.c:85: void text_dialogue(const char *str) {
 ;	---------------------------------
 ; Function text_dialogue
 ; ---------------------------------
@@ -410,15 +418,15 @@ _text_dialogue::
 	ld	a, e
 	ld	(hl+), a
 	ld	(hl), d
-;src/utils/text.c:85: waitpadup();
+;src/utils/text.c:86: waitpadup();
 	call	_waitpadup
-;src/utils/text.c:87: for (int i = 0; i < 40; i++)
+;src/utils/text.c:88: for (int i = 0; i < 40; i++)
 	ld	bc, #0x0000
 00129$:
 	ld	a, c
 	sub	a, #0x28
 	jr	NC, 00101$
-;src/utils/text.c:88: move_sprite(i, 0, 0);
+;src/utils/text.c:89: move_sprite(i, 0, 0);
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
 	ld	l, c
 	xor	a, a
@@ -431,11 +439,11 @@ _text_dialogue::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/text.c:87: for (int i = 0; i < 40; i++)
+;src/utils/text.c:88: for (int i = 0; i < 40; i++)
 	inc	bc
 	jr	00129$
 00101$:
-;src/utils/text.c:89: const char *ptr = str;
+;src/utils/text.c:90: const char *ptr = str;
 	ldhl	sp,	#11
 	ld	a, (hl)
 	ldhl	sp,	#17
@@ -444,7 +452,7 @@ _text_dialogue::
 	ld	a, (hl)
 	ldhl	sp,	#18
 	ld	(hl), a
-;src/utils/text.c:90: while (*ptr != '\0') {
+;src/utils/text.c:91: while (*ptr != '\0') {
 00122$:
 	ldhl	sp,#17
 	ld	a, (hl+)
@@ -453,9 +461,9 @@ _text_dialogue::
 	ld	a, (de)
 	or	a, a
 	jp	Z, 00124$
-;src/utils/text.c:91: clear_dialog_buf();
+;src/utils/text.c:92: clear_dialog_buf();
 	call	_clear_dialog_buf
-;src/utils/text.c:92: int cur_line = 0, cur_col = 0;
+;src/utils/text.c:93: int cur_line = 0, cur_col = 0;
 	xor	a, a
 	ldhl	sp,	#13
 	ld	(hl+), a
@@ -464,7 +472,7 @@ _text_dialogue::
 	ldhl	sp,	#0
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/text.c:93: while (*ptr != '\0' && cur_line < TEXT_LINES) {
+;src/utils/text.c:94: while (*ptr != '\0' && cur_line < TEXT_LINES) {
 00119$:
 	ldhl	sp,#17
 	ld	a, (hl+)
@@ -483,7 +491,7 @@ _text_dialogue::
 	ld	a, (hl)
 	sbc	a, #0x00
 	jp	NC, 00121$
-;src/utils/text.c:96: while (*word_end != '\0' && *word_end != ' ' && *word_end != '\n') {
+;src/utils/text.c:97: while (*word_end != '\0' && *word_end != ' ' && *word_end != '\n') {
 	ld	bc, #0x0000
 	ldhl	sp,	#17
 	ld	a, (hl+)
@@ -497,9 +505,9 @@ _text_dialogue::
 	jr	Z, 00153$
 	sub	a, #0x0a
 	jr	Z, 00153$
-;src/utils/text.c:97: word_len++;
+;src/utils/text.c:98: word_len++;
 	inc	bc
-;src/utils/text.c:98: word_end++;
+;src/utils/text.c:99: word_end++;
 	inc	de
 	jr	00104$
 00153$:
@@ -507,7 +515,7 @@ _text_dialogue::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/text.c:100: if (cur_col + word_len > TEXT_WIDTH) {
+;src/utils/text.c:101: if (cur_col + word_len > TEXT_WIDTH) {
 	pop	hl
 	push	hl
 	add	hl, bc
@@ -531,24 +539,24 @@ _text_dialogue::
 	scf
 00254$:
 	jr	NC, 00147$
-;src/utils/text.c:101: cur_line++;
+;src/utils/text.c:102: cur_line++;
 	ldhl	sp,	#13
 	inc	(hl)
-;src/utils/text.c:102: cur_col = 0;
+;src/utils/text.c:103: cur_col = 0;
 	xor	a, a
 	ldhl	sp,	#0
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/text.c:103: if (cur_line >= TEXT_LINES)
+;src/utils/text.c:104: if (cur_line >= TEXT_LINES)
 	ldhl	sp,	#13
 	ld	a, (hl+)
 	sub	a, #0x04
 	ld	a, (hl)
 	sbc	a, #0x00
 	jp	NC, 00121$
-;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+;src/utils/text.c:107: for (int i = 0; i < word_len; i++) {
 00147$:
-;src/utils/text.c:101: cur_line++;
+;src/utils/text.c:102: cur_line++;
 	ldhl	sp,#13
 	ld	a, (hl+)
 	ld	e, a
@@ -563,7 +571,7 @@ _text_dialogue::
 	pop	hl
 	ld	a, h
 	ldhl	sp,	#5
-;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+;src/utils/text.c:107: for (int i = 0; i < word_len; i++) {
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	c, a
@@ -595,7 +603,7 @@ _text_dialogue::
 	ld	(hl+), a
 	ld	(hl), a
 00132$:
-;src/utils/text.c:107: int pos = (cur_line + 1) * 20 + (cur_col + 1);
+;src/utils/text.c:108: int pos = (cur_line + 1) * 20 + (cur_col + 1);
 	pop	de
 	push	de
 	ld	l, e
@@ -609,7 +617,7 @@ _text_dialogue::
 	ld	a, h
 	ldhl	sp,	#9
 	ld	(hl), a
-;src/utils/text.c:108: dialog_buf[pos] = get_tile_for_char(*ptr);
+;src/utils/text.c:109: dialog_buf[pos] = get_tile_for_char(*ptr);
 	ldhl	sp,#15
 	ld	a, (hl+)
 	ld	e, a
@@ -617,7 +625,7 @@ _text_dialogue::
 	ld	a, (de)
 	ldhl	sp,	#10
 	ld	(hl), a
-;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+;src/utils/text.c:107: for (int i = 0; i < word_len; i++) {
 	ldhl	sp,	#17
 	ld	e, l
 	ld	d, h
@@ -642,7 +650,7 @@ _text_dialogue::
 	scf
 00257$:
 	jr	NC, 00154$
-;src/utils/text.c:107: int pos = (cur_line + 1) * 20 + (cur_col + 1);
+;src/utils/text.c:108: int pos = (cur_line + 1) * 20 + (cur_col + 1);
 	ldhl	sp,#6
 	ld	a, (hl+)
 	ld	e, a
@@ -652,7 +660,7 @@ _text_dialogue::
 	ld	h, (hl)
 	ld	l, a
 	add	hl, de
-;src/utils/text.c:108: dialog_buf[pos] = get_tile_for_char(*ptr);
+;src/utils/text.c:109: dialog_buf[pos] = get_tile_for_char(*ptr);
 	ld	bc, #_dialog_buf
 	add	hl, bc
 	push	hl
@@ -661,14 +669,14 @@ _text_dialogue::
 	call	_get_tile_for_char
 	pop	bc
 	ld	(bc), a
-;src/utils/text.c:109: ptr++;
+;src/utils/text.c:110: ptr++;
 	ldhl	sp,	#15
 	inc	(hl)
 	jr	NZ, 00258$
 	inc	hl
 	inc	(hl)
 00258$:
-;src/utils/text.c:110: cur_col++;
+;src/utils/text.c:111: cur_col++;
 	ldhl	sp,	#8
 	ld	a, (hl)
 	ldhl	sp,	#0
@@ -677,7 +685,7 @@ _text_dialogue::
 	ld	a, (hl)
 	ldhl	sp,	#1
 	ld	(hl), a
-;src/utils/text.c:106: for (int i = 0; i < word_len; i++) {
+;src/utils/text.c:107: for (int i = 0; i < word_len; i++) {
 	ldhl	sp,	#17
 	inc	(hl)
 	jr	NZ, 00132$
@@ -692,7 +700,7 @@ _text_dialogue::
 	ld	a, (hl+)
 	inc	hl
 	ld	(hl), a
-;src/utils/text.c:112: if (*ptr == ' ' || *ptr == '\n') {
+;src/utils/text.c:113: if (*ptr == ' ' || *ptr == '\n') {
 	ldhl	sp,	#10
 	ld	a, (hl)
 	sub	a, #0x20
@@ -702,7 +710,7 @@ _text_dialogue::
 	sub	a, #0x0a
 	jp	NZ, 00119$
 00115$:
-;src/utils/text.c:113: if (*ptr == '\n') {
+;src/utils/text.c:114: if (*ptr == '\n') {
 	ldhl	sp,#17
 	ld	a, (hl+)
 	ld	e, a
@@ -710,20 +718,20 @@ _text_dialogue::
 	ld	a, (de)
 	sub	a, #0x0a
 	jr	NZ, 00113$
-;src/utils/text.c:114: cur_line++;
+;src/utils/text.c:115: cur_line++;
 	ldhl	sp,	#4
 	ld	a, (hl)
 	ldhl	sp,	#13
 	ld	(hl+), a
 	ld	(hl), #0x00
-;src/utils/text.c:115: cur_col = 0;
+;src/utils/text.c:116: cur_col = 0;
 	xor	a, a
 	ldhl	sp,	#0
 	ld	(hl+), a
 	ld	(hl), a
 	jr	00114$
 00113$:
-;src/utils/text.c:117: cur_col++;
+;src/utils/text.c:118: cur_col++;
 	ldhl	sp,	#8
 	ld	a, (hl)
 	ldhl	sp,	#0
@@ -733,7 +741,7 @@ _text_dialogue::
 	ldhl	sp,	#1
 	ld	(hl), a
 00114$:
-;src/utils/text.c:119: ptr++;
+;src/utils/text.c:120: ptr++;
 	ldhl	sp,	#17
 	inc	(hl)
 	jp	NZ, 00119$
@@ -741,7 +749,7 @@ _text_dialogue::
 	inc	(hl)
 	jp	00119$
 00121$:
-;src/utils/text.c:122: set_win_tiles(0, 0, 20, 6, dialog_buf);
+;src/utils/text.c:123: set_win_tiles(0, 0, 20, 6, dialog_buf);
 	ld	de, #_dialog_buf
 	push	de
 	ld	hl, #0x614
@@ -756,21 +764,21 @@ _text_dialogue::
 	ldh	(_WX_REG + 0), a
 	ld	a, #0x60
 	ldh	(_WY_REG + 0), a
-;src/utils/text.c:124: SHOW_WIN;
+;src/utils/text.c:125: SHOW_WIN;
 	ldh	a, (_LCDC_REG + 0)
 	or	a, #0x20
 	ldh	(_LCDC_REG + 0), a
-;src/utils/text.c:125: waitpad(J_A);
+;src/utils/text.c:126: waitpad(J_A);
 	ld	a, #0x10
 	call	_waitpad
-;src/utils/text.c:126: delay(100);
+;src/utils/text.c:127: delay(100);
 	ld	de, #0x0064
 	call	_delay
-;src/utils/text.c:127: waitpadup();
+;src/utils/text.c:128: waitpadup();
 	call	_waitpadup
 	jp	00122$
 00124$:
-;src/utils/text.c:129: HIDE_WIN;
+;src/utils/text.c:130: HIDE_WIN;
 	ldh	a, (_LCDC_REG + 0)
 	and	a, #0xdf
 	ldh	(_LCDC_REG + 0), a
@@ -779,11 +787,11 @@ _text_dialogue::
 	ldh	(_WX_REG + 0), a
 	ld	a, #0x90
 	ldh	(_WY_REG + 0), a
-;src/utils/text.c:130: move_win(7, 144);
-;src/utils/text.c:131: }
+;src/utils/text.c:131: move_win(7, 144);
+;src/utils/text.c:132: }
 	add	sp, #19
 	ret
-;src/utils/text.c:133: void text_print(uint8_t x, uint8_t y, const char *str) {
+;src/utils/text.c:134: void text_print(uint8_t x, uint8_t y, const char *str) {
 ;	---------------------------------
 ; Function text_print
 ; ---------------------------------
@@ -793,7 +801,7 @@ _text_print::
 	ldhl	sp,	#1
 	ld	(hl-), a
 	ld	(hl), e
-;src/utils/text.c:134: for (int i = 0; str[i] != '\0'; i++) {
+;src/utils/text.c:135: for (int i = 0; str[i] != '\0'; i++) {
 	ld	bc, #0x0000
 00103$:
 	ldhl	sp,	#4
@@ -806,7 +814,7 @@ _text_print::
 	ld	a, (de)
 	or	a, a
 	jr	Z, 00105$
-;src/utils/text.c:135: set_bkg_tile_xy(x + i, y, get_tile_for_char(str[i]));
+;src/utils/text.c:136: set_bkg_tile_xy(x + i, y, get_tile_for_char(str[i]));
 	push	bc
 	call	_get_tile_for_char
 	ld	d, a
@@ -822,17 +830,17 @@ _text_print::
 	ld	e, (hl)
 	call	_set_bkg_tile_xy
 	pop	bc
-;src/utils/text.c:134: for (int i = 0; str[i] != '\0'; i++) {
+;src/utils/text.c:135: for (int i = 0; str[i] != '\0'; i++) {
 	inc	bc
 	jr	00103$
 00105$:
-;src/utils/text.c:137: }
+;src/utils/text.c:138: }
 	inc	sp
 	inc	sp
 	pop	hl
 	pop	af
 	jp	(hl)
-;src/utils/text.c:139: void text_clear(void) { fill_bkg_rect(0, 0, 20, 18, get_tile_for_char(' ')); }
+;src/utils/text.c:140: void text_clear(void) { fill_bkg_rect(0, 0, 20, 18, get_tile_for_char(' ')); }
 ;	---------------------------------
 ; Function text_clear
 ; ---------------------------------

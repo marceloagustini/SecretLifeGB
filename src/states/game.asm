@@ -429,23 +429,23 @@ _hud_update::
 	call	_get_tile_for_char
 	ldhl	sp,	#1
 	ld	(hl), a
-;src/states/game.c:76: hud_tiles[2] = get_tile_for_char('I');
-	ld	a, #0x49
+;src/states/game.c:76: hud_tiles[2] = get_tile_for_char('i');
+	ld	a, #0x69
 	call	_get_tile_for_char
 	ldhl	sp,	#2
 	ld	(hl), a
-;src/states/game.c:77: hud_tiles[3] = get_tile_for_char('D');
-	ld	a, #0x44
+;src/states/game.c:77: hud_tiles[3] = get_tile_for_char('d');
+	ld	a, #0x64
 	call	_get_tile_for_char
 	ldhl	sp,	#3
 	ld	(hl), a
-;src/states/game.c:78: hud_tiles[4] = get_tile_for_char('A');
-	ld	a, #0x41
+;src/states/game.c:78: hud_tiles[4] = get_tile_for_char('a');
+	ld	a, #0x61
 	call	_get_tile_for_char
 	ldhl	sp,	#4
 	ld	(hl), a
-;src/states/game.c:79: hud_tiles[5] = get_tile_for_char('S');
-	ld	a, #0x53
+;src/states/game.c:79: hud_tiles[5] = get_tile_for_char('s');
+	ld	a, #0x73
 	call	_get_tile_for_char
 	ldhl	sp,	#5
 	ld	(hl), a
@@ -2756,7 +2756,7 @@ _game_update::
 	ld	a, (bc)
 	sub	a, #0x29
 	jr	NZ, 00243$
-;src/states/game.c:432: inventory_add_item("FLOR", "UNA HERMOSA\nFLOR SILVESTRE", 41);
+;src/states/game.c:432: inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 41);
 	push	de
 	ld	a, #0x29
 	push	af
@@ -2978,7 +2978,7 @@ _game_update::
 ;src/states/game.c:475: text_dialogue(DIALOGUE_FOUND_KEY);
 	ld	de, #___str_5
 	call	_text_dialogue
-;src/states/game.c:476: inventory_add_item("LLAVE", "ABRE EL PORTON NORTE", 41);
+;src/states/game.c:476: inventory_add_item("LLAVE", "Abre el porton norte", 41);
 	ld	a, #0x29
 	push	af
 	inc	sp
@@ -3096,14 +3096,14 @@ ___str_1:
 	.ascii "te pierdas."
 	.db 0x00
 ___str_2:
-	.ascii "UNA HERMOSA"
+	.ascii "Una hermosa"
 	.db 0x0a
-	.ascii "FLOR SILVESTRE"
+	.ascii "flor silvestre"
 	.db 0x00
 ___str_3:
-	.ascii "ESTA CASA ESTA"
+	.ascii "Esta casa esta"
 	.db 0x0a
-	.ascii "CERRADA."
+	.ascii "cerrada."
 	.db 0x00
 ___str_4:
 	.ascii "LLAVE"
@@ -3128,7 +3128,7 @@ ___str_5:
 	.ascii "aventura!"
 	.db 0x00
 ___str_6:
-	.ascii "ABRE EL PORTON NORTE"
+	.ascii "Abre el porton norte"
 	.db 0x00
 ___str_7:
 	.ascii "Abres el ropero"

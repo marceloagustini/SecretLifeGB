@@ -25,7 +25,7 @@ void menu_draw(void) {
   text_print(7, 10, "ABOUT");
 
   // Cursor
-  set_bkg_tile_xy(5, 8 + (selection * 2), get_tile_for_char('>'));
+  set_bkg_tile_xy(5, 8 + (selection * 2), get_tile_for_char('*'));
 }
 
 void menu_init(void) {

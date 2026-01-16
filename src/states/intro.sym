@@ -10,8 +10,8 @@ Symbol Table
     _LCDC_REG                                                       ******** GX
     _SCX_REG                                                        ******** GX
     _SCY_REG                                                        ******** GX
-  0 ___str_0                                                        0000008F R
-  0 ___str_1                                                        00000096 R
+  0 ___str_0                                                        000000CD R
+  0 ___str_1                                                        000000D4 R
   8 __xinit__intro_timer                                            00000000 R
   8 __xinit__title_y                                                00000001 R
     _delay                                                          ******** GX
@@ -21,21 +21,22 @@ Symbol Table
     _fill_bkg_rect                                                  ******** GX
     _font_data                                                      ******** GX
     _game_state                                                     ******** GX
+    _get_tile_for_char                                              ******** GX
     _input_pressed                                                  ******** GX
   0 _intro_init                                                     00000000 GR
   3 _intro_timer                                                    00000000 R
-  0 _intro_update                                                   0000009B GR
+  0 _intro_update                                                   000000D9 GR
     _set_bkg_data                                                   ******** GX
     _set_bkg_tile_xy                                                ******** GX
+    _strlen                                                         ******** GX
   3 _title_y                                                        00000001 R
-
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size       D9   flags    0
+   0 _CODE                                      size      117   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        2   flags    0

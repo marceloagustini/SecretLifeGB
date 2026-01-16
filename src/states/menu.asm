@@ -86,8 +86,8 @@ _menu_draw::
 	ld	e, #0x0a
 	ld	a, #0x07
 	call	_text_print
-;src/states/menu.c:28: set_bkg_tile_xy(5, 8 + (selection * 2), get_tile_for_char('>'));
-	ld	a, #0x3e
+;src/states/menu.c:28: set_bkg_tile_xy(5, 8 + (selection * 2), get_tile_for_char('*'));
+	ld	a, #0x2a
 	call	_get_tile_for_char
 	ld	b, a
 	ld	a, (_selection)
