@@ -98,3 +98,31 @@ if __name__ == "__main__":
                 print(f"0x{byte:02X}, ", end="")
             print()
     print("};")
+    # Explosion Sprite (16x16 - 4 tiles)
+    explosion_grid = [
+        "0001221000122100",
+        "0013333101333310",
+        "0133003313300331",
+        "1330000333000033",
+        "1330000333000033",
+        "0133003313300331",
+        "0013333101333310",
+        "0001221000122100",
+        "0001221000122100",
+        "0013333101333310",
+        "0133003313300331",
+        "1330000333000033",
+        "1330000333000033",
+        "0133003313300331",
+        "0013333101333310",
+        "0001221000122100",
+    ]
+    print("\nconst unsigned char explosion_sprite[] = {")
+    for ty_s in [0, 8]:
+        for tx_s in [0, 8]:
+            strip = [row[tx_s:tx_s+8] for row in explosion_grid[ty_s:ty_s+8]]
+            tile_bytes = pixel_art_to_gb_tile(strip)
+            for byte in tile_bytes:
+                print(f"0x{byte:02X}, ", end="")
+            print()
+    print("};")

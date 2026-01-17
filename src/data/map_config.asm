@@ -30,17 +30,17 @@
 ;--------------------------------------------------------
 	.area _DATA
 _world_entities::
-	.ds 48
+	.ds 57
 _house_entities::
-	.ds 16
+	.ds 19
 _level2_entities::
-	.ds 16
+	.ds 19
 _level3_entities::
-	.ds 32
+	.ds 38
 _maze_entities::
-	.ds 16
+	.ds 19
 _sanctuary_entities::
-	.ds 16
+	.ds 19
 ;--------------------------------------------------------
 ; ram data
 ;--------------------------------------------------------
@@ -103,12 +103,12 @@ _map_init_data::
 	and	a
 	push	af
 	xor	a, a
-	ld	de, #(_world_entities + 16)
+	ld	de, #(_world_entities + 19)
 	call	_entity_init
-;src/data/map_config.c:86: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 41, NULL); // Flower
+;src/data/map_config.c:86: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 49, NULL); // Flower at 49
 	ld	de, #0x0000
 	push	de
-	ld	a, #0x29
+	ld	a, #0x31
 	push	af
 	inc	sp
 	ld	de, #0x008c
@@ -116,10 +116,10 @@ _map_init_data::
 	ld	de, #0x00b4
 	push	de
 	ld	a, #0x01
-	ld	de, #(_world_entities + 32)
+	ld	de, #(_world_entities + 38)
 	call	_entity_init
 ;src/data/map_config.c:87: world_entities[2].update = ai_anim_simple;
-	ld	hl, #(_world_entities + 46)
+	ld	hl, #(_world_entities + 55)
 	ld	(hl), #<(_ai_anim_simple)
 	inc	hl
 	ld	(hl), #>(_ai_anim_simple)
@@ -149,43 +149,15 @@ _map_init_data::
 	ld	de, #_level2_entities
 	call	_entity_init
 ;src/data/map_config.c:90: level2_entities[0].update = ai_enemy_chaser_shooter;
-	ld	hl, #(_level2_entities + 14)
-	ld	a, #<(_ai_enemy_chaser_shooter)
-	ld	(hl+), a
+	ld	hl, #(_level2_entities + 17)
+	ld	(hl), #<(_ai_enemy_chaser_shooter)
+	inc	hl
+	ld	(hl), #>(_ai_enemy_chaser_shooter)
 ;src/data/map_config.c:91: level2_entities[0].shoot_timer = 60;
-	ld	a, #>(_ai_enemy_chaser_shooter)
-	ld	(hl-), a
-	dec	hl
+	ld	hl, #_level2_entities + 13
 	ld	(hl), #0x3c
-;src/data/map_config.c:94: "BIENVENIDO AL\nPUEBLO SENSEI");
-;src/data/map_config.c:93: entity_init(&level3_entities[0], ENT_NPC, 128, 128, 36,
-	ld	de, #___str_3
-	push	de
-	ld	a, #0x24
-	push	af
-	inc	sp
-	xor	a, a
-	push	af
-	xor	a, a
-	push	af
-	xor	a, a
-	ld	de, #_level3_entities
-	call	_entity_init
-;src/data/map_config.c:95: entity_init(&level3_entities[1], ENT_NPC, 200, 100, 24, "HOLA VIAJERO");
-	ld	de, #___str_4
-	push	de
-	ld	a, #0x18
-	push	af
-	inc	sp
-	ld	de, #0x0064
-	push	de
-	ld	de, #0x00c8
-	push	de
-	xor	a, a
-	ld	de, #(_level3_entities + 16)
-	call	_entity_init
-;src/data/map_config.c:97: entity_init(&maze_entities[0], ENT_ITEM, 128, 128, 41, "ARMA");
-	ld	de, #___str_5
+;src/data/map_config.c:93: entity_init(&level3_entities[0], ENT_PORTAL, 128, 128, 41, NULL);
+	ld	de, #0x0000
 	push	de
 	ld	a, #0x29
 	push	af
@@ -194,24 +166,10 @@ _map_init_data::
 	push	af
 	xor	a, a
 	push	af
-	ld	a, #0x01
-	ld	de, #_maze_entities
+	ld	a, #0x04
+	ld	de, #_level3_entities
 	call	_entity_init
-;src/data/map_config.c:100: "ESTAS A SALVO\nTOCA EL ALTAR");
-;src/data/map_config.c:99: entity_init(&sanctuary_entities[0], ENT_NPC, 76, 64, 36,
-	ld	de, #___str_6
-	push	de
-	ld	a, #0x24
-	push	af
-	inc	sp
-	ld	de, #0x0040
-	push	de
-	ld	de, #0x004c
-	push	de
-	xor	a, a
-	ld	de, #_sanctuary_entities
-	call	_entity_init
-;src/data/map_config.c:101: }
+;src/data/map_config.c:94: }
 	ret
 ___str_0:
 	.ascii "Hola aventurero!"
@@ -318,22 +276,6 @@ ___str_2:
 	.db 0x0a
 	.ascii "estara bien."
 	.db 0x00
-___str_3:
-	.ascii "BIENVENIDO AL"
-	.db 0x0a
-	.ascii "PUEBLO SENSEI"
-	.db 0x00
-___str_4:
-	.ascii "HOLA VIAJERO"
-	.db 0x00
-___str_5:
-	.ascii "ARMA"
-	.db 0x00
-___str_6:
-	.ascii "ESTAS A SALVO"
-	.db 0x0a
-	.ascii "TOCA EL ALTAR"
-	.db 0x00
 	.area _CODE
 	.area _INITIALIZER
 __xinit__world_portals:
@@ -428,7 +370,7 @@ __xinit__maps:
 	.db #0x20	; 32
 	.db #0x20	; 32
 	.dw _level3_entities
-	.db #0x02	; 2
+	.db #0x01	; 1
 	.db #0x00	; 0
 	.db #0x02	; 2
 	.db #0xff	; 255
@@ -453,11 +395,11 @@ __xinit__maps:
 	.dw _maze_entities
 	.db #0x01	; 1
 	.db #0x02	; 2
+	.db #0x29	; 41
+	.db #0x2a	; 42
+	.db #0x2b	; 43
+	.db #0x2c	; 44
 	.db #0xff	; 255
-	.db 0x00
-	.db 0x00
-	.db 0x00
-	.db 0x00
 	.db 0x00
 	.db 0x00
 	.db 0x00

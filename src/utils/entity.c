@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "map_manager.h"
 #include "projectile.h"
+#include "text.h"
 #include <gb/gb.h>
 #include <string.h>
 
@@ -19,9 +20,13 @@ void entity_init(entity_t *e, ent_type_t type, uint16_t x, uint16_t y,
 
   if (type == ENT_ENEMY) {
     e->update = ai_enemy_random_walk;
+    e->health = 3;
   } else {
     e->update = ai_npc_static;
+    e->health = 0;
   }
+  e->hit_timer = 0;
+  e->death_timer = 0;
 }
 
 void ai_npc_static(entity_t *self) {
@@ -167,8 +172,26 @@ void ai_enemy_chaser_shooter(entity_t *self) {
 
 void entity_update_all(entity_t *entities, uint8_t count) {
   for (uint8_t i = 0; i < count; i++) {
-    if (entities[i].active && entities[i].update) {
-      entities[i].update(&entities[i]);
+    if (entities[i].active) {
+      if (entities[i].update && entities[i].death_timer == 0 &&
+          entities[i].type != ENT_PORTAL)
+        entities[i].update(&entities[i]);
+
+      if (entities[i].hit_timer > 0)
+        entities[i].hit_timer--;
+      if (entities[i].death_timer > 0) {
+        entities[i].death_timer--;
+        if (entities[i].death_timer == 0) {
+          if (entities[i].type == ENT_ENEMY) {
+            entities[i].type = ENT_PORTAL;
+            entities[i].health = 0;       // Not pickable/hittable
+            entities[i].sprite_base = 41; // Use portal tiles
+            text_dialogue("¡SE HA ABIERTO\nUN PORTAL!");
+          } else {
+            entities[i].active = 0;
+          }
+        }
+      }
     }
   }
 }
@@ -186,8 +209,30 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
     uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
     uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
 
+    // Handle Flashing Effect (hit_timer)
+    if (e->hit_timer > 0 && (e->hit_timer & 2)) {
+      // Hide sprites during some frames of flashing
+      for (int j = 0; j < 4; j++)
+        move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+      continue;
+    }
+
     if (esx < 168 && esy < 160 && (!use_clipping || esy < 140)) {
-      if (e->type == ENT_ITEM) {
+      if (e->death_timer > 0) {
+        // Render Explosion (using tiles 45-48)
+        for (int j = 0; j < 4; j++) {
+          uint8_t sprite_id = sprite_offset + (i * 4) + j;
+          move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+          set_sprite_tile(sprite_id, 45 + j); // Use explosion tiles at 45-48
+        }
+      } else if (e->type == ENT_PORTAL) {
+        // Render Portal Drop (using tiles 41-44)
+        for (int j = 0; j < 4; j++) {
+          uint8_t sprite_id = sprite_offset + (i * 4) + j;
+          move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+          set_sprite_tile(sprite_id, 41 + j);
+        }
+      } else if (e->type == ENT_ITEM) {
         // Single tile rendering for items (8x8)
         uint8_t sprite_id = sprite_offset + (i * 4);
         move_sprite(sprite_id, esx + 4, esy + 4); // Center it

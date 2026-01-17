@@ -169,7 +169,14 @@ void switch_map(map_t *new_map, uint16_t new_x, uint16_t new_y) {
   fade_in();
 }
 
-uint8_t is_solid(uint16_t x, uint16_t y) { return map_is_solid(x, y); }
+uint8_t is_solid(uint16_t x, uint16_t y) {
+  uint8_t tid = map_get_tile(x, y);
+  if (current_map == &maps[0] && (tid == 21 || tid == 22)) {
+    if (!(x > 160 && y > 160))
+      return 1;
+  }
+  return map_is_solid(x, y);
+}
 
 uint8_t can_move(uint16_t nx, uint16_t ny) {
   if (nx < 4 || ny < 4 || nx > (current_map->w * 8 - 12) ||
@@ -183,7 +190,7 @@ uint8_t can_move(uint16_t nx, uint16_t ny) {
 
   for (int i = 0; i < current_map->num_entities; i++) {
     entity_t *e = &current_map->entities[i];
-    if (!e->active)
+    if (!e->active || e->type == ENT_PORTAL)
       continue;
     int16_t dx = (int16_t)nx - e->x, dy = (int16_t)ny - e->y;
     if (dx < 0)
@@ -202,10 +209,10 @@ static uint8_t game_ready = 0;
 
 void game_init(void) {
   DISPLAY_OFF;
-  set_bkg_data(0, 60, tiles_data); // All tiles (now includes portal)
+  set_bkg_data(0, 36, tiles_data);    // Tiles 0-35
+  set_bkg_data(41, 4, portal_sprite); // Portal tiles (41-44)
 
   if (game_ready) {
-    map_init_data();
     load_map(current_map, player_x, player_y);
     update_player_sprite();
     BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
@@ -228,8 +235,9 @@ void game_init(void) {
   set_sprite_data(28, 8, guard_sprite_data);
   set_sprite_data(36, 4, npc_woman_sprite);
   set_sprite_data(40, 1, projectile_sprite);
-  set_sprite_data(41, 1, flower_sprite);
-  set_sprite_data(42, 4, portal_sprite);
+  set_sprite_data(41, 4, portal_sprite);    // Portal tiles
+  set_sprite_data(45, 4, explosion_sprite); // Explosion tiles (dedicated range)
+  set_sprite_data(49, 1, flower_sprite);    // Item/Flower at 49
   update_player_sprite();
   text_init();
   music_init();
@@ -320,10 +328,11 @@ void game_update(void) {
       return;
     }
 
-    // Automatic Transitions
-    uint8_t tid = get_tile_at(player_x + 8, player_y + 4);
-    if (current_map == &maps[0] && // WORLD_MAP
-        (tid == 21 || tid == 22)) {
+    // Automatic Transitions (check feet for ground-based triggers)
+    uint8_t tid_mid = get_tile_at(player_x + 8, player_y + 8);
+    uint8_t tid_low = get_tile_at(player_x + 8, player_y + 12);
+
+    if (current_map == &maps[0] && (tid_mid == 21 || tid_mid == 22)) {
       if (player_x > 160 && player_y > 160) {
         saved_world_x = player_x;
         saved_world_y = player_y + 16;
@@ -331,15 +340,13 @@ void game_update(void) {
         return;
       }
     }
-    tid = get_tile_at(player_x + 8, player_y + 12);
-    if (current_map == &maps[1] && tid == 35) { // HOUSE_MAP
-      uint16_t wx = saved_world_x;
-      uint16_t wy = saved_world_y;
-      switch_map(&maps[0], wx, wy); // WORLD_MAP
+    if (current_map == &maps[1] && tid_low == 35) {       // HOUSE_MAP
+      switch_map(&maps[0], saved_world_x, saved_world_y); // WORLD_MAP
       return;
     }
-    if (current_map == &maps[2] && tid == 0 && player_y > 240) { // LEVEL2_MAP
-      switch_map(&maps[0], 124, 48);                             // WORLD_MAP
+    if (current_map == &maps[2] && tid_low == 0 &&
+        player_y > 240) {            // LEVEL2_MAP
+      switch_map(&maps[0], 124, 48); // WORLD_MAP
       return;
     }
 
@@ -363,15 +370,17 @@ void game_update(void) {
         switch_map(&maps[4], 8, 8); // To Maze
         return;
       }
-      if (tid == 0 && player_y > 240) {
+      if (tid_low == 0 && player_y > 240) {
         switch_map(&maps[2], 128, 224); // Return to Level 2
         return;
       }
     }
 
     if (current_map == &maps[4]) { // MAZE_MAP
-      // Trigger exit when on portal tiles (41-44)
-      if (tid >= 41 && tid <= 44) {
+      // Trigger exit when on portal tiles (41-44) OR failsafe coordinate
+      uint8_t feet_tid = get_tile_at(player_x + 8, player_y + 12);
+      if ((feet_tid >= 41 && feet_tid <= 44) ||
+          (player_x > 220 && player_y > 230)) {
         switch_map(&maps[0], 128, 128); // To World Map
         return;
       }
@@ -394,9 +403,12 @@ void game_update(void) {
 
   // Render entities & AI
   entity_update_all(current_map->entities, current_map->num_entities);
-
-  // Update and render projectiles
   projectile_update_all();
+
+  // Enemy hit detection
+  projectile_check_enemy_collision(current_map->entities,
+                                   current_map->num_entities);
+
   projectile_render_all(camera_x, camera_y);
 
   // Check projectile collision with player
@@ -417,6 +429,27 @@ void game_update(void) {
         dy = -dy;
       if (dx < 10 && dy < 10) {
         player_hit();
+        return;
+      }
+    }
+  }
+
+  // Check for ENT_PORTAL collision
+  for (int i = 0; i < current_map->num_entities; i++) {
+    entity_t *e = &current_map->entities[i];
+    if (e->active && e->type == ENT_PORTAL) {
+      int16_t dx = (int16_t)player_x - (int16_t)e->x;
+      int16_t dy = (int16_t)player_y - (int16_t)e->y;
+      if (dx < 0)
+        dx = -dx;
+      if (dy < 0)
+        dy = -dy;
+      if (dx < 16 && dy < 16) {
+        if (current_map == &maps[3]) {
+          switch_map(&maps[0], 128, 128); // Back to World
+        } else {
+          switch_map(&maps[3], 32, 32); // To Void World (spawn at 32,32)
+        }
         return;
       }
     }
@@ -453,12 +486,12 @@ void game_update(void) {
         if (input_pressed(J_B)) {
           if (e->type == ENT_ITEM) {
             interacted = 1;
-            if (e->sprite_base == 41) {
+            if (e->sprite_base == 49) {
               if (e->dialogue && strcmp(e->dialogue, "ARMA") == 0) {
-                inventory_add_item("ARMA", "Un arma cargada", 41);
+                inventory_add_item("ARMA", "Un arma cargada", 49);
                 player_ammo = 10;
               } else {
-                inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 41);
+                inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 49);
               }
               hud_update();
               sfx_pickup();
@@ -558,11 +591,9 @@ void game_update(void) {
   if ((env_anim_timer % 32) == 0) {
     env_anim_frame = !env_anim_frame;
     // Walk through Tile 2 (Grass) Animation:
-    // Frame 0: Original Grass (tiles_data[32] - offset for Tile 2)
-    // Frame 1: Animated Grass (tiles_anim_data[0])
     set_bkg_data(2, 1, env_anim_frame ? &tiles_anim_data[0] : &tiles_data[32]);
+    hud_update(); // Only update HUD every 30-ish frames to save CPU
   }
-  hud_update();
   env_anim_timer++;
 }
 

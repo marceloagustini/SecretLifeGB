@@ -7,8 +7,8 @@
 ;--------------------------------------------------------
 ; Public variables in this module
 ;--------------------------------------------------------
-	.globl _map_get_tile
 	.globl _current_map
+	.globl _map_get_tile
 	.globl _map_is_solid
 	.globl _map_check_portal
 ;--------------------------------------------------------
@@ -146,37 +146,30 @@ _map_is_solid::
 ;src/utils/map_manager.c:19: uint8_t tid = map_get_tile(x, y);
 	call	_map_get_tile
 	ld	c, a
-;src/utils/map_manager.c:20: for (int i = 0; i < 16; i++) {
-	ld	b, #0x00
-00107$:
-	ld	a, b
-	sub	a, #0x10
-	jr	NC, 00105$
-;src/utils/map_manager.c:21: if (current_map->solid_tiles[i] == 255)
+;src/utils/map_manager.c:20: uint8_t *solid = current_map->solid_tiles;
 	ld	a, (_current_map)
 	ld	hl, #_current_map + 1
 	ld	h, (hl)
 	ld	l, a
 	ld	de, #0x0007
 	add	hl, de
-	ld	e, b
-	ld	d, #0x00
-	add	hl, de
+;src/utils/map_manager.c:21: while (*solid != 255) {
+00103$:
 	ld	a, (hl)
 	cp	a, #0xff
 	jr	Z, 00105$
-;src/utils/map_manager.c:23: if (tid == current_map->solid_tiles[i])
+;src/utils/map_manager.c:22: if (tid == *solid)
 	sub	a, c
-	jr	NZ, 00108$
-;src/utils/map_manager.c:24: return 0; // It's in the passable list
+	jr	NZ, 00102$
+;src/utils/map_manager.c:23: return 0; // Walkable
 	xor	a, a
 	ret
-00108$:
-;src/utils/map_manager.c:20: for (int i = 0; i < 16; i++) {
-	inc	b
-	jr	00107$
+00102$:
+;src/utils/map_manager.c:24: solid++;
+	inc	hl
+	jr	00103$
 00105$:
-;src/utils/map_manager.c:26: return 1; // Not in passable list -> solid
+;src/utils/map_manager.c:26: return 1; // Solid
 	ld	a, #0x01
 ;src/utils/map_manager.c:27: }
 	ret

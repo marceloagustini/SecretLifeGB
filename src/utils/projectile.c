@@ -1,4 +1,5 @@
 #include "projectile.h"
+#include "entity.h"
 #include "map_manager.h"
 #include <string.h>
 
@@ -7,7 +8,7 @@ projectile_t projectiles[MAX_PROJECTILES];
 void projectile_init(void) {
   for (int i = 0; i < MAX_PROJECTILES; i++) {
     projectiles[i].active = 0;
-    projectiles[i].sprite_id = 37 + i; // Sprites 37-40 for projectiles
+    projectiles[i].sprite_id = 30 + i; // Sprites 30-33 for projectiles
   }
 }
 
@@ -73,6 +74,36 @@ uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
       if (dx < 8 && dy < 8) {
         projectiles[i].active = 0; // Deactivate on hit
         return 1;
+      }
+    }
+  }
+  return 0;
+}
+uint8_t projectile_check_enemy_collision(entity_t *entities, uint8_t count) {
+  for (int i = 0; i < MAX_PROJECTILES; i++) {
+    if (projectiles[i].active && projectiles[i].source == 1) { // Player shot
+      for (uint8_t j = 0; j < count; j++) {
+        entity_t *e = &entities[j];
+        if (e->active && e->type == ENT_ENEMY && e->death_timer == 0) {
+          int16_t dx = (int16_t)(projectiles[i].x + 4) - (int16_t)(e->x + 8);
+          int16_t dy = (int16_t)(projectiles[i].y + 4) - (int16_t)(e->y + 8);
+          if (dx < 0)
+            dx = -dx;
+          if (dy < 0)
+            dy = -dy;
+
+          if (dx < 12 && dy < 12) {
+            projectiles[i].active = 0; // Destroy projectile
+            if (e->health > 0) {
+              e->health--;
+              e->hit_timer = 20;
+              if (e->health == 0) {
+                e->death_timer = 35; // Duration of explosion
+              }
+            }
+            return 1;
+          }
+        }
       }
     }
   }

@@ -7,8 +7,8 @@
                                       7 ;--------------------------------------------------------
                                       8 ; Public variables in this module
                                       9 ;--------------------------------------------------------
-                                     10 	.globl _map_get_tile
-                                     11 	.globl _current_map
+                                     10 	.globl _current_map
+                                     11 	.globl _map_get_tile
                                      12 	.globl _map_is_solid
                                      13 	.globl _map_check_portal
                                      14 ;--------------------------------------------------------
@@ -146,139 +146,132 @@
                                     146 ;src/utils/map_manager.c:19: uint8_t tid = map_get_tile(x, y);
     00000070 CDr00r00         [24]  147 	call	_map_get_tile
     00000073 4F               [ 4]  148 	ld	c, a
-                                    149 ;src/utils/map_manager.c:20: for (int i = 0; i < 16; i++) {
-    00000074 06 00            [ 8]  150 	ld	b, #0x00
-    00000076                        151 00107$:
-    00000076 78               [ 4]  152 	ld	a, b
-    00000077 D6 10            [ 8]  153 	sub	a, #0x10
-    00000079 30 1D            [12]  154 	jr	NC, 00105$
-                                    155 ;src/utils/map_manager.c:21: if (current_map->solid_tiles[i] == 255)
-    0000007B FAr00r00         [16]  156 	ld	a, (_current_map)
-    0000007E 21r01r00         [12]  157 	ld	hl, #_current_map + 1
-    00000081 66               [ 8]  158 	ld	h, (hl)
-    00000082 6F               [ 4]  159 	ld	l, a
-    00000083 11 07 00         [12]  160 	ld	de, #0x0007
-    00000086 19               [ 8]  161 	add	hl, de
-    00000087 58               [ 4]  162 	ld	e, b
-    00000088 16 00            [ 8]  163 	ld	d, #0x00
-    0000008A 19               [ 8]  164 	add	hl, de
-    0000008B 7E               [ 8]  165 	ld	a, (hl)
-    0000008C FE FF            [ 8]  166 	cp	a, #0xff
-    0000008E 28 08            [12]  167 	jr	Z, 00105$
-                                    168 ;src/utils/map_manager.c:23: if (tid == current_map->solid_tiles[i])
-    00000090 91               [ 4]  169 	sub	a, c
-    00000091 20 02            [12]  170 	jr	NZ, 00108$
-                                    171 ;src/utils/map_manager.c:24: return 0; // It's in the passable list
-    00000093 AF               [ 4]  172 	xor	a, a
-    00000094 C9               [16]  173 	ret
-    00000095                        174 00108$:
-                                    175 ;src/utils/map_manager.c:20: for (int i = 0; i < 16; i++) {
-    00000095 04               [ 4]  176 	inc	b
-    00000096 18 DE            [12]  177 	jr	00107$
-    00000098                        178 00105$:
-                                    179 ;src/utils/map_manager.c:26: return 1; // Not in passable list -> solid
-    00000098 3E 01            [ 8]  180 	ld	a, #0x01
-                                    181 ;src/utils/map_manager.c:27: }
-    0000009A C9               [16]  182 	ret
-                                    183 ;src/utils/map_manager.c:29: portal_t *map_check_portal(uint16_t x, uint16_t y) {
-                                    184 ;	---------------------------------
-                                    185 ; Function map_check_portal
-                                    186 ; ---------------------------------
-    0000009B                        187 _map_check_portal::
-    0000009B E8 FB            [16]  188 	add	sp, #-5
-                                    189 ;src/utils/map_manager.c:30: uint8_t tx = x / 8, ty = y / 8;
-    0000009D CB 3A            [ 8]  190 	srl	d
-    0000009F CB 1B            [ 8]  191 	rr	e
-    000000A1 CB 3A            [ 8]  192 	srl	d
-    000000A3 CB 1B            [ 8]  193 	rr	e
-    000000A5 CB 3A            [ 8]  194 	srl	d
-    000000A7 CB 1B            [ 8]  195 	rr	e
-    000000A9 F8 00            [12]  196 	ldhl	sp,	#0
-    000000AB 7B               [ 4]  197 	ld	a, e
-    000000AC 22               [ 8]  198 	ld	(hl+), a
-    000000AD CB 38            [ 8]  199 	srl	b
-    000000AF CB 19            [ 8]  200 	rr	c
-    000000B1 CB 38            [ 8]  201 	srl	b
-    000000B3 CB 19            [ 8]  202 	rr	c
-    000000B5 CB 38            [ 8]  203 	srl	b
-    000000B7 CB 19            [ 8]  204 	rr	c
-    000000B9 71               [ 8]  205 	ld	(hl), c
-                                    206 ;src/utils/map_manager.c:31: for (uint8_t i = 0; i < current_map->num_portals; i++) {
-    000000BA F8 04            [12]  207 	ldhl	sp,	#4
-    000000BC 36 00            [12]  208 	ld	(hl), #0x00
-    000000BE                        209 00106$:
-    000000BE FAr00r00         [16]  210 	ld	a, (_current_map)
-    000000C1 4F               [ 4]  211 	ld	c, a
-    000000C2 21r01r00         [12]  212 	ld	hl, #_current_map + 1
-    000000C5 46               [ 8]  213 	ld	b, (hl)
-    000000C6 21 19 00         [12]  214 	ld	hl, #0x0019
-    000000C9 09               [ 8]  215 	add	hl, bc
-    000000CA 5E               [ 8]  216 	ld	e, (hl)
-    000000CB F8 04            [12]  217 	ldhl	sp,	#4
-    000000CD 7E               [ 8]  218 	ld	a, (hl)
-    000000CE 93               [ 4]  219 	sub	a, e
-    000000CF 30 3F            [12]  220 	jr	NC, 00104$
-                                    221 ;src/utils/map_manager.c:32: if (current_map->portals[i].tx == tx && current_map->portals[i].ty == ty) {
-    000000D1 21 17 00         [12]  222 	ld	hl, #0x0017
-    000000D4 09               [ 8]  223 	add	hl, bc
-    000000D5 5D               [ 4]  224 	ld	e, l
-    000000D6 54               [ 4]  225 	ld	d, h
-    000000D7 1A               [ 8]  226 	ld	a, (de)
-    000000D8 F8 02            [12]  227 	ldhl	sp,	#2
-    000000DA 22               [ 8]  228 	ld	(hl+), a
-    000000DB 13               [ 8]  229 	inc	de
-    000000DC 1A               [ 8]  230 	ld	a, (de)
-    000000DD 77               [ 8]  231 	ld	(hl), a
-    000000DE F8 04            [12]  232 	ldhl	sp,	#4
-    000000E0 4E               [ 8]  233 	ld	c, (hl)
-    000000E1 06 00            [ 8]  234 	ld	b, #0x00
-    000000E3 69               [ 4]  235 	ld	l, c
-    000000E4 60               [ 4]  236 	ld	h, b
-    000000E5 29               [ 8]  237 	add	hl, hl
-    000000E6 09               [ 8]  238 	add	hl, bc
-    000000E7 29               [ 8]  239 	add	hl, hl
-    000000E8 09               [ 8]  240 	add	hl, bc
-    000000E9 4D               [ 4]  241 	ld	c, l
-    000000EA 44               [ 4]  242 	ld	b, h
-    000000EB F8 02            [12]  243 	ldhl	sp,	#2
-    000000ED 2A               [ 8]  244 	ld	a,	(hl+)
-    000000EE 66               [ 8]  245 	ld	h, (hl)
-    000000EF 6F               [ 4]  246 	ld	l, a
-    000000F0 09               [ 8]  247 	add	hl, bc
-    000000F1 5D               [ 4]  248 	ld	e, l
-    000000F2 54               [ 4]  249 	ld	d, h
-    000000F3 1A               [ 8]  250 	ld	a, (de)
-    000000F4 5F               [ 4]  251 	ld	e, a
-    000000F5 F8 00            [12]  252 	ldhl	sp,	#0
-    000000F7 7E               [ 8]  253 	ld	a, (hl)
-    000000F8 93               [ 4]  254 	sub	a, e
-    000000F9 20 10            [12]  255 	jr	NZ, 00107$
-    000000FB F8 02            [12]  256 	ldhl	sp,	#2
-    000000FD 2A               [ 8]  257 	ld	a,	(hl+)
-    000000FE 66               [ 8]  258 	ld	h, (hl)
-    000000FF 6F               [ 4]  259 	ld	l, a
-    00000100 09               [ 8]  260 	add	hl, bc
-    00000101 4D               [ 4]  261 	ld	c,l
-    00000102 44               [ 4]  262 	ld	b,h
-    00000103 23               [ 8]  263 	inc	hl
-    00000104 5E               [ 8]  264 	ld	e, (hl)
-    00000105 F8 01            [12]  265 	ldhl	sp,	#1
-    00000107 7E               [ 8]  266 	ld	a, (hl)
-    00000108 93               [ 4]  267 	sub	a, e
-    00000109 28 08            [12]  268 	jr	Z, 00108$
-                                    269 ;src/utils/map_manager.c:33: return &current_map->portals[i];
-    0000010B                        270 00107$:
-                                    271 ;src/utils/map_manager.c:31: for (uint8_t i = 0; i < current_map->num_portals; i++) {
-    0000010B F8 04            [12]  272 	ldhl	sp,	#4
-    0000010D 34               [12]  273 	inc	(hl)
-    0000010E 18 AE            [12]  274 	jr	00106$
-    00000110                        275 00104$:
-                                    276 ;src/utils/map_manager.c:36: return NULL;
-    00000110 01 00 00         [12]  277 	ld	bc, #0x0000
-    00000113                        278 00108$:
-                                    279 ;src/utils/map_manager.c:37: }
-    00000113 E8 05            [16]  280 	add	sp, #5
-    00000115 C9               [16]  281 	ret
-                                    282 	.area _CODE
-                                    283 	.area _INITIALIZER
-                                    284 	.area _CABS (ABS)
+                                    149 ;src/utils/map_manager.c:20: uint8_t *solid = current_map->solid_tiles;
+    00000074 FAr00r00         [16]  150 	ld	a, (_current_map)
+    00000077 21r01r00         [12]  151 	ld	hl, #_current_map + 1
+    0000007A 66               [ 8]  152 	ld	h, (hl)
+    0000007B 6F               [ 4]  153 	ld	l, a
+    0000007C 11 07 00         [12]  154 	ld	de, #0x0007
+    0000007F 19               [ 8]  155 	add	hl, de
+                                    156 ;src/utils/map_manager.c:21: while (*solid != 255) {
+    00000080                        157 00103$:
+    00000080 7E               [ 8]  158 	ld	a, (hl)
+    00000081 FE FF            [ 8]  159 	cp	a, #0xff
+    00000083 28 08            [12]  160 	jr	Z, 00105$
+                                    161 ;src/utils/map_manager.c:22: if (tid == *solid)
+    00000085 91               [ 4]  162 	sub	a, c
+    00000086 20 02            [12]  163 	jr	NZ, 00102$
+                                    164 ;src/utils/map_manager.c:23: return 0; // Walkable
+    00000088 AF               [ 4]  165 	xor	a, a
+    00000089 C9               [16]  166 	ret
+    0000008A                        167 00102$:
+                                    168 ;src/utils/map_manager.c:24: solid++;
+    0000008A 23               [ 8]  169 	inc	hl
+    0000008B 18 F3            [12]  170 	jr	00103$
+    0000008D                        171 00105$:
+                                    172 ;src/utils/map_manager.c:26: return 1; // Solid
+    0000008D 3E 01            [ 8]  173 	ld	a, #0x01
+                                    174 ;src/utils/map_manager.c:27: }
+    0000008F C9               [16]  175 	ret
+                                    176 ;src/utils/map_manager.c:29: portal_t *map_check_portal(uint16_t x, uint16_t y) {
+                                    177 ;	---------------------------------
+                                    178 ; Function map_check_portal
+                                    179 ; ---------------------------------
+    00000090                        180 _map_check_portal::
+    00000090 E8 FB            [16]  181 	add	sp, #-5
+                                    182 ;src/utils/map_manager.c:30: uint8_t tx = x / 8, ty = y / 8;
+    00000092 CB 3A            [ 8]  183 	srl	d
+    00000094 CB 1B            [ 8]  184 	rr	e
+    00000096 CB 3A            [ 8]  185 	srl	d
+    00000098 CB 1B            [ 8]  186 	rr	e
+    0000009A CB 3A            [ 8]  187 	srl	d
+    0000009C CB 1B            [ 8]  188 	rr	e
+    0000009E F8 00            [12]  189 	ldhl	sp,	#0
+    000000A0 7B               [ 4]  190 	ld	a, e
+    000000A1 22               [ 8]  191 	ld	(hl+), a
+    000000A2 CB 38            [ 8]  192 	srl	b
+    000000A4 CB 19            [ 8]  193 	rr	c
+    000000A6 CB 38            [ 8]  194 	srl	b
+    000000A8 CB 19            [ 8]  195 	rr	c
+    000000AA CB 38            [ 8]  196 	srl	b
+    000000AC CB 19            [ 8]  197 	rr	c
+    000000AE 71               [ 8]  198 	ld	(hl), c
+                                    199 ;src/utils/map_manager.c:31: for (uint8_t i = 0; i < current_map->num_portals; i++) {
+    000000AF F8 04            [12]  200 	ldhl	sp,	#4
+    000000B1 36 00            [12]  201 	ld	(hl), #0x00
+    000000B3                        202 00106$:
+    000000B3 FAr00r00         [16]  203 	ld	a, (_current_map)
+    000000B6 4F               [ 4]  204 	ld	c, a
+    000000B7 21r01r00         [12]  205 	ld	hl, #_current_map + 1
+    000000BA 46               [ 8]  206 	ld	b, (hl)
+    000000BB 21 19 00         [12]  207 	ld	hl, #0x0019
+    000000BE 09               [ 8]  208 	add	hl, bc
+    000000BF 5E               [ 8]  209 	ld	e, (hl)
+    000000C0 F8 04            [12]  210 	ldhl	sp,	#4
+    000000C2 7E               [ 8]  211 	ld	a, (hl)
+    000000C3 93               [ 4]  212 	sub	a, e
+    000000C4 30 3F            [12]  213 	jr	NC, 00104$
+                                    214 ;src/utils/map_manager.c:32: if (current_map->portals[i].tx == tx && current_map->portals[i].ty == ty) {
+    000000C6 21 17 00         [12]  215 	ld	hl, #0x0017
+    000000C9 09               [ 8]  216 	add	hl, bc
+    000000CA 5D               [ 4]  217 	ld	e, l
+    000000CB 54               [ 4]  218 	ld	d, h
+    000000CC 1A               [ 8]  219 	ld	a, (de)
+    000000CD F8 02            [12]  220 	ldhl	sp,	#2
+    000000CF 22               [ 8]  221 	ld	(hl+), a
+    000000D0 13               [ 8]  222 	inc	de
+    000000D1 1A               [ 8]  223 	ld	a, (de)
+    000000D2 77               [ 8]  224 	ld	(hl), a
+    000000D3 F8 04            [12]  225 	ldhl	sp,	#4
+    000000D5 4E               [ 8]  226 	ld	c, (hl)
+    000000D6 06 00            [ 8]  227 	ld	b, #0x00
+    000000D8 69               [ 4]  228 	ld	l, c
+    000000D9 60               [ 4]  229 	ld	h, b
+    000000DA 29               [ 8]  230 	add	hl, hl
+    000000DB 09               [ 8]  231 	add	hl, bc
+    000000DC 29               [ 8]  232 	add	hl, hl
+    000000DD 09               [ 8]  233 	add	hl, bc
+    000000DE 4D               [ 4]  234 	ld	c, l
+    000000DF 44               [ 4]  235 	ld	b, h
+    000000E0 F8 02            [12]  236 	ldhl	sp,	#2
+    000000E2 2A               [ 8]  237 	ld	a,	(hl+)
+    000000E3 66               [ 8]  238 	ld	h, (hl)
+    000000E4 6F               [ 4]  239 	ld	l, a
+    000000E5 09               [ 8]  240 	add	hl, bc
+    000000E6 5D               [ 4]  241 	ld	e, l
+    000000E7 54               [ 4]  242 	ld	d, h
+    000000E8 1A               [ 8]  243 	ld	a, (de)
+    000000E9 5F               [ 4]  244 	ld	e, a
+    000000EA F8 00            [12]  245 	ldhl	sp,	#0
+    000000EC 7E               [ 8]  246 	ld	a, (hl)
+    000000ED 93               [ 4]  247 	sub	a, e
+    000000EE 20 10            [12]  248 	jr	NZ, 00107$
+    000000F0 F8 02            [12]  249 	ldhl	sp,	#2
+    000000F2 2A               [ 8]  250 	ld	a,	(hl+)
+    000000F3 66               [ 8]  251 	ld	h, (hl)
+    000000F4 6F               [ 4]  252 	ld	l, a
+    000000F5 09               [ 8]  253 	add	hl, bc
+    000000F6 4D               [ 4]  254 	ld	c,l
+    000000F7 44               [ 4]  255 	ld	b,h
+    000000F8 23               [ 8]  256 	inc	hl
+    000000F9 5E               [ 8]  257 	ld	e, (hl)
+    000000FA F8 01            [12]  258 	ldhl	sp,	#1
+    000000FC 7E               [ 8]  259 	ld	a, (hl)
+    000000FD 93               [ 4]  260 	sub	a, e
+    000000FE 28 08            [12]  261 	jr	Z, 00108$
+                                    262 ;src/utils/map_manager.c:33: return &current_map->portals[i];
+    00000100                        263 00107$:
+                                    264 ;src/utils/map_manager.c:31: for (uint8_t i = 0; i < current_map->num_portals; i++) {
+    00000100 F8 04            [12]  265 	ldhl	sp,	#4
+    00000102 34               [12]  266 	inc	(hl)
+    00000103 18 AE            [12]  267 	jr	00106$
+    00000105                        268 00104$:
+                                    269 ;src/utils/map_manager.c:36: return NULL;
+    00000105 01 00 00         [12]  270 	ld	bc, #0x0000
+    00000108                        271 00108$:
+                                    272 ;src/utils/map_manager.c:37: }
+    00000108 E8 05            [16]  273 	add	sp, #5
+    0000010A C9               [16]  274 	ret
+                                    275 	.area _CODE
+                                    276 	.area _INITIALIZER
+                                    277 	.area _CABS (ABS)

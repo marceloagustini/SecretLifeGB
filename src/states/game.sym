@@ -17,20 +17,20 @@ Symbol Table
     _WX_REG                                                         ******** GX
     _WY_REG                                                         ******** GX
   0 ___str_0                                                        00000202 R
-  0 ___str_1                                                        000013CF R
-  0 ___str_10                                                       00001563 R
-  0 ___str_11                                                       000015C4 R
-  0 ___str_12                                                       000015E0 R
-  0 ___str_13                                                       000015F8 R
-  0 ___str_14                                                       0000168F R
-  0 ___str_2                                                        000013D4 R
-  0 ___str_3                                                        0000147E R
-  0 ___str_4                                                        00001483 R
-  0 ___str_5                                                        00001493 R
-  0 ___str_6                                                        000014AE R
-  0 ___str_7                                                        000014C6 R
-  0 ___str_8                                                        000014CC R
-  0 ___str_9                                                        0000154E R
+  0 ___str_1                                                        0000163E R
+  0 ___str_10                                                       000017D2 R
+  0 ___str_11                                                       00001833 R
+  0 ___str_12                                                       0000184F R
+  0 ___str_13                                                       00001867 R
+  0 ___str_14                                                       000018FE R
+  0 ___str_2                                                        00001643 R
+  0 ___str_3                                                        000016ED R
+  0 ___str_4                                                        000016F2 R
+  0 ___str_5                                                        00001702 R
+  0 ___str_6                                                        0000171D R
+  0 ___str_7                                                        00001735 R
+  0 ___str_8                                                        0000173B R
+  0 ___str_9                                                        000017BD R
     __divuchar                                                      ******** GX
     __moduchar                                                      ******** GX
     __mulint                                                        ******** GX
@@ -54,7 +54,7 @@ Symbol Table
   3 _anim_timer                                                     0000000A GR
   3 _camera_x                                                       0000000B GR
   3 _camera_y                                                       0000000D GR
-  0 _can_move                                                       0000042E GR
+  0 _can_move                                                       00000470 GR
     _current_map                                                    ******** GX
     _delay                                                          ******** GX
     _display_off                                                    ******** GX
@@ -69,15 +69,16 @@ Symbol Table
     _entity_update_all                                              ******** GX
   3 _env_anim_frame                                                 00000014 GR
   3 _env_anim_timer                                                 00000013 GR
+    _explosion_sprite                                               ******** GX
     _fade_in                                                        ******** GX
     _fade_out                                                       ******** GX
     _fill_bkg_rect                                                  ******** GX
     _flower_sprite                                                  ******** GX
-  0 _game_init                                                      00000616 GR
+  0 _game_init                                                      00000671 GR
   3 _game_ready                                                     00000017 R
-  0 _game_reset                                                     00001707 GR
+  0 _game_reset                                                     00001976 GR
     _game_state                                                     ******** GX
-  0 _game_update                                                    00000794 GR
+  0 _game_update                                                    00000806 GR
   0 _get_tile_at                                                    00000000 GR
     _get_tile_for_char                                              ******** GX
     _guard_sprite_data                                              ******** GX
@@ -91,6 +92,7 @@ Symbol Table
   3 _level2_door_x                                                  0000000F GR
   3 _level2_door_y                                                  00000011 GR
   0 _load_map                                                       000002AD GR
+    _map_get_tile                                                   ******** GX
     _map_init_data                                                  ******** GX
     _map_is_solid                                                   ******** GX
     _maps                                                           ******** GX
@@ -100,13 +102,14 @@ Symbol Table
     _npc_woman_sprite                                               ******** GX
   3 _player_ammo                                                    00000016 GR
   3 _player_dir                                                     00000008 GR
-  0 _player_hit                                                     0000073E GR
+  0 _player_hit                                                     000007B0 GR
   3 _player_lives                                                   00000015 GR
     _player_sprites                                                 ******** GX
   3 _player_x                                                       00000000 GR
   3 _player_y                                                       00000002 GR
     _portal_sprite                                                  ******** GX
     _projectile_check_collision                                     ******** GX
+    _projectile_check_enemy_collision                               ******** GX
     _projectile_init                                                ******** GX
     _projectile_render_all                                          ******** GX
     _projectile_spawn                                               ******** GX
@@ -115,14 +118,14 @@ Symbol Table
   2 _saved_world_x                                                  00000000 GR
   2 _saved_world_y                                                  00000002 GR
     _set_bkg_data                                                   ******** GX
-    _set_bkg_tile_xy                                                ******** GX
-    _set_bkg_tiles                                                  ******** GX
-    _set_sprite_data                                                ******** GX
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 3
 Hexadecimal [32-Bits]
 
 Symbol Table
 
+    _set_bkg_tile_xy                                                ******** GX
+    _set_bkg_tiles                                                  ******** GX
+    _set_sprite_data                                                ******** GX
     _set_win_tiles                                                  ******** GX
     _sfx_pickup                                                     ******** GX
     _sfx_success                                                    ******** GX
@@ -142,7 +145,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     1737   flags    0
+   0 _CODE                                      size     19A6   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        4   flags    0
    3 _INITIALIZED                               size       18   flags    0

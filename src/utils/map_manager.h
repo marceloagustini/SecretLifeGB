@@ -26,6 +26,7 @@ extern map_t *current_map;
 
 void map_init(void);
 void map_load(uint8_t map_id, uint16_t x, uint16_t y);
+uint8_t map_get_tile(uint16_t x, uint16_t y);
 uint8_t map_is_solid(uint16_t x, uint16_t y);
 portal_t *map_check_portal(uint16_t x, uint16_t y);
 

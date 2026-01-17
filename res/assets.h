@@ -18,6 +18,7 @@ extern const unsigned char npc_woman_sprite[];
 extern const unsigned char projectile_sprite[];
 extern const unsigned char flower_sprite[];
 extern const unsigned char portal_sprite[];
+extern const unsigned char explosion_sprite[];
 
 #define MAP_WIDTH 32
 #define MAP_HEIGHT 32

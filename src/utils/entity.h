@@ -4,7 +4,7 @@
 #include <gb/gb.h>
 #include <stdint.h>
 
-typedef enum { ENT_NPC, ENT_ITEM, ENT_DOOR, ENT_ENEMY } ent_type_t;
+typedef enum { ENT_NPC, ENT_ITEM, ENT_DOOR, ENT_ENEMY, ENT_PORTAL } ent_type_t;
 
 struct entity_t;
 
@@ -21,6 +21,9 @@ typedef struct entity_t {
   uint8_t anim_timer;
   uint8_t move_timer;
   uint8_t shoot_timer;
+  uint8_t health;      // 3 for enemies
+  uint8_t hit_timer;   // For flashing effect
+  uint8_t death_timer; // For explosion animation
   entity_update_fn update;
 } entity_t;
 

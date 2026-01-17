@@ -17,13 +17,13 @@ uint8_t map_get_tile(uint16_t x, uint16_t y) {
 
 uint8_t map_is_solid(uint16_t x, uint16_t y) {
   uint8_t tid = map_get_tile(x, y);
-  for (int i = 0; i < 16; i++) {
-    if (current_map->solid_tiles[i] == 255)
-      break;
-    if (tid == current_map->solid_tiles[i])
-      return 0; // It's in the passable list
+  uint8_t *solid = current_map->solid_tiles;
+  while (*solid != 255) {
+    if (tid == *solid)
+      return 0; // Walkable
+    solid++;
   }
-  return 1; // Not in passable list -> solid
+  return 1; // Solid
 }
 
 portal_t *map_check_portal(uint16_t x, uint16_t y) {

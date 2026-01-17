@@ -9,7 +9,7 @@ Symbol Table
     .__.H$L.                                                    =   00000000 L
     __mulint                                                        ******** GX
   2 _current_map                                                    00000000 GR
-  0 _map_check_portal                                               0000009B GR
+  0 _map_check_portal                                               00000090 GR
   0 _map_get_tile                                                   00000000 GR
   0 _map_is_solid                                                   00000070 GR
 
@@ -18,7 +18,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      116   flags    0
+   0 _CODE                                      size      10B   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        2   flags    0
    3 _INITIALIZED                               size        0   flags    0

@@ -7,30 +7,30 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
+  0 _explosion_sprite                                               00001518 GR
   0 _flower_sprite                                                  000014C8 GR
-  0 _font_data                                                      00001518 GR
+  0 _font_data                                                      00001558 GR
   0 _guard_sprite_data                                              00001438 GR
   0 _house_map                                                      000008D0 GR
   0 _level2_map                                                     00000A38 GR
   0 _level3_map                                                     00000E38 GR
   0 _map_data                                                       000004D0 GR
-  0 _maze_map                                                       000019E8 GR
+  0 _maze_map                                                       00001A28 GR
   0 _npc_child_sprite                                               000013B8 GR
   0 _npc_woman_sprite                                               000013F8 GR
   0 _player_sprites                                                 00001238 GR
   0 _portal_sprite                                                  000014D8 GR
   0 _projectile_sprite                                              000014B8 GR
-  0 _sanctuary_map                                                  00001DE8 GR
+  0 _sanctuary_map                                                  00001E28 GR
   0 _tiles_anim_data                                                00000480 GR
   0 _tiles_data                                                     00000000 GR
-
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     1F50   flags    0
+   0 _CODE                                      size     1F90   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0

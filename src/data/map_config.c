@@ -57,7 +57,7 @@ map_t maps[] = {{
                  L3_WIDTH,
                  L3_HEIGHT,
                  level3_entities,
-                 2,
+                 1,
                  {0, 2, 255},
                  NULL,
                  0},
@@ -67,7 +67,7 @@ map_t maps[] = {{
                  MAZE_HEIGHT,
                  maze_entities,
                  1,
-                 {2, 255}, // 2 is grass/path
+                 {2, 41, 42, 43, 44, 255}, // 41-44 are portal tiles
                  NULL,
                  0},
                 {// 5: SANCTUARY_MAP
@@ -83,19 +83,12 @@ map_t maps[] = {{
 void map_init_data() {
   entity_init(&world_entities[0], ENT_NPC, 210, 230, 24, DIALOGUE_NPC_CHILD);
   entity_init(&world_entities[1], ENT_NPC, 160, 120, 36, DIALOGUE_NPC_WOMAN);
-  entity_init(&world_entities[2], ENT_ITEM, 180, 140, 41, NULL); // Flower
+  entity_init(&world_entities[2], ENT_ITEM, 180, 140, 49, NULL); // Flower at 49
   world_entities[2].update = ai_anim_simple;
   entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
   entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
   level2_entities[0].update = ai_enemy_chaser_shooter;
   level2_entities[0].shoot_timer = 60;
 
-  entity_init(&level3_entities[0], ENT_NPC, 128, 128, 36,
-              "BIENVENIDO AL\nPUEBLO SENSEI");
-  entity_init(&level3_entities[1], ENT_NPC, 200, 100, 24, "HOLA VIAJERO");
-
-  entity_init(&maze_entities[0], ENT_ITEM, 128, 128, 41, "ARMA");
-
-  entity_init(&sanctuary_entities[0], ENT_NPC, 76, 64, 36,
-              "ESTAS A SALVO\nTOCA EL ALTAR");
+  entity_init(&level3_entities[0], ENT_PORTAL, 128, 128, 41, NULL);
 }
