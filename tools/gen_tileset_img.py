@@ -5,7 +5,7 @@ import struct
 
 # Import the design from the other script
 sys.path.append(os.path.dirname(__file__))
-from gen_tiles import tiles_design, anim_design
+from export_to_png import tiles_design, anim_design
 
 # GameBoy Palette (B, G, R for BMP)
 COLORS_BGR = [

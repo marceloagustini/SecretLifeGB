@@ -74,13 +74,13 @@ _gameover_init::
 	call	_text_init
 ;src/states/gameover.c:24: text_clear();
 	call	_text_clear
-;src/states/gameover.c:27: text_print(5, 7, "Game Over");
+;src/states/gameover.c:27: text_print(5, 7, "GAME OVER");
 	ld	de, #___str_0
 	push	de
 	ld	e, #0x07
 	ld	a, #0x05
 	call	_text_print
-;src/states/gameover.c:28: text_print(4, 10, "Press A or B");
+;src/states/gameover.c:28: text_print(4, 10, "PRESS A OR B");
 	ld	de, #___str_1
 	push	de
 	ld	e, #0x0a
@@ -103,10 +103,10 @@ _gameover_init::
 ;src/states/gameover.c:36: }
 	jp	_fade_in
 ___str_0:
-	.ascii "Game Over"
+	.ascii "GAME OVER"
 	.db 0x00
 ___str_1:
-	.ascii "Press A or B"
+	.ascii "PRESS A OR B"
 	.db 0x00
 ;src/states/gameover.c:38: void gameover_update(void) {
 ;	---------------------------------

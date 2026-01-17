@@ -11,21 +11,24 @@ Symbol Table
     _WX_REG                                                         ******** GX
     _WY_REG                                                         ******** GX
   0 _clear_dialog_buf                                               000000F9 GR
-    _delay                                                          ******** GX
   2 _dialog_buf                                                     00000000 GR
     _fill_bkg_rect                                                  ******** GX
     _font_data                                                      ******** GX
   0 _get_tile_for_char                                              00000016 GR
+    _joypad                                                         ******** GX
+    _music_update                                                   ******** GX
     _set_bkg_tile_xy                                                ******** GX
     _set_win_data                                                   ******** GX
     _set_win_tiles                                                  ******** GX
     _shadow_OAM                                                     ******** GX
-  0 _text_clear                                                     00000399 GR
-  0 _text_dialogue                                                  00000196 GR
+  0 _text_clear                                                     000003C6 GR
+  0 _text_dialogue                                                  000001C4 GR
   0 _text_init                                                      00000000 GR
-  0 _text_print                                                     00000368 GR
-    _waitpad                                                        ******** GX
-    _waitpadup                                                      ******** GX
+  0 _text_print                                                     00000395 GR
+  0 _text_wait                                                      00000196 GR
+  0 _wait_input                                                     000001A7 GR
+  0 _wait_input_up                                                  000001B7 GR
+    _wait_vbl_done                                                  ******** GX
 
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
@@ -33,7 +36,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      3AF   flags    0
+   0 _CODE                                      size      3DC   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size       78   flags    0
    3 _INITIALIZED                               size        0   flags    0

@@ -1,0 +1,15 @@
+-Igbdk/include
+-Igbdk/include/gb
+-Isrc
+-Ires
+-D__PORT_sm83
+-D__TARGET_gb
+-D__addressmod=
+-D__nonbanked=
+-D__banked=
+-D__naked=
+-D__interrupt=
+-D__critical=
+-D__sfr=unsigned char
+-D__preserves_regs(...)=
+-D__sdcccall(x)=

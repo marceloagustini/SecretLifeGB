@@ -359,7 +359,7 @@ _inventory_draw::
 	ld	e, #0x0c
 	ld	a, #0x01
 	call	_draw_box
-;src/states/inventory_state.c:61: text_print(3, 13, "#"); // Key Icon (always key for now)
+;src/states/inventory_state.c:61: text_print(3, 13, "#");
 	ld	de, #___str_3
 	push	de
 	ld	e, #0x0d

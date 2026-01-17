@@ -359,7 +359,7 @@
     0000018A 1E 0C            [ 8]  359 	ld	e, #0x0c
     0000018C 3E 01            [ 8]  360 	ld	a, #0x01
     0000018E CDr00r00         [24]  361 	call	_draw_box
-                                    362 ;src/states/inventory_state.c:61: text_print(3, 13, "#"); // Key Icon (always key for now)
+                                    362 ;src/states/inventory_state.c:61: text_print(3, 13, "#");
     00000191 11rE8r02         [12]  363 	ld	de, #___str_3
     00000194 D5               [16]  364 	push	de
     00000195 1E 0D            [ 8]  365 	ld	e, #0x0d

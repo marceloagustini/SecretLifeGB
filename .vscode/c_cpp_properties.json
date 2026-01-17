@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "GBDK",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/gbdk/include",
+                "${workspaceFolder}/gbdk/include/gb"
+            ],
+            "defines": [
+                "__PORT_sm83",
+                "__TARGET_gb"
+            ],
+            "compilerPath": "",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "macos-clang-arm64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**",
+                    "${workspaceFolder}/gbdk/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}

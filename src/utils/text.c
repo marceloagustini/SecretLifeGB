@@ -1,5 +1,6 @@
 #include "text.h"
 #include "../../res/assets.h"
+#include "music.h"
 #include <gb/gb.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -82,8 +83,29 @@ void clear_dialog_buf(void) {
   dialog_buf[119] = get_tile_for_char(6);
 }
 
+void text_wait(uint8_t delay_vbl) {
+  for (uint8_t i = 0; i < delay_vbl; i++) {
+    wait_vbl_done();
+    music_update();
+  }
+}
+
+void wait_input(uint8_t btn) {
+  while (!(joypad() & btn)) {
+    wait_vbl_done();
+    music_update();
+  }
+}
+
+void wait_input_up(void) {
+  while (joypad() != 0) {
+    wait_vbl_done();
+    music_update();
+  }
+}
+
 void text_dialogue(const char *str) {
-  waitpadup();
+  wait_input_up();
   // Hide ALL sprites during dialogue (including player)
   for (int i = 0; i < 40; i++)
     move_sprite(i, 0, 0);
@@ -123,9 +145,9 @@ void text_dialogue(const char *str) {
     set_win_tiles(0, 0, 20, 6, dialog_buf);
     move_win(7, 144 - 48);
     SHOW_WIN;
-    waitpad(J_A);
-    delay(100);
-    waitpadup();
+    wait_input(J_A);
+    text_wait(6);
+    wait_input_up();
   }
   HIDE_WIN;
   move_win(7, 144);

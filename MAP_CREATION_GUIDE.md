@@ -11,7 +11,7 @@ Para que Tiled sepa qué dibujos usar, necesitamos una imagen (PNG o BMP) que co
     ```bash
     python3 tools/gen_tileset_img.py
     ```
-3.  Esto generará un archivo en `res/tileset.bmp`. Este archivo contiene todos los tiles definidos en `tools/gen_tiles.py`.
+3.  Esto generará un archivo en `res/tileset.png`. Este archivo contiene todos los tiles definidos en el sistema.
 
 ## Paso 2: Configurar Tiled
 1.  Abre **Tiled** y crea un **Nuevo Mapa**.
@@ -20,7 +20,7 @@ Para que Tiled sepa qué dibujos usar, necesitamos una imagen (PNG o BMP) que co
     -   **Tamaño del mapa**: (Ejemplo: 32x32).
     -   **Tamaño del patrón**: 8x8 píxeles (¡Muy importante!).
 2.  Añade un **Nuevo Conjunto de Patrones (Tileset)**.
-    -   **Imagen**: Selecciona `res/tileset.bmp`.
+    -   **Imagen**: Selecciona `res/tileset.png`.
     -   **Tamaño del tile**: 8x8 píxeles.
     -   **Margen y Espaciado**: 0.
 
@@ -34,7 +34,7 @@ Para que Tiled sepa qué dibujos usar, necesitamos una imagen (PNG o BMP) que co
 3.  Guarda el archivo (ejemplo: `mi_nuevo_mapa.csv`).
 
 ## Paso 5: Convertir a Código C
-Usa la herramienta que acabo de crear para convertir ese archivo CSV en un array de C que el GameBoy entienda.
+Usa la herramienta que ya tenemos para convertir ese archivo CSV en un array de C que el GameBoy entienda.
 
 1.  Ejecuta en la terminal:
     ```bash
@@ -60,4 +60,4 @@ Usa la herramienta que acabo de crear para convertir ese archivo CSV en un array
 3.  **src/data/map_config.c**: Añade el mapa a la lista `maps[]` para que el juego pueda cargarlo.
 
 ---
-**Nota**: Si añades nuevos tiles visuales, primero debes editarlos en `tools/gen_tiles.py`, luego regenerar la imagen del tileset (Paso 1) y los datos de tiles (`gen_tiles.py > res/assets.c`).
+**Nota**: Si añades nuevos tiles visuales, primero agrégalos a tus definiciones de diseño, luego regenera la imagen del tileset (Paso 1) y los datos de tiles para que aparezcan en Tiled.
