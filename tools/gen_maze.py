@@ -35,11 +35,11 @@ def generate_maze(width, height):
     maze[1][1] = 2
     maze[1][2] = 2
     
-    # Add exit (Bottom) - find a path near bottom
-    maze[height-2][width-2] = 2
-    maze[height-2][width-3] = 2
-    maze[height-1][width-2] = 2
-    maze[height-1][width-3] = 2
+    # Add exit (Bottom) - 2x2 Portal tiles (41, 42, 43, 44)
+    maze[height-2][width-3] = 41
+    maze[height-2][width-2] = 42
+    maze[height-1][width-3] = 43
+    maze[height-1][width-2] = 44
     
     return maze
 

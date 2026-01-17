@@ -1,4 +1,5 @@
 #include "entity.h"
+#include "map_manager.h"
 #include "projectile.h"
 #include <gb/gb.h>
 #include <string.h>
@@ -183,7 +184,9 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
     }
 
     uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
-    if (esx < 168 && esy < 160) {
+    uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
+
+    if (esx < 168 && esy < 160 && (!use_clipping || esy < 140)) {
       if (e->type == ENT_ITEM) {
         // Single tile rendering for items (8x8)
         uint8_t sprite_id = sprite_offset + (i * 4);
@@ -197,8 +200,13 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
         uint8_t frame_offset = (e->anim_frame * 4);
         for (int j = 0; j < 4; j++) {
           uint8_t sprite_id = sprite_offset + (i * 4) + j;
-          move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-          set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+          uint16_t ty = esy + (j >= 2 ? 8 : 0);
+          if (!use_clipping || ty < 140) {
+            move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), ty);
+            set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+          } else {
+            move_sprite(sprite_id, 0, 0);
+          }
         }
       }
     } else {

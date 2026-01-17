@@ -47,18 +47,18 @@ _projectiles::
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src/utils/projectile.c:6: void projectile_init(void) {
+;src/utils/projectile.c:7: void projectile_init(void) {
 ;	---------------------------------
 ; Function projectile_init
 ; ---------------------------------
 _projectile_init::
-;src/utils/projectile.c:7: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:8: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	ld	bc, #0x0000
 00103$:
 	ld	a, c
 	sub	a, #0x04
 	ret	NC
-;src/utils/projectile.c:8: projectiles[i].active = 0;
+;src/utils/projectile.c:9: projectiles[i].active = 0;
 	ld	l, c
 	ld	h, b
 	add	hl, hl
@@ -74,17 +74,17 @@ _projectile_init::
 	ld	hl, #0x0006
 	add	hl, de
 	ld	(hl), #0x00
-;src/utils/projectile.c:9: projectiles[i].sprite_id = 37 + i; // Sprites 37-40 for projectiles
+;src/utils/projectile.c:10: projectiles[i].sprite_id = 37 + i; // Sprites 37-40 for projectiles
 	ld	hl, #0x0007
 	add	hl, de
 	ld	a, c
 	add	a, #0x25
 	ld	(hl), a
-;src/utils/projectile.c:7: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:8: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	inc	bc
-;src/utils/projectile.c:11: }
+;src/utils/projectile.c:12: }
 	jr	00103$
-;src/utils/projectile.c:13: void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy,
+;src/utils/projectile.c:14: void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy,
 ;	---------------------------------
 ; Function projectile_spawn
 ; ---------------------------------
@@ -97,13 +97,13 @@ _projectile_spawn::
 	inc	sp
 	inc	sp
 	push	bc
-;src/utils/projectile.c:16: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:17: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	ld	bc, #0x0000
 00105$:
 	ld	a, c
 	sub	a, #0x04
 	jr	NC, 00107$
-;src/utils/projectile.c:17: if (!projectiles[i].active) {
+;src/utils/projectile.c:18: if (!projectiles[i].active) {
 	ld	l, c
 	ld	h, b
 	add	hl, hl
@@ -121,7 +121,7 @@ _projectile_spawn::
 	ld	a, (de)
 	or	a, a
 	jr	NZ, 00106$
-;src/utils/projectile.c:18: projectiles[i].x = x;
+;src/utils/projectile.c:19: projectiles[i].x = x;
 	push	hl
 	ldhl	sp,	#4
 	ld	a, (hl)
@@ -132,7 +132,7 @@ _projectile_spawn::
 	ld	a, (hl)
 	pop	hl
 	ld	(hl-), a
-;src/utils/projectile.c:19: projectiles[i].y = y;
+;src/utils/projectile.c:20: projectiles[i].y = y;
 	ld	c, l
 	ld	b, h
 	inc	bc
@@ -148,7 +148,7 @@ _projectile_spawn::
 	ld	a, (hl)
 	pop	hl
 	ld	(bc), a
-;src/utils/projectile.c:20: projectiles[i].vx = vx;
+;src/utils/projectile.c:21: projectiles[i].vx = vx;
 	ld	a, l
 	add	a, #0x04
 	ld	c, a
@@ -160,7 +160,7 @@ _projectile_spawn::
 	ld	a, (hl)
 	pop	hl
 	ld	(bc), a
-;src/utils/projectile.c:21: projectiles[i].vy = vy;
+;src/utils/projectile.c:22: projectiles[i].vy = vy;
 	ld	a, l
 	add	a, #0x05
 	ld	c, a
@@ -172,7 +172,7 @@ _projectile_spawn::
 	ld	a, (hl)
 	pop	hl
 	ld	(bc), a
-;src/utils/projectile.c:22: projectiles[i].source = source;
+;src/utils/projectile.c:23: projectiles[i].source = source;
 	ld	bc, #0x0008
 	add	hl, bc
 	push	hl
@@ -180,34 +180,34 @@ _projectile_spawn::
 	ld	a, (hl)
 	pop	hl
 	ld	(hl), a
-;src/utils/projectile.c:23: projectiles[i].active = 1;
+;src/utils/projectile.c:24: projectiles[i].active = 1;
 	ld	a, #0x01
 	ld	(de), a
-;src/utils/projectile.c:24: return;
+;src/utils/projectile.c:25: return;
 	jr	00107$
 00106$:
-;src/utils/projectile.c:16: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:17: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	inc	bc
 	jr	00105$
 00107$:
-;src/utils/projectile.c:27: }
+;src/utils/projectile.c:28: }
 	add	sp, #4
 	pop	hl
 	add	sp, #3
 	jp	(hl)
-;src/utils/projectile.c:29: void projectile_update_all(void) {
+;src/utils/projectile.c:30: void projectile_update_all(void) {
 ;	---------------------------------
 ; Function projectile_update_all
 ; ---------------------------------
 _projectile_update_all::
 	add	sp, #-10
-;src/utils/projectile.c:30: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:31: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	ld	bc, #0x0000
 00110$:
 	ld	a, c
 	sub	a, #0x04
 	jp	NC, 00112$
-;src/utils/projectile.c:31: if (projectiles[i].active) {
+;src/utils/projectile.c:32: if (projectiles[i].active) {
 	ld	l, c
 	ld	h, b
 	add	hl, hl
@@ -248,7 +248,7 @@ _projectile_update_all::
 	ld	a, (de)
 	or	a, a
 	jp	Z, 00111$
-;src/utils/projectile.c:32: projectiles[i].x += projectiles[i].vx;
+;src/utils/projectile.c:33: projectiles[i].x += projectiles[i].vx;
 	ldhl	sp,	#0
 	ld	a, (hl)
 	ldhl	sp,	#4
@@ -298,7 +298,7 @@ _projectile_update_all::
 	inc	de
 	ld	a, (hl)
 	ld	(de), a
-;src/utils/projectile.c:33: projectiles[i].y += projectiles[i].vy;
+;src/utils/projectile.c:34: projectiles[i].y += projectiles[i].vy;
 	pop	de
 	push	de
 	ld	hl, #0x0002
@@ -352,7 +352,7 @@ _projectile_update_all::
 	inc	de
 	ld	a, (hl)
 	ld	(de), a
-;src/utils/projectile.c:36: if (projectiles[i].x < 8 || projectiles[i].x > 248 ||
+;src/utils/projectile.c:37: if (projectiles[i].x < 8 || projectiles[i].x > 248 ||
 	ldhl	sp,#4
 	ld	a, (hl+)
 	ld	e, a
@@ -372,7 +372,7 @@ _projectile_update_all::
 	ld	a, #0x00
 	sbc	a, h
 	jr	C, 00101$
-;src/utils/projectile.c:37: projectiles[i].y < 8 || projectiles[i].y > 248) {
+;src/utils/projectile.c:38: projectiles[i].y < 8 || projectiles[i].y > 248) {
 	ldhl	sp,#6
 	ld	a, (hl+)
 	ld	e, a
@@ -393,47 +393,73 @@ _projectile_update_all::
 	sbc	a, h
 	jr	NC, 00111$
 00101$:
-;src/utils/projectile.c:38: projectiles[i].active = 0;
+;src/utils/projectile.c:39: projectiles[i].active = 0;
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x00
 00111$:
-;src/utils/projectile.c:30: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:31: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	inc	bc
 	jp	00110$
 00112$:
-;src/utils/projectile.c:42: }
+;src/utils/projectile.c:43: }
 	add	sp, #10
 	ret
-;src/utils/projectile.c:44: void projectile_render_all(uint16_t camera_x, uint16_t camera_y) {
+;src/utils/projectile.c:45: void projectile_render_all(uint16_t camera_x, uint16_t camera_y) {
 ;	---------------------------------
 ; Function projectile_render_all
 ; ---------------------------------
 _projectile_render_all::
-	add	sp, #-12
-	ldhl	sp,	#8
+	add	sp, #-13
+	ldhl	sp,	#9
 	ld	a, e
 	ld	(hl+), a
 	ld	(hl), d
-	ldhl	sp,	#6
+	ldhl	sp,	#7
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/projectile.c:45: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:46: uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
+	ld	hl, #_current_map
+	ld	a, (hl)
+	sub	a, #<((_maps + 52))
+	jr	NZ, 00164$
+	inc	hl
+	ld	a, (hl)
+	sub	a, #>((_maps + 52))
+	jr	Z, 00119$
+00164$:
+	ld	hl, #_current_map
+	ld	a, (hl)
+	sub	a, #<((_maps + 104))
+	jr	NZ, 00165$
+	inc	hl
+	ld	a, (hl)
+	sub	a, #>((_maps + 104))
+	jr	Z, 00119$
+00165$:
 	xor	a, a
-	ldhl	sp,	#10
+	jr	00120$
+00119$:
+	ld	a, #0x01
+00120$:
+	ldhl	sp,	#0
+	ld	(hl), a
+;src/utils/projectile.c:47: for (int i = 0; i < MAX_PROJECTILES; i++) {
+	xor	a, a
+	ldhl	sp,	#11
 	ld	(hl+), a
 	ld	(hl), a
-00109$:
-	ldhl	sp,	#10
+00114$:
+	ldhl	sp,	#11
 	ld	a, (hl+)
 	sub	a, #0x04
 	ld	a, (hl)
 	sbc	a, #0x00
-	jp	NC, 00111$
-;src/utils/projectile.c:46: if (projectiles[i].active) {
+	jp	NC, 00116$
+;src/utils/projectile.c:48: if (projectiles[i].active) {
 	dec	hl
 	ld	a, (hl+)
 	ld	c, a
@@ -446,32 +472,40 @@ _projectile_render_all::
 	add	hl, bc
 	push	hl
 	ld	a, l
-	ldhl	sp,	#6
+	ldhl	sp,	#7
 	ld	(hl), a
 	pop	hl
 	ld	a, h
-	ldhl	sp,	#5
+	ldhl	sp,	#6
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
 	ld	hl, #_projectiles
 	add	hl, de
-	inc	sp
-	inc	sp
-	ld	e, l
-	ld	d, h
-	push	de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#3
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#2
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
 	ld	hl, #0x0006
 	add	hl, de
 	ld	c, l
 	ld	b, h
 	ld	a, (bc)
-	ldhl	sp,	#2
+	ldhl	sp,	#6
 	ld	(hl), a
-;src/utils/projectile.c:49: move_sprite(projectiles[i].sprite_id, sx, sy);
-	pop	de
-	push	de
+;src/utils/projectile.c:55: move_sprite(projectiles[i].sprite_id, 0, 0);
+	ldhl	sp,#1
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
 	ld	hl, #0x0007
 	add	hl, de
 	push	hl
@@ -481,46 +515,76 @@ _projectile_render_all::
 	pop	hl
 	ld	a, h
 	ldhl	sp,	#4
+;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, sx, sy);
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
 	ld	a, (hl+)
 	ld	d, a
 	ld	a, (de)
-	ld	(hl), a
-;src/utils/projectile.c:46: if (projectiles[i].active) {
-	ldhl	sp,	#2
+;src/utils/projectile.c:48: if (projectiles[i].active) {
+	ld	(hl+), a
 	ld	a, (hl)
 	or	a, a
-	jr	Z, 00102$
-;src/utils/projectile.c:47: uint16_t sx = projectiles[i].x - camera_x + 8;
-	pop	de
-	push	de
+	jp	Z, 00106$
+;src/utils/projectile.c:49: uint16_t sx = projectiles[i].x - camera_x + 8;
+	ldhl	sp,#1
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
 	ld	a, (de)
-	ldhl	sp,	#8
+	ldhl	sp,	#9
 	ld	c, (hl)
-;src/utils/projectile.c:48: uint16_t sy = projectiles[i].y - camera_y + 16;
-	dec	hl
-	dec	hl
 	sub	a, c
 	add	a, #0x08
-	ld	c, a
-	pop	de
-	push	de
-	inc	de
-	inc	de
-	ld	a, (de)
+	ldhl	sp,	#6
+	ld	(hl), a
+;src/utils/projectile.c:50: uint16_t sy = projectiles[i].y - camera_y + 16;
+	ldhl	sp,	#1
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	inc	hl
+	inc	hl
+	ld	a, (hl+)
 	ld	b, (hl)
-;src/utils/projectile.c:49: move_sprite(projectiles[i].sprite_id, sx, sy);
-	dec	hl
-	sub	a, b
-	add	a, #0x10
 	ld	e, a
-	ld	b, (hl)
+	ld	d, b
+	ldhl	sp,	#7
+	ld	a,	(hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	a, e
+	sub	a, l
+	ld	e, a
+	ld	a, d
+	sbc	a, h
+	ld	c, e
+	ld	b, a
+	ld	hl, #0x0010
+	add	hl, bc
+	ld	c, l
+	ld	b, h
+;src/utils/projectile.c:51: if (!use_clipping || sy < 140) {
+	ldhl	sp,	#0
+	ld	a, (hl)
+	or	a, a
+	jr	Z, 00101$
+	ld	e, c
+	ld	d, b
+	ld	a, e
+	sub	a, #0x8c
+	ld	a, d
+	sbc	a, #0x00
+	jr	NC, 00102$
+00101$:
+;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, sx, sy);
+	ldhl	sp,	#6
+	ld	a, (hl-)
+	ld	e, a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	xor	a, a
-	ld	l, b
-	ld	h, a
+	ld	l, (hl)
+	ld	h, #0x00
 	add	hl, hl
 	add	hl, hl
 	push	de
@@ -528,26 +592,27 @@ _projectile_render_all::
 	add	hl, de
 	pop	de
 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-	ld	a, e
+	ld	a, c
 	ld	(hl+), a
-	ld	(hl), c
-;src/utils/projectile.c:50: set_sprite_tile(projectiles[i].sprite_id, 40);
+	ld	(hl), e
+;src/utils/projectile.c:53: set_sprite_tile(projectiles[i].sprite_id, 40);
 	ldhl	sp,#3
 	ld	a, (hl+)
 	ld	e, a
-	ld	d, (hl)
-	ld	a, (de)
 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+	ld	a, (hl+)
+	ld	d, a
+	ld	a, (de)
 	ld	(hl+), a
 	ld	(hl), #0x00
 	ld	a, #0x02
-00135$:
-	ldhl	sp,	#4
+00166$:
+	ldhl	sp,	#5
 	sla	(hl)
 	inc	hl
 	rl	(hl)
 	dec	a
-	jr	NZ, 00135$
+	jr	NZ, 00166$
 	dec	hl
 	ld	a, (hl+)
 	ld	e, a
@@ -556,11 +621,11 @@ _projectile_render_all::
 	add	hl, de
 	push	hl
 	ld	a, l
-	ldhl	sp,	#4
+	ldhl	sp,	#5
 	ld	(hl), a
 	pop	hl
 	ld	a, h
-	ldhl	sp,	#3
+	ldhl	sp,	#4
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
@@ -569,33 +634,38 @@ _projectile_render_all::
 	add	hl, de
 	push	hl
 	ld	a, l
-	ldhl	sp,	#6
+	ldhl	sp,	#7
 	ld	(hl), a
 	pop	hl
 	ld	a, h
-	ldhl	sp,	#5
+	ldhl	sp,	#6
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x28
-;src/utils/projectile.c:50: set_sprite_tile(projectiles[i].sprite_id, 40);
-	jr	00110$
+;src/utils/projectile.c:53: set_sprite_tile(projectiles[i].sprite_id, 40);
+	jr	00115$
 00102$:
-;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
-;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+;src/utils/projectile.c:55: move_sprite(projectiles[i].sprite_id, 0, 0);
 	ldhl	sp,	#5
+;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	a, (hl)
+	ld	(hl+), a
+	xor	a, a
+	ld	(hl-), a
 	ld	a, (hl-)
+	dec	hl
 	ld	(hl+), a
 	ld	(hl), #0x00
 	ld	a, #0x02
-00136$:
-	ldhl	sp,	#4
+00167$:
+	ldhl	sp,	#3
 	sla	(hl)
 	inc	hl
 	rl	(hl)
 	dec	a
-	jr	NZ, 00136$
+	jr	NZ, 00167$
 	dec	hl
 	ld	a, (hl+)
 	ld	e, a
@@ -604,11 +674,56 @@ _projectile_render_all::
 	add	hl, de
 	push	hl
 	ld	a, l
-	ldhl	sp,	#4
+	ldhl	sp,	#7
 	ld	(hl), a
 	pop	hl
 	ld	a, h
-	ldhl	sp,	#3
+	ldhl	sp,	#6
+;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	(hl), #0x00
+	ldhl	sp,	#5
+	ld	a, (hl+)
+	ld	c, a
+	ld	b, (hl)
+	inc	bc
+	xor	a, a
+	ld	(bc), a
+;src/utils/projectile.c:55: move_sprite(projectiles[i].sprite_id, 0, 0);
+	jr	00115$
+00106$:
+;src/utils/projectile.c:58: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
+	ldhl	sp,	#5
+	ld	a, (hl+)
+	ld	(hl), a
+;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	a, (hl-)
+	ld	(hl+), a
+	ld	(hl), #0x00
+	ld	a, #0x02
+00168$:
+	ldhl	sp,	#5
+	sla	(hl)
+	inc	hl
+	rl	(hl)
+	dec	a
+	jr	NZ, 00168$
+	dec	hl
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #_shadow_OAM
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#5
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#4
 	ld	(hl-), a
 	ld	a, (hl+)
 	inc	hl
@@ -621,23 +736,23 @@ _projectile_render_all::
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x00
-	ldhl	sp,	#4
+	ldhl	sp,	#5
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	inc	hl
 	ld	(hl), #0x00
-;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
-00110$:
-;src/utils/projectile.c:45: for (int i = 0; i < MAX_PROJECTILES; i++) {
-	ldhl	sp,	#10
+;src/utils/projectile.c:58: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
+00115$:
+;src/utils/projectile.c:47: for (int i = 0; i < MAX_PROJECTILES; i++) {
+	ldhl	sp,	#11
 	inc	(hl)
-	jp	00109$
-00111$:
-;src/utils/projectile.c:55: }
-	add	sp, #12
+	jp	00114$
+00116$:
+;src/utils/projectile.c:61: }
+	add	sp, #13
 	ret
-;src/utils/projectile.c:57: uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
+;src/utils/projectile.c:63: uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
 ;	---------------------------------
 ; Function projectile_check_collision
 ; ---------------------------------
@@ -651,7 +766,7 @@ _projectile_check_collision::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/projectile.c:58: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:64: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	xor	a, a
 	ldhl	sp,	#0
 	ld	(hl+), a
@@ -667,7 +782,7 @@ _projectile_check_collision::
 	ld	a, (hl)
 	sbc	a, #0x00
 	jp	NC, 00111$
-;src/utils/projectile.c:59: if (projectiles[i].active && projectiles[i].source == 0) {
+;src/utils/projectile.c:65: if (projectiles[i].active && projectiles[i].source == 0) {
 	dec	hl
 	ld	a, (hl+)
 	ld	c, a
@@ -694,7 +809,7 @@ _projectile_check_collision::
 	ld	a, (hl)
 	or	a, a
 	jp	NZ, 00114$
-;src/utils/projectile.c:60: int16_t dx = (int16_t)px - (int16_t)projectiles[i].x;
+;src/utils/projectile.c:66: int16_t dx = (int16_t)px - (int16_t)projectiles[i].x;
 	ldhl	sp,	#6
 	ld	a, (hl)
 	ldhl	sp,	#2
@@ -727,7 +842,7 @@ _projectile_check_collision::
 	ldhl	sp,	#11
 	ld	(hl-), a
 	ld	(hl), e
-;src/utils/projectile.c:61: int16_t dy = (int16_t)py - (int16_t)projectiles[i].y;
+;src/utils/projectile.c:67: int16_t dy = (int16_t)py - (int16_t)projectiles[i].y;
 	ldhl	sp,	#4
 	ld	a, (hl-)
 	dec	hl
@@ -754,14 +869,14 @@ _projectile_check_collision::
 	sbc	a, b
 	ldhl	sp,	#13
 	ld	(hl-), a
-;src/utils/projectile.c:62: if (dx < 0)
+;src/utils/projectile.c:68: if (dx < 0)
 	ld	a, e
 	ld	(hl-), a
 	dec	hl
 	ld	a, (hl+)
 	bit	7, (hl)
 	jr	Z, 00102$
-;src/utils/projectile.c:63: dx = -dx;
+;src/utils/projectile.c:69: dx = -dx;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -775,12 +890,12 @@ _projectile_check_collision::
 	ld	(hl-), a
 	ld	(hl), e
 00102$:
-;src/utils/projectile.c:64: if (dy < 0)
+;src/utils/projectile.c:70: if (dy < 0)
 	ldhl	sp,	#12
 	ld	a, (hl+)
 	bit	7, (hl)
 	jr	Z, 00104$
-;src/utils/projectile.c:65: dy = -dy;
+;src/utils/projectile.c:71: dy = -dy;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -794,7 +909,7 @@ _projectile_check_collision::
 	ld	(hl-), a
 	ld	(hl), e
 00104$:
-;src/utils/projectile.c:67: if (dx < 8 && dy < 8) {
+;src/utils/projectile.c:73: if (dx < 8 && dy < 8) {
 	ldhl	sp,	#10
 	ld	a, (hl+)
 	ld	c, a
@@ -819,7 +934,7 @@ _projectile_check_collision::
 	rra
 	sbc	a, #0x80
 	jr	NC, 00114$
-;src/utils/projectile.c:68: projectiles[i].active = 0; // Deactivate on hit
+;src/utils/projectile.c:74: projectiles[i].active = 0; // Deactivate on hit
 	pop	bc
 	push	bc
 	ld	l, c
@@ -833,11 +948,11 @@ _projectile_check_collision::
 	ld	bc, #0x0006
 	add	hl, bc
 	ld	(hl), #0x00
-;src/utils/projectile.c:69: return 1;
+;src/utils/projectile.c:75: return 1;
 	ld	a, #0x01
 	jr	00115$
 00114$:
-;src/utils/projectile.c:58: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:64: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	ldhl	sp,	#8
 	inc	(hl)
 	ldhl	sp,	#8
@@ -847,10 +962,10 @@ _projectile_check_collision::
 	ld	(hl), #0x00
 	jp	00113$
 00111$:
-;src/utils/projectile.c:73: return 0;
+;src/utils/projectile.c:79: return 0;
 	xor	a, a
 00115$:
-;src/utils/projectile.c:74: }
+;src/utils/projectile.c:80: }
 	add	sp, #14
 	ret
 	.area _CODE

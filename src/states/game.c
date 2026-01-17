@@ -202,7 +202,7 @@ static uint8_t game_ready = 0;
 
 void game_init(void) {
   DISPLAY_OFF;
-  set_bkg_data(0, 40, tiles_data); // All tiles (now 40)
+  set_bkg_data(0, 60, tiles_data); // All tiles (now includes portal)
 
   if (game_ready) {
     map_init_data();
@@ -217,8 +217,10 @@ void game_init(void) {
   map_init_data();
   enter_x = 128;
   enter_y = 128;
+
   load_map(&maps[0], 128, 128); // WORLD_MAP
 
+  // load_map(&maps[4], 8, 8); // MAZE_MAP
   BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
   SPRITES_8x8;
   set_sprite_data(0, 24, player_sprites);
@@ -368,7 +370,8 @@ void game_update(void) {
     }
 
     if (current_map == &maps[4]) { // MAZE_MAP
-      if (player_y >= 240) {
+      // Trigger exit when on portal tiles (41-44)
+      if (tid >= 41 && tid <= 44) {
         switch_map(&maps[0], 128, 128); // To World Map
         return;
       }
@@ -378,8 +381,16 @@ void game_update(void) {
   // Ensure player sprites are positioned correctly (restores visibility after
   // dialogue)
   uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
-  for (int i = 0; i < 4; i++)
-    move_sprite(i, sx + (i % 2 ? 8 : 0), sy + (i >= 2 ? 8 : 0));
+  uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
+
+  for (int i = 0; i < 4; i++) {
+    uint16_t ty = sy + (i >= 2 ? 8 : 0);
+    if (!use_clipping || ty < 140) {
+      move_sprite(i, sx + (i % 2 ? 8 : 0), ty);
+    } else {
+      move_sprite(i, 0, 0);
+    }
+  }
 
   // Render entities & AI
   entity_update_all(current_map->entities, current_map->num_entities);

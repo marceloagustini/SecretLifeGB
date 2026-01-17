@@ -1,4 +1,5 @@
 #include "projectile.h"
+#include "map_manager.h"
 #include <string.h>
 
 projectile_t projectiles[MAX_PROJECTILES];
@@ -42,12 +43,17 @@ void projectile_update_all(void) {
 }
 
 void projectile_render_all(uint16_t camera_x, uint16_t camera_y) {
+  uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
   for (int i = 0; i < MAX_PROJECTILES; i++) {
     if (projectiles[i].active) {
       uint16_t sx = projectiles[i].x - camera_x + 8;
       uint16_t sy = projectiles[i].y - camera_y + 16;
-      move_sprite(projectiles[i].sprite_id, sx, sy);
-      set_sprite_tile(projectiles[i].sprite_id, 40);
+      if (!use_clipping || sy < 140) {
+        move_sprite(projectiles[i].sprite_id, sx, sy);
+        set_sprite_tile(projectiles[i].sprite_id, 40);
+      } else {
+        move_sprite(projectiles[i].sprite_id, 0, 0);
+      }
     } else {
       move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
     }

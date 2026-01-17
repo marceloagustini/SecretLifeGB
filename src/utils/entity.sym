@@ -14,20 +14,23 @@ Symbol Table
   0 _ai_enemy_random_walk                                           0000008A GR
   0 _ai_enemy_shooter                                               00000190 GR
   0 _ai_npc_static                                                  0000006F GR
+    _current_map                                                    ******** GX
   0 _entity_init                                                    00000000 GR
   0 _entity_render_all                                              00000629 GR
   0 _entity_update_all                                              000005B9 GR
+    _maps                                                           ******** GX
     _player_x                                                       ******** GX
     _player_y                                                       ******** GX
     _projectile_spawn                                               ******** GX
     _shadow_OAM                                                     ******** GX
+
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      83E   flags    0
+   0 _CODE                                      size      85C   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        0   flags    0
    3 _INITIALIZED                               size        0   flags    0

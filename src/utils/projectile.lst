@@ -47,18 +47,18 @@
                                      47 ; code
                                      48 ;--------------------------------------------------------
                                      49 	.area _CODE
-                                     50 ;src/utils/projectile.c:6: void projectile_init(void) {
+                                     50 ;src/utils/projectile.c:7: void projectile_init(void) {
                                      51 ;	---------------------------------
                                      52 ; Function projectile_init
                                      53 ; ---------------------------------
     00000000                         54 _projectile_init::
-                                     55 ;src/utils/projectile.c:7: for (int i = 0; i < MAX_PROJECTILES; i++) {
+                                     55 ;src/utils/projectile.c:8: for (int i = 0; i < MAX_PROJECTILES; i++) {
     00000000 01 00 00         [12]   56 	ld	bc, #0x0000
     00000003                         57 00103$:
     00000003 79               [ 4]   58 	ld	a, c
     00000004 D6 04            [ 8]   59 	sub	a, #0x04
     00000006 D0               [20]   60 	ret	NC
-                                     61 ;src/utils/projectile.c:8: projectiles[i].active = 0;
+                                     61 ;src/utils/projectile.c:9: projectiles[i].active = 0;
     00000007 69               [ 4]   62 	ld	l, c
     00000008 60               [ 4]   63 	ld	h, b
     00000009 29               [ 8]   64 	add	hl, hl
@@ -74,17 +74,17 @@
     00000015 21 06 00         [12]   74 	ld	hl, #0x0006
     00000018 19               [ 8]   75 	add	hl, de
     00000019 36 00            [12]   76 	ld	(hl), #0x00
-                                     77 ;src/utils/projectile.c:9: projectiles[i].sprite_id = 37 + i; // Sprites 37-40 for projectiles
+                                     77 ;src/utils/projectile.c:10: projectiles[i].sprite_id = 37 + i; // Sprites 37-40 for projectiles
     0000001B 21 07 00         [12]   78 	ld	hl, #0x0007
     0000001E 19               [ 8]   79 	add	hl, de
     0000001F 79               [ 4]   80 	ld	a, c
     00000020 C6 25            [ 8]   81 	add	a, #0x25
     00000022 77               [ 8]   82 	ld	(hl), a
-                                     83 ;src/utils/projectile.c:7: for (int i = 0; i < MAX_PROJECTILES; i++) {
+                                     83 ;src/utils/projectile.c:8: for (int i = 0; i < MAX_PROJECTILES; i++) {
     00000023 03               [ 8]   84 	inc	bc
-                                     85 ;src/utils/projectile.c:11: }
+                                     85 ;src/utils/projectile.c:12: }
     00000024 18 DD            [12]   86 	jr	00103$
-                                     87 ;src/utils/projectile.c:13: void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy,
+                                     87 ;src/utils/projectile.c:14: void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy,
                                      88 ;	---------------------------------
                                      89 ; Function projectile_spawn
                                      90 ; ---------------------------------
@@ -97,13 +97,13 @@
     0000002D 33               [ 8]   97 	inc	sp
     0000002E 33               [ 8]   98 	inc	sp
     0000002F C5               [16]   99 	push	bc
-                                    100 ;src/utils/projectile.c:16: for (int i = 0; i < MAX_PROJECTILES; i++) {
+                                    100 ;src/utils/projectile.c:17: for (int i = 0; i < MAX_PROJECTILES; i++) {
     00000030 01 00 00         [12]  101 	ld	bc, #0x0000
     00000033                        102 00105$:
     00000033 79               [ 4]  103 	ld	a, c
     00000034 D6 04            [ 8]  104 	sub	a, #0x04
     00000036 30 61            [12]  105 	jr	NC, 00107$
-                                    106 ;src/utils/projectile.c:17: if (!projectiles[i].active) {
+                                    106 ;src/utils/projectile.c:18: if (!projectiles[i].active) {
     00000038 69               [ 4]  107 	ld	l, c
     00000039 60               [ 4]  108 	ld	h, b
     0000003A 29               [ 8]  109 	add	hl, hl
@@ -121,7 +121,7 @@
     0000004A 1A               [ 8]  121 	ld	a, (de)
     0000004B B7               [ 4]  122 	or	a, a
     0000004C 20 48            [12]  123 	jr	NZ, 00106$
-                                    124 ;src/utils/projectile.c:18: projectiles[i].x = x;
+                                    124 ;src/utils/projectile.c:19: projectiles[i].x = x;
     0000004E E5               [16]  125 	push	hl
     0000004F F8 04            [12]  126 	ldhl	sp,	#4
     00000051 7E               [ 8]  127 	ld	a, (hl)
@@ -132,7 +132,7 @@
     00000057 7E               [ 8]  132 	ld	a, (hl)
     00000058 E1               [12]  133 	pop	hl
     00000059 32               [ 8]  134 	ld	(hl-), a
-                                    135 ;src/utils/projectile.c:19: projectiles[i].y = y;
+                                    135 ;src/utils/projectile.c:20: projectiles[i].y = y;
     0000005A 4D               [ 4]  136 	ld	c, l
     0000005B 44               [ 4]  137 	ld	b, h
     0000005C 03               [ 8]  138 	inc	bc
@@ -148,7 +148,7 @@
     00000068 7E               [ 8]  148 	ld	a, (hl)
     00000069 E1               [12]  149 	pop	hl
     0000006A 02               [ 8]  150 	ld	(bc), a
-                                    151 ;src/utils/projectile.c:20: projectiles[i].vx = vx;
+                                    151 ;src/utils/projectile.c:21: projectiles[i].vx = vx;
     0000006B 7D               [ 4]  152 	ld	a, l
     0000006C C6 04            [ 8]  153 	add	a, #0x04
     0000006E 4F               [ 4]  154 	ld	c, a
@@ -160,7 +160,7 @@
     00000076 7E               [ 8]  160 	ld	a, (hl)
     00000077 E1               [12]  161 	pop	hl
     00000078 02               [ 8]  162 	ld	(bc), a
-                                    163 ;src/utils/projectile.c:21: projectiles[i].vy = vy;
+                                    163 ;src/utils/projectile.c:22: projectiles[i].vy = vy;
     00000079 7D               [ 4]  164 	ld	a, l
     0000007A C6 05            [ 8]  165 	add	a, #0x05
     0000007C 4F               [ 4]  166 	ld	c, a
@@ -172,7 +172,7 @@
     00000084 7E               [ 8]  172 	ld	a, (hl)
     00000085 E1               [12]  173 	pop	hl
     00000086 02               [ 8]  174 	ld	(bc), a
-                                    175 ;src/utils/projectile.c:22: projectiles[i].source = source;
+                                    175 ;src/utils/projectile.c:23: projectiles[i].source = source;
     00000087 01 08 00         [12]  176 	ld	bc, #0x0008
     0000008A 09               [ 8]  177 	add	hl, bc
     0000008B E5               [16]  178 	push	hl
@@ -180,34 +180,34 @@
     0000008E 7E               [ 8]  180 	ld	a, (hl)
     0000008F E1               [12]  181 	pop	hl
     00000090 77               [ 8]  182 	ld	(hl), a
-                                    183 ;src/utils/projectile.c:23: projectiles[i].active = 1;
+                                    183 ;src/utils/projectile.c:24: projectiles[i].active = 1;
     00000091 3E 01            [ 8]  184 	ld	a, #0x01
     00000093 12               [ 8]  185 	ld	(de), a
-                                    186 ;src/utils/projectile.c:24: return;
+                                    186 ;src/utils/projectile.c:25: return;
     00000094 18 03            [12]  187 	jr	00107$
     00000096                        188 00106$:
-                                    189 ;src/utils/projectile.c:16: for (int i = 0; i < MAX_PROJECTILES; i++) {
+                                    189 ;src/utils/projectile.c:17: for (int i = 0; i < MAX_PROJECTILES; i++) {
     00000096 03               [ 8]  190 	inc	bc
     00000097 18 9A            [12]  191 	jr	00105$
     00000099                        192 00107$:
-                                    193 ;src/utils/projectile.c:27: }
+                                    193 ;src/utils/projectile.c:28: }
     00000099 E8 04            [16]  194 	add	sp, #4
     0000009B E1               [12]  195 	pop	hl
     0000009C E8 03            [16]  196 	add	sp, #3
     0000009E E9               [ 4]  197 	jp	(hl)
-                                    198 ;src/utils/projectile.c:29: void projectile_update_all(void) {
+                                    198 ;src/utils/projectile.c:30: void projectile_update_all(void) {
                                     199 ;	---------------------------------
                                     200 ; Function projectile_update_all
                                     201 ; ---------------------------------
     0000009F                        202 _projectile_update_all::
     0000009F E8 F6            [16]  203 	add	sp, #-10
-                                    204 ;src/utils/projectile.c:30: for (int i = 0; i < MAX_PROJECTILES; i++) {
+                                    204 ;src/utils/projectile.c:31: for (int i = 0; i < MAX_PROJECTILES; i++) {
     000000A1 01 00 00         [12]  205 	ld	bc, #0x0000
     000000A4                        206 00110$:
     000000A4 79               [ 4]  207 	ld	a, c
     000000A5 D6 04            [ 8]  208 	sub	a, #0x04
     000000A7 D2r95r01         [16]  209 	jp	NC, 00112$
-                                    210 ;src/utils/projectile.c:31: if (projectiles[i].active) {
+                                    210 ;src/utils/projectile.c:32: if (projectiles[i].active) {
     000000AA 69               [ 4]  211 	ld	l, c
     000000AB 60               [ 4]  212 	ld	h, b
     000000AC 29               [ 8]  213 	add	hl, hl
@@ -248,7 +248,7 @@
     000000D7 1A               [ 8]  248 	ld	a, (de)
     000000D8 B7               [ 4]  249 	or	a, a
     000000D9 CAr91r01         [16]  250 	jp	Z, 00111$
-                                    251 ;src/utils/projectile.c:32: projectiles[i].x += projectiles[i].vx;
+                                    251 ;src/utils/projectile.c:33: projectiles[i].x += projectiles[i].vx;
     000000DC F8 00            [12]  252 	ldhl	sp,	#0
     000000DE 7E               [ 8]  253 	ld	a, (hl)
     000000DF F8 04            [12]  254 	ldhl	sp,	#4
@@ -298,7 +298,7 @@
     00000115 13               [ 8]  298 	inc	de
     00000116 7E               [ 8]  299 	ld	a, (hl)
     00000117 12               [ 8]  300 	ld	(de), a
-                                    301 ;src/utils/projectile.c:33: projectiles[i].y += projectiles[i].vy;
+                                    301 ;src/utils/projectile.c:34: projectiles[i].y += projectiles[i].vy;
     00000118 D1               [12]  302 	pop	de
     00000119 D5               [16]  303 	push	de
     0000011A 21 02 00         [12]  304 	ld	hl, #0x0002
@@ -352,7 +352,7 @@
     00000153 13               [ 8]  352 	inc	de
     00000154 7E               [ 8]  353 	ld	a, (hl)
     00000155 12               [ 8]  354 	ld	(de), a
-                                    355 ;src/utils/projectile.c:36: if (projectiles[i].x < 8 || projectiles[i].x > 248 ||
+                                    355 ;src/utils/projectile.c:37: if (projectiles[i].x < 8 || projectiles[i].x > 248 ||
     00000156 F8 04            [12]  356 	ldhl	sp,#4
     00000158 2A               [ 8]  357 	ld	a, (hl+)
     00000159 5F               [ 4]  358 	ld	e, a
@@ -372,7 +372,7 @@
     0000016B 3E 00            [ 8]  372 	ld	a, #0x00
     0000016D 9C               [ 4]  373 	sbc	a, h
     0000016E 38 1A            [12]  374 	jr	C, 00101$
-                                    375 ;src/utils/projectile.c:37: projectiles[i].y < 8 || projectiles[i].y > 248) {
+                                    375 ;src/utils/projectile.c:38: projectiles[i].y < 8 || projectiles[i].y > 248) {
     00000170 F8 06            [12]  376 	ldhl	sp,#6
     00000172 2A               [ 8]  377 	ld	a, (hl+)
     00000173 5F               [ 4]  378 	ld	e, a
@@ -393,466 +393,581 @@
     00000187 9C               [ 4]  393 	sbc	a, h
     00000188 30 07            [12]  394 	jr	NC, 00111$
     0000018A                        395 00101$:
-                                    396 ;src/utils/projectile.c:38: projectiles[i].active = 0;
+                                    396 ;src/utils/projectile.c:39: projectiles[i].active = 0;
     0000018A F8 02            [12]  397 	ldhl	sp,	#2
     0000018C 2A               [ 8]  398 	ld	a, (hl+)
     0000018D 66               [ 8]  399 	ld	h, (hl)
     0000018E 6F               [ 4]  400 	ld	l, a
     0000018F 36 00            [12]  401 	ld	(hl), #0x00
     00000191                        402 00111$:
-                                    403 ;src/utils/projectile.c:30: for (int i = 0; i < MAX_PROJECTILES; i++) {
+                                    403 ;src/utils/projectile.c:31: for (int i = 0; i < MAX_PROJECTILES; i++) {
     00000191 03               [ 8]  404 	inc	bc
     00000192 C3rA4r00         [16]  405 	jp	00110$
     00000195                        406 00112$:
-                                    407 ;src/utils/projectile.c:42: }
+                                    407 ;src/utils/projectile.c:43: }
     00000195 E8 0A            [16]  408 	add	sp, #10
     00000197 C9               [16]  409 	ret
-                                    410 ;src/utils/projectile.c:44: void projectile_render_all(uint16_t camera_x, uint16_t camera_y) {
+                                    410 ;src/utils/projectile.c:45: void projectile_render_all(uint16_t camera_x, uint16_t camera_y) {
                                     411 ;	---------------------------------
                                     412 ; Function projectile_render_all
                                     413 ; ---------------------------------
     00000198                        414 _projectile_render_all::
-    00000198 E8 F4            [16]  415 	add	sp, #-12
-    0000019A F8 08            [12]  416 	ldhl	sp,	#8
+    00000198 E8 F3            [16]  415 	add	sp, #-13
+    0000019A F8 09            [12]  416 	ldhl	sp,	#9
     0000019C 7B               [ 4]  417 	ld	a, e
     0000019D 22               [ 8]  418 	ld	(hl+), a
     0000019E 72               [ 8]  419 	ld	(hl), d
-    0000019F F8 06            [12]  420 	ldhl	sp,	#6
+    0000019F F8 07            [12]  420 	ldhl	sp,	#7
     000001A1 79               [ 4]  421 	ld	a, c
     000001A2 22               [ 8]  422 	ld	(hl+), a
     000001A3 70               [ 8]  423 	ld	(hl), b
-                                    424 ;src/utils/projectile.c:45: for (int i = 0; i < MAX_PROJECTILES; i++) {
-    000001A4 AF               [ 4]  425 	xor	a, a
-    000001A5 F8 0A            [12]  426 	ldhl	sp,	#10
-    000001A7 22               [ 8]  427 	ld	(hl+), a
-    000001A8 77               [ 8]  428 	ld	(hl), a
-    000001A9                        429 00109$:
-    000001A9 F8 0A            [12]  430 	ldhl	sp,	#10
-    000001AB 2A               [ 8]  431 	ld	a, (hl+)
-    000001AC D6 04            [ 8]  432 	sub	a, #0x04
-    000001AE 7E               [ 8]  433 	ld	a, (hl)
-    000001AF DE 00            [ 8]  434 	sbc	a, #0x00
-    000001B1 D2r9Cr02         [16]  435 	jp	NC, 00111$
-                                    436 ;src/utils/projectile.c:46: if (projectiles[i].active) {
-    000001B4 2B               [ 8]  437 	dec	hl
-    000001B5 2A               [ 8]  438 	ld	a, (hl+)
-    000001B6 4F               [ 4]  439 	ld	c, a
-    000001B7 46               [ 8]  440 	ld	b, (hl)
-    000001B8 69               [ 4]  441 	ld	l, c
-    000001B9 60               [ 4]  442 	ld	h, b
-    000001BA 29               [ 8]  443 	add	hl, hl
-    000001BB 29               [ 8]  444 	add	hl, hl
-    000001BC 29               [ 8]  445 	add	hl, hl
-    000001BD 09               [ 8]  446 	add	hl, bc
-    000001BE E5               [16]  447 	push	hl
-    000001BF 7D               [ 4]  448 	ld	a, l
-    000001C0 F8 06            [12]  449 	ldhl	sp,	#6
-    000001C2 77               [ 8]  450 	ld	(hl), a
-    000001C3 E1               [12]  451 	pop	hl
-    000001C4 7C               [ 4]  452 	ld	a, h
-    000001C5 F8 05            [12]  453 	ldhl	sp,	#5
-    000001C7 32               [ 8]  454 	ld	(hl-), a
-    000001C8 2A               [ 8]  455 	ld	a, (hl+)
-    000001C9 5F               [ 4]  456 	ld	e, a
-    000001CA 56               [ 8]  457 	ld	d, (hl)
-    000001CB 21r00r00         [12]  458 	ld	hl, #_projectiles
-    000001CE 19               [ 8]  459 	add	hl, de
-    000001CF 33               [ 8]  460 	inc	sp
-    000001D0 33               [ 8]  461 	inc	sp
-    000001D1 5D               [ 4]  462 	ld	e, l
-    000001D2 54               [ 4]  463 	ld	d, h
-    000001D3 D5               [16]  464 	push	de
-    000001D4 21 06 00         [12]  465 	ld	hl, #0x0006
-    000001D7 19               [ 8]  466 	add	hl, de
-    000001D8 4D               [ 4]  467 	ld	c, l
-    000001D9 44               [ 4]  468 	ld	b, h
-    000001DA 0A               [ 8]  469 	ld	a, (bc)
-    000001DB F8 02            [12]  470 	ldhl	sp,	#2
-    000001DD 77               [ 8]  471 	ld	(hl), a
-                                    472 ;src/utils/projectile.c:49: move_sprite(projectiles[i].sprite_id, sx, sy);
-    000001DE D1               [12]  473 	pop	de
-    000001DF D5               [16]  474 	push	de
-    000001E0 21 07 00         [12]  475 	ld	hl, #0x0007
-    000001E3 19               [ 8]  476 	add	hl, de
-    000001E4 E5               [16]  477 	push	hl
-    000001E5 7D               [ 4]  478 	ld	a, l
-    000001E6 F8 05            [12]  479 	ldhl	sp,	#5
-    000001E8 77               [ 8]  480 	ld	(hl), a
-    000001E9 E1               [12]  481 	pop	hl
-    000001EA 7C               [ 4]  482 	ld	a, h
-    000001EB F8 04            [12]  483 	ldhl	sp,	#4
-    000001ED 32               [ 8]  484 	ld	(hl-), a
-    000001EE 2A               [ 8]  485 	ld	a, (hl+)
-    000001EF 5F               [ 4]  486 	ld	e, a
-    000001F0 2A               [ 8]  487 	ld	a, (hl+)
-    000001F1 57               [ 4]  488 	ld	d, a
-    000001F2 1A               [ 8]  489 	ld	a, (de)
-    000001F3 77               [ 8]  490 	ld	(hl), a
-                                    491 ;src/utils/projectile.c:46: if (projectiles[i].active) {
-    000001F4 F8 02            [12]  492 	ldhl	sp,	#2
-    000001F6 7E               [ 8]  493 	ld	a, (hl)
-    000001F7 B7               [ 4]  494 	or	a, a
-    000001F8 28 65            [12]  495 	jr	Z, 00102$
-                                    496 ;src/utils/projectile.c:47: uint16_t sx = projectiles[i].x - camera_x + 8;
-    000001FA D1               [12]  497 	pop	de
-    000001FB D5               [16]  498 	push	de
-    000001FC 1A               [ 8]  499 	ld	a, (de)
-    000001FD F8 08            [12]  500 	ldhl	sp,	#8
-    000001FF 4E               [ 8]  501 	ld	c, (hl)
-                                    502 ;src/utils/projectile.c:48: uint16_t sy = projectiles[i].y - camera_y + 16;
-    00000200 2B               [ 8]  503 	dec	hl
-    00000201 2B               [ 8]  504 	dec	hl
-    00000202 91               [ 4]  505 	sub	a, c
-    00000203 C6 08            [ 8]  506 	add	a, #0x08
-    00000205 4F               [ 4]  507 	ld	c, a
-    00000206 D1               [12]  508 	pop	de
-    00000207 D5               [16]  509 	push	de
-    00000208 13               [ 8]  510 	inc	de
-    00000209 13               [ 8]  511 	inc	de
-    0000020A 1A               [ 8]  512 	ld	a, (de)
-    0000020B 46               [ 8]  513 	ld	b, (hl)
-                                    514 ;src/utils/projectile.c:49: move_sprite(projectiles[i].sprite_id, sx, sy);
-    0000020C 2B               [ 8]  515 	dec	hl
-    0000020D 90               [ 4]  516 	sub	a, b
-    0000020E C6 10            [ 8]  517 	add	a, #0x10
-    00000210 5F               [ 4]  518 	ld	e, a
-    00000211 46               [ 8]  519 	ld	b, (hl)
-                                    520 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    00000212 AF               [ 4]  521 	xor	a, a
-    00000213 68               [ 4]  522 	ld	l, b
-    00000214 67               [ 4]  523 	ld	h, a
-    00000215 29               [ 8]  524 	add	hl, hl
-    00000216 29               [ 8]  525 	add	hl, hl
-    00000217 D5               [16]  526 	push	de
-    00000218 11r00r00         [12]  527 	ld	de, #_shadow_OAM
-    0000021B 19               [ 8]  528 	add	hl, de
-    0000021C D1               [12]  529 	pop	de
-                                    530 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    0000021D 7B               [ 4]  531 	ld	a, e
-    0000021E 22               [ 8]  532 	ld	(hl+), a
-    0000021F 71               [ 8]  533 	ld	(hl), c
-                                    534 ;src/utils/projectile.c:50: set_sprite_tile(projectiles[i].sprite_id, 40);
-    00000220 F8 03            [12]  535 	ldhl	sp,#3
-    00000222 2A               [ 8]  536 	ld	a, (hl+)
-    00000223 5F               [ 4]  537 	ld	e, a
-    00000224 56               [ 8]  538 	ld	d, (hl)
-    00000225 1A               [ 8]  539 	ld	a, (de)
-                                    540 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-    00000226 22               [ 8]  541 	ld	(hl+), a
-    00000227 36 00            [12]  542 	ld	(hl), #0x00
-    00000229 3E 02            [ 8]  543 	ld	a, #0x02
-    0000022B                        544 00135$:
-    0000022B F8 04            [12]  545 	ldhl	sp,	#4
-    0000022D CB 26            [16]  546 	sla	(hl)
-    0000022F 23               [ 8]  547 	inc	hl
-    00000230 CB 16            [16]  548 	rl	(hl)
-    00000232 3D               [ 4]  549 	dec	a
-    00000233 20 F6            [12]  550 	jr	NZ, 00135$
-    00000235 2B               [ 8]  551 	dec	hl
-    00000236 2A               [ 8]  552 	ld	a, (hl+)
-    00000237 5F               [ 4]  553 	ld	e, a
-    00000238 56               [ 8]  554 	ld	d, (hl)
-    00000239 21r00r00         [12]  555 	ld	hl, #_shadow_OAM
-    0000023C 19               [ 8]  556 	add	hl, de
-    0000023D E5               [16]  557 	push	hl
-    0000023E 7D               [ 4]  558 	ld	a, l
-    0000023F F8 04            [12]  559 	ldhl	sp,	#4
-    00000241 77               [ 8]  560 	ld	(hl), a
-    00000242 E1               [12]  561 	pop	hl
-    00000243 7C               [ 4]  562 	ld	a, h
-    00000244 F8 03            [12]  563 	ldhl	sp,	#3
-    00000246 32               [ 8]  564 	ld	(hl-), a
-    00000247 2A               [ 8]  565 	ld	a, (hl+)
-    00000248 5F               [ 4]  566 	ld	e, a
-    00000249 56               [ 8]  567 	ld	d, (hl)
-    0000024A 21 02 00         [12]  568 	ld	hl, #0x0002
-    0000024D 19               [ 8]  569 	add	hl, de
-    0000024E E5               [16]  570 	push	hl
-    0000024F 7D               [ 4]  571 	ld	a, l
-    00000250 F8 06            [12]  572 	ldhl	sp,	#6
-    00000252 77               [ 8]  573 	ld	(hl), a
-    00000253 E1               [12]  574 	pop	hl
-    00000254 7C               [ 4]  575 	ld	a, h
-    00000255 F8 05            [12]  576 	ldhl	sp,	#5
-    00000257 32               [ 8]  577 	ld	(hl-), a
-    00000258 2A               [ 8]  578 	ld	a, (hl+)
-    00000259 66               [ 8]  579 	ld	h, (hl)
-    0000025A 6F               [ 4]  580 	ld	l, a
-    0000025B 36 28            [12]  581 	ld	(hl), #0x28
-                                    582 ;src/utils/projectile.c:50: set_sprite_tile(projectiles[i].sprite_id, 40);
-    0000025D 18 37            [12]  583 	jr	00110$
-    0000025F                        584 00102$:
-                                    585 ;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
-                                    586 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-    0000025F F8 05            [12]  587 	ldhl	sp,	#5
-    00000261 3A               [ 8]  588 	ld	a, (hl-)
-    00000262 22               [ 8]  589 	ld	(hl+), a
-    00000263 36 00            [12]  590 	ld	(hl), #0x00
-    00000265 3E 02            [ 8]  591 	ld	a, #0x02
-    00000267                        592 00136$:
-    00000267 F8 04            [12]  593 	ldhl	sp,	#4
-    00000269 CB 26            [16]  594 	sla	(hl)
-    0000026B 23               [ 8]  595 	inc	hl
-    0000026C CB 16            [16]  596 	rl	(hl)
-    0000026E 3D               [ 4]  597 	dec	a
-    0000026F 20 F6            [12]  598 	jr	NZ, 00136$
-    00000271 2B               [ 8]  599 	dec	hl
-    00000272 2A               [ 8]  600 	ld	a, (hl+)
-    00000273 5F               [ 4]  601 	ld	e, a
-    00000274 56               [ 8]  602 	ld	d, (hl)
-    00000275 21r00r00         [12]  603 	ld	hl, #_shadow_OAM
-    00000278 19               [ 8]  604 	add	hl, de
-    00000279 E5               [16]  605 	push	hl
-    0000027A 7D               [ 4]  606 	ld	a, l
-    0000027B F8 04            [12]  607 	ldhl	sp,	#4
-    0000027D 77               [ 8]  608 	ld	(hl), a
-    0000027E E1               [12]  609 	pop	hl
-    0000027F 7C               [ 4]  610 	ld	a, h
-    00000280 F8 03            [12]  611 	ldhl	sp,	#3
-    00000282 32               [ 8]  612 	ld	(hl-), a
-    00000283 2A               [ 8]  613 	ld	a, (hl+)
-    00000284 23               [ 8]  614 	inc	hl
-    00000285 32               [ 8]  615 	ld	(hl-), a
-    00000286 2A               [ 8]  616 	ld	a, (hl+)
-    00000287 23               [ 8]  617 	inc	hl
-                                    618 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-    00000288 32               [ 8]  619 	ld	(hl-), a
-    00000289 2A               [ 8]  620 	ld	a, (hl+)
-    0000028A 66               [ 8]  621 	ld	h, (hl)
-    0000028B 6F               [ 4]  622 	ld	l, a
-    0000028C 36 00            [12]  623 	ld	(hl), #0x00
-    0000028E F8 04            [12]  624 	ldhl	sp,	#4
-    00000290 2A               [ 8]  625 	ld	a, (hl+)
-    00000291 66               [ 8]  626 	ld	h, (hl)
-    00000292 6F               [ 4]  627 	ld	l, a
-    00000293 23               [ 8]  628 	inc	hl
-    00000294 36 00            [12]  629 	ld	(hl), #0x00
-                                    630 ;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
-    00000296                        631 00110$:
-                                    632 ;src/utils/projectile.c:45: for (int i = 0; i < MAX_PROJECTILES; i++) {
-    00000296 F8 0A            [12]  633 	ldhl	sp,	#10
-    00000298 34               [12]  634 	inc	(hl)
-    00000299 C3rA9r01         [16]  635 	jp	00109$
-    0000029C                        636 00111$:
-                                    637 ;src/utils/projectile.c:55: }
-    0000029C E8 0C            [16]  638 	add	sp, #12
-    0000029E C9               [16]  639 	ret
-                                    640 ;src/utils/projectile.c:57: uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
-                                    641 ;	---------------------------------
-                                    642 ; Function projectile_check_collision
-                                    643 ; ---------------------------------
-    0000029F                        644 _projectile_check_collision::
-    0000029F E8 F2            [16]  645 	add	sp, #-14
-    000002A1 F8 06            [12]  646 	ldhl	sp,	#6
-    000002A3 7B               [ 4]  647 	ld	a, e
-    000002A4 22               [ 8]  648 	ld	(hl+), a
-    000002A5 72               [ 8]  649 	ld	(hl), d
-    000002A6 F8 04            [12]  650 	ldhl	sp,	#4
-    000002A8 79               [ 4]  651 	ld	a, c
-    000002A9 22               [ 8]  652 	ld	(hl+), a
-    000002AA 70               [ 8]  653 	ld	(hl), b
-                                    654 ;src/utils/projectile.c:58: for (int i = 0; i < MAX_PROJECTILES; i++) {
-    000002AB AF               [ 4]  655 	xor	a, a
-    000002AC F8 00            [12]  656 	ldhl	sp,	#0
-    000002AE 22               [ 8]  657 	ld	(hl+), a
-    000002AF 77               [ 8]  658 	ld	(hl), a
-    000002B0 AF               [ 4]  659 	xor	a, a
-    000002B1 F8 08            [12]  660 	ldhl	sp,	#8
-    000002B3 22               [ 8]  661 	ld	(hl+), a
-    000002B4 77               [ 8]  662 	ld	(hl), a
-    000002B5                        663 00113$:
-    000002B5 F8 08            [12]  664 	ldhl	sp,	#8
-    000002B7 2A               [ 8]  665 	ld	a, (hl+)
-    000002B8 D6 04            [ 8]  666 	sub	a, #0x04
-    000002BA 7E               [ 8]  667 	ld	a, (hl)
-    000002BB DE 00            [ 8]  668 	sbc	a, #0x00
-    000002BD D2r9Ar03         [16]  669 	jp	NC, 00111$
-                                    670 ;src/utils/projectile.c:59: if (projectiles[i].active && projectiles[i].source == 0) {
-    000002C0 2B               [ 8]  671 	dec	hl
-    000002C1 2A               [ 8]  672 	ld	a, (hl+)
-    000002C2 4F               [ 4]  673 	ld	c, a
-    000002C3 46               [ 8]  674 	ld	b, (hl)
-    000002C4 69               [ 4]  675 	ld	l, c
-    000002C5 60               [ 4]  676 	ld	h, b
-    000002C6 29               [ 8]  677 	add	hl, hl
-    000002C7 29               [ 8]  678 	add	hl, hl
-    000002C8 29               [ 8]  679 	add	hl, hl
-    000002C9 09               [ 8]  680 	add	hl, bc
-    000002CA 7D               [ 4]  681 	ld	a, l
-    000002CB C6r00            [ 8]  682 	add	a, #<(_projectiles)
-    000002CD 4F               [ 4]  683 	ld	c, a
-    000002CE 7C               [ 4]  684 	ld	a, h
-    000002CF CEs00            [ 8]  685 	adc	a, #>(_projectiles)
-    000002D1 47               [ 4]  686 	ld	b, a
-    000002D2 21 06 00         [12]  687 	ld	hl, #0x0006
-    000002D5 09               [ 8]  688 	add	hl, bc
-    000002D6 7E               [ 8]  689 	ld	a, (hl)
-    000002D7 B7               [ 4]  690 	or	a, a
-    000002D8 CAr8Cr03         [16]  691 	jp	Z, 00114$
-    000002DB 21 08 00         [12]  692 	ld	hl, #0x0008
-    000002DE 09               [ 8]  693 	add	hl, bc
-    000002DF 7E               [ 8]  694 	ld	a, (hl)
-    000002E0 B7               [ 4]  695 	or	a, a
-    000002E1 C2r8Cr03         [16]  696 	jp	NZ, 00114$
-                                    697 ;src/utils/projectile.c:60: int16_t dx = (int16_t)px - (int16_t)projectiles[i].x;
-    000002E4 F8 06            [12]  698 	ldhl	sp,	#6
-    000002E6 7E               [ 8]  699 	ld	a, (hl)
-    000002E7 F8 02            [12]  700 	ldhl	sp,	#2
-    000002E9 77               [ 8]  701 	ld	(hl), a
-    000002EA F8 07            [12]  702 	ldhl	sp,	#7
-    000002EC 7E               [ 8]  703 	ld	a, (hl)
-    000002ED F8 03            [12]  704 	ldhl	sp,	#3
-    000002EF 77               [ 8]  705 	ld	(hl), a
-    000002F0 59               [ 4]  706 	ld	e, c
-    000002F1 50               [ 4]  707 	ld	d, b
-    000002F2 1A               [ 8]  708 	ld	a, (de)
-    000002F3 F8 0C            [12]  709 	ldhl	sp,	#12
-    000002F5 22               [ 8]  710 	ld	(hl+), a
-    000002F6 13               [ 8]  711 	inc	de
-    000002F7 1A               [ 8]  712 	ld	a, (de)
-    000002F8 77               [ 8]  713 	ld	(hl), a
-    000002F9 F8 02            [12]  714 	ldhl	sp,#2
-    000002FB 2A               [ 8]  715 	ld	a, (hl+)
-    000002FC 5F               [ 4]  716 	ld	e, a
-    000002FD 56               [ 8]  717 	ld	d, (hl)
-    000002FE F8 0C            [12]  718 	ldhl	sp,	#12
-    00000300 2A               [ 8]  719 	ld	a,	(hl+)
-    00000301 66               [ 8]  720 	ld	h, (hl)
-    00000302 6F               [ 4]  721 	ld	l, a
-    00000303 7B               [ 4]  722 	ld	a, e
-    00000304 95               [ 4]  723 	sub	a, l
-    00000305 5F               [ 4]  724 	ld	e, a
-    00000306 7A               [ 4]  725 	ld	a, d
-    00000307 9C               [ 4]  726 	sbc	a, h
-    00000308 F8 0B            [12]  727 	ldhl	sp,	#11
-    0000030A 32               [ 8]  728 	ld	(hl-), a
-    0000030B 73               [ 8]  729 	ld	(hl), e
-                                    730 ;src/utils/projectile.c:61: int16_t dy = (int16_t)py - (int16_t)projectiles[i].y;
-    0000030C F8 04            [12]  731 	ldhl	sp,	#4
-    0000030E 3A               [ 8]  732 	ld	a, (hl-)
-    0000030F 2B               [ 8]  733 	dec	hl
-    00000310 77               [ 8]  734 	ld	(hl), a
-    00000311 F8 05            [12]  735 	ldhl	sp,	#5
-    00000313 3A               [ 8]  736 	ld	a, (hl-)
-    00000314 2B               [ 8]  737 	dec	hl
-    00000315 77               [ 8]  738 	ld	(hl), a
-    00000316 69               [ 4]  739 	ld	l, c
-    00000317 60               [ 4]  740 	ld	h, b
-    00000318 23               [ 8]  741 	inc	hl
-    00000319 23               [ 8]  742 	inc	hl
-    0000031A 2A               [ 8]  743 	ld	a, (hl+)
-    0000031B 4F               [ 4]  744 	ld	c, a
-    0000031C 46               [ 8]  745 	ld	b, (hl)
-    0000031D F8 02            [12]  746 	ldhl	sp,#2
-    0000031F 2A               [ 8]  747 	ld	a, (hl+)
-    00000320 5F               [ 4]  748 	ld	e, a
-    00000321 56               [ 8]  749 	ld	d, (hl)
-    00000322 7B               [ 4]  750 	ld	a, e
-    00000323 91               [ 4]  751 	sub	a, c
-    00000324 5F               [ 4]  752 	ld	e, a
-    00000325 7A               [ 4]  753 	ld	a, d
-    00000326 98               [ 4]  754 	sbc	a, b
-    00000327 F8 0D            [12]  755 	ldhl	sp,	#13
-    00000329 32               [ 8]  756 	ld	(hl-), a
-                                    757 ;src/utils/projectile.c:62: if (dx < 0)
-    0000032A 7B               [ 4]  758 	ld	a, e
-    0000032B 32               [ 8]  759 	ld	(hl-), a
-    0000032C 2B               [ 8]  760 	dec	hl
-    0000032D 2A               [ 8]  761 	ld	a, (hl+)
-    0000032E CB 7E            [12]  762 	bit	7, (hl)
-    00000330 28 0F            [12]  763 	jr	Z, 00102$
-                                    764 ;src/utils/projectile.c:63: dx = -dx;
-    00000332 11 00 00         [12]  765 	ld	de, #0x0000
-    00000335 3A               [ 8]  766 	ld	a, (hl-)
-    00000336 6E               [ 8]  767 	ld	l, (hl)
-    00000337 67               [ 4]  768 	ld	h, a
-    00000338 7B               [ 4]  769 	ld	a, e
-    00000339 95               [ 4]  770 	sub	a, l
-    0000033A 5F               [ 4]  771 	ld	e, a
-    0000033B 7A               [ 4]  772 	ld	a, d
-    0000033C 9C               [ 4]  773 	sbc	a, h
-    0000033D F8 0B            [12]  774 	ldhl	sp,	#11
-    0000033F 32               [ 8]  775 	ld	(hl-), a
-    00000340 73               [ 8]  776 	ld	(hl), e
-    00000341                        777 00102$:
-                                    778 ;src/utils/projectile.c:64: if (dy < 0)
-    00000341 F8 0C            [12]  779 	ldhl	sp,	#12
-    00000343 2A               [ 8]  780 	ld	a, (hl+)
-    00000344 CB 7E            [12]  781 	bit	7, (hl)
-    00000346 28 0F            [12]  782 	jr	Z, 00104$
-                                    783 ;src/utils/projectile.c:65: dy = -dy;
-    00000348 11 00 00         [12]  784 	ld	de, #0x0000
-    0000034B 3A               [ 8]  785 	ld	a, (hl-)
-    0000034C 6E               [ 8]  786 	ld	l, (hl)
-    0000034D 67               [ 4]  787 	ld	h, a
-    0000034E 7B               [ 4]  788 	ld	a, e
-    0000034F 95               [ 4]  789 	sub	a, l
-    00000350 5F               [ 4]  790 	ld	e, a
-    00000351 7A               [ 4]  791 	ld	a, d
-    00000352 9C               [ 4]  792 	sbc	a, h
-    00000353 F8 0D            [12]  793 	ldhl	sp,	#13
-    00000355 32               [ 8]  794 	ld	(hl-), a
-    00000356 73               [ 8]  795 	ld	(hl), e
-    00000357                        796 00104$:
-                                    797 ;src/utils/projectile.c:67: if (dx < 8 && dy < 8) {
-    00000357 F8 0A            [12]  798 	ldhl	sp,	#10
-    00000359 2A               [ 8]  799 	ld	a, (hl+)
-    0000035A 4F               [ 4]  800 	ld	c, a
-    0000035B 46               [ 8]  801 	ld	b, (hl)
-    0000035C 79               [ 4]  802 	ld	a, c
-    0000035D D6 08            [ 8]  803 	sub	a, #0x08
-    0000035F 78               [ 4]  804 	ld	a, b
-    00000360 17               [ 4]  805 	rla
-    00000361 3F               [ 4]  806 	ccf
-    00000362 1F               [ 4]  807 	rra
-    00000363 DE 80            [ 8]  808 	sbc	a, #0x80
-    00000365 30 25            [12]  809 	jr	NC, 00114$
-    00000367 23               [ 8]  810 	inc	hl
-    00000368 2A               [ 8]  811 	ld	a, (hl+)
-    00000369 4F               [ 4]  812 	ld	c, a
-    0000036A 46               [ 8]  813 	ld	b, (hl)
-    0000036B 79               [ 4]  814 	ld	a, c
-    0000036C D6 08            [ 8]  815 	sub	a, #0x08
-    0000036E 78               [ 4]  816 	ld	a, b
-    0000036F 17               [ 4]  817 	rla
-    00000370 3F               [ 4]  818 	ccf
-    00000371 1F               [ 4]  819 	rra
-    00000372 DE 80            [ 8]  820 	sbc	a, #0x80
-    00000374 30 16            [12]  821 	jr	NC, 00114$
-                                    822 ;src/utils/projectile.c:68: projectiles[i].active = 0; // Deactivate on hit
-    00000376 C1               [12]  823 	pop	bc
-    00000377 C5               [16]  824 	push	bc
-    00000378 69               [ 4]  825 	ld	l, c
-    00000379 60               [ 4]  826 	ld	h, b
-    0000037A 29               [ 8]  827 	add	hl, hl
-    0000037B 29               [ 8]  828 	add	hl, hl
-    0000037C 29               [ 8]  829 	add	hl, hl
-    0000037D 09               [ 8]  830 	add	hl, bc
-    0000037E 11r00r00         [12]  831 	ld	de, #_projectiles
-    00000381 19               [ 8]  832 	add	hl, de
-    00000382 01 06 00         [12]  833 	ld	bc, #0x0006
-    00000385 09               [ 8]  834 	add	hl, bc
-    00000386 36 00            [12]  835 	ld	(hl), #0x00
-                                    836 ;src/utils/projectile.c:69: return 1;
-    00000388 3E 01            [ 8]  837 	ld	a, #0x01
-    0000038A 18 0F            [12]  838 	jr	00115$
-    0000038C                        839 00114$:
-                                    840 ;src/utils/projectile.c:58: for (int i = 0; i < MAX_PROJECTILES; i++) {
-    0000038C F8 08            [12]  841 	ldhl	sp,	#8
-    0000038E 34               [12]  842 	inc	(hl)
-    0000038F F8 08            [12]  843 	ldhl	sp,	#8
-    00000391 7E               [ 8]  844 	ld	a, (hl)
-    00000392 F8 00            [12]  845 	ldhl	sp,	#0
-    00000394 22               [ 8]  846 	ld	(hl+), a
-    00000395 36 00            [12]  847 	ld	(hl), #0x00
-    00000397 C3rB5r02         [16]  848 	jp	00113$
-    0000039A                        849 00111$:
-                                    850 ;src/utils/projectile.c:73: return 0;
-    0000039A AF               [ 4]  851 	xor	a, a
-    0000039B                        852 00115$:
-                                    853 ;src/utils/projectile.c:74: }
-    0000039B E8 0E            [16]  854 	add	sp, #14
-    0000039D C9               [16]  855 	ret
-                                    856 	.area _CODE
-                                    857 	.area _INITIALIZER
-                                    858 	.area _CABS (ABS)
+                                    424 ;src/utils/projectile.c:46: uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
+    000001A4 21r00r00         [12]  425 	ld	hl, #_current_map
+    000001A7 7E               [ 8]  426 	ld	a, (hl)
+    000001A8 D6r34            [ 8]  427 	sub	a, #<((_maps + 52))
+    000001AA 20 06            [12]  428 	jr	NZ, 00164$
+    000001AC 23               [ 8]  429 	inc	hl
+    000001AD 7E               [ 8]  430 	ld	a, (hl)
+    000001AE D6s00            [ 8]  431 	sub	a, #>((_maps + 52))
+    000001B0 28 11            [12]  432 	jr	Z, 00119$
+    000001B2                        433 00164$:
+    000001B2 21r00r00         [12]  434 	ld	hl, #_current_map
+    000001B5 7E               [ 8]  435 	ld	a, (hl)
+    000001B6 D6r68            [ 8]  436 	sub	a, #<((_maps + 104))
+    000001B8 20 06            [12]  437 	jr	NZ, 00165$
+    000001BA 23               [ 8]  438 	inc	hl
+    000001BB 7E               [ 8]  439 	ld	a, (hl)
+    000001BC D6s00            [ 8]  440 	sub	a, #>((_maps + 104))
+    000001BE 28 03            [12]  441 	jr	Z, 00119$
+    000001C0                        442 00165$:
+    000001C0 AF               [ 4]  443 	xor	a, a
+    000001C1 18 02            [12]  444 	jr	00120$
+    000001C3                        445 00119$:
+    000001C3 3E 01            [ 8]  446 	ld	a, #0x01
+    000001C5                        447 00120$:
+    000001C5 F8 00            [12]  448 	ldhl	sp,	#0
+    000001C7 77               [ 8]  449 	ld	(hl), a
+                                    450 ;src/utils/projectile.c:47: for (int i = 0; i < MAX_PROJECTILES; i++) {
+    000001C8 AF               [ 4]  451 	xor	a, a
+    000001C9 F8 0B            [12]  452 	ldhl	sp,	#11
+    000001CB 22               [ 8]  453 	ld	(hl+), a
+    000001CC 77               [ 8]  454 	ld	(hl), a
+    000001CD                        455 00114$:
+    000001CD F8 0B            [12]  456 	ldhl	sp,	#11
+    000001CF 2A               [ 8]  457 	ld	a, (hl+)
+    000001D0 D6 04            [ 8]  458 	sub	a, #0x04
+    000001D2 7E               [ 8]  459 	ld	a, (hl)
+    000001D3 DE 00            [ 8]  460 	sbc	a, #0x00
+    000001D5 D2r2Dr03         [16]  461 	jp	NC, 00116$
+                                    462 ;src/utils/projectile.c:48: if (projectiles[i].active) {
+    000001D8 2B               [ 8]  463 	dec	hl
+    000001D9 2A               [ 8]  464 	ld	a, (hl+)
+    000001DA 4F               [ 4]  465 	ld	c, a
+    000001DB 46               [ 8]  466 	ld	b, (hl)
+    000001DC 69               [ 4]  467 	ld	l, c
+    000001DD 60               [ 4]  468 	ld	h, b
+    000001DE 29               [ 8]  469 	add	hl, hl
+    000001DF 29               [ 8]  470 	add	hl, hl
+    000001E0 29               [ 8]  471 	add	hl, hl
+    000001E1 09               [ 8]  472 	add	hl, bc
+    000001E2 E5               [16]  473 	push	hl
+    000001E3 7D               [ 4]  474 	ld	a, l
+    000001E4 F8 07            [12]  475 	ldhl	sp,	#7
+    000001E6 77               [ 8]  476 	ld	(hl), a
+    000001E7 E1               [12]  477 	pop	hl
+    000001E8 7C               [ 4]  478 	ld	a, h
+    000001E9 F8 06            [12]  479 	ldhl	sp,	#6
+    000001EB 32               [ 8]  480 	ld	(hl-), a
+    000001EC 2A               [ 8]  481 	ld	a, (hl+)
+    000001ED 5F               [ 4]  482 	ld	e, a
+    000001EE 56               [ 8]  483 	ld	d, (hl)
+    000001EF 21r00r00         [12]  484 	ld	hl, #_projectiles
+    000001F2 19               [ 8]  485 	add	hl, de
+    000001F3 E5               [16]  486 	push	hl
+    000001F4 7D               [ 4]  487 	ld	a, l
+    000001F5 F8 03            [12]  488 	ldhl	sp,	#3
+    000001F7 77               [ 8]  489 	ld	(hl), a
+    000001F8 E1               [12]  490 	pop	hl
+    000001F9 7C               [ 4]  491 	ld	a, h
+    000001FA F8 02            [12]  492 	ldhl	sp,	#2
+    000001FC 32               [ 8]  493 	ld	(hl-), a
+    000001FD 2A               [ 8]  494 	ld	a, (hl+)
+    000001FE 5F               [ 4]  495 	ld	e, a
+    000001FF 56               [ 8]  496 	ld	d, (hl)
+    00000200 21 06 00         [12]  497 	ld	hl, #0x0006
+    00000203 19               [ 8]  498 	add	hl, de
+    00000204 4D               [ 4]  499 	ld	c, l
+    00000205 44               [ 4]  500 	ld	b, h
+    00000206 0A               [ 8]  501 	ld	a, (bc)
+    00000207 F8 06            [12]  502 	ldhl	sp,	#6
+    00000209 77               [ 8]  503 	ld	(hl), a
+                                    504 ;src/utils/projectile.c:55: move_sprite(projectiles[i].sprite_id, 0, 0);
+    0000020A F8 01            [12]  505 	ldhl	sp,#1
+    0000020C 2A               [ 8]  506 	ld	a, (hl+)
+    0000020D 5F               [ 4]  507 	ld	e, a
+    0000020E 56               [ 8]  508 	ld	d, (hl)
+    0000020F 21 07 00         [12]  509 	ld	hl, #0x0007
+    00000212 19               [ 8]  510 	add	hl, de
+    00000213 E5               [16]  511 	push	hl
+    00000214 7D               [ 4]  512 	ld	a, l
+    00000215 F8 05            [12]  513 	ldhl	sp,	#5
+    00000217 77               [ 8]  514 	ld	(hl), a
+    00000218 E1               [12]  515 	pop	hl
+    00000219 7C               [ 4]  516 	ld	a, h
+    0000021A F8 04            [12]  517 	ldhl	sp,	#4
+                                    518 ;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, sx, sy);
+    0000021C 32               [ 8]  519 	ld	(hl-), a
+    0000021D 2A               [ 8]  520 	ld	a, (hl+)
+    0000021E 5F               [ 4]  521 	ld	e, a
+    0000021F 2A               [ 8]  522 	ld	a, (hl+)
+    00000220 57               [ 4]  523 	ld	d, a
+    00000221 1A               [ 8]  524 	ld	a, (de)
+                                    525 ;src/utils/projectile.c:48: if (projectiles[i].active) {
+    00000222 22               [ 8]  526 	ld	(hl+), a
+    00000223 7E               [ 8]  527 	ld	a, (hl)
+    00000224 B7               [ 4]  528 	or	a, a
+    00000225 CArEEr02         [16]  529 	jp	Z, 00106$
+                                    530 ;src/utils/projectile.c:49: uint16_t sx = projectiles[i].x - camera_x + 8;
+    00000228 F8 01            [12]  531 	ldhl	sp,#1
+    0000022A 2A               [ 8]  532 	ld	a, (hl+)
+    0000022B 5F               [ 4]  533 	ld	e, a
+    0000022C 56               [ 8]  534 	ld	d, (hl)
+    0000022D 1A               [ 8]  535 	ld	a, (de)
+    0000022E F8 09            [12]  536 	ldhl	sp,	#9
+    00000230 4E               [ 8]  537 	ld	c, (hl)
+    00000231 91               [ 4]  538 	sub	a, c
+    00000232 C6 08            [ 8]  539 	add	a, #0x08
+    00000234 F8 06            [12]  540 	ldhl	sp,	#6
+    00000236 77               [ 8]  541 	ld	(hl), a
+                                    542 ;src/utils/projectile.c:50: uint16_t sy = projectiles[i].y - camera_y + 16;
+    00000237 F8 01            [12]  543 	ldhl	sp,	#1
+    00000239 2A               [ 8]  544 	ld	a, (hl+)
+    0000023A 66               [ 8]  545 	ld	h, (hl)
+    0000023B 6F               [ 4]  546 	ld	l, a
+    0000023C 23               [ 8]  547 	inc	hl
+    0000023D 23               [ 8]  548 	inc	hl
+    0000023E 2A               [ 8]  549 	ld	a, (hl+)
+    0000023F 46               [ 8]  550 	ld	b, (hl)
+    00000240 5F               [ 4]  551 	ld	e, a
+    00000241 50               [ 4]  552 	ld	d, b
+    00000242 F8 07            [12]  553 	ldhl	sp,	#7
+    00000244 2A               [ 8]  554 	ld	a,	(hl+)
+    00000245 66               [ 8]  555 	ld	h, (hl)
+    00000246 6F               [ 4]  556 	ld	l, a
+    00000247 7B               [ 4]  557 	ld	a, e
+    00000248 95               [ 4]  558 	sub	a, l
+    00000249 5F               [ 4]  559 	ld	e, a
+    0000024A 7A               [ 4]  560 	ld	a, d
+    0000024B 9C               [ 4]  561 	sbc	a, h
+    0000024C 4B               [ 4]  562 	ld	c, e
+    0000024D 47               [ 4]  563 	ld	b, a
+    0000024E 21 10 00         [12]  564 	ld	hl, #0x0010
+    00000251 09               [ 8]  565 	add	hl, bc
+    00000252 4D               [ 4]  566 	ld	c, l
+    00000253 44               [ 4]  567 	ld	b, h
+                                    568 ;src/utils/projectile.c:51: if (!use_clipping || sy < 140) {
+    00000254 F8 00            [12]  569 	ldhl	sp,	#0
+    00000256 7E               [ 8]  570 	ld	a, (hl)
+    00000257 B7               [ 4]  571 	or	a, a
+    00000258 28 0A            [12]  572 	jr	Z, 00101$
+    0000025A 59               [ 4]  573 	ld	e, c
+    0000025B 50               [ 4]  574 	ld	d, b
+    0000025C 7B               [ 4]  575 	ld	a, e
+    0000025D D6 8C            [ 8]  576 	sub	a, #0x8c
+    0000025F 7A               [ 4]  577 	ld	a, d
+    00000260 DE 00            [ 8]  578 	sbc	a, #0x00
+    00000262 30 52            [12]  579 	jr	NC, 00102$
+    00000264                        580 00101$:
+                                    581 ;src/utils/projectile.c:52: move_sprite(projectiles[i].sprite_id, sx, sy);
+    00000264 F8 06            [12]  582 	ldhl	sp,	#6
+    00000266 3A               [ 8]  583 	ld	a, (hl-)
+    00000267 5F               [ 4]  584 	ld	e, a
+                                    585 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    00000268 6E               [ 8]  586 	ld	l, (hl)
+    00000269 26 00            [ 8]  587 	ld	h, #0x00
+    0000026B 29               [ 8]  588 	add	hl, hl
+    0000026C 29               [ 8]  589 	add	hl, hl
+    0000026D D5               [16]  590 	push	de
+    0000026E 11r00r00         [12]  591 	ld	de, #_shadow_OAM
+    00000271 19               [ 8]  592 	add	hl, de
+    00000272 D1               [12]  593 	pop	de
+                                    594 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000273 79               [ 4]  595 	ld	a, c
+    00000274 22               [ 8]  596 	ld	(hl+), a
+    00000275 73               [ 8]  597 	ld	(hl), e
+                                    598 ;src/utils/projectile.c:53: set_sprite_tile(projectiles[i].sprite_id, 40);
+    00000276 F8 03            [12]  599 	ldhl	sp,#3
+    00000278 2A               [ 8]  600 	ld	a, (hl+)
+    00000279 5F               [ 4]  601 	ld	e, a
+                                    602 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+    0000027A 2A               [ 8]  603 	ld	a, (hl+)
+    0000027B 57               [ 4]  604 	ld	d, a
+    0000027C 1A               [ 8]  605 	ld	a, (de)
+    0000027D 22               [ 8]  606 	ld	(hl+), a
+    0000027E 36 00            [12]  607 	ld	(hl), #0x00
+    00000280 3E 02            [ 8]  608 	ld	a, #0x02
+    00000282                        609 00166$:
+    00000282 F8 05            [12]  610 	ldhl	sp,	#5
+    00000284 CB 26            [16]  611 	sla	(hl)
+    00000286 23               [ 8]  612 	inc	hl
+    00000287 CB 16            [16]  613 	rl	(hl)
+    00000289 3D               [ 4]  614 	dec	a
+    0000028A 20 F6            [12]  615 	jr	NZ, 00166$
+    0000028C 2B               [ 8]  616 	dec	hl
+    0000028D 2A               [ 8]  617 	ld	a, (hl+)
+    0000028E 5F               [ 4]  618 	ld	e, a
+    0000028F 56               [ 8]  619 	ld	d, (hl)
+    00000290 21r00r00         [12]  620 	ld	hl, #_shadow_OAM
+    00000293 19               [ 8]  621 	add	hl, de
+    00000294 E5               [16]  622 	push	hl
+    00000295 7D               [ 4]  623 	ld	a, l
+    00000296 F8 05            [12]  624 	ldhl	sp,	#5
+    00000298 77               [ 8]  625 	ld	(hl), a
+    00000299 E1               [12]  626 	pop	hl
+    0000029A 7C               [ 4]  627 	ld	a, h
+    0000029B F8 04            [12]  628 	ldhl	sp,	#4
+    0000029D 32               [ 8]  629 	ld	(hl-), a
+    0000029E 2A               [ 8]  630 	ld	a, (hl+)
+    0000029F 5F               [ 4]  631 	ld	e, a
+    000002A0 56               [ 8]  632 	ld	d, (hl)
+    000002A1 21 02 00         [12]  633 	ld	hl, #0x0002
+    000002A4 19               [ 8]  634 	add	hl, de
+    000002A5 E5               [16]  635 	push	hl
+    000002A6 7D               [ 4]  636 	ld	a, l
+    000002A7 F8 07            [12]  637 	ldhl	sp,	#7
+    000002A9 77               [ 8]  638 	ld	(hl), a
+    000002AA E1               [12]  639 	pop	hl
+    000002AB 7C               [ 4]  640 	ld	a, h
+    000002AC F8 06            [12]  641 	ldhl	sp,	#6
+    000002AE 32               [ 8]  642 	ld	(hl-), a
+    000002AF 2A               [ 8]  643 	ld	a, (hl+)
+    000002B0 66               [ 8]  644 	ld	h, (hl)
+    000002B1 6F               [ 4]  645 	ld	l, a
+    000002B2 36 28            [12]  646 	ld	(hl), #0x28
+                                    647 ;src/utils/projectile.c:53: set_sprite_tile(projectiles[i].sprite_id, 40);
+    000002B4 18 71            [12]  648 	jr	00115$
+    000002B6                        649 00102$:
+                                    650 ;src/utils/projectile.c:55: move_sprite(projectiles[i].sprite_id, 0, 0);
+    000002B6 F8 05            [12]  651 	ldhl	sp,	#5
+                                    652 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    000002B8 7E               [ 8]  653 	ld	a, (hl)
+    000002B9 22               [ 8]  654 	ld	(hl+), a
+    000002BA AF               [ 4]  655 	xor	a, a
+    000002BB 32               [ 8]  656 	ld	(hl-), a
+    000002BC 3A               [ 8]  657 	ld	a, (hl-)
+    000002BD 2B               [ 8]  658 	dec	hl
+    000002BE 22               [ 8]  659 	ld	(hl+), a
+    000002BF 36 00            [12]  660 	ld	(hl), #0x00
+    000002C1 3E 02            [ 8]  661 	ld	a, #0x02
+    000002C3                        662 00167$:
+    000002C3 F8 03            [12]  663 	ldhl	sp,	#3
+    000002C5 CB 26            [16]  664 	sla	(hl)
+    000002C7 23               [ 8]  665 	inc	hl
+    000002C8 CB 16            [16]  666 	rl	(hl)
+    000002CA 3D               [ 4]  667 	dec	a
+    000002CB 20 F6            [12]  668 	jr	NZ, 00167$
+    000002CD 2B               [ 8]  669 	dec	hl
+    000002CE 2A               [ 8]  670 	ld	a, (hl+)
+    000002CF 5F               [ 4]  671 	ld	e, a
+    000002D0 56               [ 8]  672 	ld	d, (hl)
+    000002D1 21r00r00         [12]  673 	ld	hl, #_shadow_OAM
+    000002D4 19               [ 8]  674 	add	hl, de
+    000002D5 E5               [16]  675 	push	hl
+    000002D6 7D               [ 4]  676 	ld	a, l
+    000002D7 F8 07            [12]  677 	ldhl	sp,	#7
+    000002D9 77               [ 8]  678 	ld	(hl), a
+    000002DA E1               [12]  679 	pop	hl
+    000002DB 7C               [ 4]  680 	ld	a, h
+    000002DC F8 06            [12]  681 	ldhl	sp,	#6
+                                    682 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    000002DE 32               [ 8]  683 	ld	(hl-), a
+    000002DF 2A               [ 8]  684 	ld	a, (hl+)
+    000002E0 66               [ 8]  685 	ld	h, (hl)
+    000002E1 6F               [ 4]  686 	ld	l, a
+    000002E2 36 00            [12]  687 	ld	(hl), #0x00
+    000002E4 F8 05            [12]  688 	ldhl	sp,	#5
+    000002E6 2A               [ 8]  689 	ld	a, (hl+)
+    000002E7 4F               [ 4]  690 	ld	c, a
+    000002E8 46               [ 8]  691 	ld	b, (hl)
+    000002E9 03               [ 8]  692 	inc	bc
+    000002EA AF               [ 4]  693 	xor	a, a
+    000002EB 02               [ 8]  694 	ld	(bc), a
+                                    695 ;src/utils/projectile.c:55: move_sprite(projectiles[i].sprite_id, 0, 0);
+    000002EC 18 39            [12]  696 	jr	00115$
+    000002EE                        697 00106$:
+                                    698 ;src/utils/projectile.c:58: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
+    000002EE F8 05            [12]  699 	ldhl	sp,	#5
+    000002F0 2A               [ 8]  700 	ld	a, (hl+)
+    000002F1 77               [ 8]  701 	ld	(hl), a
+                                    702 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+    000002F2 3A               [ 8]  703 	ld	a, (hl-)
+    000002F3 22               [ 8]  704 	ld	(hl+), a
+    000002F4 36 00            [12]  705 	ld	(hl), #0x00
+    000002F6 3E 02            [ 8]  706 	ld	a, #0x02
+    000002F8                        707 00168$:
+    000002F8 F8 05            [12]  708 	ldhl	sp,	#5
+    000002FA CB 26            [16]  709 	sla	(hl)
+    000002FC 23               [ 8]  710 	inc	hl
+    000002FD CB 16            [16]  711 	rl	(hl)
+    000002FF 3D               [ 4]  712 	dec	a
+    00000300 20 F6            [12]  713 	jr	NZ, 00168$
+    00000302 2B               [ 8]  714 	dec	hl
+    00000303 2A               [ 8]  715 	ld	a, (hl+)
+    00000304 5F               [ 4]  716 	ld	e, a
+    00000305 56               [ 8]  717 	ld	d, (hl)
+    00000306 21r00r00         [12]  718 	ld	hl, #_shadow_OAM
+    00000309 19               [ 8]  719 	add	hl, de
+    0000030A E5               [16]  720 	push	hl
+    0000030B 7D               [ 4]  721 	ld	a, l
+    0000030C F8 05            [12]  722 	ldhl	sp,	#5
+    0000030E 77               [ 8]  723 	ld	(hl), a
+    0000030F E1               [12]  724 	pop	hl
+    00000310 7C               [ 4]  725 	ld	a, h
+    00000311 F8 04            [12]  726 	ldhl	sp,	#4
+    00000313 32               [ 8]  727 	ld	(hl-), a
+    00000314 2A               [ 8]  728 	ld	a, (hl+)
+    00000315 23               [ 8]  729 	inc	hl
+    00000316 32               [ 8]  730 	ld	(hl-), a
+    00000317 2A               [ 8]  731 	ld	a, (hl+)
+    00000318 23               [ 8]  732 	inc	hl
+                                    733 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+    00000319 32               [ 8]  734 	ld	(hl-), a
+    0000031A 2A               [ 8]  735 	ld	a, (hl+)
+    0000031B 66               [ 8]  736 	ld	h, (hl)
+    0000031C 6F               [ 4]  737 	ld	l, a
+    0000031D 36 00            [12]  738 	ld	(hl), #0x00
+    0000031F F8 05            [12]  739 	ldhl	sp,	#5
+    00000321 2A               [ 8]  740 	ld	a, (hl+)
+    00000322 66               [ 8]  741 	ld	h, (hl)
+    00000323 6F               [ 4]  742 	ld	l, a
+    00000324 23               [ 8]  743 	inc	hl
+    00000325 36 00            [12]  744 	ld	(hl), #0x00
+                                    745 ;src/utils/projectile.c:58: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
+    00000327                        746 00115$:
+                                    747 ;src/utils/projectile.c:47: for (int i = 0; i < MAX_PROJECTILES; i++) {
+    00000327 F8 0B            [12]  748 	ldhl	sp,	#11
+    00000329 34               [12]  749 	inc	(hl)
+    0000032A C3rCDr01         [16]  750 	jp	00114$
+    0000032D                        751 00116$:
+                                    752 ;src/utils/projectile.c:61: }
+    0000032D E8 0D            [16]  753 	add	sp, #13
+    0000032F C9               [16]  754 	ret
+                                    755 ;src/utils/projectile.c:63: uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
+                                    756 ;	---------------------------------
+                                    757 ; Function projectile_check_collision
+                                    758 ; ---------------------------------
+    00000330                        759 _projectile_check_collision::
+    00000330 E8 F2            [16]  760 	add	sp, #-14
+    00000332 F8 06            [12]  761 	ldhl	sp,	#6
+    00000334 7B               [ 4]  762 	ld	a, e
+    00000335 22               [ 8]  763 	ld	(hl+), a
+    00000336 72               [ 8]  764 	ld	(hl), d
+    00000337 F8 04            [12]  765 	ldhl	sp,	#4
+    00000339 79               [ 4]  766 	ld	a, c
+    0000033A 22               [ 8]  767 	ld	(hl+), a
+    0000033B 70               [ 8]  768 	ld	(hl), b
+                                    769 ;src/utils/projectile.c:64: for (int i = 0; i < MAX_PROJECTILES; i++) {
+    0000033C AF               [ 4]  770 	xor	a, a
+    0000033D F8 00            [12]  771 	ldhl	sp,	#0
+    0000033F 22               [ 8]  772 	ld	(hl+), a
+    00000340 77               [ 8]  773 	ld	(hl), a
+    00000341 AF               [ 4]  774 	xor	a, a
+    00000342 F8 08            [12]  775 	ldhl	sp,	#8
+    00000344 22               [ 8]  776 	ld	(hl+), a
+    00000345 77               [ 8]  777 	ld	(hl), a
+    00000346                        778 00113$:
+    00000346 F8 08            [12]  779 	ldhl	sp,	#8
+    00000348 2A               [ 8]  780 	ld	a, (hl+)
+    00000349 D6 04            [ 8]  781 	sub	a, #0x04
+    0000034B 7E               [ 8]  782 	ld	a, (hl)
+    0000034C DE 00            [ 8]  783 	sbc	a, #0x00
+    0000034E D2r2Br04         [16]  784 	jp	NC, 00111$
+                                    785 ;src/utils/projectile.c:65: if (projectiles[i].active && projectiles[i].source == 0) {
+    00000351 2B               [ 8]  786 	dec	hl
+    00000352 2A               [ 8]  787 	ld	a, (hl+)
+    00000353 4F               [ 4]  788 	ld	c, a
+    00000354 46               [ 8]  789 	ld	b, (hl)
+    00000355 69               [ 4]  790 	ld	l, c
+    00000356 60               [ 4]  791 	ld	h, b
+    00000357 29               [ 8]  792 	add	hl, hl
+    00000358 29               [ 8]  793 	add	hl, hl
+    00000359 29               [ 8]  794 	add	hl, hl
+    0000035A 09               [ 8]  795 	add	hl, bc
+    0000035B 7D               [ 4]  796 	ld	a, l
+    0000035C C6r00            [ 8]  797 	add	a, #<(_projectiles)
+    0000035E 4F               [ 4]  798 	ld	c, a
+    0000035F 7C               [ 4]  799 	ld	a, h
+    00000360 CEs00            [ 8]  800 	adc	a, #>(_projectiles)
+    00000362 47               [ 4]  801 	ld	b, a
+    00000363 21 06 00         [12]  802 	ld	hl, #0x0006
+    00000366 09               [ 8]  803 	add	hl, bc
+    00000367 7E               [ 8]  804 	ld	a, (hl)
+    00000368 B7               [ 4]  805 	or	a, a
+    00000369 CAr1Dr04         [16]  806 	jp	Z, 00114$
+    0000036C 21 08 00         [12]  807 	ld	hl, #0x0008
+    0000036F 09               [ 8]  808 	add	hl, bc
+    00000370 7E               [ 8]  809 	ld	a, (hl)
+    00000371 B7               [ 4]  810 	or	a, a
+    00000372 C2r1Dr04         [16]  811 	jp	NZ, 00114$
+                                    812 ;src/utils/projectile.c:66: int16_t dx = (int16_t)px - (int16_t)projectiles[i].x;
+    00000375 F8 06            [12]  813 	ldhl	sp,	#6
+    00000377 7E               [ 8]  814 	ld	a, (hl)
+    00000378 F8 02            [12]  815 	ldhl	sp,	#2
+    0000037A 77               [ 8]  816 	ld	(hl), a
+    0000037B F8 07            [12]  817 	ldhl	sp,	#7
+    0000037D 7E               [ 8]  818 	ld	a, (hl)
+    0000037E F8 03            [12]  819 	ldhl	sp,	#3
+    00000380 77               [ 8]  820 	ld	(hl), a
+    00000381 59               [ 4]  821 	ld	e, c
+    00000382 50               [ 4]  822 	ld	d, b
+    00000383 1A               [ 8]  823 	ld	a, (de)
+    00000384 F8 0C            [12]  824 	ldhl	sp,	#12
+    00000386 22               [ 8]  825 	ld	(hl+), a
+    00000387 13               [ 8]  826 	inc	de
+    00000388 1A               [ 8]  827 	ld	a, (de)
+    00000389 77               [ 8]  828 	ld	(hl), a
+    0000038A F8 02            [12]  829 	ldhl	sp,#2
+    0000038C 2A               [ 8]  830 	ld	a, (hl+)
+    0000038D 5F               [ 4]  831 	ld	e, a
+    0000038E 56               [ 8]  832 	ld	d, (hl)
+    0000038F F8 0C            [12]  833 	ldhl	sp,	#12
+    00000391 2A               [ 8]  834 	ld	a,	(hl+)
+    00000392 66               [ 8]  835 	ld	h, (hl)
+    00000393 6F               [ 4]  836 	ld	l, a
+    00000394 7B               [ 4]  837 	ld	a, e
+    00000395 95               [ 4]  838 	sub	a, l
+    00000396 5F               [ 4]  839 	ld	e, a
+    00000397 7A               [ 4]  840 	ld	a, d
+    00000398 9C               [ 4]  841 	sbc	a, h
+    00000399 F8 0B            [12]  842 	ldhl	sp,	#11
+    0000039B 32               [ 8]  843 	ld	(hl-), a
+    0000039C 73               [ 8]  844 	ld	(hl), e
+                                    845 ;src/utils/projectile.c:67: int16_t dy = (int16_t)py - (int16_t)projectiles[i].y;
+    0000039D F8 04            [12]  846 	ldhl	sp,	#4
+    0000039F 3A               [ 8]  847 	ld	a, (hl-)
+    000003A0 2B               [ 8]  848 	dec	hl
+    000003A1 77               [ 8]  849 	ld	(hl), a
+    000003A2 F8 05            [12]  850 	ldhl	sp,	#5
+    000003A4 3A               [ 8]  851 	ld	a, (hl-)
+    000003A5 2B               [ 8]  852 	dec	hl
+    000003A6 77               [ 8]  853 	ld	(hl), a
+    000003A7 69               [ 4]  854 	ld	l, c
+    000003A8 60               [ 4]  855 	ld	h, b
+    000003A9 23               [ 8]  856 	inc	hl
+    000003AA 23               [ 8]  857 	inc	hl
+    000003AB 2A               [ 8]  858 	ld	a, (hl+)
+    000003AC 4F               [ 4]  859 	ld	c, a
+    000003AD 46               [ 8]  860 	ld	b, (hl)
+    000003AE F8 02            [12]  861 	ldhl	sp,#2
+    000003B0 2A               [ 8]  862 	ld	a, (hl+)
+    000003B1 5F               [ 4]  863 	ld	e, a
+    000003B2 56               [ 8]  864 	ld	d, (hl)
+    000003B3 7B               [ 4]  865 	ld	a, e
+    000003B4 91               [ 4]  866 	sub	a, c
+    000003B5 5F               [ 4]  867 	ld	e, a
+    000003B6 7A               [ 4]  868 	ld	a, d
+    000003B7 98               [ 4]  869 	sbc	a, b
+    000003B8 F8 0D            [12]  870 	ldhl	sp,	#13
+    000003BA 32               [ 8]  871 	ld	(hl-), a
+                                    872 ;src/utils/projectile.c:68: if (dx < 0)
+    000003BB 7B               [ 4]  873 	ld	a, e
+    000003BC 32               [ 8]  874 	ld	(hl-), a
+    000003BD 2B               [ 8]  875 	dec	hl
+    000003BE 2A               [ 8]  876 	ld	a, (hl+)
+    000003BF CB 7E            [12]  877 	bit	7, (hl)
+    000003C1 28 0F            [12]  878 	jr	Z, 00102$
+                                    879 ;src/utils/projectile.c:69: dx = -dx;
+    000003C3 11 00 00         [12]  880 	ld	de, #0x0000
+    000003C6 3A               [ 8]  881 	ld	a, (hl-)
+    000003C7 6E               [ 8]  882 	ld	l, (hl)
+    000003C8 67               [ 4]  883 	ld	h, a
+    000003C9 7B               [ 4]  884 	ld	a, e
+    000003CA 95               [ 4]  885 	sub	a, l
+    000003CB 5F               [ 4]  886 	ld	e, a
+    000003CC 7A               [ 4]  887 	ld	a, d
+    000003CD 9C               [ 4]  888 	sbc	a, h
+    000003CE F8 0B            [12]  889 	ldhl	sp,	#11
+    000003D0 32               [ 8]  890 	ld	(hl-), a
+    000003D1 73               [ 8]  891 	ld	(hl), e
+    000003D2                        892 00102$:
+                                    893 ;src/utils/projectile.c:70: if (dy < 0)
+    000003D2 F8 0C            [12]  894 	ldhl	sp,	#12
+    000003D4 2A               [ 8]  895 	ld	a, (hl+)
+    000003D5 CB 7E            [12]  896 	bit	7, (hl)
+    000003D7 28 0F            [12]  897 	jr	Z, 00104$
+                                    898 ;src/utils/projectile.c:71: dy = -dy;
+    000003D9 11 00 00         [12]  899 	ld	de, #0x0000
+    000003DC 3A               [ 8]  900 	ld	a, (hl-)
+    000003DD 6E               [ 8]  901 	ld	l, (hl)
+    000003DE 67               [ 4]  902 	ld	h, a
+    000003DF 7B               [ 4]  903 	ld	a, e
+    000003E0 95               [ 4]  904 	sub	a, l
+    000003E1 5F               [ 4]  905 	ld	e, a
+    000003E2 7A               [ 4]  906 	ld	a, d
+    000003E3 9C               [ 4]  907 	sbc	a, h
+    000003E4 F8 0D            [12]  908 	ldhl	sp,	#13
+    000003E6 32               [ 8]  909 	ld	(hl-), a
+    000003E7 73               [ 8]  910 	ld	(hl), e
+    000003E8                        911 00104$:
+                                    912 ;src/utils/projectile.c:73: if (dx < 8 && dy < 8) {
+    000003E8 F8 0A            [12]  913 	ldhl	sp,	#10
+    000003EA 2A               [ 8]  914 	ld	a, (hl+)
+    000003EB 4F               [ 4]  915 	ld	c, a
+    000003EC 46               [ 8]  916 	ld	b, (hl)
+    000003ED 79               [ 4]  917 	ld	a, c
+    000003EE D6 08            [ 8]  918 	sub	a, #0x08
+    000003F0 78               [ 4]  919 	ld	a, b
+    000003F1 17               [ 4]  920 	rla
+    000003F2 3F               [ 4]  921 	ccf
+    000003F3 1F               [ 4]  922 	rra
+    000003F4 DE 80            [ 8]  923 	sbc	a, #0x80
+    000003F6 30 25            [12]  924 	jr	NC, 00114$
+    000003F8 23               [ 8]  925 	inc	hl
+    000003F9 2A               [ 8]  926 	ld	a, (hl+)
+    000003FA 4F               [ 4]  927 	ld	c, a
+    000003FB 46               [ 8]  928 	ld	b, (hl)
+    000003FC 79               [ 4]  929 	ld	a, c
+    000003FD D6 08            [ 8]  930 	sub	a, #0x08
+    000003FF 78               [ 4]  931 	ld	a, b
+    00000400 17               [ 4]  932 	rla
+    00000401 3F               [ 4]  933 	ccf
+    00000402 1F               [ 4]  934 	rra
+    00000403 DE 80            [ 8]  935 	sbc	a, #0x80
+    00000405 30 16            [12]  936 	jr	NC, 00114$
+                                    937 ;src/utils/projectile.c:74: projectiles[i].active = 0; // Deactivate on hit
+    00000407 C1               [12]  938 	pop	bc
+    00000408 C5               [16]  939 	push	bc
+    00000409 69               [ 4]  940 	ld	l, c
+    0000040A 60               [ 4]  941 	ld	h, b
+    0000040B 29               [ 8]  942 	add	hl, hl
+    0000040C 29               [ 8]  943 	add	hl, hl
+    0000040D 29               [ 8]  944 	add	hl, hl
+    0000040E 09               [ 8]  945 	add	hl, bc
+    0000040F 11r00r00         [12]  946 	ld	de, #_projectiles
+    00000412 19               [ 8]  947 	add	hl, de
+    00000413 01 06 00         [12]  948 	ld	bc, #0x0006
+    00000416 09               [ 8]  949 	add	hl, bc
+    00000417 36 00            [12]  950 	ld	(hl), #0x00
+                                    951 ;src/utils/projectile.c:75: return 1;
+    00000419 3E 01            [ 8]  952 	ld	a, #0x01
+    0000041B 18 0F            [12]  953 	jr	00115$
+    0000041D                        954 00114$:
+                                    955 ;src/utils/projectile.c:64: for (int i = 0; i < MAX_PROJECTILES; i++) {
+    0000041D F8 08            [12]  956 	ldhl	sp,	#8
+    0000041F 34               [12]  957 	inc	(hl)
+    00000420 F8 08            [12]  958 	ldhl	sp,	#8
+    00000422 7E               [ 8]  959 	ld	a, (hl)
+    00000423 F8 00            [12]  960 	ldhl	sp,	#0
+    00000425 22               [ 8]  961 	ld	(hl+), a
+    00000426 36 00            [12]  962 	ld	(hl), #0x00
+    00000428 C3r46r03         [16]  963 	jp	00113$
+    0000042B                        964 00111$:
+                                    965 ;src/utils/projectile.c:79: return 0;
+    0000042B AF               [ 4]  966 	xor	a, a
+    0000042C                        967 00115$:
+                                    968 ;src/utils/projectile.c:80: }
+    0000042C E8 0E            [16]  969 	add	sp, #14
+    0000042E C9               [16]  970 	ret
+                                    971 	.area _CODE
+                                    972 	.area _INITIALIZER
+                                    973 	.area _CABS (ABS)
