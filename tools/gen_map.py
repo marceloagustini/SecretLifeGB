@@ -112,7 +112,64 @@ def generate_level2_map():
         set(tx, ty, random.choice([2, 3, 4]))
     print_map("level2_map", "L2_WIDTH", "L2_HEIGHT", w, h, data)
 
+def generate_level3_map():
+    w, h = 32, 32
+    # 2 = Grass, 1 = Wall, 0 = Path, 3 = Flower
+    data = [2] * (w * h)
+    def set(x, y, t):
+        if 0 <= x < w and 0 <= y < h: data[y * w + x] = t
+    
+    # Borders
+    for i in range(w):
+        set(i, 0, 1); set(i, h-1, 1)
+        set(0, i, 1); set(w-1, i, 1)
+
+    # Houses (using house_t3 defined above)
+    house_t3 = [
+        [61, 63, 64, 62], # Flat Roof
+        [65, 68, 68, 66], # Bricks
+        [69, 70, 71, 72], # Door/Wall
+        [73, 74, 75, 76]  # Base
+    ]
+    
+    def set_house_v3(x, y):
+        for dy, row in enumerate(house_t3):
+            for dx, t in enumerate(row):
+                set(x + dx, y + dy, t)
+
+    # Central Vertical Path
+    for y in range(h):
+        set(15, y, 0); set(16, y, 0)
+    
+    # Entrance/Exit Paths
+    set(15, h-1, 0); set(16, h-1, 0)
+    set(15, 0, 0); set(16, 0, 0)
+
+    # Ordered Houses
+    set_house_v3(5, 5)
+    set_house_v3(22, 5)
+    set_house_v3(5, 20)
+    set_house_v3(22, 20)
+
+    # Portal at the top of the path
+    set(15, 1, 41); set(16, 1, 42)
+    set(15, 2, 43); set(16, 2, 44)
+
+    # Trees in clusters (not on path)
+    import random
+    random.seed(33)
+    for _ in range(40):
+        tx, ty = random.randint(2, 28), random.randint(2, 28)
+        if tx < 13 or tx > 18: # Avoid path
+            # Don't overwrite houses (simplified check: tile 2 is grass)
+            if data[ty * w + tx] == 2:
+                set(tx, ty, 4); set(tx+1, ty, 5)
+                set(tx, ty+1, 6); set(tx+1, ty+1, 12)
+    
+    print_map("level3_map", "L3_WIDTH", "L3_HEIGHT", w, h, data)
+
 if __name__ == "__main__":
     generate_map()
     generate_house_map()
     generate_level2_map()
+    generate_level3_map()

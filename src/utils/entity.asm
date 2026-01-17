@@ -7,6 +7,7 @@
 ;--------------------------------------------------------
 ; Public variables in this module
 ;--------------------------------------------------------
+	.globl _projectile_spawn
 	.globl _entity_init
 	.globl _ai_npc_static
 	.globl _ai_anim_simple
@@ -47,17 +48,17 @@
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;src/utils/entity.c:5: void entity_init(entity_t *e, ent_type_t type, uint16_t x, uint16_t y,
+;src/utils/entity.c:6: void entity_init(entity_t *e, ent_type_t type, uint16_t x, uint16_t y,
 ;	---------------------------------
 ; Function entity_init
 ; ---------------------------------
 _entity_init::
 	ld	c, a
-;src/utils/entity.c:7: e->type = type;
+;src/utils/entity.c:8: e->type = type;
 	ld	hl, #0x0004
 	add	hl, de
 	ld	(hl), c
-;src/utils/entity.c:8: e->x = x;
+;src/utils/entity.c:9: e->x = x;
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	ld	(de), a
@@ -65,7 +66,7 @@ _entity_init::
 	ld	a, (hl)
 	ld	(de), a
 	dec	de
-;src/utils/entity.c:9: e->y = y;
+;src/utils/entity.c:10: e->y = y;
 	ld	l, e
 	ld	h, d
 	inc	hl
@@ -80,7 +81,7 @@ _entity_init::
 	ld	a, (hl)
 	pop	hl
 	ld	(hl), a
-;src/utils/entity.c:10: e->sprite_base = sprite_base;
+;src/utils/entity.c:11: e->sprite_base = sprite_base;
 	ld	hl, #0x0007
 	add	hl, de
 	push	hl
@@ -88,7 +89,7 @@ _entity_init::
 	ld	a, (hl)
 	pop	hl
 	ld	(hl), a
-;src/utils/entity.c:11: e->dialogue = dialogue;
+;src/utils/entity.c:12: e->dialogue = dialogue;
 	ld	hl, #0x0005
 	add	hl, de
 	push	hl
@@ -101,61 +102,61 @@ _entity_init::
 	ld	a, (hl)
 	pop	hl
 	ld	(hl), a
-;src/utils/entity.c:12: e->active = 1;
+;src/utils/entity.c:13: e->active = 1;
 	ld	hl, #0x0008
 	add	hl, de
 	ld	(hl), #0x01
-;src/utils/entity.c:13: e->dir = 0;
+;src/utils/entity.c:14: e->dir = 0;
 	ld	hl, #0x0009
 	add	hl, de
 	ld	(hl), #0x00
-;src/utils/entity.c:14: e->anim_frame = 0;
+;src/utils/entity.c:15: e->anim_frame = 0;
 	ld	hl, #0x000a
 	add	hl, de
 	ld	(hl), #0x00
-;src/utils/entity.c:15: e->anim_timer = 0;
+;src/utils/entity.c:16: e->anim_timer = 0;
 	ld	hl, #0x000b
 	add	hl, de
 	ld	(hl), #0x00
-;src/utils/entity.c:16: e->move_timer = 0;
+;src/utils/entity.c:17: e->move_timer = 0;
 	ld	hl, #0x000c
 	add	hl, de
 	ld	(hl), #0x00
-;src/utils/entity.c:19: e->update = ai_enemy_random_walk;
+;src/utils/entity.c:20: e->update = ai_enemy_random_walk;
 	ld	hl, #0x000e
 	add	hl, de
-;src/utils/entity.c:18: if (type == ENT_ENEMY) {
+;src/utils/entity.c:19: if (type == ENT_ENEMY) {
 	ld	a, c
 	sub	a, #0x03
 	jr	NZ, 00102$
-;src/utils/entity.c:19: e->update = ai_enemy_random_walk;
+;src/utils/entity.c:20: e->update = ai_enemy_random_walk;
 	ld	(hl), #<(_ai_enemy_random_walk)
 	inc	hl
 	ld	(hl), #>(_ai_enemy_random_walk)
 	jr	00104$
 00102$:
-;src/utils/entity.c:21: e->update = ai_npc_static;
+;src/utils/entity.c:22: e->update = ai_npc_static;
 	ld	(hl), #<(_ai_npc_static)
 	inc	hl
 	ld	(hl), #>(_ai_npc_static)
 00104$:
-;src/utils/entity.c:23: }
+;src/utils/entity.c:24: }
 	pop	hl
 	add	sp, #7
 	jp	(hl)
-;src/utils/entity.c:25: void ai_npc_static(entity_t *self) {
+;src/utils/entity.c:26: void ai_npc_static(entity_t *self) {
 ;	---------------------------------
 ; Function ai_npc_static
 ; ---------------------------------
 _ai_npc_static::
-;src/utils/entity.c:28: }
+;src/utils/entity.c:29: }
 	ret
-;src/utils/entity.c:30: void ai_anim_simple(entity_t *self) {
+;src/utils/entity.c:31: void ai_anim_simple(entity_t *self) {
 ;	---------------------------------
 ; Function ai_anim_simple
 ; ---------------------------------
 _ai_anim_simple::
-;src/utils/entity.c:31: if (++self->anim_timer > 16) {
+;src/utils/entity.c:32: if (++self->anim_timer > 16) {
 	ld	hl, #0x000b
 	add	hl, de
 	ld	c, l
@@ -165,7 +166,7 @@ _ai_anim_simple::
 	ld	(bc), a
 	cp	a, #0x11
 	ret	C
-;src/utils/entity.c:32: self->anim_frame = !self->anim_frame;
+;src/utils/entity.c:33: self->anim_frame = !self->anim_frame;
 	ld	hl, #0x000a
 	add	hl, de
 	ld	a, (hl)
@@ -173,12 +174,12 @@ _ai_anim_simple::
 	ld	a, #0x00
 	rla
 	ld	(hl), a
-;src/utils/entity.c:33: self->anim_timer = 0;
+;src/utils/entity.c:34: self->anim_timer = 0;
 	xor	a, a
 	ld	(bc), a
-;src/utils/entity.c:35: }
+;src/utils/entity.c:36: }
 	ret
-;src/utils/entity.c:37: void ai_enemy_random_walk(entity_t *self) {
+;src/utils/entity.c:38: void ai_enemy_random_walk(entity_t *self) {
 ;	---------------------------------
 ; Function ai_enemy_random_walk
 ; ---------------------------------
@@ -187,7 +188,7 @@ _ai_enemy_random_walk::
 	ldhl	sp,	#2
 	ld	a, e
 	ld	(hl+), a
-;src/utils/entity.c:38: if (self->move_timer > 0) {
+;src/utils/entity.c:39: if (self->move_timer > 0) {
 	ld	a, d
 	ld	(hl-), a
 	ld	a, (hl+)
@@ -204,12 +205,12 @@ _ai_enemy_random_walk::
 	ld	c, a
 	or	a, a
 	jp	Z, 00130$
-;src/utils/entity.c:39: self->move_timer--;
+;src/utils/entity.c:40: self->move_timer--;
 	dec	c
 	pop	hl
 	push	hl
 	ld	(hl), c
-;src/utils/entity.c:40: if (self->dir == 0) { // Down
+;src/utils/entity.c:41: if (self->dir == 0) { // Down
 	ldhl	sp,#2
 	ld	a, (hl+)
 	ld	e, a
@@ -219,17 +220,17 @@ _ai_enemy_random_walk::
 	ld	c, l
 	ld	b, h
 	ld	a, (bc)
-;src/utils/entity.c:41: if (self->y < 240)
+;src/utils/entity.c:42: if (self->y < 240)
 	ldhl	sp,	#2
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
 	inc	bc
 	inc	bc
-;src/utils/entity.c:40: if (self->dir == 0) { // Down
+;src/utils/entity.c:41: if (self->dir == 0) { // Down
 	or	a, a
 	jr	NZ, 00122$
-;src/utils/entity.c:41: if (self->y < 240)
+;src/utils/entity.c:42: if (self->y < 240)
 	ld	l, c
 	ld	h, b
 	ld	a,	(hl+)
@@ -242,7 +243,7 @@ _ai_enemy_random_walk::
 	ld	a, d
 	sbc	a, #0x00
 	jr	NC, 00102$
-;src/utils/entity.c:42: self->y++;
+;src/utils/entity.c:43: self->y++;
 	inc	hl
 	ld	a, l
 	ld	(bc), a
@@ -251,16 +252,16 @@ _ai_enemy_random_walk::
 	ld	(bc), a
 	jr	00123$
 00102$:
-;src/utils/entity.c:44: self->move_timer = 0;
+;src/utils/entity.c:45: self->move_timer = 0;
 	pop	hl
 	ld	(hl), #0x00
 	push	hl
 	jr	00123$
 00122$:
-;src/utils/entity.c:45: } else if (self->dir == 1) { // Up
+;src/utils/entity.c:46: } else if (self->dir == 1) { // Up
 	cp	a, #0x01
 	jr	NZ, 00119$
-;src/utils/entity.c:46: if (self->y > 16)
+;src/utils/entity.c:47: if (self->y > 16)
 	ld	l, c
 	ld	h, b
 	ld	a,	(hl+)
@@ -273,7 +274,7 @@ _ai_enemy_random_walk::
 	ld	a, #0x00
 	sbc	a, d
 	jr	NC, 00105$
-;src/utils/entity.c:47: self->y--;
+;src/utils/entity.c:48: self->y--;
 	dec	hl
 	ld	a, l
 	ld	(bc), a
@@ -282,21 +283,21 @@ _ai_enemy_random_walk::
 	ld	(bc), a
 	jr	00123$
 00105$:
-;src/utils/entity.c:49: self->move_timer = 0;
+;src/utils/entity.c:50: self->move_timer = 0;
 	pop	hl
 	ld	(hl), #0x00
 	push	hl
 	jr	00123$
 00119$:
-;src/utils/entity.c:51: if (self->x > 16)
+;src/utils/entity.c:52: if (self->x > 16)
 	ldhl	sp,	#2
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
-;src/utils/entity.c:50: } else if (self->dir == 2) { // Left
+;src/utils/entity.c:51: } else if (self->dir == 2) { // Left
 	cp	a, #0x02
 	jr	NZ, 00116$
-;src/utils/entity.c:51: if (self->x > 16)
+;src/utils/entity.c:52: if (self->x > 16)
 	ld	l, c
 	ld	h, b
 	ld	a,	(hl+)
@@ -309,7 +310,7 @@ _ai_enemy_random_walk::
 	ld	a, #0x00
 	sbc	a, d
 	jr	NC, 00108$
-;src/utils/entity.c:52: self->x--;
+;src/utils/entity.c:53: self->x--;
 	dec	hl
 	ld	a, l
 	ld	(bc), a
@@ -318,16 +319,16 @@ _ai_enemy_random_walk::
 	ld	(bc), a
 	jr	00123$
 00108$:
-;src/utils/entity.c:54: self->move_timer = 0;
+;src/utils/entity.c:55: self->move_timer = 0;
 	pop	hl
 	ld	(hl), #0x00
 	push	hl
 	jr	00123$
 00116$:
-;src/utils/entity.c:55: } else if (self->dir == 3) { // Right
+;src/utils/entity.c:56: } else if (self->dir == 3) { // Right
 	sub	a, #0x03
 	jr	NZ, 00123$
-;src/utils/entity.c:56: if (self->x < 240)
+;src/utils/entity.c:57: if (self->x < 240)
 	ld	l, c
 	ld	h, b
 	ld	a,	(hl+)
@@ -340,7 +341,7 @@ _ai_enemy_random_walk::
 	ld	a, d
 	sbc	a, #0x00
 	jr	NC, 00111$
-;src/utils/entity.c:57: self->x++;
+;src/utils/entity.c:58: self->x++;
 	inc	hl
 	ld	a, l
 	ld	(bc), a
@@ -349,12 +350,12 @@ _ai_enemy_random_walk::
 	ld	(bc), a
 	jr	00123$
 00111$:
-;src/utils/entity.c:59: self->move_timer = 0;
+;src/utils/entity.c:60: self->move_timer = 0;
 	pop	hl
 	ld	(hl), #0x00
 	push	hl
 00123$:
-;src/utils/entity.c:62: if (++self->anim_timer > 8) {
+;src/utils/entity.c:63: if (++self->anim_timer > 8) {
 	ldhl	sp,#2
 	ld	a, (hl+)
 	ld	e, a
@@ -368,7 +369,7 @@ _ai_enemy_random_walk::
 	ld	(bc), a
 	cp	a, #0x09
 	jr	C, 00132$
-;src/utils/entity.c:63: self->anim_frame = !self->anim_frame;
+;src/utils/entity.c:64: self->anim_frame = !self->anim_frame;
 	ldhl	sp,#2
 	ld	a, (hl+)
 	ld	e, a
@@ -382,16 +383,16 @@ _ai_enemy_random_walk::
 	ld	a, #0x00
 	rla
 	ld	(de), a
-;src/utils/entity.c:64: self->anim_timer = 0;
+;src/utils/entity.c:65: self->anim_timer = 0;
 	xor	a, a
 	ld	(bc), a
 	jr	00132$
 00130$:
-;src/utils/entity.c:68: uint8_t r = DIV_REG & 0x0F;
+;src/utils/entity.c:69: uint8_t r = DIV_REG & 0x0F;
 	ldh	a, (_DIV_REG + 0)
 	and	a, #0x0f
 	ld	c, a
-;src/utils/entity.c:40: if (self->dir == 0) { // Down
+;src/utils/entity.c:41: if (self->dir == 0) { // Down
 	ldhl	sp,#2
 	ld	a, (hl+)
 	ld	e, a
@@ -400,19 +401,19 @@ _ai_enemy_random_walk::
 	add	hl, de
 	ld	e, l
 	ld	d, h
-;src/utils/entity.c:69: if (r < 4)
-;src/utils/entity.c:70: self->dir = r; // 0=D, 1=U, 2=L, 3=R
+;src/utils/entity.c:70: if (r < 4)
+;src/utils/entity.c:71: self->dir = r; // 0=D, 1=U, 2=L, 3=R
 	ld	a,c
 	cp	a,#0x04
 	jr	NC, 00127$
 	ld	(de), a
 	jr	00128$
 00127$:
-;src/utils/entity.c:72: self->dir = -1; // Wait/Idle
+;src/utils/entity.c:73: self->dir = -1; // Wait/Idle
 	ld	a, #0xff
 	ld	(de), a
 00128$:
-;src/utils/entity.c:73: self->move_timer = 30 + (DIV_REG & 0x1F);
+;src/utils/entity.c:74: self->move_timer = 30 + (DIV_REG & 0x1F);
 	ldh	a, (_DIV_REG + 0)
 	and	a, #0x1f
 	add	a, #0x1e
@@ -420,10 +421,10 @@ _ai_enemy_random_walk::
 	push	hl
 	ld	(hl), a
 00132$:
-;src/utils/entity.c:75: }
+;src/utils/entity.c:76: }
 	add	sp, #4
 	ret
-;src/utils/entity.c:77: void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y) {
+;src/utils/entity.c:78: void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y) {
 ;	---------------------------------
 ; Function ai_enemy_shooter
 ; ---------------------------------
@@ -667,7 +668,7 @@ _ai_enemy_shooter::
 	or	a, a
 	jr	Z, 00116$
 00111$:
-;src/utils/entity.c:100: projectile_spawn(self->x + 8, self->y + 8, vx, vy);
+;src/utils/entity.c:100: projectile_spawn(self->x + 8, self->y + 8, vx, vy, 0);
 	ldhl	sp,	#4
 	ld	a, (hl+)
 	inc	hl
@@ -721,7 +722,10 @@ _ai_enemy_shooter::
 	ld	a, (hl+)
 	inc	hl
 	ld	(hl), a
-	ldhl	sp,	#9
+	xor	a, a
+	push	af
+	inc	sp
+	ldhl	sp,	#10
 	ld	a, (hl-)
 	ld	d, a
 	ld	a, (hl-)
@@ -731,7 +735,7 @@ _ai_enemy_shooter::
 	ld	a, (hl+)
 	ld	c, a
 	ld	b, (hl)
-	ldhl	sp,	#6
+	ldhl	sp,	#7
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
@@ -751,7 +755,7 @@ _ai_enemy_chaser_shooter::
 	ldhl	sp,	#12
 	ld	a, e
 	ld	(hl+), a
-;src/utils/entity.c:111: if (++self->move_timer > 1) {
+;src/utils/entity.c:110: if (++self->move_timer > 1) {
 	ld	a, d
 	ld	(hl-), a
 	ld	a, (hl+)
@@ -777,7 +781,7 @@ _ai_enemy_chaser_shooter::
 	ld	l, (hl)
 	ld	h, a
 	ld	(hl), c
-;src/utils/entity.c:114: int16_t dx = (int16_t)player_x - (int16_t)self->x;
+;src/utils/entity.c:113: int16_t dx = (int16_t)player_x - (int16_t)self->x;
 	ldhl	sp,	#12
 	ld	a, (hl)
 	ldhl	sp,	#8
@@ -786,7 +790,7 @@ _ai_enemy_chaser_shooter::
 	ld	a, (hl)
 	ldhl	sp,	#9
 	ld	(hl), a
-;src/utils/entity.c:115: int16_t dy = (int16_t)player_y - (int16_t)self->y;
+;src/utils/entity.c:114: int16_t dy = (int16_t)player_y - (int16_t)self->y;
 	ldhl	sp,#12
 	ld	a, (hl+)
 	ld	e, a
@@ -801,17 +805,17 @@ _ai_enemy_chaser_shooter::
 	ld	a, h
 	ldhl	sp,	#11
 	ld	(hl), a
-;src/utils/entity.c:111: if (++self->move_timer > 1) {
+;src/utils/entity.c:110: if (++self->move_timer > 1) {
 	ld	a, #0x01
 	sub	a, c
 	jp	NC, 00114$
-;src/utils/entity.c:112: self->move_timer = 0;
+;src/utils/entity.c:111: self->move_timer = 0;
 	ldhl	sp,	#6
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x00
-;src/utils/entity.c:114: int16_t dx = (int16_t)player_x - (int16_t)self->x;
+;src/utils/entity.c:113: int16_t dx = (int16_t)player_x - (int16_t)self->x;
 	ld	a, (_player_x)
 	ld	b, a
 	ld	hl, #_player_x + 1
@@ -846,7 +850,7 @@ _ai_enemy_chaser_shooter::
 	ldhl	sp,	#3
 	ld	(hl-), a
 	ld	(hl), e
-;src/utils/entity.c:115: int16_t dy = (int16_t)player_y - (int16_t)self->y;
+;src/utils/entity.c:114: int16_t dy = (int16_t)player_y - (int16_t)self->y;
 	ld	a, (#_player_y)
 	ldhl	sp,	#6
 	ld	(hl), a
@@ -874,14 +878,14 @@ _ai_enemy_chaser_shooter::
 	ld	a, d
 	sbc	a, b
 	ld	(hl-), a
-;src/utils/entity.c:118: if (dx > 8) {
+;src/utils/entity.c:117: if (dx > 8) {
 	ld	a, e
 	ld	(hl-), a
 	dec	hl
 	ld	a, (hl+)
 	ld	c, a
 	ld	b, (hl)
-;src/utils/entity.c:120: self->dir = 3; // Right
+;src/utils/entity.c:119: self->dir = 3; // Right
 	ldhl	sp,#12
 	ld	a, (hl+)
 	ld	e, a
@@ -896,7 +900,7 @@ _ai_enemy_chaser_shooter::
 	ld	a, h
 	ldhl	sp,	#7
 	ld	(hl), a
-;src/utils/entity.c:118: if (dx > 8) {
+;src/utils/entity.c:117: if (dx > 8) {
 	ld	e, b
 	ld	d, #0x00
 	ld	a, #0x08
@@ -915,7 +919,7 @@ _ai_enemy_chaser_shooter::
 	scf
 00208$:
 	jr	NC, 00104$
-;src/utils/entity.c:119: self->x++;
+;src/utils/entity.c:118: self->x++;
 	pop	bc
 	push	bc
 	inc	bc
@@ -926,7 +930,7 @@ _ai_enemy_chaser_shooter::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/entity.c:120: self->dir = 3; // Right
+;src/utils/entity.c:119: self->dir = 3; // Right
 	ldhl	sp,	#6
 	ld	a, (hl+)
 	ld	h, (hl)
@@ -934,7 +938,7 @@ _ai_enemy_chaser_shooter::
 	ld	(hl), #0x03
 	jr	00105$
 00104$:
-;src/utils/entity.c:121: } else if (dx < -8) {
+;src/utils/entity.c:120: } else if (dx < -8) {
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	sub	a, #0xf8
@@ -954,7 +958,7 @@ _ai_enemy_chaser_shooter::
 	scf
 00210$:
 	jr	NC, 00105$
-;src/utils/entity.c:122: self->x--;
+;src/utils/entity.c:121: self->x--;
 	pop	bc
 	push	bc
 	dec	bc
@@ -965,14 +969,14 @@ _ai_enemy_chaser_shooter::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/entity.c:123: self->dir = 2; // Left
+;src/utils/entity.c:122: self->dir = 2; // Left
 	ldhl	sp,	#6
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x02
 00105$:
-;src/utils/entity.c:126: if (dy > 8) {
+;src/utils/entity.c:125: if (dy > 8) {
 	ldhl	sp,	#4
 	ld	a, (hl+)
 	ld	c, a
@@ -995,7 +999,7 @@ _ai_enemy_chaser_shooter::
 	scf
 00212$:
 	jr	NC, 00109$
-;src/utils/entity.c:127: self->y++;
+;src/utils/entity.c:126: self->y++;
 	ldhl	sp,#10
 	ld	a, (hl+)
 	ld	e, a
@@ -1012,7 +1016,7 @@ _ai_enemy_chaser_shooter::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/entity.c:128: self->dir = 0; // Down
+;src/utils/entity.c:127: self->dir = 0; // Down
 	ldhl	sp,	#6
 	ld	a, (hl+)
 	ld	h, (hl)
@@ -1020,7 +1024,7 @@ _ai_enemy_chaser_shooter::
 	ld	(hl), #0x00
 	jr	00110$
 00109$:
-;src/utils/entity.c:129: } else if (dy < -8) {
+;src/utils/entity.c:128: } else if (dy < -8) {
 	ldhl	sp,	#4
 	ld	a, (hl+)
 	sub	a, #0xf8
@@ -1040,7 +1044,7 @@ _ai_enemy_chaser_shooter::
 	scf
 00214$:
 	jr	NC, 00110$
-;src/utils/entity.c:130: self->y--;
+;src/utils/entity.c:129: self->y--;
 	ldhl	sp,#10
 	ld	a, (hl+)
 	ld	e, a
@@ -1057,14 +1061,14 @@ _ai_enemy_chaser_shooter::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/entity.c:131: self->dir = 1; // Up
+;src/utils/entity.c:130: self->dir = 1; // Up
 	ldhl	sp,	#6
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x01
 00110$:
-;src/utils/entity.c:135: if (++self->anim_timer > 8) {
+;src/utils/entity.c:134: if (++self->anim_timer > 8) {
 	ldhl	sp,#12
 	ld	a, (hl+)
 	ld	e, a
@@ -1078,7 +1082,7 @@ _ai_enemy_chaser_shooter::
 	ld	(bc), a
 	cp	a, #0x09
 	jr	C, 00114$
-;src/utils/entity.c:136: self->anim_frame = !self->anim_frame;
+;src/utils/entity.c:135: self->anim_frame = !self->anim_frame;
 	ldhl	sp,#12
 	ld	a, (hl+)
 	ld	e, a
@@ -1092,11 +1096,11 @@ _ai_enemy_chaser_shooter::
 	ld	a, #0x00
 	rla
 	ld	(de), a
-;src/utils/entity.c:137: self->anim_timer = 0;
+;src/utils/entity.c:136: self->anim_timer = 0;
 	xor	a, a
 	ld	(bc), a
 00114$:
-;src/utils/entity.c:142: if (self->shoot_timer > 0) {
+;src/utils/entity.c:141: if (self->shoot_timer > 0) {
 	ldhl	sp,#12
 	ld	a, (hl+)
 	ld	e, a
@@ -1118,7 +1122,7 @@ _ai_enemy_chaser_shooter::
 	ld	c, a
 	or	a, a
 	jr	Z, 00126$
-;src/utils/entity.c:143: self->shoot_timer--;
+;src/utils/entity.c:142: self->shoot_timer--;
 	dec	c
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -1126,7 +1130,7 @@ _ai_enemy_chaser_shooter::
 	ld	(hl), c
 	jp	00128$
 00126$:
-;src/utils/entity.c:147: int16_t dx = (int16_t)player_x - (int16_t)self->x;
+;src/utils/entity.c:146: int16_t dx = (int16_t)player_x - (int16_t)self->x;
 	ld	a, (_player_x)
 	ld	c, a
 	ld	hl, #_player_x + 1
@@ -1150,7 +1154,7 @@ _ai_enemy_chaser_shooter::
 	ld	a, b
 	sbc	a, d
 	ld	b, a
-;src/utils/entity.c:148: int16_t dy = (int16_t)player_y - (int16_t)self->y;
+;src/utils/entity.c:147: int16_t dy = (int16_t)player_y - (int16_t)self->y;
 	ld	a, (#_player_y)
 	ldhl	sp,	#0
 	ld	(hl), a
@@ -1185,14 +1189,14 @@ _ai_enemy_chaser_shooter::
 	sbc	a, h
 	ldhl	sp,	#11
 	ld	(hl-), a
-;src/utils/entity.c:150: int8_t vx = 0, vy = 0;
+;src/utils/entity.c:149: int8_t vx = 0, vy = 0;
 	ld	a, e
 	ld	(hl-), a
 	dec	hl
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:151: if (dx > 0)
+;src/utils/entity.c:150: if (dx > 0)
 	ld	e, b
 	xor	a, a
 	ld	d, a
@@ -1210,19 +1214,19 @@ _ai_enemy_chaser_shooter::
 	scf
 00216$:
 	jr	NC, 00118$
-;src/utils/entity.c:152: vx = 2;
+;src/utils/entity.c:151: vx = 2;
 	ldhl	sp,	#8
 	ld	(hl), #0x02
 	jr	00119$
 00118$:
-;src/utils/entity.c:153: else if (dx < 0)
+;src/utils/entity.c:152: else if (dx < 0)
 	bit	7, b
 	jr	Z, 00119$
-;src/utils/entity.c:154: vx = -2;
+;src/utils/entity.c:153: vx = -2;
 	ldhl	sp,	#8
 	ld	(hl), #0xfe
 00119$:
-;src/utils/entity.c:155: if (dy > 0)
+;src/utils/entity.c:154: if (dy > 0)
 	ldhl	sp,	#10
 	xor	a, a
 	sub	a, (hl)
@@ -1244,21 +1248,21 @@ _ai_enemy_chaser_shooter::
 	scf
 00218$:
 	jr	NC, 00123$
-;src/utils/entity.c:156: vy = 2;
+;src/utils/entity.c:155: vy = 2;
 	ldhl	sp,	#9
 	ld	(hl), #0x02
 	jr	00124$
 00123$:
-;src/utils/entity.c:157: else if (dy < 0)
+;src/utils/entity.c:156: else if (dy < 0)
 	ldhl	sp,	#11
 	bit	7, (hl)
 	jr	Z, 00124$
-;src/utils/entity.c:158: vy = -2;
+;src/utils/entity.c:157: vy = -2;
 	dec	hl
 	dec	hl
 	ld	(hl), #0xfe
 00124$:
-;src/utils/entity.c:160: projectile_spawn(self->x + 8, self->y + 8, vx, vy);
+;src/utils/entity.c:159: projectile_spawn(self->x + 8, self->y + 8, vx, vy, 0);
 	ldhl	sp,	#6
 	ld	a, (hl+)
 	ld	c, a
@@ -1275,7 +1279,10 @@ _ai_enemy_chaser_shooter::
 	add	hl, de
 	ld	e, l
 	ld	d, h
-	ldhl	sp,	#9
+	xor	a, a
+	push	af
+	inc	sp
+	ldhl	sp,	#10
 	ld	a, (hl-)
 	push	af
 	inc	sp
@@ -1283,7 +1290,7 @@ _ai_enemy_chaser_shooter::
 	push	af
 	inc	sp
 	call	_projectile_spawn
-;src/utils/entity.c:164: self->shoot_timer = 60 + (DIV_REG & 0x3F);
+;src/utils/entity.c:163: self->shoot_timer = 60 + (DIV_REG & 0x3F);
 	ldh	a, (_DIV_REG + 0)
 	and	a, #0x3f
 	add	a, #0x3c
@@ -1294,10 +1301,10 @@ _ai_enemy_chaser_shooter::
 	ld	l, e
 	ld	(hl), a
 00128$:
-;src/utils/entity.c:166: }
+;src/utils/entity.c:165: }
 	add	sp, #14
 	ret
-;src/utils/entity.c:168: void entity_update_all(entity_t *entities, uint8_t count) {
+;src/utils/entity.c:167: void entity_update_all(entity_t *entities, uint8_t count) {
 ;	---------------------------------
 ; Function entity_update_all
 ; ---------------------------------
@@ -1310,7 +1317,7 @@ _entity_update_all::
 	dec	hl
 	dec	hl
 	ld	(hl), a
-;src/utils/entity.c:169: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:168: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#7
 	ld	(hl), #0x00
 00106$:
@@ -1319,7 +1326,7 @@ _entity_update_all::
 	ldhl	sp,	#4
 	sub	a, (hl)
 	jr	NC, 00108$
-;src/utils/entity.c:170: if (entities[i].active && entities[i].update) {
+;src/utils/entity.c:169: if (entities[i].active && entities[i].update) {
 	ldhl	sp,	#7
 	ld	a, (hl)
 	ldhl	sp,	#2
@@ -1375,7 +1382,7 @@ _entity_update_all::
 	ld	a, b
 	or	a, c
 	jr	Z, 00107$
-;src/utils/entity.c:171: entities[i].update(&entities[i]);
+;src/utils/entity.c:170: entities[i].update(&entities[i]);
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	ld	e, a
@@ -1384,15 +1391,15 @@ _entity_update_all::
 	ld	h, b
 	call	___sdcc_call_hl
 00107$:
-;src/utils/entity.c:169: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:168: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#7
 	inc	(hl)
 	jr	00106$
 00108$:
-;src/utils/entity.c:174: }
+;src/utils/entity.c:173: }
 	add	sp, #8
 	ret
-;src/utils/entity.c:176: void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
+;src/utils/entity.c:175: void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
 ;	---------------------------------
 ; Function entity_render_all
 ; ---------------------------------
@@ -1405,7 +1412,7 @@ _entity_render_all::
 	dec	hl
 	dec	hl
 	ld	(hl), a
-;src/utils/entity.c:178: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:177: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#12
 	ld	(hl), #0x00
 00136$:
@@ -1414,7 +1421,7 @@ _entity_render_all::
 	ldhl	sp,	#9
 	sub	a, (hl)
 	jp	NC, 00137$
-;src/utils/entity.c:179: entity_t *e = &entities[i];
+;src/utils/entity.c:178: entity_t *e = &entities[i];
 	ldhl	sp,	#12
 	ld	a, (hl)
 	ldhl	sp,	#7
@@ -1449,7 +1456,7 @@ _entity_render_all::
 	pop	hl
 	ld	a, h
 	ldhl	sp,	#8
-;src/utils/entity.c:180: if (!e->active) {
+;src/utils/entity.c:179: if (!e->active) {
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
@@ -1459,7 +1466,7 @@ _entity_render_all::
 	ld	c, l
 	ld	b, h
 	ld	a, (bc)
-;src/utils/entity.c:181: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:180: for (int j = 0; j < 4; j++)
 	or	a, a
 	jr	NZ, 00103$
 	ld	c, a
@@ -1467,7 +1474,7 @@ _entity_render_all::
 	ld	a, c
 	sub	a, #0x04
 	jp	NC, 00114$
-;src/utils/entity.c:182: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+;src/utils/entity.c:181: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
 	ldhl	sp,	#12
 	ld	a, (hl)
 	add	a, a
@@ -1490,12 +1497,12 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:181: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:180: for (int j = 0; j < 4; j++)
 	inc	c
 	jr	00124$
-;src/utils/entity.c:183: continue;
+;src/utils/entity.c:182: continue;
 00103$:
-;src/utils/entity.c:186: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
+;src/utils/entity.c:185: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -1553,7 +1560,7 @@ _entity_render_all::
 	ld	(hl), c
 	inc	hl
 	ld	(hl), a
-;src/utils/entity.c:187: if (esx < 168 && esy < 160) {
+;src/utils/entity.c:186: if (esx < 168 && esy < 160) {
 	pop	bc
 	push	bc
 	ld	a, c
@@ -1570,7 +1577,7 @@ _entity_render_all::
 	ld	a, b
 	sbc	a, #0x00
 	jp	NC, 00157$
-;src/utils/entity.c:188: if (e->type == ENT_ITEM) {
+;src/utils/entity.c:187: if (e->type == ENT_ITEM) {
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -1582,7 +1589,7 @@ _entity_render_all::
 	ld	a, (bc)
 	dec	a
 	jr	NZ, 00107$
-;src/utils/entity.c:190: uint8_t sprite_id = sprite_offset + (i * 4);
+;src/utils/entity.c:189: uint8_t sprite_id = sprite_offset + (i * 4);
 	ldhl	sp,	#12
 	ld	a, (hl)
 	add	a, a
@@ -1593,7 +1600,7 @@ _entity_render_all::
 	ldhl	sp,	#13
 	ld	(hl), a
 	ld	c, (hl)
-;src/utils/entity.c:191: move_sprite(sprite_id, esx + 4, esy + 4); // Center it
+;src/utils/entity.c:190: move_sprite(sprite_id, esx + 4, esy + 4); // Center it
 	ldhl	sp,	#2
 	ld	a, (hl-)
 	dec	hl
@@ -1618,7 +1625,7 @@ _entity_render_all::
 	ld	e, l
 	ld	d, h
 	ldhl	sp,	#6
-;src/utils/entity.c:192: set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
+;src/utils/entity.c:191: set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
 	ld	a, (hl+)
 	ld	(de), a
 	ld	a, (hl+)
@@ -1647,10 +1654,10 @@ _entity_render_all::
 	add	hl,bc
 	inc	hl
 	ld	(hl), e
-;src/utils/entity.c:195: for (int j = 1; j < 4; j++)
+;src/utils/entity.c:194: for (int j = 1; j < 4; j++)
 	ld	c, #0x01
 00127$:
-;src/utils/entity.c:196: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+;src/utils/entity.c:195: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
 	ld	a,c
 	cp	a,#0x04
 	jp	NC,00114$
@@ -1668,11 +1675,11 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:195: for (int j = 1; j < 4; j++)
+;src/utils/entity.c:194: for (int j = 1; j < 4; j++)
 	inc	c
 	jr	00127$
 00107$:
-;src/utils/entity.c:198: uint8_t frame_offset = (e->anim_frame * 4);
+;src/utils/entity.c:197: uint8_t frame_offset = (e->anim_frame * 4);
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -1686,7 +1693,7 @@ _entity_render_all::
 	add	a, a
 	ldhl	sp,	#4
 	ld	(hl), a
-;src/utils/entity.c:199: for (int j = 0; j < 4; j++) {
+;src/utils/entity.c:198: for (int j = 0; j < 4; j++) {
 	ldhl	sp,#7
 	ld	a, (hl+)
 	ld	e, a
@@ -1708,7 +1715,7 @@ _entity_render_all::
 	ld	a, (hl)
 	sub	a, #0x04
 	jp	NC, 00114$
-;src/utils/entity.c:200: uint8_t sprite_id = sprite_offset + (i * 4) + j;
+;src/utils/entity.c:199: uint8_t sprite_id = sprite_offset + (i * 4) + j;
 	dec	hl
 	ld	a, (hl)
 	add	a, a
@@ -1721,7 +1728,7 @@ _entity_render_all::
 	add	a, c
 	ldhl	sp,	#7
 	ld	(hl), a
-;src/utils/entity.c:201: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
+;src/utils/entity.c:200: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
 	ldhl	sp,	#2
 	ld	a, (hl)
 	ldhl	sp,	#8
@@ -1774,7 +1781,7 @@ _entity_render_all::
 	inc	de
 	ld	a, b
 	ld	(de), a
-;src/utils/entity.c:202: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+;src/utils/entity.c:201: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
 	ldhl	sp,#5
 	ld	a, (hl+)
 	ld	e, a
@@ -1800,18 +1807,18 @@ _entity_render_all::
 	ld	d, h
 	ld	a, c
 	ld	(de), a
-;src/utils/entity.c:199: for (int j = 0; j < 4; j++) {
+;src/utils/entity.c:198: for (int j = 0; j < 4; j++) {
 	ldhl	sp,	#13
 	inc	(hl)
 	jr	00130$
-;src/utils/entity.c:206: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:205: for (int j = 0; j < 4; j++)
 00157$:
 	ld	c, #0x00
 00133$:
 	ld	a, c
 	sub	a, #0x04
 	jr	NC, 00114$
-;src/utils/entity.c:207: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+;src/utils/entity.c:206: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
 	ldhl	sp,	#12
 	ld	a, (hl)
 	add	a, a
@@ -1834,16 +1841,16 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:206: for (int j = 0; j < 4; j++)
+;src/utils/entity.c:205: for (int j = 0; j < 4; j++)
 	inc	c
 	jr	00133$
 00114$:
-;src/utils/entity.c:178: for (uint8_t i = 0; i < count; i++) {
+;src/utils/entity.c:177: for (uint8_t i = 0; i < count; i++) {
 	ldhl	sp,	#12
 	inc	(hl)
 	jp	00136$
 00137$:
-;src/utils/entity.c:210: }
+;src/utils/entity.c:209: }
 	add	sp, #14
 	pop	hl
 	add	sp, #5

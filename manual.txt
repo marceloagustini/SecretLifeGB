@@ -1,0 +1,53 @@
+Para identificar qué tiles colisionan en tu juego, debes fijarte en un sistema de "lista blanca" (whitelist) que utiliza el código. En lugar de definir qué tiles son sólidos, el código define qué tiles NO son sólidos (es decir, por cuáles se puede caminar).
+
+Aquí te explico los tres puntos clave donde ocurre esto:
+
+1. La definición en cada mapa (
+src/data/map_config.c
+)
+En este archivo, cada mapa tiene un array llamado solid_tiles (aunque funciona como "tiles caminables"). El número 255 se usa como marcador de final de lista.
+
+Por ejemplo, para el WORLD_MAP:
+
+c
+// src/data/map_config.c
+{
+    // 0: WORLD_MAP
+    map_data,
+    MAP_WIDTH,
+    MAP_HEIGHT,
+    world_entities,
+    3,
+    {0, 2, 3, 4, 5, 21, 22, 255}, // <--- ESTOS SON LOS TILES CAMINABLES
+    NULL,
+    0
+},
+Significado: Los tiles con ID 0, 2, 3, 4, 5, 21 y 22 son los únicos por los que el jugador puede pasar. Cualquier otro tile (como árboles, muros, agua) será sólido por defecto.
+2. La lógica de comprobación (
+src/utils/map_manager.c
+)
+La función 
+map_is_solid
+ es la que realiza la comparación. Si el ID del tile donde quieres moverte está en la lista, devuelve 0 (no es sólido). Si no está, devuelve 1 (es sólido).
+
+c
+// src/utils/map_manager.c
+uint8_t map_is_solid(uint16_t x, uint16_t y) {
+  uint8_t tid = map_get_tile(x, y); // Obtiene el ID del tile en esa posición
+  for (int i = 0; i < 16; i++) {
+    if (current_map->solid_tiles[i] == 255) break; 
+    if (tid == current_map->solid_tiles[i])
+      return 0; // Se encontró en la lista -> ES CAMINABLE
+  }
+  return 1; // No estaba en la lista -> ES SÓLIDO
+}
+3. Cómo saber qué número corresponde a qué imagen
+Los números (IDs) corresponden al orden en que se cargaron los tiles en la VRAM.
+
+Normalmente, el tile 0 es el primero de tu set de tiles (muchas veces un tile vacío o de hierba).
+Si usas una herramienta como GBTD (Game Boy Tile Designer), el ID es el índice del tile en esa herramienta.
+Resumen para identificar/cambiar colisiones:
+Si quieres que un tile DEJE de colisionar: Busca su ID y añádelo a la lista {...} en 
+map_config.c
+ antes del 255.
+Si quieres que un tile EMPIECE a colisionar: Elimina su ID de esa lista.

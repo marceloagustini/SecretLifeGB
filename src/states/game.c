@@ -37,6 +37,7 @@ uint8_t env_anim_timer = 0, env_anim_frame = 0;
 
 // Lives
 uint8_t player_lives = 3;
+uint8_t player_ammo = 0;
 
 #define SCREEN_WIDTH 160
 #define SCREEN_HEIGHT 144
@@ -80,6 +81,13 @@ void hud_update(void) {
   hud_tiles[6] = get_tile_for_char(':');
   hud_tiles[8] = get_tile_for_char('0' + player_lives);
 
+  if (inventory_has_item("ARMA")) {
+    hud_tiles[10] = get_tile_for_char('B');
+    hud_tiles[11] = get_tile_for_char(':');
+    hud_tiles[12] = get_tile_for_char('0' + (player_ammo / 10));
+    hud_tiles[13] = get_tile_for_char('0' + (player_ammo % 10));
+  }
+
   set_win_tiles(0, 0, 20, 1, hud_tiles);
   move_win(7, 136);
   SHOW_WIN;
@@ -108,9 +116,12 @@ void update_player_sprite(void) {
   }
 }
 
-void load_map(map_t *m) {
+void load_map(map_t *m, uint16_t x, uint16_t y) {
   HIDE_BKG;
   current_map = m;
+  player_x = x;
+  player_y = y;
+
   for (int i = 4; i < 40; i++)
     move_sprite(i, 0, 0); // Hide map sprites
 
@@ -151,11 +162,9 @@ void load_map(map_t *m) {
 
 void switch_map(map_t *new_map, uint16_t new_x, uint16_t new_y) {
   fade_out();
-  player_x = new_x;
-  player_y = new_y;
   enter_x = new_x; // Remember map entrance
   enter_y = new_y;
-  load_map(new_map);
+  load_map(new_map, new_x, new_y);
   update_player_sprite();
   fade_in();
 }
@@ -197,7 +206,7 @@ void game_init(void) {
 
   if (game_ready) {
     map_init_data();
-    load_map(current_map);
+    load_map(current_map, player_x, player_y);
     update_player_sprite();
     BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
     SHOW_SPRITES;
@@ -206,7 +215,9 @@ void game_init(void) {
   }
 
   map_init_data();
-  load_map(&maps[0]); // WORLD_MAP
+  enter_x = 128;
+  enter_y = 128;
+  load_map(&maps[0], 128, 128); // WORLD_MAP
 
   BGP_REG = OBP0_REG = OBP1_REG = 0xE4;
   SPRITES_8x8;
@@ -215,7 +226,8 @@ void game_init(void) {
   set_sprite_data(28, 8, guard_sprite_data);
   set_sprite_data(36, 4, npc_woman_sprite);
   set_sprite_data(40, 1, projectile_sprite);
-  set_sprite_data(41, 2, flower_sprite);
+  set_sprite_data(41, 1, flower_sprite);
+  set_sprite_data(42, 4, portal_sprite);
   update_player_sprite();
   text_init();
   music_init();
@@ -247,12 +259,8 @@ void player_hit(void) {
   map_init_data();
   projectile_init();
 
-  // Reset player position
-  player_x = enter_x;
-  player_y = enter_y;
-
-  // Reload current map
-  load_map(current_map);
+  // Reload current map at entrance
+  load_map(current_map, enter_x, enter_y);
   update_player_sprite();
 
   hud_update();
@@ -343,14 +351,27 @@ void game_update(void) {
         dy = -dy;
       // 16x16 portal, check overlap
       if (dx < 16 && dy < 16) {
-        switch_map(&maps[3], 128, 224); // To Level 3 (on the path)
+        switch_map(&maps[3], 124, 240); // To Level 3 (bottom-middle path)
         return;
       }
     }
 
-    if (current_map == &maps[3] && tid == 0 && player_y > 240) { // LEVEL3_MAP
-      switch_map(&maps[2], 128, 224); // Return to Level 2 (entrance)
-      return;
+    if (current_map == &maps[3]) { // LEVEL3_MAP
+      if (player_y < 8) {
+        switch_map(&maps[4], 8, 8); // To Maze
+        return;
+      }
+      if (tid == 0 && player_y > 240) {
+        switch_map(&maps[2], 128, 224); // Return to Level 2
+        return;
+      }
+    }
+
+    if (current_map == &maps[4]) { // MAZE_MAP
+      if (player_y >= 240) {
+        switch_map(&maps[0], 128, 128); // To World Map
+        return;
+      }
     }
   }
 
@@ -362,16 +383,6 @@ void game_update(void) {
 
   // Render entities & AI
   entity_update_all(current_map->entities, current_map->num_entities);
-
-  // Level 2 enemy shooter AI - Now handled by entity_update_all
-  // if (current_map == &maps[2]) { // LEVEL2_MAP
-  //   for (int i = 0; i < current_map->num_entities; i++) {
-  //     entity_t *e = &current_map->entities[i];
-  //     if (e->active && e->type == ENT_ENEMY) {
-  //       ai_enemy_shooter(e, player_x, player_y);
-  //     }
-  //   }
-  // }
 
   // Update and render projectiles
   projectile_update_all();
@@ -407,17 +418,20 @@ void game_update(void) {
     uint8_t interacted = 0;
     for (int i = 0; i < current_map->num_entities; i++) {
       entity_t *e = &current_map->entities[i];
+      if (!e->active)
+        continue;
+
       int16_t dx = (int16_t)player_x - (int16_t)e->x,
               dy = (int16_t)player_y - (int16_t)e->y;
       if (dx < 0)
         dx = -dx;
       if (dy < 0)
         dy = -dy;
+
       if (dx < 28 && dy < 28) {
         if (input_pressed(J_A)) {
           if (e->type == ENT_NPC) {
             interacted = 1;
-            // Check for Woman NPC (Sprite 36) and Flower
             if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
               text_dialogue(DIALOGUE_FLOWER_THANKS);
             } else {
@@ -426,10 +440,16 @@ void game_update(void) {
           }
         }
         if (input_pressed(J_B)) {
-          if (e->type == ENT_ITEM && e->active) {
+          if (e->type == ENT_ITEM) {
             interacted = 1;
             if (e->sprite_base == 41) {
-              inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 41);
+              if (e->dialogue && strcmp(e->dialogue, "ARMA") == 0) {
+                inventory_add_item("ARMA", "Un arma cargada", 41);
+                player_ammo = 10;
+              } else {
+                inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 41);
+              }
+              hud_update();
               sfx_pickup();
               e->active = 0;
             }
@@ -438,49 +458,81 @@ void game_update(void) {
       }
     }
 
+    if (!interacted && input_pressed(J_B)) {
+      if (inventory_has_item("ARMA") && player_ammo > 0) {
+        int8_t vx = 0, vy = 0;
+        if (player_dir == 0)
+          vy = 2; // DOWN
+        else if (player_dir == 1)
+          vy = -2; // UP
+        else if (player_dir == 2)
+          vx = -2; // LEFT
+        else if (player_dir == 3)
+          vx = 2; // RIGHT
+
+        projectile_spawn(player_x + 4, player_y + 4, vx, vy, 1);
+        player_ammo--;
+        sfx_pickup(); // Reuse pickup sound as temporary fire sound
+        hud_update();
+        interacted = 1;
+      }
+    }
+
     if (interacted)
       return;
+  }
 
-    // Environment Interaction
-    uint16_t ix = player_x + 8;
-    uint16_t iy = player_y + 8;
-    if (player_dir == 0) // DOWN
-      iy += 8;
-    else if (player_dir == 1) // UP
-      iy -= 8;
-    else if (player_dir == 2) // LEFT
-      ix -= 8;
-    else if (player_dir == 3) // RIGHT
-      ix += 8;
+  // Environment Interaction
+  uint16_t ix = player_x + 8;
+  uint16_t iy = player_y + 8;
+  if (player_dir == 0) // DOWN
+    iy += 8;
+  else if (player_dir == 1) // UP
+    iy -= 8;
+  else if (player_dir == 2) // LEFT
+    ix -= 8;
+  else if (player_dir == 3) // RIGHT
+    ix += 8;
 
-    uint8_t tid = get_tile_at(ix, iy);
+  uint8_t tid = get_tile_at(ix, iy);
 
-    // Locked House Check
-    if (current_map == &maps[0]) { // WORLD_MAP
-      if (tid >= 6 && tid <= 24) {
-        // Only one house is open (bottom right area)
-        if (!((tid == 21 || tid == 22) && player_x > 160 && player_y > 160)) {
-          if (input_pressed(J_A)) {
-            text_dialogue(DIALOGUE_HOUSE_CLOSED);
-            return;
-          }
+  // Locked House Check
+  if (current_map == &maps[0]) { // WORLD_MAP
+    if (tid >= 6 && tid <= 24) {
+      // Only one house is open (bottom right area)
+      if (!((tid == 21 || tid == 22) && player_x > 160 && player_y > 160)) {
+        if (input_pressed(J_A)) {
+          text_dialogue(DIALOGUE_HOUSE_CLOSED);
+          return;
         }
       }
     }
+  }
 
-    if (current_map == &maps[1] && // HOUSE_MAP
-        (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
-      if (input_pressed(J_B)) {
-        if (!inventory_has_item("LLAVE")) {
-          text_dialogue(DIALOGUE_FOUND_KEY);
-          inventory_add_item("LLAVE", "Abre el porton norte", 41);
-          sfx_pickup();
-        } else
-          text_dialogue(DIALOGUE_EMPTY_CHEST);
-      }
+  if (current_map == &maps[1] && // HOUSE_MAP
+      (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
+    if (input_pressed(J_B)) {
+      if (!inventory_has_item("LLAVE")) {
+        text_dialogue(DIALOGUE_FOUND_KEY);
+        inventory_add_item("LLAVE", "Abre el porton norte", 41);
+        sfx_pickup();
+      } else
+        text_dialogue(DIALOGUE_EMPTY_CHEST);
     }
+  }
 
-    if (current_map == &maps[0] && (tid == 38 || tid == 39)) { // WORLD_MAP
+  if (current_map == &maps[5] && // SANCTUARY_MAP
+      (tid == 31 || tid == 32 || tid == 33 || tid == 34)) {
+    if (input_pressed(J_A)) {
+      text_dialogue("HAS COMPLETADO\nTU MISION...");
+      text_dialogue("VOLVIENDO AL\n PRINCIPIO");
+      game_init(); // Reset to World Map
+      return;
+    }
+  }
+
+  if (current_map == &maps[0] && (tid >= 41 && tid <= 44)) { // WORLD_MAP
+    if (input_pressed(J_A)) { // Assuming interaction with gate is J_A
       if (inventory_has_item("LLAVE")) {
         text_dialogue(DIALOGUE_USE_KEY);
         sfx_success();

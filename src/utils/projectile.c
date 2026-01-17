@@ -10,7 +10,8 @@ void projectile_init(void) {
   }
 }
 
-void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy) {
+void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy,
+                      uint8_t source) {
   // Find inactive projectile slot
   for (int i = 0; i < MAX_PROJECTILES; i++) {
     if (!projectiles[i].active) {
@@ -18,6 +19,7 @@ void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy) {
       projectiles[i].y = y;
       projectiles[i].vx = vx;
       projectiles[i].vy = vy;
+      projectiles[i].source = source;
       projectiles[i].active = 1;
       return;
     }
@@ -54,7 +56,7 @@ void projectile_render_all(uint16_t camera_x, uint16_t camera_y) {
 
 uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
   for (int i = 0; i < MAX_PROJECTILES; i++) {
-    if (projectiles[i].active) {
+    if (projectiles[i].active && projectiles[i].source == 0) {
       int16_t dx = (int16_t)px - (int16_t)projectiles[i].x;
       int16_t dy = (int16_t)py - (int16_t)projectiles[i].y;
       if (dx < 0)

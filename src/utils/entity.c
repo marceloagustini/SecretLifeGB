@@ -1,4 +1,5 @@
 #include "entity.h"
+#include "projectile.h"
 #include <gb/gb.h>
 #include <string.h>
 
@@ -76,7 +77,6 @@ void ai_enemy_random_walk(entity_t *self) {
 
 void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y) {
   // Shoot projectiles toward player periodically
-  extern void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy);
 
   if (++self->move_timer > 60) { // Shoot every 60 frames (~1 second)
     self->move_timer = 0;
@@ -97,14 +97,13 @@ void ai_enemy_shooter(entity_t *self, uint16_t player_x, uint16_t player_y) {
       vy = -2;
 
     if (vx != 0 || vy != 0) {
-      projectile_spawn(self->x + 8, self->y + 8, vx, vy);
+      projectile_spawn(self->x + 8, self->y + 8, vx, vy, 0);
     }
   }
 }
 
 void ai_enemy_chaser_shooter(entity_t *self) {
   extern uint16_t player_x, player_y;
-  extern void projectile_spawn(uint16_t x, uint16_t y, int8_t vx, int8_t vy);
 
   // 1. Chasing Logic
   // Move every 2nd frame (slower than player)
@@ -157,7 +156,7 @@ void ai_enemy_chaser_shooter(entity_t *self) {
     else if (dy < 0)
       vy = -2;
 
-    projectile_spawn(self->x + 8, self->y + 8, vx, vy);
+    projectile_spawn(self->x + 8, self->y + 8, vx, vy, 0);
 
     // Reset timer to random interval (60-120 frames per second = 1-2 seconds)
     // basic rand: DIV_REG

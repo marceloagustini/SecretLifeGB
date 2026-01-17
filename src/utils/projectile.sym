@@ -7,11 +7,11 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 _projectile_check_collision                                     00000286 GR
+  0 _projectile_check_collision                                     0000029F GR
   0 _projectile_init                                                00000000 GR
-  0 _projectile_render_all                                          0000017F GR
-  0 _projectile_spawn                                               00000025 GR
-  0 _projectile_update_all                                          0000008E GR
+  0 _projectile_render_all                                          00000198 GR
+  0 _projectile_spawn                                               00000026 GR
+  0 _projectile_update_all                                          0000009F GR
   2 _projectiles                                                    00000000 GR
     _shadow_OAM                                                     ******** GX
 
@@ -21,9 +21,9 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      386   flags    0
+   0 _CODE                                      size      39E   flags    0
    1 _HRAM                                      size        0   flags    0
-   2 _DATA                                      size       20   flags    0
+   2 _DATA                                      size       24   flags    0
    3 _INITIALIZED                               size        0   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0

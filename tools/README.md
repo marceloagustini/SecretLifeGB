@@ -1,72 +1,73 @@
-# GameBoy Development Tools
+# 🛠️ GameBoy Development Tools
 
-Este directorio contiene una colección de herramientas en Python diseñadas para facilitar el desarrollo de juegos para GameBoy (utilizando GBDK-2020). Estos scripts automatizan la generación de datos de mapas, tiles, sprites y fuentes en formato compatible con C.
-
----
-
-## 🛠️ Herramientas Disponibles
-
-### 1. `gen_map.py`
-Genera un mapa de 32x32 tiles con un diseño de **pueblo/ciudad**.
-- **Novedad**: Incluye caminos de adoquines (cobblestone), casas grandes de 4x4 y árboles decorativos de 2x2.
-- **Función**: Crea una matriz de datos de mapa (`map_data`) con lógica de zonificación urbana.
-- **Uso**: `python3 gen_map.py > output_map.c`
-
-### 2. `gen_npc.py`
-Genera los datos de tiles para un sprite de NPC (actualmente un perro).
-- **Función**: Convierte una cuadrícula de píxeles (formato de texto) a un array 2bpp de GameBoy.
-- **Uso**: `python3 gen_npc.py > npc_data.c`
-
-### 4. `gen_text_tiles.py`
-Genera los datos de fuente y caracteres de dibujo de cajas (border decor).
-- **Función**: Contiene definiciones de mapas de bits para letras (A-Z), puntuación y bordes de ventanas UI.
-- **Uso**: `python3 gen_text_tiles.py > font_data.c`
-
-### 5. `gen_tiles.py`
-Genera el conjunto básico de tiles para el fondo (Background).
-- **Función**: Define diseños de 8x8 píxeles para hierba, paredes, flores, árboles y partes de casas.
-- **Uso**: `python3 gen_tiles.py > tiles_data.c`
-
-### 6. `img_to_c.py`
-Convertidor genérico de imágenes PNG a arrays de C compatibles con GameBoy.
-- **Función**: Mapea colores RGB a la paleta de 4 grises de GameBoy y organiza los datos en formato 2bpp (2 bytes por fila de 8 píxeles).
-- **Uso**: `python3 img_to_c.py <imagen.png> <nombre_variable> > output.c`
-- **Requisito**: Requiere la librería `Pillow` (`pip install Pillow`).
-
-### 7. `gen_tileset_img.py`
-Genera una imagen visual de todos los tiles actuales.
-- **Función**: Crea un archivo `res/tileset.bmp` que contiene todos los tiles definidos en `gen_tiles.py`. Esta imagen es perfecta para cargarla como "Tileset" en editores externos como **Tiled Map Editor**.
-- **Uso**: `python3 gen_tileset_img.py`
-- **Nota**: No requiere librerías externas.
+Este directorio contiene una colección de herramientas en Python diseñadas para automatizar la generación de recursos (tiles, mapas, sprites) para GBDK-2020. Estas herramientas se dividen en **Generadores** (con diseños internos) y **Conversores** (que procesan archivos externos).
 
 ---
 
-## 🚀 Cómo usar
-La mayoría de estas herramientas imprimen el código C directamente en la consola. Puedes redirigir la salida a un archivo para usarlo en tu proyecto:
+## 🚀 Automatización Principal
 
-```bash
-python3 tools/gen_tiles.py > src/tiles_data.c
-```
+### `build_assets.py`
+Este es el "pipeline" principal. Ejecuta secuencialmente los generadores necesarios y consolida toda la salida en `res/assets.c`.
+- **Uso**: `python3 tools/build_assets.py`
+- **Genera**: `res/assets.c` (listo para compilar).
 
-> [!NOTE]
-> Estas herramientas están optimizadas para el flujo de trabajo de este proyecto específico, generando arrays `unsigned char` listos para ser usados con funciones de GBDK como `set_bkg_data` o `set_sprite_data`.
+---
 
-## Paso a paso para agregar un sprite
+## 🎨 Generadores de Recursos (Hardcoded)
 
-Dibuja el Sprite: Crea un PNG de 16x16 píxeles usando solo 4 colores (Blanco, Gris Claro, Gris Oscuro, Negro).
+Estas herramientas contienen el diseño de los píxeles dentro del código Python.
 
-Convierte la Imagen: Usa la herramienta incluida en el proyecto: 
-```bash
-python3 tools/img_to_c.py tu_imagen.png nombre_variable
-```
+| Script | Función |
+| :--- | :--- |
+| `gen_tiles.py` | Genera los tiles básicos del fondo (hierba, árboles 2x2, casas, flores). |
+| `gen_player.py` | Genera los sprites de movimiento del jugador (Link-style). |
+| `gen_npc.py` | Genera el sprite del NPC "Perro". |
+| `gen_female_npc.py` | Genera el sprite de la aldeana. |
+| `gen_guard.py` | Genera el sprite del guardia/enemigo. |
+| `gen_projectile.py` | Genera los gráficos de los proyectiles. |
+| `gen_text_tiles.py` | Genera la fuente (A-Z, 0-9) y los bordes de las ventanas de diálogo. |
+| `gen_map.py` | Genera la matriz del mapa del mundo (0: WORLD_MAP) con diseño de pueblo. |
 
-Agrega los Datos: Copia el resultado en 
-res/assets.c
-y decláralo en 
-res/assets.h
+---
 
-Carga en VRAM: En 
-game_init(en src/states/game.c), usa set_sprite_data para cargar tus nuevos gráficos.
+## 🔄 Conversores (PNG & Tiled)
 
-Crea la Entidad: Usa el índice donde cargaste el sprite al crear tu entidad en 
-src/data/map_config.c
+Herramientas para importar recursos desde archivos externos.
+
+### `img_to_c.py`
+Convierte cualquier PNG a un array de C compatible con GameBoy.
+- **Uso**: `python3 tools/img_to_c.py <imagen.png> <nombre_variable> > output.c`
+- **Importante**: La imagen debe usar solo los 4 colores de la paleta GameBoy habituales en estos conversores:
+    - `0xFFFFFF` (Blanco)
+    - `0xC0C0C0` (Gris Claro)
+    - `0x606060` (Gris Oscuro)
+    - `0x000000` (Negro)
+- **Requisito**: Requiere `Pillow` (`pip install Pillow`).
+
+### `tiled_to_c.py`
+Convierte archivos `.csv` exportados desde **Tiled Map Editor** a arrays de C.
+- **Uso**: `python3 tools/tiled_to_c.py mapa.csv nombre_array`
+
+### `png_to_tiles.py`
+Similar a `img_to_c.py` pero optimizado para generar sets de tiles individuales.
+
+---
+
+## 🔍 Utilidades de Visualización
+
+### `gen_tileset_img.py`
+Genera una imagen `res/tileset.bmp` con todos los tiles definidos en el código. Útil para importar el tileset en **Tiled**.
+
+### `export_to_png.py`
+Exporta los diseños actuales de los generadores a un archivo PNG (`res/tileset.png`) para previsualización o edición.
+
+---
+
+## 💡 Flujo de Trabajo Recomendado
+
+1. **Modificar Gráficos**: Si cambias el diseño en un `gen_*.py`, ejecuta `python3 tools/build_assets.py` para actualizar el juego.
+2. **Nuevos Mapas**: Diseña en Tiled usando el tileset generado por `gen_tileset_img.py`, exporta a CSV y usa `tiled_to_c.py`.
+3. **Sprites Externos**: Usa `img_to_c.py` para convertir PNGs de 16x16 directamente a código.
+
+> [!TIP]
+> Si estás en macOS/Linux, puedes dar permisos de ejecución a los scripts: `chmod +x tools/*.py`.

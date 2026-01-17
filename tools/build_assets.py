@@ -5,7 +5,11 @@ scripts = [
     "tools/gen_map.py",
     "tools/gen_player.py",
     "tools/gen_npc.py",
-    "tools/gen_text_tiles.py"
+    "tools/gen_female_npc.py",
+    "tools/gen_guard.py",
+    "tools/gen_projectile.py",
+    "tools/gen_text_tiles.py",
+    "tools/gen_maze.py"
 ]
 
 with open("res/assets.c", "w") as out:
