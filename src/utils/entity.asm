@@ -1566,8 +1566,8 @@ ___str_0:
 ; Function entity_render_all
 ; ---------------------------------
 _entity_render_all::
-	add	sp, #-13
-	ldhl	sp,	#9
+	add	sp, #-15
+	ldhl	sp,	#11
 	ld	(hl), e
 	inc	hl
 	ld	(hl), d
@@ -1575,16 +1575,16 @@ _entity_render_all::
 	dec	hl
 	ld	(hl), a
 ;src/utils/entity.c:201: for (uint8_t i = 0; i < count; i++) {
-	ldhl	sp,	#11
+	ldhl	sp,	#13
 	ld	(hl), #0x00
-00169$:
-	ldhl	sp,	#11
+00176$:
+	ldhl	sp,	#13
 	ld	a, (hl)
-	ldhl	sp,	#8
+	ldhl	sp,	#10
 	sub	a, (hl)
-	jp	NC, 00170$
+	jp	NC, 00177$
 ;src/utils/entity.c:202: entity_t *e = &entities[i];
-	ldhl	sp,	#11
+	ldhl	sp,	#13
 	ld	c, (hl)
 	ld	b, #0x00
 	ld	l, c
@@ -1605,34 +1605,46 @@ _entity_render_all::
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
-	ld	a, (hl+)
-	inc	hl
-	ld	d, a
+	ld	d, (hl)
+	ldhl	sp,	#11
 	ld	a,	(hl+)
 	ld	h, (hl)
 	ld	l, a
 	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#10
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#9
+;src/utils/entity.c:203: if (!e->active) {
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0008
+	add	hl, de
 	ld	c, l
 	ld	b, h
-;src/utils/entity.c:203: if (!e->active) {
-	ld	hl, #0x0008
-	add	hl, bc
-	ld	e, (hl)
-	ld	a, e
+	ld	a, (bc)
+	ldhl	sp,	#14
+	ld	(hl), a
+	ld	a, (hl)
 ;src/utils/entity.c:204: for (int j = 0; j < 4; j++)
 	or	a, a
 	jr	NZ, 00103$
 	ld	c, a
-00148$:
+00158$:
 	ld	a, c
 	sub	a, #0x04
-	jp	NC, 00132$
+	jp	NC, 00140$
 ;src/utils/entity.c:205: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
-	ldhl	sp,	#11
+	ldhl	sp,	#13
 	ld	a, (hl)
 	add	a, a
 	add	a, a
-	ldhl	sp,	#19
+	ldhl	sp,	#21
 	ld	b, (hl)
 	add	a, b
 	ld	b, c
@@ -1652,56 +1664,20 @@ _entity_render_all::
 	ld	(hl), a
 ;src/utils/entity.c:204: for (int j = 0; j < 4; j++)
 	inc	c
-	jr	00148$
+	jr	00158$
 ;src/utils/entity.c:206: continue;
 00103$:
 ;src/utils/entity.c:209: uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
-	ld	e, c
-	ld	d, b
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
 	ld	a, (de)
 	ldhl	sp,	#4
 	ld	(hl+), a
 	inc	de
 	ld	a, (de)
 	ld	(hl-), a
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
-	ldhl	sp,	#15
-	ld	a,	(hl+)
-	ld	h, (hl)
-	ld	l, a
-	ld	a, e
-	sub	a, l
-	ld	e, a
-	ld	a, d
-	sbc	a, h
-	ldhl	sp,	#7
-	ld	(hl-), a
-	ld	(hl), e
-	ld	a, (hl+)
-	ld	d, (hl)
-	add	a, #0x08
-	ld	e, a
-	ld	a, d
-	adc	a, #0x00
-	ldhl	sp,	#0
-	ld	(hl), e
-	inc	hl
-	ld	(hl), a
-	ld	l, c
-	ld	h, b
-	inc	hl
-	inc	hl
-	ld	e, l
-	ld	d, h
-	ld	a, (de)
-	ldhl	sp,	#4
-	ld	(hl+), a
-	inc	de
-	ld	a, (de)
-	ld	(hl), a
-	ldhl	sp,#4
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
@@ -1717,62 +1693,138 @@ _entity_render_all::
 	ldhl	sp,	#7
 	ld	(hl-), a
 	ld	(hl), e
-	ld	a, (hl+)
-	ld	d, (hl)
+	ld	a, (hl-)
 	dec	hl
-	add	a, #0x10
+	ld	(hl), a
+	ldhl	sp,	#7
+	ld	a, (hl-)
+	dec	hl
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0008
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#8
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#7
+	ld	(hl-), a
+	ld	a, (hl)
+	ldhl	sp,	#2
+	ld	(hl), a
+	ldhl	sp,	#7
+	ld	a, (hl)
+	ldhl	sp,	#3
+	ld	(hl), a
+	ldhl	sp,	#8
+	ld	a, (hl+)
+	ld	h, (hl)
+	ld	l, a
+	inc	hl
+	inc	hl
+	ld	a, (hl+)
+	ld	b, (hl)
+	ld	e, a
+	ld	d, b
+	ldhl	sp,	#19
+	ld	a,	(hl+)
+	ld	h, (hl)
+	ld	l, a
+	ld	a, e
+	sub	a, l
 	ld	e, a
 	ld	a, d
-	adc	a, #0x00
-	ld	(hl), e
+	sbc	a, h
+	ld	c, e
+	ldhl	sp,	#4
+	ld	(hl), c
 	inc	hl
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0010
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#8
 	ld	(hl), a
-;src/utils/entity.c:210: uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#7
+	ld	(hl-), a
+	ld	a, (hl)
+	ldhl	sp,	#0
+	ld	(hl), a
+	ldhl	sp,	#7
+	ld	a, (hl)
+	ldhl	sp,	#1
+	ld	(hl), a
+;src/utils/entity.c:210: uint8_t use_clipping = (current_map == &maps[2] ||
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<((_maps + 52))
-	jr	NZ, 00433$
+	jr	NZ, 00449$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>((_maps + 52))
-	jr	Z, 00173$
-00433$:
+	jr	Z, 00180$
+00449$:
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<((_maps + 104))
-	jr	NZ, 00434$
+	jr	NZ, 00450$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>((_maps + 104))
-	jr	Z, 00173$
-00434$:
-	xor	a, a
-	jr	00174$
-00173$:
-	ld	a, #0x01
-00174$:
-	ldhl	sp,	#2
-	ld	(hl), a
-;src/utils/entity.c:213: if (e->hit_timer > 0 && (e->hit_timer & 2)) {
-	ld	hl, #0x000f
-	add	hl, bc
+	jr	Z, 00180$
+00450$:
+	ld	hl, #_current_map
 	ld	a, (hl)
+	sub	a, #<((_maps + 156))
+	jr	NZ, 00451$
+	inc	hl
+	ld	a, (hl)
+	sub	a, #>((_maps + 156))
+	jr	Z, 00180$
+00451$:
+	xor	a, a
+	jr	00181$
+00180$:
+	ld	a, #0x01
+00181$:
+	ldhl	sp,	#4
+	ld	(hl), a
+;src/utils/entity.c:214: if (e->hit_timer > 0 && (e->hit_timer & 2)) {
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x000f
+	add	hl, de
+	ld	c, l
+	ld	b, h
+	ld	a, (bc)
 	or	a, a
 	jr	Z, 00106$
 	bit	1, a
 	jr	Z, 00106$
 ;src/utils/entity.c:215: for (int j = 0; j < 4; j++)
 	ld	c, #0x00
-00151$:
+00161$:
 	ld	a, c
 	sub	a, #0x04
-	jp	NC, 00132$
+	jp	NC, 00140$
 ;src/utils/entity.c:216: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
-	ldhl	sp,	#11
+	ldhl	sp,	#13
 	ld	a, (hl)
 	add	a, a
 	add	a, a
-	ldhl	sp,	#19
+	ldhl	sp,	#21
 	ld	b, (hl)
 	add	a, b
 	ld	b, c
@@ -1792,102 +1844,106 @@ _entity_render_all::
 	ld	(hl), a
 ;src/utils/entity.c:215: for (int j = 0; j < 4; j++)
 	inc	c
-	jr	00151$
+	jr	00161$
 ;src/utils/entity.c:217: continue;
 00106$:
-;src/utils/entity.c:220: if (esx < 168 && esy < 160 && (!use_clipping || esy < 140)) {
-	pop	de
-	push	de
-	ld	a, e
+;src/utils/entity.c:220: if (esx < 168 && esy < 160) {
+	ldhl	sp,	#2
+	ld	a, (hl+)
+	ld	c, a
+	ld	b, (hl)
+	ld	a, c
 	sub	a, #0xa8
-	ld	a, d
+	ld	a, b
 	sbc	a, #0x00
-	jp	NC, 00219$
-	ldhl	sp,	#6
+	jp	NC, 00140$
+	ldhl	sp,	#0
 	ld	a, (hl)
-	ldhl	sp,	#3
+	ldhl	sp,	#5
 	ld	(hl), a
-	ldhl	sp,	#7
+	ldhl	sp,	#1
 	ld	a, (hl)
-	ldhl	sp,	#4
+	ldhl	sp,	#6
 	ld	(hl-), a
 	ld	a, (hl+)
 	sub	a, #0xa0
 	ld	a, (hl)
 	sbc	a, #0x00
-	jp	NC, 00219$
-	dec	hl
-	dec	hl
-	ld	a, (hl)
-	or	a, a
-	jr	Z, 00126$
-	inc	hl
-	ld	a, (hl+)
-	sub	a, #0x8c
-	ld	a, (hl)
-	sbc	a, #0x00
-	jp	NC, 00219$
-00126$:
+	jp	NC, 00140$
 ;src/utils/entity.c:221: if (e->death_timer > 0) {
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
 	ld	hl, #0x0010
-	add	hl, bc
-	ld	a, (hl)
+	add	hl, de
+	ld	c, l
+	ld	b, h
+	ld	a, (bc)
 	or	a, a
-	jr	Z, 00123$
+	jr	Z, 00135$
 ;src/utils/entity.c:223: for (int j = 0; j < 4; j++) {
-	ldhl	sp,	#12
+	ldhl	sp,	#14
 	ld	(hl), #0x00
-00154$:
-	ldhl	sp,	#12
+00164$:
+	ldhl	sp,	#14
 	ld	a, (hl)
 	sub	a, #0x04
-	jp	NC, 00132$
+	jp	NC, 00140$
 ;src/utils/entity.c:224: uint8_t sprite_id = sprite_offset + (i * 4) + j;
 	dec	hl
 	ld	a, (hl)
 	add	a, a
 	add	a, a
-	ldhl	sp,	#19
+	ldhl	sp,	#21
 	ld	c, (hl)
 	add	a, c
-	ldhl	sp,	#12
+	ldhl	sp,	#14
 	ld	c, (hl)
 	add	a, c
-	ldhl	sp,	#4
-;src/utils/entity.c:225: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-	ld	(hl+), a
-	inc	hl
-	ld	a, (hl-)
+	ldhl	sp,	#9
 	ld	(hl), a
-	ldhl	sp,	#12
+;src/utils/entity.c:225: uint16_t ty = esy + (j >= 2 ? 8 : 0);
+	ldhl	sp,	#14
 	ld	a, (hl)
 	sub	a, #0x02
-	jr	C, 00175$
+	jr	C, 00185$
 	ld	a, #0x08
-	jr	00176$
-00175$:
+	jr	00186$
+00185$:
 	xor	a, a
-00176$:
+00186$:
 	ldhl	sp,	#5
 	ld	c, (hl)
+;src/utils/entity.c:226: if (!use_clipping || ty < 140) {
+	dec	hl
 	add	a, c
 	ld	c, a
-	ldhl	sp,	#0
+	ld	a, (hl)
+	or	a, a
+	jr	Z, 00108$
+	ld	a, c
+	sub	a, #0x8c
+	jr	NC, 00109$
+00108$:
+;src/utils/entity.c:227: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), ty);
+	ldhl	sp,	#2
 	ld	b, (hl)
-	ldhl	sp,	#12
+	ldhl	sp,	#14
 	ld	a, (hl)
 	and	a, #0x01
 	ld	a, #0x08
-	jr	NZ, 00178$
+	jr	NZ, 00188$
 	xor	a, a
-00178$:
+00188$:
 	ld	e, b
 	add	a, e
 	ld	b, a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	ldhl	sp,	#4
+	ldhl	sp,	#9
 	ld	e, (hl)
-	ld	d, #0x00
+	xor	a, a
+	ld	d, a
 	sla	e
 	rl	d
 	sla	e
@@ -1898,8 +1954,8 @@ _entity_render_all::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/entity.c:226: set_sprite_tile(sprite_id, 45 + j); // Use explosion tiles at 45-48
-	ldhl	sp,	#12
+;src/utils/entity.c:228: set_sprite_tile(sprite_id, 45 + j);
+	ldhl	sp,	#14
 	ld	a, (hl)
 	add	a, #0x2d
 	ld	c, a
@@ -1908,165 +1964,139 @@ _entity_render_all::
 	add	hl,de
 	inc	hl
 	ld	(hl), c
-;src/utils/entity.c:223: for (int j = 0; j < 4; j++) {
-	ldhl	sp,	#12
-	inc	(hl)
-	jr	00154$
-00123$:
-;src/utils/entity.c:228: } else if (e->type == ENT_PORTAL) {
-	ld	hl, #0x0004
-	add	hl, bc
+;src/utils/entity.c:228: set_sprite_tile(sprite_id, 45 + j);
+	jr	00165$
+00109$:
+;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	bc, #_shadow_OAM+0
+	ldhl	sp,	#9
 	ld	e, (hl)
-	ld	a, e
-;src/utils/entity.c:230: for (int j = 0; j < 4; j++) {
-	sub	a, #0x04
-	jr	NZ, 00120$
-	ld	c, a
-00157$:
+	xor	a, a
+	ld	l, e
+	ld	h, a
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	xor	a, a
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/entity.c:230: move_sprite(sprite_id, 0, 0);
+00165$:
+;src/utils/entity.c:223: for (int j = 0; j < 4; j++) {
+	ldhl	sp,	#14
+	inc	(hl)
+	jr	00164$
+00135$:
+;src/utils/entity.c:233: } else if (e->type == ENT_PORTAL) {
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0004
+	add	hl, de
+	ld	c, l
+	ld	b, h
+	ld	a, (bc)
+	cp	a, #0x04
+	jr	NZ, 00132$
+;src/utils/entity.c:235: for (int j = 0; j < 4; j++) {
+	ld	c, #0x00
+00167$:
 	ld	a, c
 	sub	a, #0x04
-	jp	NC, 00132$
-;src/utils/entity.c:231: uint8_t sprite_id = sprite_offset + (i * 4) + j;
-	ldhl	sp,	#11
+	jp	NC, 00140$
+;src/utils/entity.c:236: uint8_t sprite_id = sprite_offset + (i * 4) + j;
+	ldhl	sp,	#13
 	ld	a, (hl)
 	add	a, a
 	add	a, a
-	ldhl	sp,	#19
+	ldhl	sp,	#21
 	ld	b, (hl)
 	add	a, b
-	ld	e, c
-	add	a, e
-	ld	e, a
-;src/utils/entity.c:232: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-	ldhl	sp,	#6
-	ld	b, (hl)
+	ld	b, c
+	add	a, b
+	ld	b, a
+;src/utils/entity.c:237: uint16_t ty = esy + (j >= 2 ? 8 : 0);
 	ld	a, c
 	sub	a, #0x02
-	jr	C, 00179$
+	jr	C, 00189$
 	ld	a, #0x08
-	jr	00180$
-00179$:
+	jr	00190$
+00189$:
 	xor	a, a
-00180$:
-	add	a, b
-	ldhl	sp,	#12
+00190$:
+	ldhl	sp,	#5
+	ld	e, (hl)
+;src/utils/entity.c:238: if (!use_clipping || ty < 140) {
+	dec	hl
+	add	a, e
+	ld	e, a
+	ld	a, (hl)
+	or	a, a
+	jr	Z, 00113$
+	ld	a, e
+	sub	a, #0x8c
+	jr	NC, 00114$
+00113$:
+;src/utils/entity.c:239: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), ty);
+	ldhl	sp,	#2
+	ld	a, (hl)
+	ldhl	sp,	#14
 	ld	(hl), a
-	ldhl	sp,	#0
-	ld	b, (hl)
 	ld	a, c
 	and	a, #0x01
 	ld	a, #0x08
-	jr	NZ, 00182$
+	jr	NZ, 00192$
 	xor	a, a
-00182$:
-	ld	l, b
-	add	a, l
-	ld	b, a
+00192$:
+	ldhl	sp,	#14
+	ld	d, (hl)
+	add	a, d
+	ld	(hl), a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	ld	l, e
+	ld	l, b
 	ld	h, #0x00
 	add	hl, hl
 	add	hl, hl
-	ld	e, l
+	ld	b, l
 	ld	d, h
-	ld	hl, #_shadow_OAM
-	add	hl, de
+	ld	a, #<(_shadow_OAM)
+	add	a, b
+	ld	l, a
+	ld	a, #>(_shadow_OAM)
+	adc	a, d
+	ld	h, a
 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	ld	a, e
+	ld	(hl+), a
 	push	hl
-	ldhl	sp,	#14
+	ldhl	sp,	#16
 	ld	a, (hl)
 	pop	hl
-	ld	(hl+), a
-	ld	(hl), b
-;src/utils/entity.c:233: set_sprite_tile(sprite_id, 41 + j);
+	ld	(hl), a
+;src/utils/entity.c:240: set_sprite_tile(sprite_id, 41 + j);
 	ld	a, c
 	add	a, #0x29
-	ld	b, a
+	ld	e, a
 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-	ld	hl,#_shadow_OAM + 1
-	add	hl,de
+	ld	a, #<(_shadow_OAM)
+	add	a, b
+	ld	l, a
+	ld	a, #>(_shadow_OAM)
+	adc	a, d
+	ld	h, a
 	inc	hl
-	ld	(hl), b
-;src/utils/entity.c:230: for (int j = 0; j < 4; j++) {
-	inc	c
-	jr	00157$
-00120$:
-;src/utils/entity.c:235: } else if (e->type == ENT_ITEM) {
-	dec	e
-	jr	NZ, 00117$
-;src/utils/entity.c:237: uint8_t sprite_id = sprite_offset + (i * 4);
-	ldhl	sp,	#11
-	ld	a, (hl)
-	add	a, a
-	add	a, a
-	ldhl	sp,	#19
-	ld	e, (hl)
-	add	a, e
-	ldhl	sp,	#12
-	ld	(hl), a
-	ld	e, (hl)
-;src/utils/entity.c:238: move_sprite(sprite_id, esx + 4, esy + 4); // Center it
-	ldhl	sp,	#6
-	ld	a, (hl+)
-	add	a, #0x04
-	ld	(hl), a
-	ldhl	sp,	#0
-	ld	a, (hl)
-	add	a, #0x04
-	ldhl	sp,	#6
-	ld	(hl), a
-;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	ld	l, e
-	ld	h, #0x00
-	add	hl, hl
-	add	hl, hl
-	ld	e, l
-	ld	d, h
-	ld	hl, #_shadow_OAM
-	add	hl, de
-;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-	push	hl
-	ldhl	sp,	#9
-	ld	a, (hl)
-	pop	hl
-	ld	(hl+), a
-	push	hl
-	ldhl	sp,	#8
-	ld	a, (hl)
-	pop	hl
-	ld	(hl), a
-;src/utils/entity.c:239: set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
-	ld	hl, #0x0007
-	add	hl, bc
-	ld	l, (hl)
-	ld	a, c
-	add	a, #0x0a
-	ld	c, a
-	jr	NC, 00441$
-	inc	b
-00441$:
-	ld	a, (bc)
-	add	a, l
-	ld	c, a
-;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-	ld	hl,#_shadow_OAM + 1
-	add	hl,de
 	inc	hl
-	ld	(hl), c
-;src/utils/entity.c:242: for (int j = 1; j < 4; j++)
-	ld	c, #0x01
-00160$:
-;src/utils/entity.c:243: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
-	ld	a,c
-	cp	a,#0x04
-	jp	NC,00132$
-	ldhl	sp,	#12
-	add	a, (hl)
-	ld	b, a
+	ld	(hl), e
+;src/utils/entity.c:240: set_sprite_tile(sprite_id, 41 + j);
+	jr	00168$
+00114$:
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
 	ld	de, #_shadow_OAM+0
+	xor	a, a
 	ld	l, b
-	ld	h, #0x00
+	ld	h, a
 	add	hl, hl
 	add	hl, hl
 	add	hl, de
@@ -2074,78 +2104,222 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:242: for (int j = 1; j < 4; j++)
+;src/utils/entity.c:242: move_sprite(sprite_id, 0, 0);
+00168$:
+;src/utils/entity.c:235: for (int j = 0; j < 4; j++) {
 	inc	c
-	jr	00160$
-00117$:
-;src/utils/entity.c:245: uint8_t frame_offset = (e->anim_frame * 4);
-	ld	hl, #0x000a
-	add	hl, bc
+	jr	00167$
+00132$:
+;src/utils/entity.c:245: } else if (e->type == ENT_ITEM) {
+	dec	a
+	jp	NZ, 00129$
+;src/utils/entity.c:247: uint8_t sprite_id = sprite_offset + (i * 4);
+	ldhl	sp,	#13
 	ld	a, (hl)
 	add	a, a
 	add	a, a
+	ldhl	sp,	#21
+	ld	c, (hl)
+	add	a, c
+	ld	c, a
+	ld	b, c
+;src/utils/entity.c:248: uint16_t ty = esy + 4;
 	ldhl	sp,	#5
-	ld	(hl), a
-;src/utils/entity.c:246: for (int j = 0; j < 4; j++) {
+;src/utils/entity.c:249: if (!use_clipping || ty < 140) {
+	ld	a, (hl-)
+	add	a, #0x04
+	ld	e, a
+	ld	a, (hl)
+	or	a, a
+	jr	Z, 00118$
+	ld	a, e
+	sub	a, #0x8c
+	jr	NC, 00119$
+00118$:
+;src/utils/entity.c:250: move_sprite(sprite_id, esx + 4, ty);
+	ldhl	sp,	#14
+	ld	(hl), e
+	ldhl	sp,	#2
+	ld	a, (hl)
+	add	a, #0x04
+	ldhl	sp,	#5
+;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	(hl+), a
+	ld	de, #_shadow_OAM+0
+	xor	a, a
+	sla	b
+	adc	a, a
+	sla	b
+	adc	a, a
+	ld	(hl), b
+	inc	hl
+	ld	(hl-), a
+	ld	a,	(hl+)
+	ld	h, (hl)
+	ld	l, a
+	add	hl, de
+	ld	e, l
+	ld	d, h
+;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	ldhl	sp,	#14
+	ld	a, (hl)
+	ld	(de), a
+	inc	de
+	ldhl	sp,	#5
+	ld	a, (hl)
+	ld	(de), a
+;src/utils/entity.c:251: set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
 	ld	hl, #0x0007
-	add	hl, bc
+	add	hl, de
+	ld	e, l
+	ld	d, h
+	ld	a, (de)
+	ld	b, a
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x000a
+	add	hl, de
+	ld	e, l
+	ld	d, h
+	ld	a, (de)
+	add	a, b
+	ld	b, a
+;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+	ld	de, #_shadow_OAM+0
+	ldhl	sp,	#6
+	ld	a,	(hl+)
+	ld	h, (hl)
+	ld	l, a
+	add	hl, de
+	inc	hl
+	inc	hl
+	ld	e, l
+	ld	d, h
+	ld	a, b
+	ld	(de), a
+;src/utils/entity.c:251: set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
+	jr	00225$
+00119$:
+;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	de, #_shadow_OAM+0
+	xor	a, a
+	ld	l, b
+	ld	h, a
+	add	hl, hl
+	add	hl, hl
+	add	hl, de
+;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	xor	a, a
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/entity.c:257: for (int j = 1; j < 4; j++)
+00225$:
+	ld	b, #0x01
+00170$:
+;src/utils/entity.c:258: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
+	ld	a,b
+	cp	a,#0x04
+	jp	NC,00140$
+	add	a, c
+;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	l, a
+	xor	a, a
+	ld	h, a
+	add	hl, hl
+	add	hl, hl
+	ld	de, #_shadow_OAM
+	add	hl, de
+;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	xor	a, a
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/entity.c:257: for (int j = 1; j < 4; j++)
+	inc	b
+	jr	00170$
+00129$:
+;src/utils/entity.c:260: uint8_t frame_offset = (e->anim_frame * 4);
+	ldhl	sp,#8
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x000a
+	add	hl, de
 	ld	c, l
 	ld	b, h
-	ldhl	sp,	#12
+	ld	a, (bc)
+	add	a, a
+	add	a, a
+	ldhl	sp,	#7
+;src/utils/entity.c:261: for (int j = 0; j < 4; j++) {
+	ld	(hl+), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	hl, #0x0007
+	add	hl, de
+	ld	c, l
+	ld	b, h
+	ldhl	sp,	#14
 	ld	(hl), #0x00
-00163$:
-	ldhl	sp,	#12
+00173$:
+	ldhl	sp,	#14
 	ld	a, (hl)
 	sub	a, #0x04
-	jp	NC, 00132$
-;src/utils/entity.c:247: uint8_t sprite_id = sprite_offset + (i * 4) + j;
+	jr	NC, 00140$
+;src/utils/entity.c:262: uint8_t sprite_id = sprite_offset + (i * 4) + j;
 	dec	hl
 	ld	a, (hl)
 	add	a, a
 	add	a, a
-	ldhl	sp,	#19
+	ldhl	sp,	#21
 	ld	e, (hl)
 	add	a, e
-	ldhl	sp,	#12
+	ldhl	sp,	#14
 	ld	e, (hl)
 	add	a, e
 	ld	e, a
-;src/utils/entity.c:248: uint16_t ty = esy + (j >= 2 ? 8 : 0);
+;src/utils/entity.c:263: uint16_t ty = esy + (j >= 2 ? 8 : 0);
 	ld	a, (hl)
 	sub	a, #0x02
-	jr	C, 00183$
+	jr	C, 00193$
 	ld	a, #0x08
-	jr	00184$
-00183$:
+	jr	00194$
+00193$:
 	xor	a, a
-00184$:
-	ldhl	sp,	#3
+00194$:
+	ldhl	sp,	#5
 	ld	d, (hl)
-;src/utils/entity.c:249: if (!use_clipping || ty < 140) {
+;src/utils/entity.c:264: if (!use_clipping || ty < 140) {
 	dec	hl
 	add	a, d
 	ld	d, a
 	ld	a, (hl)
 	or	a, a
-	jr	Z, 00111$
+	jr	Z, 00123$
 	ld	a, d
 	sub	a, #0x8c
-	jr	NC, 00112$
-00111$:
-;src/utils/entity.c:250: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), ty);
-	ldhl	sp,	#6
+	jr	NC, 00124$
+00123$:
+;src/utils/entity.c:265: move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), ty);
+	ldhl	sp,	#8
 	ld	(hl), d
-	ldhl	sp,	#0
+	ldhl	sp,	#2
 	ld	d, (hl)
-	ldhl	sp,	#12
+	ldhl	sp,	#14
 	ld	a, (hl)
 	and	a, #0x01
 	ld	a, #0x08
-	jr	NZ, 00186$
+	jr	NZ, 00196$
 	xor	a, a
-00186$:
+00196$:
 	add	a, d
-	ldhl	sp,	#7
+	ldhl	sp,	#9
 	ld	(hl), a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
 	ld	l, e
@@ -2158,23 +2332,23 @@ _entity_render_all::
 	add	hl, de
 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
 	push	hl
-	ldhl	sp,	#8
+	ldhl	sp,	#10
 	ld	a, (hl)
 	pop	hl
 	ld	(hl+), a
 	push	hl
-	ldhl	sp,	#9
+	ldhl	sp,	#11
 	ld	a, (hl)
 	pop	hl
 	ld	(hl), a
-;src/utils/entity.c:251: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+;src/utils/entity.c:266: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
 	ld	a, (bc)
-	ldhl	sp,	#5
+	ldhl	sp,	#7
 	add	a, (hl)
-	ldhl	sp,	#12
+	ldhl	sp,	#14
 	ld	l, (hl)
 	add	a, l
-	ldhl	sp,	#7
+	ldhl	sp,	#9
 	ld	(hl), a
 ;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
 	ld	hl,#_shadow_OAM + 1
@@ -2182,12 +2356,12 @@ _entity_render_all::
 	inc	hl
 	ld	e, l
 	ld	d, h
-	ldhl	sp,	#7
+	ldhl	sp,	#9
 	ld	a, (hl)
 	ld	(de), a
-;src/utils/entity.c:251: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
-	jr	00164$
-00112$:
+;src/utils/entity.c:266: set_sprite_tile(sprite_id, e->sprite_base + frame_offset + j);
+	jr	00174$
+00124$:
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
 	xor	a, a
 	ld	l, e
@@ -2200,52 +2374,20 @@ _entity_render_all::
 	xor	a, a
 	ld	(hl+), a
 	ld	(hl), a
-;src/utils/entity.c:253: move_sprite(sprite_id, 0, 0);
-00164$:
-;src/utils/entity.c:246: for (int j = 0; j < 4; j++) {
-	ldhl	sp,	#12
+;src/utils/entity.c:268: move_sprite(sprite_id, 0, 0);
+00174$:
+;src/utils/entity.c:261: for (int j = 0; j < 4; j++) {
+	ldhl	sp,	#14
 	inc	(hl)
-	jp	00163$
-;src/utils/entity.c:258: for (int j = 0; j < 4; j++)
-00219$:
-	ld	c, #0x00
-00166$:
-	ld	a, c
-	sub	a, #0x04
-	jr	NC, 00132$
-;src/utils/entity.c:259: move_sprite(sprite_offset + (i * 4) + j, 0, 0);
-	ldhl	sp,	#11
-	ld	a, (hl)
-	add	a, a
-	add	a, a
-	ldhl	sp,	#19
-	ld	b, (hl)
-	add	a, b
-	ld	b, c
-	add	a, b
-	ld	b, a
-;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	ld	l, b
-	ld	h, #0x00
-	add	hl, hl
-	add	hl, hl
-	ld	de, #_shadow_OAM
-	add	hl, de
-;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-	xor	a, a
-	ld	(hl+), a
-	ld	(hl), a
-;src/utils/entity.c:258: for (int j = 0; j < 4; j++)
-	inc	c
-	jr	00166$
-00132$:
+	jp	00173$
+00140$:
 ;src/utils/entity.c:201: for (uint8_t i = 0; i < count; i++) {
-	ldhl	sp,	#11
+	ldhl	sp,	#13
 	inc	(hl)
-	jp	00169$
-00170$:
-;src/utils/entity.c:262: }
-	add	sp, #13
+	jp	00176$
+00177$:
+;src/utils/entity.c:274: }
+	add	sp, #15
 	pop	hl
 	add	sp, #5
 	jp	(hl)

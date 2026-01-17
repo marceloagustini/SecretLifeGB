@@ -7,9 +7,13 @@ Symbol Table
     .__.ABS.                                                    =   00000000 G
     .__.CPU.                                                    =   00000000 L
     .__.H$L.                                                    =   00000000 L
-  0 ___str_0                                                        0000009B R
-  0 ___str_1                                                        0000019D R
-  0 ___str_2                                                        0000033F R
+  0 ___str_0                                                        000000F1 R
+  0 ___str_1                                                        000001F3 R
+  0 ___str_2                                                        00000395 R
+  0 ___str_3                                                        00000432 R
+  0 ___str_4                                                        0000044E R
+  0 ___str_5                                                        0000045B R
+  0 ___str_6                                                        00000460 R
   8 __xinit__house_portals                                          00000007 R
   8 __xinit__level2_portals                                         0000000E R
   8 __xinit__maps                                                   00000015 R
@@ -32,6 +36,8 @@ Symbol Table
     _maze_map                                                       ******** GX
   2 _sanctuary_entities                                             00000098 GR
     _sanctuary_map                                                  ******** GX
+  2 _void_entities                                                  000000AB GR
+    _void_map                                                       ******** GX
   2 _world_entities                                                 00000000 GR
   3 _world_portals                                                  00000000 GR
 
@@ -41,14 +47,14 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      3DC   flags    0
+   0 _CODE                                      size      47C   flags    0
    1 _HRAM                                      size        0   flags    0
-   2 _DATA                                      size       AB   flags    0
-   3 _INITIALIZED                               size       B1   flags    0
+   2 _DATA                                      size       BE   flags    0
+   3 _INITIALIZED                               size       CB   flags    0
    4 _DABS                                      size        0   flags    8
    5 _HOME                                      size        0   flags    0
    6 _GSINIT                                    size        0   flags    0
    7 _GSFINAL                                   size        0   flags    0
-   8 _INITIALIZER                               size       B1   flags    0
+   8 _INITIALIZER                               size       CB   flags    0
    9 _CABS                                      size        0   flags    8
 

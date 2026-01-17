@@ -10,6 +10,7 @@ entity_t level2_entities[1];
 entity_t level3_entities[2];
 entity_t maze_entities[1];
 entity_t sanctuary_entities[1];
+entity_t void_entities[1];
 
 // --- Portal Instances ---
 portal_t world_portals[1] = {
@@ -57,7 +58,7 @@ map_t maps[] = {{
                  L3_WIDTH,
                  L3_HEIGHT,
                  level3_entities,
-                 1,
+                 2,
                  {0, 2, 255},
                  NULL,
                  0},
@@ -78,6 +79,15 @@ map_t maps[] = {{
                  1,
                  {35, 255}, // 35 is floor
                  NULL,
+                 0},
+                {// 6: VOID_MAP
+                 void_map,
+                 VOID_WIDTH,
+                 VOID_HEIGHT,
+                 void_entities,
+                 1,
+                 {0, 2, 255},
+                 NULL,
                  0}};
 
 void map_init_data() {
@@ -90,5 +100,14 @@ void map_init_data() {
   level2_entities[0].update = ai_enemy_chaser_shooter;
   level2_entities[0].shoot_timer = 60;
 
-  entity_init(&level3_entities[0], ENT_PORTAL, 128, 128, 41, NULL);
+  entity_init(&level3_entities[0], ENT_NPC, 128, 128, 36,
+              "BIENVENIDO AL\nPUEBLO SENSEI");
+  entity_init(&level3_entities[1], ENT_NPC, 200, 100, 24, "HOLA VIAJERO");
+
+  entity_init(&maze_entities[0], ENT_ITEM, 128, 128, 49, "ARMA");
+
+  entity_init(&sanctuary_entities[0], ENT_NPC, 76, 64, 36,
+              "ESTAS A SALVO\nTOCA EL ALTAR");
+
+  entity_init(&void_entities[0], ENT_PORTAL, 480, 480, 41, NULL);
 }

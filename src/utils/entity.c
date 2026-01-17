@@ -207,36 +207,51 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
     }
 
     uint16_t esx = e->x - camera_x + 8, esy = e->y - camera_y + 16;
-    uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
+    uint8_t use_clipping = (current_map == &maps[2] ||
+                            current_map == &maps[4] || current_map == &maps[6]);
 
     // Handle Flashing Effect (hit_timer)
     if (e->hit_timer > 0 && (e->hit_timer & 2)) {
-      // Hide sprites during some frames of flashing
       for (int j = 0; j < 4; j++)
         move_sprite(sprite_offset + (i * 4) + j, 0, 0);
       continue;
     }
 
-    if (esx < 168 && esy < 160 && (!use_clipping || esy < 140)) {
+    if (esx < 168 && esy < 160) {
       if (e->death_timer > 0) {
         // Render Explosion (using tiles 45-48)
         for (int j = 0; j < 4; j++) {
           uint8_t sprite_id = sprite_offset + (i * 4) + j;
-          move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-          set_sprite_tile(sprite_id, 45 + j); // Use explosion tiles at 45-48
+          uint16_t ty = esy + (j >= 2 ? 8 : 0);
+          if (!use_clipping || ty < 140) {
+            move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), ty);
+            set_sprite_tile(sprite_id, 45 + j);
+          } else {
+            move_sprite(sprite_id, 0, 0);
+          }
         }
       } else if (e->type == ENT_PORTAL) {
         // Render Portal Drop (using tiles 41-44)
         for (int j = 0; j < 4; j++) {
           uint8_t sprite_id = sprite_offset + (i * 4) + j;
-          move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), esy + (j >= 2 ? 8 : 0));
-          set_sprite_tile(sprite_id, 41 + j);
+          uint16_t ty = esy + (j >= 2 ? 8 : 0);
+          if (!use_clipping || ty < 140) {
+            move_sprite(sprite_id, esx + (j % 2 ? 8 : 0), ty);
+            set_sprite_tile(sprite_id, 41 + j);
+          } else {
+            move_sprite(sprite_id, 0, 0);
+          }
         }
       } else if (e->type == ENT_ITEM) {
         // Single tile rendering for items (8x8)
         uint8_t sprite_id = sprite_offset + (i * 4);
-        move_sprite(sprite_id, esx + 4, esy + 4); // Center it
-        set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
+        uint16_t ty = esy + 4;
+        if (!use_clipping || ty < 140) {
+          move_sprite(sprite_id, esx + 4, ty);
+          set_sprite_tile(sprite_id, e->sprite_base + e->anim_frame);
+        } else {
+          move_sprite(sprite_id, 0, 0);
+        }
 
         // Hide unused sprites
         for (int j = 1; j < 4; j++)
@@ -254,9 +269,6 @@ void entity_render_all(entity_t *entities, uint8_t count, uint16_t camera_x,
           }
         }
       }
-    } else {
-      for (int j = 0; j < 4; j++)
-        move_sprite(sprite_offset + (i * 4) + j, 0, 0);
     }
   }
 }

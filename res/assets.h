@@ -8,6 +8,7 @@ extern const unsigned char map_data[];
 extern const unsigned char house_map[];
 extern const unsigned char level2_map[];
 extern const unsigned char level3_map[];
+extern const unsigned char void_map[];
 extern const unsigned char maze_map[];
 extern const unsigned char sanctuary_map[];
 extern const unsigned char player_sprites[];
@@ -28,11 +29,11 @@ extern const unsigned char explosion_sprite[];
 #define L2_HEIGHT 32
 #define L3_WIDTH 32
 #define L3_HEIGHT 32
+#define VOID_WIDTH 64
+#define VOID_HEIGHT 64
 #define MAZE_WIDTH 32
 #define MAZE_HEIGHT 32
 #define SANCTUARY_WIDTH 20
 #define SANCTUARY_HEIGHT 18
-
-extern const unsigned char level3_map[];
 
 #endif

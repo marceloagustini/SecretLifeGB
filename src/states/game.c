@@ -360,7 +360,7 @@ void game_update(void) {
         dy = -dy;
       // 16x16 portal, check overlap
       if (dx < 16 && dy < 16) {
-        switch_map(&maps[3], 124, 240); // To Level 3 (bottom-middle path)
+        switch_map(&maps[3], 124, 240); // To Level 3 Town (normal progression)
         return;
       }
     }
@@ -390,7 +390,8 @@ void game_update(void) {
   // Ensure player sprites are positioned correctly (restores visibility after
   // dialogue)
   uint16_t sx = player_x - camera_x + 8, sy = player_y - camera_y + 16;
-  uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4]);
+  uint8_t use_clipping = (current_map == &maps[2] || current_map == &maps[4] ||
+                          current_map == &maps[6]);
 
   for (int i = 0; i < 4; i++) {
     uint16_t ty = sy + (i >= 2 ? 8 : 0);
@@ -445,10 +446,10 @@ void game_update(void) {
       if (dy < 0)
         dy = -dy;
       if (dx < 16 && dy < 16) {
-        if (current_map == &maps[3]) {
-          switch_map(&maps[0], 128, 128); // Back to World
+        if (current_map == &maps[6]) {
+          switch_map(&maps[0], 128, 128); // Back to World from Void
         } else {
-          switch_map(&maps[3], 32, 32); // To Void World (spawn at 32,32)
+          switch_map(&maps[6], 32, 32); // To Void World (spawn at 32,32)
         }
         return;
       }
