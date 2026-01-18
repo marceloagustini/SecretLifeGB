@@ -3779,7 +3779,7 @@
     00001294 7C               [ 4] 3779 	ld	a, h
     00001295 F8 0A            [12] 3780 	ldhl	sp,	#10
     00001297 77               [ 8] 3781 	ld	(hl), a
-                                   3782 ;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
+                                   3782 ;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("DISCO")) {
     00001298 F8 03            [12] 3783 	ldhl	sp,#3
     0000129A 2A               [ 8] 3784 	ld	a, (hl+)
     0000129B 5F               [ 4] 3785 	ld	e, a
@@ -3824,7 +3824,7 @@
                                    3824 ;src/states/game.c:479: interacted = 1;
     000012CB F8 02            [12] 3825 	ldhl	sp,	#2
     000012CD 36 01            [12] 3826 	ld	(hl), #0x01
-                                   3827 ;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
+                                   3827 ;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("DISCO")) {
     000012CF F8 0D            [12] 3828 	ldhl	sp,#13
     000012D1 2A               [ 8] 3829 	ld	a, (hl+)
     000012D2 5F               [ 4] 3830 	ld	e, a
@@ -3837,7 +3837,7 @@
     000012DF B7               [ 4] 3837 	or	a, a
     000012E0 28 08            [12] 3838 	jr	Z, 00199$
                                    3839 ;src/states/game.c:481: text_dialogue(DIALOGUE_FLOWER_THANKS);
-    000012E2 11r51r16         [12] 3840 	ld	de, #___str_2
+    000012E2 11r52r16         [12] 3840 	ld	de, #___str_2
     000012E5 CDr00r00         [24] 3841 	call	_text_dialogue
     000012E8 18 0E            [12] 3842 	jr	00205$
     000012EA                       3843 00199$:
@@ -3896,7 +3896,7 @@
     00001326 3A               [ 8] 3896 	ld	a, (hl-)
     00001327 B6               [ 8] 3897 	or	a, (hl)
     00001328 28 2C            [12] 3898 	jr	Z, 00207$
-    0000132A 11rFBr16         [12] 3899 	ld	de, #___str_3
+    0000132A 11rF3r16         [12] 3899 	ld	de, #___str_3
     0000132D D5               [16] 3900 	push	de
     0000132E 2A               [ 8] 3901 	ld	a, (hl+)
     0000132F 5F               [ 4] 3902 	ld	e, a
@@ -3916,19 +3916,19 @@
     00001342 3E 31            [ 8] 3916 	ld	a, #0x31
     00001344 F5               [16] 3917 	push	af
     00001345 33               [ 8] 3918 	inc	sp
-    00001346 01r00r17         [12] 3919 	ld	bc, #___str_4
-    00001349 11rFBr16         [12] 3920 	ld	de, #___str_3
+    00001346 01rF8r16         [12] 3919 	ld	bc, #___str_4
+    00001349 11rF3r16         [12] 3920 	ld	de, #___str_3
     0000134C CDr00r00         [24] 3921 	call	_inventory_add_item
                                    3922 ;src/states/game.c:493: player_ammo = 10;
     0000134F 21r16r00         [12] 3923 	ld	hl, #_player_ammo
     00001352 36 0A            [12] 3924 	ld	(hl), #0x0a
     00001354 18 0D            [12] 3925 	jr	00208$
     00001356                       3926 00207$:
-                                   3927 ;src/states/game.c:495: inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 49);
+                                   3927 ;src/states/game.c:495: inventory_add_item("DISCO", "Un disquette\nde datos", 49);
     00001356 3E 31            [ 8] 3928 	ld	a, #0x31
     00001358 F5               [16] 3929 	push	af
     00001359 33               [ 8] 3930 	inc	sp
-    0000135A 01r10r17         [12] 3931 	ld	bc, #___str_5
+    0000135A 01r08r17         [12] 3931 	ld	bc, #___str_5
     0000135D 11r4Cr16         [12] 3932 	ld	de, #___str_1
     00001360 CDr00r00         [24] 3933 	call	_inventory_add_item
     00001363                       3934 00208$:
@@ -3961,7 +3961,7 @@
     00001387 B7               [ 4] 3961 	or	a, a
     00001388 CAr37r14         [16] 3962 	jp	Z, 00236$
                                    3963 ;src/states/game.c:507: if (inventory_has_item("ARMA") && player_ammo > 0) {
-    0000138B 11rFBr16         [12] 3964 	ld	de, #___str_3
+    0000138B 11rF3r16         [12] 3964 	ld	de, #___str_3
     0000138E CDr00r00         [24] 3965 	call	_inventory_has_item
     00001391 B7               [ 4] 3966 	or	a, a
     00001392 CAr37r14         [16] 3967 	jp	Z, 00236$
@@ -4232,7 +4232,7 @@
     000014FF B7               [ 4] 4232 	or	a, a
     00001500 28 09            [12] 4233 	jr	Z, 00264$
                                    4234 ;src/states/game.c:550: text_dialogue(DIALOGUE_HOUSE_CLOSED);
-    00001502 11r2Br17         [12] 4235 	ld	de, #___str_6
+    00001502 11r1Er17         [12] 4235 	ld	de, #___str_6
     00001505 CDr00r00         [24] 4236 	call	_text_dialogue
                                    4237 ;src/states/game.c:551: return;
     00001508 C3r49r16         [16] 4238 	jp	00308$
@@ -4310,7 +4310,7 @@
     00001568 B7               [ 4] 4310 	or	a, a
     00001569 28 2B            [12] 4311 	jr	Z, 00271$
                                    4312 ;src/states/game.c:560: if (!inventory_has_item("LLAVE")) {
-    0000156B 11r43r17         [12] 4313 	ld	de, #___str_7
+    0000156B 11r36r17         [12] 4313 	ld	de, #___str_7
     0000156E CDr00r00         [24] 4314 	call	_inventory_has_item
     00001571 F8 10            [12] 4315 	ldhl	sp,#16
     00001573 77               [ 8] 4316 	ld	(hl), a
@@ -4318,21 +4318,21 @@
     00001575 B7               [ 4] 4318 	or	a, a
     00001576 20 18            [12] 4319 	jr	NZ, 00266$
                                    4320 ;src/states/game.c:561: text_dialogue(DIALOGUE_FOUND_KEY);
-    00001578 11r49r17         [12] 4321 	ld	de, #___str_8
+    00001578 11r3Cr17         [12] 4321 	ld	de, #___str_8
     0000157B CDr00r00         [24] 4322 	call	_text_dialogue
                                    4323 ;src/states/game.c:562: inventory_add_item("LLAVE", "Abre el porton norte", 41);
     0000157E 3E 29            [ 8] 4324 	ld	a, #0x29
     00001580 F5               [16] 4325 	push	af
     00001581 33               [ 8] 4326 	inc	sp
-    00001582 01rCBr17         [12] 4327 	ld	bc, #___str_9
-    00001585 11r43r17         [12] 4328 	ld	de, #___str_7
+    00001582 01rB6r17         [12] 4327 	ld	bc, #___str_9
+    00001585 11r36r17         [12] 4328 	ld	de, #___str_7
     00001588 CDr00r00         [24] 4329 	call	_inventory_add_item
                                    4330 ;src/states/game.c:563: sfx_pickup();
     0000158B CDr00r00         [24] 4331 	call	_sfx_pickup
     0000158E 18 06            [12] 4332 	jr	00271$
     00001590                       4333 00266$:
                                    4334 ;src/states/game.c:565: text_dialogue(DIALOGUE_EMPTY_CHEST);
-    00001590 11rE0r17         [12] 4335 	ld	de, #___str_10
+    00001590 11rCBr17         [12] 4335 	ld	de, #___str_10
     00001593 CDr00r00         [24] 4336 	call	_text_dialogue
     00001596                       4337 00271$:
                                    4338 ;src/states/game.c:569: if (current_map == &maps[5] && // SANCTUARY_MAP
@@ -4368,10 +4368,10 @@
     000015BE B7               [ 4] 4368 	or	a, a
     000015BF 28 11            [12] 4369 	jr	Z, 00279$
                                    4370 ;src/states/game.c:572: text_dialogue("HAS COMPLETADO\nTU MISION...");
-    000015C1 11r41r18         [12] 4371 	ld	de, #___str_11
+    000015C1 11r2Dr18         [12] 4371 	ld	de, #___str_11
     000015C4 CDr00r00         [24] 4372 	call	_text_dialogue
                                    4373 ;src/states/game.c:573: text_dialogue("VOLVIENDO AL\n PRINCIPIO");
-    000015C7 11r5Dr18         [12] 4374 	ld	de, #___str_12
+    000015C7 11r49r18         [12] 4374 	ld	de, #___str_12
     000015CA CDr00r00         [24] 4375 	call	_text_dialogue
                                    4376 ;src/states/game.c:574: game_init(); // Reset to World Map
     000015CD CDr71r06         [24] 4377 	call	_game_init
@@ -4400,12 +4400,12 @@
     000015F1 B7               [ 4] 4400 	or	a, a
     000015F2 28 27            [12] 4401 	jr	Z, 00290$
                                    4402 ;src/states/game.c:581: if (inventory_has_item("LLAVE")) {
-    000015F4 11r43r17         [12] 4403 	ld	de, #___str_7
+    000015F4 11r36r17         [12] 4403 	ld	de, #___str_7
     000015F7 CDr00r00         [24] 4404 	call	_inventory_has_item
     000015FA B7               [ 4] 4405 	or	a, a
     000015FB 28 18            [12] 4406 	jr	Z, 00285$
                                    4407 ;src/states/game.c:582: text_dialogue(DIALOGUE_USE_KEY);
-    000015FD 11r75r18         [12] 4408 	ld	de, #___str_13
+    000015FD 11r61r18         [12] 4408 	ld	de, #___str_13
     00001600 CDr00r00         [24] 4409 	call	_text_dialogue
                                    4410 ;src/states/game.c:583: sfx_success();
     00001603 CDr00r00         [24] 4411 	call	_sfx_success
@@ -4419,7 +4419,7 @@
     00001613 18 34            [12] 4419 	jr	00308$
     00001615                       4420 00285$:
                                    4421 ;src/states/game.c:587: text_dialogue(DIALOGUE_LOCKED_GATE);
-    00001615 11r0Cr19         [12] 4422 	ld	de, #___str_14
+    00001615 11rFEr18         [12] 4422 	ld	de, #___str_14
     00001618 CDr00r00         [24] 4423 	call	_text_dialogue
     0000161B                       4424 00290$:
                                    4425 ;src/states/game.c:592: if ((env_anim_timer % 32) == 0) {
@@ -4458,288 +4458,282 @@
     00001649 E8 11            [16] 4458 	add	sp, #17
     0000164B C9               [16] 4459 	ret
     0000164C                       4460 ___str_1:
-    0000164C 46 4C 4F 52           4461 	.ascii "FLOR"
-    00001650 00                    4462 	.db 0x00
-    00001651                       4463 ___str_2:
-    00001651 47 72 61 63 69 61 73  4464 	.ascii "Gracias! Esta flor"
-             21 20 45 73 74 61 20
-             66 6C 6F 72
-    00001663 0A                    4465 	.db 0x0a
-    00001664 6D 65 20 72 65 63 75  4466 	.ascii "me recuerda a mi"
-             65 72 64 61 20 61 20
-             6D 69
-    00001674 0A                    4467 	.db 0x0a
-    00001675 68 6F 67 61 72 2E     4468 	.ascii "hogar."
-    0000167B 0A                    4469 	.db 0x0a
-    0000167C 54 65 20 64 69 72 65  4470 	.ascii "Te dire lo que se."
-             20 6C 6F 20 71 75 65
-             20 73 65 2E
-    0000168E 0A                    4471 	.db 0x0a
-    0000168F 42 75 73 63 61 20 6C  4472 	.ascii "Busca la cueva al"
-             61 20 63 75 65 76 61
-             20 61 6C
-    000016A0 0A                    4473 	.db 0x0a
-    000016A1 65 73 74 65 20 64 65  4474 	.ascii "este del rio."
-             6C 20 72 69 6F 2E
-    000016AE 0A                    4475 	.db 0x0a
-    000016AF 41 6C 6C 69 20 65 6E  4476 	.ascii "Alli encontraras"
-             63 6F 6E 74 72 61 72
-             61 73
-    000016BF 0A                    4477 	.db 0x0a
-    000016C0 6C 6F 20 71 75 65 20  4478 	.ascii "lo que buscas."
-             62 75 73 63 61 73 2E
+    0000164C 44 49 53 43 4F        4461 	.ascii "DISCO"
+    00001651 00                    4462 	.db 0x00
+    00001652                       4463 ___str_2:
+    00001652 47 72 61 63 69 61 73  4464 	.ascii "Gracias! Este"
+             21 20 45 73 74 65
+    0000165F 0A                    4465 	.db 0x0a
+    00001660 64 69 73 63 6F 20 65  4466 	.ascii "disco es para"
+             73 20 70 61 72 61
+    0000166D 0A                    4467 	.db 0x0a
+    0000166E 6C 61 20 63 6F 6D 70  4468 	.ascii "la computadora."
+             75 74 61 64 6F 72 61
+             2E
+    0000167D 0A                    4469 	.db 0x0a
+    0000167E 43 6F 6E 20 65 6C 20  4470 	.ascii "Con el podremos"
+             70 6F 64 72 65 6D 6F
+             73
+    0000168D 0A                    4471 	.db 0x0a
+    0000168E 76 65 72 20 65 6C 20  4472 	.ascii "ver el mapa de"
+             6D 61 70 61 20 64 65
+    0000169C 0A                    4473 	.db 0x0a
+    0000169D 6E 75 65 73 74 72 6F  4474 	.ascii "nuestro mundo."
+             20 6D 75 6E 64 6F 2E
+    000016AB 0A                    4475 	.db 0x0a
+    000016AC 50 72 6F 6E 74 6F 20  4476 	.ascii "Pronto podremos"
+             70 6F 64 72 65 6D 6F
+             73
+    000016BB 0A                    4477 	.db 0x0a
+    000016BC 68 61 63 65 72 6C 6F  4478 	.ascii "hacerlo funcionar."
+             20 66 75 6E 63 69 6F
+             6E 61 72 2E
     000016CE 0A                    4479 	.db 0x0a
-    000016CF 53 69 67 75 65 20 65  4480 	.ascii "Sigue el camino"
-             6C 20 63 61 6D 69 6E
-             6F
-    000016DE 0A                    4481 	.db 0x0a
-    000016DF 64 65 20 70 69 65 64  4482 	.ascii "de piedras y no"
-             72 61 73 20 79 20 6E
-             6F
-    000016EE 0A                    4483 	.db 0x0a
-    000016EF 74 65 20 70 69 65 72  4484 	.ascii "te pierdas."
-             64 61 73 2E
-    000016FA 00                    4485 	.db 0x00
-    000016FB                       4486 ___str_3:
-    000016FB 41 52 4D 41           4487 	.ascii "ARMA"
-    000016FF 00                    4488 	.db 0x00
-    00001700                       4489 ___str_4:
-    00001700 55 6E 20 61 72 6D 61  4490 	.ascii "Un arma cargada"
+    000016CF 47 72 61 63 69 61 73  4480 	.ascii "Gracias DogDog y"
+             20 44 6F 67 44 6F 67
+             20 79
+    000016DF 0A                    4481 	.db 0x0a
+    000016E0 74 65 6E 20 63 75 69  4482 	.ascii "ten cuidado afuera"
+             64 61 64 6F 20 61 66
+             75 65 72 61
+    000016F2 00                    4483 	.db 0x00
+    000016F3                       4484 ___str_3:
+    000016F3 41 52 4D 41           4485 	.ascii "ARMA"
+    000016F7 00                    4486 	.db 0x00
+    000016F8                       4487 ___str_4:
+    000016F8 55 6E 20 61 72 6D 61  4488 	.ascii "Un arma cargada"
              20 63 61 72 67 61 64
              61
-    0000170F 00                    4491 	.db 0x00
-    00001710                       4492 ___str_5:
-    00001710 55 6E 61 20 68 65 72  4493 	.ascii "Una hermosa"
-             6D 6F 73 61
-    0000171B 0A                    4494 	.db 0x0a
-    0000171C 66 6C 6F 72 20 73 69  4495 	.ascii "flor silvestre"
-             6C 76 65 73 74 72 65
-    0000172A 00                    4496 	.db 0x00
-    0000172B                       4497 ___str_6:
-    0000172B 45 73 74 61 20 63 61  4498 	.ascii "Esta casa esta"
-             73 61 20 65 73 74 61
-    00001739 0A                    4499 	.db 0x0a
-    0000173A 63 65 72 72 61 64 61  4500 	.ascii "cerrada."
-             2E
-    00001742 00                    4501 	.db 0x00
-    00001743                       4502 ___str_7:
-    00001743 4C 4C 41 56 45        4503 	.ascii "LLAVE"
-    00001748 00                    4504 	.db 0x00
-    00001749                       4505 ___str_8:
-    00001749 49 6E 63 72 65 69 62  4506 	.ascii "Increible!"
-             6C 65 21
-    00001753 0A                    4507 	.db 0x0a
-    00001754 48 61 73 20 65 6E 63  4508 	.ascii "Has encontrado la"
-             6F 6E 74 72 61 64 6F
-             20 6C 61
-    00001765 0A                    4509 	.db 0x0a
-    00001766 6C 6C 61 76 65 20 64  4510 	.ascii "llave del porton!"
-             65 6C 20 70 6F 72 74
-             6F 6E 21
-    00001777 0A                    4511 	.db 0x0a
-    00001778 45 73 74 61 20 6C 6C  4512 	.ascii "Esta llave abre"
-             61 76 65 20 61 62 72
+    00001707 00                    4489 	.db 0x00
+    00001708                       4490 ___str_5:
+    00001708 55 6E 20 64 69 73 71  4491 	.ascii "Un disquette"
+             75 65 74 74 65
+    00001714 0A                    4492 	.db 0x0a
+    00001715 64 65 20 64 61 74 6F  4493 	.ascii "de datos"
+             73
+    0000171D 00                    4494 	.db 0x00
+    0000171E                       4495 ___str_6:
+    0000171E 45 73 74 61 20 63 61  4496 	.ascii "Esta casa"
+             73 61
+    00001727 0A                    4497 	.db 0x0a
+    00001728 65 73 74 61 20 63 65  4498 	.ascii "esta cerrada."
+             72 72 61 64 61 2E
+    00001735 00                    4499 	.db 0x00
+    00001736                       4500 ___str_7:
+    00001736 4C 4C 41 56 45        4501 	.ascii "LLAVE"
+    0000173B 00                    4502 	.db 0x00
+    0000173C                       4503 ___str_8:
+    0000173C 45 78 63 65 6C 65 6E  4504 	.ascii "Excelente! Has"
+             74 65 21 20 48 61 73
+    0000174A 0A                    4505 	.db 0x0a
+    0000174B 74 6F 6D 61 64 6F 20  4506 	.ascii "tomado la llave"
+             6C 61 20 6C 6C 61 76
              65
-    00001787 0A                    4513 	.db 0x0a
-    00001788 6C 61 20 70 75 65 72  4514 	.ascii "la puerta que"
-             74 61 20 71 75 65
-    00001795 0A                    4515 	.db 0x0a
-    00001796 6C 6C 65 76 61 20 61  4516 	.ascii "lleva al bosque."
-             6C 20 62 6F 73 71 75
-             65 2E
-    000017A6 0A                    4517 	.db 0x0a
-    000017A7 41 68 6F 72 61 20 70  4518 	.ascii "Ahora podras"
-             6F 64 72 61 73
-    000017B3 0A                    4519 	.db 0x0a
-    000017B4 63 6F 6E 74 69 6E 75  4520 	.ascii "continuar tu"
-             61 72 20 74 75
-    000017C0 0A                    4521 	.db 0x0a
-    000017C1 61 76 65 6E 74 75 72  4522 	.ascii "aventura!"
-             61 21
-    000017CA 00                    4523 	.db 0x00
-    000017CB                       4524 ___str_9:
-    000017CB 41 62 72 65 20 65 6C  4525 	.ascii "Abre el porton norte"
+    0000175A 0A                    4507 	.db 0x0a
+    0000175B 64 65 6C 20 70 6F 72  4508 	.ascii "del porton!"
+             74 6F 6E 21
+    00001766 0A                    4509 	.db 0x0a
+    00001767 45 73 74 61 20 6C 6C  4510 	.ascii "Esta llave abre la"
+             61 76 65 20 61 62 72
+             65 20 6C 61
+    00001779 0A                    4511 	.db 0x0a
+    0000177A 70 75 65 72 74 61 20  4512 	.ascii "puerta para salir"
+             70 61 72 61 20 73 61
+             6C 69 72
+    0000178B 0A                    4513 	.db 0x0a
+    0000178C 64 65 20 6C 61 20 61  4514 	.ascii "de la agencia..."
+             67 65 6E 63 69 61 2E
+             2E 2E
+    0000179C 0A                    4515 	.db 0x0a
+    0000179D 41 66 75 65 72 61 20  4516 	.ascii "Afuera es muy"
+             65 73 20 6D 75 79
+    000017AA 0A                    4517 	.db 0x0a
+    000017AB 70 65 6C 69 67 72 6F  4518 	.ascii "peligroso!"
+             73 6F 21
+    000017B5 00                    4519 	.db 0x00
+    000017B6                       4520 ___str_9:
+    000017B6 41 62 72 65 20 65 6C  4521 	.ascii "Abre el porton norte"
              20 70 6F 72 74 6F 6E
              20 6E 6F 72 74 65
-    000017DF 00                    4526 	.db 0x00
-    000017E0                       4527 ___str_10:
-    000017E0 41 62 72 65 73 20 65  4528 	.ascii "Abres el ropero"
-             6C 20 72 6F 70 65 72
-             6F
-    000017EF 0A                    4529 	.db 0x0a
-    000017F0 63 6F 6E 20 63 75 69  4530 	.ascii "con cuidado..."
+    000017CA 00                    4522 	.db 0x00
+    000017CB                       4523 ___str_10:
+    000017CB 41 62 72 65 73 20 65  4524 	.ascii "Abres el armario"
+             6C 20 61 72 6D 61 72
+             69 6F
+    000017DB 0A                    4525 	.db 0x0a
+    000017DC 63 6F 6E 20 63 75 69  4526 	.ascii "con cuidado..."
              64 61 64 6F 2E 2E 2E
-    000017FE 0A                    4531 	.db 0x0a
-    000017FF 50 65 72 6F 20 65 73  4532 	.ascii "Pero esta"
+    000017EA 0A                    4527 	.db 0x0a
+    000017EB 50 65 72 6F 20 65 73  4528 	.ascii "Pero esta"
              74 61
-    00001808 0A                    4533 	.db 0x0a
-    00001809 63 6F 6D 70 6C 65 74  4534 	.ascii "completamente"
+    000017F4 0A                    4529 	.db 0x0a
+    000017F5 63 6F 6D 70 6C 65 74  4530 	.ascii "completamente"
              61 6D 65 6E 74 65
-    00001816 0A                    4535 	.db 0x0a
-    00001817 76 61 63 69 6F 2E     4536 	.ascii "vacio."
-    0000181D 0A                    4537 	.db 0x0a
-    0000181E 41 6C 67 75 69 65 6E  4538 	.ascii "Alguien ya tomo"
+    00001802 0A                    4531 	.db 0x0a
+    00001803 76 61 63 69 6F 2E     4532 	.ascii "vacio."
+    00001809 0A                    4533 	.db 0x0a
+    0000180A 41 6C 67 75 69 65 6E  4534 	.ascii "Alguien ya tomo lo"
              20 79 61 20 74 6F 6D
-             6F
-    0000182D 0A                    4539 	.db 0x0a
-    0000182E 6C 6F 20 71 75 65 20  4540 	.ascii "lo que habia"
-             68 61 62 69 61
-    0000183A 0A                    4541 	.db 0x0a
-    0000183B 61 71 75 69 2E        4542 	.ascii "aqui."
-    00001840 00                    4543 	.db 0x00
-    00001841                       4544 ___str_11:
-    00001841 48 41 53 20 43 4F 4D  4545 	.ascii "HAS COMPLETADO"
+             6F 20 6C 6F
+    0000181C 0A                    4535 	.db 0x0a
+    0000181D 71 75 65 20 68 61 62  4536 	.ascii "que habia aqui."
+             69 61 20 61 71 75 69
+             2E
+    0000182C 00                    4537 	.db 0x00
+    0000182D                       4538 ___str_11:
+    0000182D 48 41 53 20 43 4F 4D  4539 	.ascii "HAS COMPLETADO"
              50 4C 45 54 41 44 4F
-    0000184F 0A                    4546 	.db 0x0a
-    00001850 54 55 20 4D 49 53 49  4547 	.ascii "TU MISION..."
+    0000183B 0A                    4540 	.db 0x0a
+    0000183C 54 55 20 4D 49 53 49  4541 	.ascii "TU MISION..."
              4F 4E 2E 2E 2E
-    0000185C 00                    4548 	.db 0x00
-    0000185D                       4549 ___str_12:
-    0000185D 56 4F 4C 56 49 45 4E  4550 	.ascii "VOLVIENDO AL"
+    00001848 00                    4542 	.db 0x00
+    00001849                       4543 ___str_12:
+    00001849 56 4F 4C 56 49 45 4E  4544 	.ascii "VOLVIENDO AL"
              44 4F 20 41 4C
-    00001869 0A                    4551 	.db 0x0a
-    0000186A 20 50 52 49 4E 43 49  4552 	.ascii " PRINCIPIO"
+    00001855 0A                    4545 	.db 0x0a
+    00001856 20 50 52 49 4E 43 49  4546 	.ascii " PRINCIPIO"
              50 49 4F
-    00001874 00                    4553 	.db 0x00
-    00001875                       4554 ___str_13:
-    00001875 49 6E 73 65 72 74 61  4555 	.ascii "Insertas la llave"
+    00001860 00                    4547 	.db 0x00
+    00001861                       4548 ___str_13:
+    00001861 49 6E 73 65 72 74 61  4549 	.ascii "Insertas la llave"
              73 20 6C 61 20 6C 6C
              61 76 65
-    00001886 0A                    4556 	.db 0x0a
-    00001887 65 6E 20 6C 61 20 63  4557 	.ascii "en la cerradura"
+    00001872 0A                    4550 	.db 0x0a
+    00001873 65 6E 20 6C 61 20 63  4551 	.ascii "en la cerradura"
              65 72 72 61 64 75 72
              61
-    00001896 0A                    4558 	.db 0x0a
-    00001897 64 65 6C 20 70 6F 72  4559 	.ascii "del porton..."
+    00001882 0A                    4552 	.db 0x0a
+    00001883 64 65 6C 20 70 6F 72  4553 	.ascii "del porton..."
              74 6F 6E 2E 2E 2E
-    000018A4 0A                    4560 	.db 0x0a
-    000018A5 47 69 72 61 73 20 6C  4561 	.ascii "Giras la llave"
+    00001890 0A                    4554 	.db 0x0a
+    00001891 47 69 72 61 73 20 6C  4555 	.ascii "Giras la llave y"
              61 20 6C 6C 61 76 65
-    000018B3 0A                    4562 	.db 0x0a
-    000018B4 79 20 65 73 63 75 63  4563 	.ascii "y escuchas un"
-             68 61 73 20 75 6E
-    000018C1 0A                    4564 	.db 0x0a
-    000018C2 63 6C 69 63 21        4565 	.ascii "clic!"
-    000018C7 0A                    4566 	.db 0x0a
-    000018C8 45 6C 20 70 6F 72 74  4567 	.ascii "El porton se abre"
+             20 79
+    000018A1 0A                    4556 	.db 0x0a
+    000018A2 65 73 63 75 63 68 61  4557 	.ascii "escuchas un clic!"
+             73 20 75 6E 20 63 6C
+             69 63 21
+    000018B3 0A                    4558 	.db 0x0a
+    000018B4 45 6C 20 70 6F 72 74  4559 	.ascii "El porton se abre"
              6F 6E 20 73 65 20 61
              62 72 65
-    000018D9 0A                    4568 	.db 0x0a
-    000018DA 6C 65 6E 74 61 6D 65  4569 	.ascii "lentamente con un"
+    000018C5 0A                    4560 	.db 0x0a
+    000018C6 6C 65 6E 74 61 6D 65  4561 	.ascii "lentamente con un"
              6E 74 65 20 63 6F 6E
              20 75 6E
-    000018EB 0A                    4570 	.db 0x0a
-    000018EC 63 68 69 72 72 69 64  4571 	.ascii "chirrido."
+    000018D7 0A                    4562 	.db 0x0a
+    000018D8 63 68 69 72 72 69 64  4563 	.ascii "chirrido."
              6F 2E
-    000018F5 0A                    4572 	.db 0x0a
-    000018F6 45 6C 20 63 61 6D 69  4573 	.ascii "El camino esta"
+    000018E1 0A                    4564 	.db 0x0a
+    000018E2 45 6C 20 63 61 6D 69  4565 	.ascii "El camino esta"
              6E 6F 20 65 73 74 61
-    00001904 0A                    4574 	.db 0x0a
-    00001905 6C 69 62 72 65 21     4575 	.ascii "libre!"
-    0000190B 00                    4576 	.db 0x00
-    0000190C                       4577 ___str_14:
-    0000190C 45 6C 20 70 6F 72 74  4578 	.ascii "El porton esta"
+    000018F0 0A                    4566 	.db 0x0a
+    000018F1 61 68 6F 72 61 20 6C  4567 	.ascii "ahora libre!"
+             69 62 72 65 21
+    000018FD 00                    4568 	.db 0x00
+    000018FE                       4569 ___str_14:
+    000018FE 45 6C 20 70 6F 72 74  4570 	.ascii "El porton esta"
              6F 6E 20 65 73 74 61
-    0000191A 0A                    4579 	.db 0x0a
-    0000191B 66 69 72 6D 65 6D 65  4580 	.ascii "firmemente"
+    0000190C 0A                    4571 	.db 0x0a
+    0000190D 66 69 72 6D 65 6D 65  4572 	.ascii "firmemente"
              6E 74 65
-    00001925 0A                    4581 	.db 0x0a
-    00001926 63 65 72 72 61 64 6F  4582 	.ascii "cerrado."
+    00001917 0A                    4573 	.db 0x0a
+    00001918 63 65 72 72 61 64 6F  4574 	.ascii "cerrado."
              2E
-    0000192E 0A                    4583 	.db 0x0a
-    0000192F 4E 65 63 65 73 69 74  4584 	.ascii "Necesitas una"
+    00001920 0A                    4575 	.db 0x0a
+    00001921 4E 65 63 65 73 69 74  4576 	.ascii "Necesitas una"
              61 73 20 75 6E 61
-    0000193C 0A                    4585 	.db 0x0a
-    0000193D 6C 6C 61 76 65 20 70  4586 	.ascii "llave para poder"
+    0000192E 0A                    4577 	.db 0x0a
+    0000192F 6C 6C 61 76 65 20 70  4578 	.ascii "llave para poder"
              61 72 61 20 70 6F 64
              65 72
-    0000194D 0A                    4587 	.db 0x0a
-    0000194E 61 62 72 69 72 6C 6F  4588 	.ascii "abrirlo."
+    0000193F 0A                    4579 	.db 0x0a
+    00001940 61 62 72 69 72 6C 6F  4580 	.ascii "abrirlo."
              2E
-    00001956 0A                    4589 	.db 0x0a
-    00001957 51 75 69 7A 61 73 20  4590 	.ascii "Quizas alguien"
+    00001948 0A                    4581 	.db 0x0a
+    00001949 51 75 69 7A 61 73 20  4582 	.ascii "Quizas alguien"
              61 6C 67 75 69 65 6E
-    00001965 0A                    4591 	.db 0x0a
-    00001966 63 65 72 63 61 20 73  4592 	.ascii "cerca sepa donde"
-             65 70 61 20 64 6F 6E
-             64 65
-    00001976 0A                    4593 	.db 0x0a
-    00001977 65 6E 63 6F 6E 74 72  4594 	.ascii "encontrarla."
+    00001957 0A                    4583 	.db 0x0a
+    00001958 73 65 70 61 20 64 6F  4584 	.ascii "sepa donde poder"
+             6E 64 65 20 70 6F 64
+             65 72
+    00001968 0A                    4585 	.db 0x0a
+    00001969 65 6E 63 6F 6E 74 72  4586 	.ascii "encontrarla."
              61 72 6C 61 2E
-    00001983 00                    4595 	.db 0x00
-                                   4596 ;src/states/game.c:601: void game_reset(void) {
-                                   4597 ;	---------------------------------
-                                   4598 ; Function game_reset
-                                   4599 ; ---------------------------------
-    00001984                       4600 _game_reset::
-                                   4601 ;src/states/game.c:602: player_x = 128;
-    00001984 21r00r00         [12] 4602 	ld	hl, #_player_x
-    00001987 3E 80            [ 8] 4603 	ld	a, #0x80
-    00001989 22               [ 8] 4604 	ld	(hl+), a
-    0000198A AF               [ 4] 4605 	xor	a, a
-    0000198B 77               [ 8] 4606 	ld	(hl), a
-                                   4607 ;src/states/game.c:603: player_y = 128;
-    0000198C 21r02r00         [12] 4608 	ld	hl, #_player_y
-    0000198F 3E 80            [ 8] 4609 	ld	a, #0x80
-    00001991 22               [ 8] 4610 	ld	(hl+), a
-    00001992 AF               [ 4] 4611 	xor	a, a
-    00001993 77               [ 8] 4612 	ld	(hl), a
-                                   4613 ;src/states/game.c:604: enter_x = 128;
-    00001994 21r04r00         [12] 4614 	ld	hl, #_enter_x
-    00001997 3E 80            [ 8] 4615 	ld	a, #0x80
-    00001999 22               [ 8] 4616 	ld	(hl+), a
-    0000199A AF               [ 4] 4617 	xor	a, a
-    0000199B 77               [ 8] 4618 	ld	(hl), a
-                                   4619 ;src/states/game.c:605: enter_y = 128;
-    0000199C 21r06r00         [12] 4620 	ld	hl, #_enter_y
-    0000199F 3E 80            [ 8] 4621 	ld	a, #0x80
-    000019A1 22               [ 8] 4622 	ld	(hl+), a
-    000019A2 AF               [ 4] 4623 	xor	a, a
-    000019A3 77               [ 8] 4624 	ld	(hl), a
-                                   4625 ;src/states/game.c:606: player_lives = 3;
-    000019A4 21r15r00         [12] 4626 	ld	hl, #_player_lives
-    000019A7 36 03            [12] 4627 	ld	(hl), #0x03
-                                   4628 ;src/states/game.c:607: inventory_init();
-    000019A9 CDr00r00         [24] 4629 	call	_inventory_init
-                                   4630 ;src/states/game.c:608: projectile_init();
-    000019AC CDr00r00         [24] 4631 	call	_projectile_init
-                                   4632 ;src/states/game.c:609: game_ready = 0;
-    000019AF AF               [ 4] 4633 	xor	a, a
-    000019B0 EAr17r00         [16] 4634 	ld	(#_game_ready),a
-                                   4635 ;src/states/game.c:610: }
-    000019B3 C9               [16] 4636 	ret
-                                   4637 	.area _CODE
-                                   4638 	.area _INITIALIZER
-    00000000                       4639 __xinit__player_x:
-    00000000 80 00                 4640 	.dw #0x0080
-    00000002                       4641 __xinit__player_y:
-    00000002 80 00                 4642 	.dw #0x0080
-    00000004                       4643 __xinit__enter_x:
-    00000004 80 00                 4644 	.dw #0x0080
-    00000006                       4645 __xinit__enter_y:
-    00000006 80 00                 4646 	.dw #0x0080
-    00000008                       4647 __xinit__player_dir:
-    00000008 00                    4648 	.db #0x00	; 0
-    00000009                       4649 __xinit__anim_frame:
-    00000009 00                    4650 	.db #0x00	; 0
-    0000000A                       4651 __xinit__anim_timer:
-    0000000A 00                    4652 	.db #0x00	; 0
-    0000000B                       4653 __xinit__camera_x:
-    0000000B 00 00                 4654 	.dw #0x0000
-    0000000D                       4655 __xinit__camera_y:
-    0000000D 00 00                 4656 	.dw #0x0000
-    0000000F                       4657 __xinit__level2_door_x:
-    0000000F 00 00                 4658 	.dw #0x0000
-    00000011                       4659 __xinit__level2_door_y:
-    00000011 00 00                 4660 	.dw #0x0000
-    00000013                       4661 __xinit__env_anim_timer:
-    00000013 00                    4662 	.db #0x00	; 0
-    00000014                       4663 __xinit__env_anim_frame:
-    00000014 00                    4664 	.db #0x00	; 0
-    00000015                       4665 __xinit__player_lives:
-    00000015 03                    4666 	.db #0x03	; 3
-    00000016                       4667 __xinit__player_ammo:
-    00000016 00                    4668 	.db #0x00	; 0
-    00000017                       4669 __xinit__game_ready:
-    00000017 00                    4670 	.db #0x00	; 0
-                                   4671 	.area _CABS (ABS)
+    00001975 00                    4587 	.db 0x00
+                                   4588 ;src/states/game.c:601: void game_reset(void) {
+                                   4589 ;	---------------------------------
+                                   4590 ; Function game_reset
+                                   4591 ; ---------------------------------
+    00001976                       4592 _game_reset::
+                                   4593 ;src/states/game.c:602: player_x = 128;
+    00001976 21r00r00         [12] 4594 	ld	hl, #_player_x
+    00001979 3E 80            [ 8] 4595 	ld	a, #0x80
+    0000197B 22               [ 8] 4596 	ld	(hl+), a
+    0000197C AF               [ 4] 4597 	xor	a, a
+    0000197D 77               [ 8] 4598 	ld	(hl), a
+                                   4599 ;src/states/game.c:603: player_y = 128;
+    0000197E 21r02r00         [12] 4600 	ld	hl, #_player_y
+    00001981 3E 80            [ 8] 4601 	ld	a, #0x80
+    00001983 22               [ 8] 4602 	ld	(hl+), a
+    00001984 AF               [ 4] 4603 	xor	a, a
+    00001985 77               [ 8] 4604 	ld	(hl), a
+                                   4605 ;src/states/game.c:604: enter_x = 128;
+    00001986 21r04r00         [12] 4606 	ld	hl, #_enter_x
+    00001989 3E 80            [ 8] 4607 	ld	a, #0x80
+    0000198B 22               [ 8] 4608 	ld	(hl+), a
+    0000198C AF               [ 4] 4609 	xor	a, a
+    0000198D 77               [ 8] 4610 	ld	(hl), a
+                                   4611 ;src/states/game.c:605: enter_y = 128;
+    0000198E 21r06r00         [12] 4612 	ld	hl, #_enter_y
+    00001991 3E 80            [ 8] 4613 	ld	a, #0x80
+    00001993 22               [ 8] 4614 	ld	(hl+), a
+    00001994 AF               [ 4] 4615 	xor	a, a
+    00001995 77               [ 8] 4616 	ld	(hl), a
+                                   4617 ;src/states/game.c:606: player_lives = 3;
+    00001996 21r15r00         [12] 4618 	ld	hl, #_player_lives
+    00001999 36 03            [12] 4619 	ld	(hl), #0x03
+                                   4620 ;src/states/game.c:607: inventory_init();
+    0000199B CDr00r00         [24] 4621 	call	_inventory_init
+                                   4622 ;src/states/game.c:608: projectile_init();
+    0000199E CDr00r00         [24] 4623 	call	_projectile_init
+                                   4624 ;src/states/game.c:609: game_ready = 0;
+    000019A1 AF               [ 4] 4625 	xor	a, a
+    000019A2 EAr17r00         [16] 4626 	ld	(#_game_ready),a
+                                   4627 ;src/states/game.c:610: }
+    000019A5 C9               [16] 4628 	ret
+                                   4629 	.area _CODE
+                                   4630 	.area _INITIALIZER
+    00000000                       4631 __xinit__player_x:
+    00000000 80 00                 4632 	.dw #0x0080
+    00000002                       4633 __xinit__player_y:
+    00000002 80 00                 4634 	.dw #0x0080
+    00000004                       4635 __xinit__enter_x:
+    00000004 80 00                 4636 	.dw #0x0080
+    00000006                       4637 __xinit__enter_y:
+    00000006 80 00                 4638 	.dw #0x0080
+    00000008                       4639 __xinit__player_dir:
+    00000008 00                    4640 	.db #0x00	; 0
+    00000009                       4641 __xinit__anim_frame:
+    00000009 00                    4642 	.db #0x00	; 0
+    0000000A                       4643 __xinit__anim_timer:
+    0000000A 00                    4644 	.db #0x00	; 0
+    0000000B                       4645 __xinit__camera_x:
+    0000000B 00 00                 4646 	.dw #0x0000
+    0000000D                       4647 __xinit__camera_y:
+    0000000D 00 00                 4648 	.dw #0x0000
+    0000000F                       4649 __xinit__level2_door_x:
+    0000000F 00 00                 4650 	.dw #0x0000
+    00000011                       4651 __xinit__level2_door_y:
+    00000011 00 00                 4652 	.dw #0x0000
+    00000013                       4653 __xinit__env_anim_timer:
+    00000013 00                    4654 	.db #0x00	; 0
+    00000014                       4655 __xinit__env_anim_frame:
+    00000014 00                    4656 	.db #0x00	; 0
+    00000015                       4657 __xinit__player_lives:
+    00000015 03                    4658 	.db #0x03	; 3
+    00000016                       4659 __xinit__player_ammo:
+    00000016 00                    4660 	.db #0x00	; 0
+    00000017                       4661 __xinit__game_ready:
+    00000017 00                    4662 	.db #0x00	; 0
+                                   4663 	.area _CABS (ABS)

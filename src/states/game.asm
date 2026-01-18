@@ -3779,7 +3779,7 @@ _game_update::
 	ld	a, h
 	ldhl	sp,	#10
 	ld	(hl), a
-;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
+;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("DISCO")) {
 	ldhl	sp,#3
 	ld	a, (hl+)
 	ld	e, a
@@ -3824,7 +3824,7 @@ _game_update::
 ;src/states/game.c:479: interacted = 1;
 	ldhl	sp,	#2
 	ld	(hl), #0x01
-;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
+;src/states/game.c:480: if (e->sprite_base == 36 && inventory_has_item("DISCO")) {
 	ldhl	sp,#13
 	ld	a, (hl+)
 	ld	e, a
@@ -3924,7 +3924,7 @@ _game_update::
 	ld	(hl), #0x0a
 	jr	00208$
 00207$:
-;src/states/game.c:495: inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 49);
+;src/states/game.c:495: inventory_add_item("DISCO", "Un disquette\nde datos", 49);
 	ld	a, #0x31
 	push	af
 	inc	sp
@@ -4458,30 +4458,28 @@ _game_update::
 	add	sp, #17
 	ret
 ___str_1:
-	.ascii "FLOR"
+	.ascii "DISCO"
 	.db 0x00
 ___str_2:
-	.ascii "Gracias! Esta flor"
+	.ascii "Gracias! Este"
 	.db 0x0a
-	.ascii "me recuerda a mi"
+	.ascii "disco es para"
 	.db 0x0a
-	.ascii "hogar."
+	.ascii "la computadora."
 	.db 0x0a
-	.ascii "Te dire lo que se."
+	.ascii "Con el podremos"
 	.db 0x0a
-	.ascii "Busca la cueva al"
+	.ascii "ver el mapa de"
 	.db 0x0a
-	.ascii "este del rio."
+	.ascii "nuestro mundo."
 	.db 0x0a
-	.ascii "Alli encontraras"
+	.ascii "Pronto podremos"
 	.db 0x0a
-	.ascii "lo que buscas."
+	.ascii "hacerlo funcionar."
 	.db 0x0a
-	.ascii "Sigue el camino"
+	.ascii "Gracias DogDog y"
 	.db 0x0a
-	.ascii "de piedras y no"
-	.db 0x0a
-	.ascii "te pierdas."
+	.ascii "ten cuidado afuera"
 	.db 0x00
 ___str_3:
 	.ascii "ARMA"
@@ -4490,42 +4488,40 @@ ___str_4:
 	.ascii "Un arma cargada"
 	.db 0x00
 ___str_5:
-	.ascii "Una hermosa"
+	.ascii "Un disquette"
 	.db 0x0a
-	.ascii "flor silvestre"
+	.ascii "de datos"
 	.db 0x00
 ___str_6:
-	.ascii "Esta casa esta"
+	.ascii "Esta casa"
 	.db 0x0a
-	.ascii "cerrada."
+	.ascii "esta cerrada."
 	.db 0x00
 ___str_7:
 	.ascii "LLAVE"
 	.db 0x00
 ___str_8:
-	.ascii "Increible!"
+	.ascii "Excelente! Has"
 	.db 0x0a
-	.ascii "Has encontrado la"
+	.ascii "tomado la llave"
 	.db 0x0a
-	.ascii "llave del porton!"
+	.ascii "del porton!"
 	.db 0x0a
-	.ascii "Esta llave abre"
+	.ascii "Esta llave abre la"
 	.db 0x0a
-	.ascii "la puerta que"
+	.ascii "puerta para salir"
 	.db 0x0a
-	.ascii "lleva al bosque."
+	.ascii "de la agencia..."
 	.db 0x0a
-	.ascii "Ahora podras"
+	.ascii "Afuera es muy"
 	.db 0x0a
-	.ascii "continuar tu"
-	.db 0x0a
-	.ascii "aventura!"
+	.ascii "peligroso!"
 	.db 0x00
 ___str_9:
 	.ascii "Abre el porton norte"
 	.db 0x00
 ___str_10:
-	.ascii "Abres el ropero"
+	.ascii "Abres el armario"
 	.db 0x0a
 	.ascii "con cuidado..."
 	.db 0x0a
@@ -4535,11 +4531,9 @@ ___str_10:
 	.db 0x0a
 	.ascii "vacio."
 	.db 0x0a
-	.ascii "Alguien ya tomo"
+	.ascii "Alguien ya tomo lo"
 	.db 0x0a
-	.ascii "lo que habia"
-	.db 0x0a
-	.ascii "aqui."
+	.ascii "que habia aqui."
 	.db 0x00
 ___str_11:
 	.ascii "HAS COMPLETADO"
@@ -4558,11 +4552,9 @@ ___str_13:
 	.db 0x0a
 	.ascii "del porton..."
 	.db 0x0a
-	.ascii "Giras la llave"
+	.ascii "Giras la llave y"
 	.db 0x0a
-	.ascii "y escuchas un"
-	.db 0x0a
-	.ascii "clic!"
+	.ascii "escuchas un clic!"
 	.db 0x0a
 	.ascii "El porton se abre"
 	.db 0x0a
@@ -4572,7 +4564,7 @@ ___str_13:
 	.db 0x0a
 	.ascii "El camino esta"
 	.db 0x0a
-	.ascii "libre!"
+	.ascii "ahora libre!"
 	.db 0x00
 ___str_14:
 	.ascii "El porton esta"
@@ -4589,7 +4581,7 @@ ___str_14:
 	.db 0x0a
 	.ascii "Quizas alguien"
 	.db 0x0a
-	.ascii "cerca sepa donde"
+	.ascii "sepa donde poder"
 	.db 0x0a
 	.ascii "encontrarla."
 	.db 0x00

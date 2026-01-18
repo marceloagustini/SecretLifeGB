@@ -93,7 +93,8 @@ map_t maps[] = {{
 void map_init_data() {
   entity_init(&world_entities[0], ENT_NPC, 210, 230, 24, DIALOGUE_NPC_CHILD);
   entity_init(&world_entities[1], ENT_NPC, 160, 120, 36, DIALOGUE_NPC_WOMAN);
-  entity_init(&world_entities[2], ENT_ITEM, 180, 140, 49, NULL); // Flower at 49
+  entity_init(&world_entities[2], ENT_ITEM, 180, 140, 49,
+              NULL); // Diskette at 49
   world_entities[2].update = ai_anim_simple;
   entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
   entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);

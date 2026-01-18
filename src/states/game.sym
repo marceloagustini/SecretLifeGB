@@ -18,19 +18,19 @@ Symbol Table
     _WY_REG                                                         ******** GX
   0 ___str_0                                                        00000202 R
   0 ___str_1                                                        0000164C R
-  0 ___str_10                                                       000017E0 R
-  0 ___str_11                                                       00001841 R
-  0 ___str_12                                                       0000185D R
-  0 ___str_13                                                       00001875 R
-  0 ___str_14                                                       0000190C R
-  0 ___str_2                                                        00001651 R
-  0 ___str_3                                                        000016FB R
-  0 ___str_4                                                        00001700 R
-  0 ___str_5                                                        00001710 R
-  0 ___str_6                                                        0000172B R
-  0 ___str_7                                                        00001743 R
-  0 ___str_8                                                        00001749 R
-  0 ___str_9                                                        000017CB R
+  0 ___str_10                                                       000017CB R
+  0 ___str_11                                                       0000182D R
+  0 ___str_12                                                       00001849 R
+  0 ___str_13                                                       00001861 R
+  0 ___str_14                                                       000018FE R
+  0 ___str_2                                                        00001652 R
+  0 ___str_3                                                        000016F3 R
+  0 ___str_4                                                        000016F8 R
+  0 ___str_5                                                        00001708 R
+  0 ___str_6                                                        0000171E R
+  0 ___str_7                                                        00001736 R
+  0 ___str_8                                                        0000173C R
+  0 ___str_9                                                        000017B6 R
     __divuchar                                                      ******** GX
     __moduchar                                                      ******** GX
     __mulint                                                        ******** GX
@@ -76,7 +76,7 @@ Symbol Table
     _flower_sprite                                                  ******** GX
   0 _game_init                                                      00000671 GR
   3 _game_ready                                                     00000017 R
-  0 _game_reset                                                     00001984 GR
+  0 _game_reset                                                     00001976 GR
     _game_state                                                     ******** GX
   0 _game_update                                                    00000806 GR
   0 _get_tile_at                                                    00000000 GR
@@ -145,7 +145,7 @@ Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size     19B4   flags    0
+   0 _CODE                                      size     19A6   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size        4   flags    0
    3 _INITIALIZED                               size       18   flags    0

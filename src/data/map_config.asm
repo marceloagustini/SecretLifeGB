@@ -108,7 +108,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #(_world_entities + 19)
 	call	_entity_init
-;src/data/map_config.c:96: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 49, NULL); // Flower at 49
+;src/data/map_config.c:96: entity_init(&world_entities[2], ENT_ITEM, 180, 140, 49,
 	ld	de, #0x0000
 	push	de
 	ld	a, #0x31
@@ -121,12 +121,12 @@ _map_init_data::
 	ld	a, #0x01
 	ld	de, #(_world_entities + 38)
 	call	_entity_init
-;src/data/map_config.c:97: world_entities[2].update = ai_anim_simple;
+;src/data/map_config.c:98: world_entities[2].update = ai_anim_simple;
 	ld	hl, #(_world_entities + 55)
 	ld	(hl), #<(_ai_anim_simple)
 	inc	hl
 	ld	(hl), #>(_ai_anim_simple)
-;src/data/map_config.c:98: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
+;src/data/map_config.c:99: entity_init(&house_entities[0], ENT_NPC, 40, 48, 24, DIALOGUE_NPC_HOUSE);
 	ld	de, #___str_2
 	push	de
 	ld	a, #0x18
@@ -139,7 +139,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_house_entities
 	call	_entity_init
-;src/data/map_config.c:99: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
+;src/data/map_config.c:100: entity_init(&level2_entities[0], ENT_ENEMY, 120, 120, 28, NULL);
 	ld	de, #0x0000
 	push	de
 	ld	a, #0x1c
@@ -151,16 +151,16 @@ _map_init_data::
 	ld	a, #0x03
 	ld	de, #_level2_entities
 	call	_entity_init
-;src/data/map_config.c:100: level2_entities[0].update = ai_enemy_chaser_shooter;
+;src/data/map_config.c:101: level2_entities[0].update = ai_enemy_chaser_shooter;
 	ld	hl, #(_level2_entities + 17)
 	ld	(hl), #<(_ai_enemy_chaser_shooter)
 	inc	hl
 	ld	(hl), #>(_ai_enemy_chaser_shooter)
-;src/data/map_config.c:101: level2_entities[0].shoot_timer = 60;
+;src/data/map_config.c:102: level2_entities[0].shoot_timer = 60;
 	ld	hl, #_level2_entities + 13
 	ld	(hl), #0x3c
-;src/data/map_config.c:104: "BIENVENIDO AL\nPUEBLO SENSEI");
-;src/data/map_config.c:103: entity_init(&level3_entities[0], ENT_NPC, 128, 128, 36,
+;src/data/map_config.c:105: "BIENVENIDO AL\nPUEBLO SENSEI");
+;src/data/map_config.c:104: entity_init(&level3_entities[0], ENT_NPC, 128, 128, 36,
 	ld	de, #___str_3
 	push	de
 	ld	a, #0x24
@@ -173,7 +173,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_level3_entities
 	call	_entity_init
-;src/data/map_config.c:105: entity_init(&level3_entities[1], ENT_NPC, 200, 100, 24, "HOLA VIAJERO");
+;src/data/map_config.c:106: entity_init(&level3_entities[1], ENT_NPC, 200, 100, 24, "HOLA VIAJERO");
 	ld	de, #___str_4
 	push	de
 	ld	a, #0x18
@@ -186,7 +186,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #(_level3_entities + 19)
 	call	_entity_init
-;src/data/map_config.c:107: entity_init(&maze_entities[0], ENT_ITEM, 128, 128, 49, "ARMA");
+;src/data/map_config.c:108: entity_init(&maze_entities[0], ENT_ITEM, 128, 128, 49, "ARMA");
 	ld	de, #___str_5
 	push	de
 	ld	a, #0x31
@@ -199,8 +199,8 @@ _map_init_data::
 	ld	a, #0x01
 	ld	de, #_maze_entities
 	call	_entity_init
-;src/data/map_config.c:110: "ESTAS A SALVO\nTOCA EL ALTAR");
-;src/data/map_config.c:109: entity_init(&sanctuary_entities[0], ENT_NPC, 76, 64, 36,
+;src/data/map_config.c:111: "ESTAS A SALVO\nTOCA EL ALTAR");
+;src/data/map_config.c:110: entity_init(&sanctuary_entities[0], ENT_NPC, 76, 64, 36,
 	ld	de, #___str_6
 	push	de
 	ld	a, #0x24
@@ -213,7 +213,7 @@ _map_init_data::
 	xor	a, a
 	ld	de, #_sanctuary_entities
 	call	_entity_init
-;src/data/map_config.c:112: entity_init(&void_entities[0], ENT_PORTAL, 480, 480, 41, NULL);
+;src/data/map_config.c:113: entity_init(&void_entities[0], ENT_PORTAL, 480, 480, 41, NULL);
 	ld	de, #0x0000
 	push	de
 	ld	a, #0x29
@@ -225,112 +225,96 @@ _map_init_data::
 	ld	a, #0x04
 	ld	de, #_void_entities
 	call	_entity_init
-;src/data/map_config.c:113: }
+;src/data/map_config.c:114: }
 	ret
 ___str_0:
-	.ascii "Hola aventurero!"
+	.ascii "Hola DogDog! Por"
 	.db 0x0a
-	.ascii "Bienvenido a este"
+	.ascii "lo que pude saber,"
 	.db 0x0a
-	.ascii "lugar misterioso."
+	.ascii "es TikTokClock."
 	.db 0x0a
-	.ascii "Mi casa es la de"
+	.ascii "En la oficina de"
 	.db 0x0a
-	.ascii "aqui arriba, junto"
+	.ascii "la agencia arriba,"
 	.db 0x0a
-	.ascii "al gran arbol."
+	.ascii "junto al gran arbol.En el armario"
 	.db 0x0a
-	.ascii "Si necesitas algo"
+	.ascii "tienes la llave"
 	.db 0x0a
-	.ascii "busca la llave en"
+	.ascii "para salir de las"
 	.db 0x0a
-	.ascii "mi ropero."
+	.ascii "agencias. Pero ten"
 	.db 0x0a
-	.ascii "Pero ten cuidado"
+	.ascii "cuidado con los"
 	.db 0x0a
-	.ascii "con los enemigos"
+	.ascii "enemigos que hay"
 	.db 0x0a
-	.ascii "que rondan por"
+	.ascii "en la zona. El lo"
 	.db 0x0a
-	.ascii "la zona. Son muy"
+	.ascii "sabe todo! Suerte"
 	.db 0x0a
-	.ascii "peligrosos!"
-	.db 0x0a
-	.ascii "Buena suerte en"
-	.db 0x0a
-	.ascii "tu aventura!"
+	.ascii "en tu aventura!"
 	.db 0x00
 ___str_1:
-	.ascii "Hola viajero."
+	.ascii "Hola DogDog. Soy"
 	.db 0x0a
-	.ascii "Bienvenido a estas"
+	.ascii "UMA tu asistente."
 	.db 0x0a
-	.ascii "tierras olvidadas."
+	.ascii "TikTokClock quiere"
 	.db 0x0a
-	.ascii "Hace mucho tiempo,"
+	.ascii "acelerar el tiempo"
 	.db 0x0a
-	.ascii "este lugar era un"
+	.ascii "del universo."
 	.db 0x0a
-	.ascii "reino prospero."
+	.ascii "Debemos evitarlo,"
 	.db 0x0a
-	.ascii "Pero un dia, una"
+	.ascii "es muy peligroso. "
 	.db 0x0a
-	.ascii "oscura maldicion"
+	.ascii "Nadie sabe por que"
 	.db 0x0a
-	.ascii "cayo sobre nosotros."
+	.ascii "pero el tiene las"
 	.db 0x0a
-	.ascii "Los guardianes se"
+	.ascii "herramientas..."
 	.db 0x0a
-	.ascii "volvieron hostiles"
+	.ascii "Nuestra vida seria"
 	.db 0x0a
-	.ascii "y la gente huyo."
+	.ascii "mas corta y nos"
 	.db 0x0a
-	.ascii "Solo quedamos unos"
+	.ascii "volveriamos viejos"
 	.db 0x0a
-	.ascii "pocos que aun"
+	.ascii "muy pronto. Debes"
 	.db 0x0a
-	.ascii "resistimos aqui."
+	.ascii "actuar ahora! Ten"
 	.db 0x0a
-	.ascii "Si encuentras la"
+	.ascii "mucho cuidado, un"
 	.db 0x0a
-	.ascii "reliquia sagrada,"
+	.ascii "secuaz enemigo te"
 	.db 0x0a
-	.ascii "podras romper el"
-	.db 0x0a
-	.ascii "hechizo que nos"
-	.db 0x0a
-	.ascii "atormenta a todos"
-	.db 0x0a
-	.ascii "los habitantes."
-	.db 0x0a
-	.ascii "fortuna te acompane"
-	.db 0x0a
-	.ascii "en tu camino hacia"
-	.db 0x0a
-	.ascii "la victoria."
+	.ascii "espera al salir."
 	.db 0x00
 ___str_2:
-	.ascii "Bienvenido a mi"
+	.ascii "Hola DogDog! Toma"
 	.db 0x0a
-	.ascii "humilde hogar."
+	.ascii "lo que quieras."
 	.db 0x0a
-	.ascii "Puedes descansar"
+	.ascii "El enemigo es muy"
 	.db 0x0a
-	.ascii "aqui si lo"
+	.ascii "bravo, nadie puede"
 	.db 0x0a
-	.ascii "necesitas."
+	.ascii "salir de aqui."
 	.db 0x0a
-	.ascii "Pero por favor,"
+	.ascii "Si logras abrir el"
 	.db 0x0a
-	.ascii "no toques mis"
+	.ascii "portal podremos"
 	.db 0x0a
-	.ascii "cosas personales."
+	.ascii "llegar lejos."
 	.db 0x0a
-	.ascii "Respeta mi"
+	.ascii "Confiamos en ti y"
 	.db 0x0a
-	.ascii "espacio y todo"
+	.ascii "tus habilidades"
 	.db 0x0a
-	.ascii "estara bien."
+	.ascii "para salvarnos!"
 	.db 0x00
 ___str_3:
 	.ascii "BIENVENIDO AL"

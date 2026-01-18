@@ -477,7 +477,7 @@ void game_update(void) {
         if (input_pressed(J_A)) {
           if (e->type == ENT_NPC) {
             interacted = 1;
-            if (e->sprite_base == 36 && inventory_has_item("FLOR")) {
+            if (e->sprite_base == 36 && inventory_has_item("DISCO")) {
               text_dialogue(DIALOGUE_FLOWER_THANKS);
             } else {
               text_dialogue(e->dialogue);
@@ -492,7 +492,7 @@ void game_update(void) {
                 inventory_add_item("ARMA", "Un arma cargada", 49);
                 player_ammo = 10;
               } else {
-                inventory_add_item("FLOR", "Una hermosa\nflor silvestre", 49);
+                inventory_add_item("DISCO", "Un disquette\nde datos", 49);
               }
               hud_update();
               sfx_pickup();

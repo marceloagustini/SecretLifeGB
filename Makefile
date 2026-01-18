@@ -33,9 +33,10 @@ endif
 # Output filename
 BINS	= game.gb
 
-# Source files
+# Source and header files
 CSOURCES   := $(wildcard src/*.c) $(wildcard src/states/*.c) $(wildcard src/utils/*.c) $(wildcard src/data/*.c) $(wildcard res/*.c)
 ASMSOURCES := $(wildcard src/*.s)
+HEADERS    := $(wildcard src/*.h) $(wildcard src/**/*.h) $(wildcard res/*.h)
 
 # Object files (automatically derived from source files)
 OBJS       = $(CSOURCES:%.c=%.o) $(ASMSOURCES:%.s=%.o)
@@ -55,7 +56,7 @@ $(BINS):	$(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Compile .c files to .o files
-%.o:	%.c
+%.o:	%.c $(HEADERS)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Compile .s files to .o files
