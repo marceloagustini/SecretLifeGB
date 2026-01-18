@@ -9,22 +9,22 @@ Symbol Table
     .__.H$L.                                                    =   00000000 L
     _current_map                                                    ******** GX
     _maps                                                           ******** GX
-  0 _projectile_check_collision                                     00000330 GR
-  0 _projectile_check_enemy_collision                               0000042F GR
+  0 _projectile_check_collision                                     000002EE GR
+  0 _projectile_check_enemy_collision                               000003ED GR
   0 _projectile_init                                                00000000 GR
   0 _projectile_render_all                                          00000198 GR
   0 _projectile_spawn                                               00000026 GR
   0 _projectile_update_all                                          0000009F GR
   2 _projectiles                                                    00000000 GR
     _shadow_OAM                                                     ******** GX
-
+    _sys_time                                                       ******** GX
 
 ASxxxx Assembler V02.00 + NoICE + SDCC mods  (GameBoy)                  Page 2
 Hexadecimal [32-Bits]
 
 Area Table
 
-   0 _CODE                                      size      5CD   flags    0
+   0 _CODE                                      size      58B   flags    0
    1 _HRAM                                      size        0   flags    0
    2 _DATA                                      size       24   flags    0
    3 _INITIALIZED                               size        0   flags    0

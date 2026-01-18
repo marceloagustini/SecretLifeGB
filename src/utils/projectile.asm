@@ -413,12 +413,12 @@ _projectile_update_all::
 ; Function projectile_render_all
 ; ---------------------------------
 _projectile_render_all::
-	add	sp, #-13
-	ldhl	sp,	#9
+	add	sp, #-12
+	ldhl	sp,	#10
 	ld	a, e
 	ld	(hl+), a
 	ld	(hl), d
-	ldhl	sp,	#7
+	ldhl	sp,	#8
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
@@ -426,132 +426,96 @@ _projectile_render_all::
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<((_maps + 52))
-	jr	NZ, 00164$
+	jr	NZ, 00175$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>((_maps + 52))
-	jr	Z, 00119$
-00164$:
+	jr	Z, 00123$
+00175$:
 	ld	hl, #_current_map
 	ld	a, (hl)
 	sub	a, #<((_maps + 104))
-	jr	NZ, 00165$
+	jr	NZ, 00176$
 	inc	hl
 	ld	a, (hl)
 	sub	a, #>((_maps + 104))
-	jr	Z, 00119$
-00165$:
+	jr	Z, 00123$
+00176$:
 	xor	a, a
-	jr	00120$
-00119$:
+	jr	00124$
+00123$:
 	ld	a, #0x01
-00120$:
+00124$:
 	ldhl	sp,	#0
 	ld	(hl), a
 ;src/utils/projectile.c:48: for (int i = 0; i < MAX_PROJECTILES; i++) {
-	xor	a, a
-	ldhl	sp,	#11
-	ld	(hl+), a
-	ld	(hl), a
-00114$:
-	ldhl	sp,	#11
-	ld	a, (hl+)
+	ld	bc, #0x0000
+00118$:
+	ld	a, c
 	sub	a, #0x04
-	ld	a, (hl)
-	sbc	a, #0x00
-	jp	NC, 00116$
+	jp	NC, 00120$
 ;src/utils/projectile.c:49: if (projectiles[i].active) {
-	dec	hl
-	ld	a, (hl+)
-	ld	c, a
-	ld	b, (hl)
 	ld	l, c
 	ld	h, b
 	add	hl, hl
 	add	hl, hl
 	add	hl, hl
 	add	hl, bc
-	push	hl
 	ld	a, l
-	ldhl	sp,	#7
-	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#6
-	ld	(hl-), a
-	ld	a, (hl+)
+	add	a, #<(_projectiles)
 	ld	e, a
-	ld	d, (hl)
-	ld	hl, #_projectiles
-	add	hl, de
-	push	hl
-	ld	a, l
-	ldhl	sp,	#3
-	ld	(hl), a
-	pop	hl
 	ld	a, h
-	ldhl	sp,	#2
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
+	adc	a, #>(_projectiles)
+	ld	d, a
 	ld	hl, #0x0006
 	add	hl, de
-	ld	c, l
-	ld	b, h
-	ld	a, (bc)
-	ldhl	sp,	#6
+	ld	a, (hl)
+	ldhl	sp,	#5
 	ld	(hl), a
-;src/utils/projectile.c:56: move_sprite(projectiles[i].sprite_id, 0, 0);
-	ldhl	sp,#1
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
+;src/utils/projectile.c:60: move_sprite(projectiles[i].sprite_id, 0, 0);
+	push	de
 	ld	hl, #0x0007
 	add	hl, de
+	pop	de
 	push	hl
 	ld	a, l
-	ldhl	sp,	#5
+	ldhl	sp,	#8
 	ld	(hl), a
 	pop	hl
 	ld	a, h
-	ldhl	sp,	#4
-;src/utils/projectile.c:53: move_sprite(projectiles[i].sprite_id, sx, sy);
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	e, a
-	ld	a, (hl+)
-	ld	d, a
-	ld	a, (de)
+	ldhl	sp,	#7
 ;src/utils/projectile.c:49: if (projectiles[i].active) {
-	ld	(hl+), a
+	ld	(hl-), a
+	dec	hl
 	ld	a, (hl)
 	or	a, a
-	jp	Z, 00106$
+	jp	Z, 00109$
 ;src/utils/projectile.c:50: uint16_t sx = projectiles[i].x - camera_x + 8;
-	ldhl	sp,#1
+	ld	a, (de)
+	ldhl	sp,	#10
+	ld	l, (hl)
+	sub	a, l
+	add	a, #0x08
+	ldhl	sp,	#1
+	ld	(hl), a
+;src/utils/projectile.c:51: uint16_t sy = projectiles[i].y - camera_y + 16;
+	ld	l, e
+	ld	h, d
+	inc	hl
+	inc	hl
+	ld	e, l
+	ld	d, h
+	ld	a, (de)
+	ldhl	sp,	#2
+	ld	(hl+), a
+	inc	de
+	ld	a, (de)
+	ld	(hl), a
+	ldhl	sp,#2
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
-	ld	a, (de)
-	ldhl	sp,	#9
-	ld	c, (hl)
-	sub	a, c
-	add	a, #0x08
-	ldhl	sp,	#6
-	ld	(hl), a
-;src/utils/projectile.c:51: uint16_t sy = projectiles[i].y - camera_y + 16;
-	ldhl	sp,	#1
-	ld	a, (hl+)
-	ld	h, (hl)
-	ld	l, a
-	inc	hl
-	inc	hl
-	ld	a, (hl+)
-	ld	b, (hl)
-	ld	e, a
-	ld	d, b
-	ldhl	sp,	#7
+	ldhl	sp,	#8
 	ld	a,	(hl+)
 	ld	h, (hl)
 	ld	l, a
@@ -560,32 +524,90 @@ _projectile_render_all::
 	ld	e, a
 	ld	a, d
 	sbc	a, h
-	ld	c, e
-	ld	b, a
-	ld	hl, #0x0010
-	add	hl, bc
-	ld	c, l
-	ld	b, h
+	ldhl	sp,	#5
+	ld	(hl-), a
+	ld	(hl), e
+	ld	a, (hl+)
+	ld	e, (hl)
+	add	a, #0x10
+	ld	d, a
+	ld	a, e
+	adc	a, #0x00
+	ldhl	sp,	#2
+	ld	(hl), d
+	inc	hl
+	ld	(hl), a
 ;src/utils/projectile.c:52: if (!use_clipping || sy < 140) {
 	ldhl	sp,	#0
 	ld	a, (hl)
 	or	a, a
-	jr	Z, 00101$
-	ld	e, c
-	ld	d, b
+	jr	Z, 00104$
+	inc	hl
+	inc	hl
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
 	ld	a, e
 	sub	a, #0x8c
 	ld	a, d
 	sbc	a, #0x00
-	jr	NC, 00102$
-00101$:
-;src/utils/projectile.c:53: move_sprite(projectiles[i].sprite_id, sx, sy);
-	ldhl	sp,	#6
-	ld	a, (hl-)
+	jr	NC, 00105$
+00104$:
+;src/utils/projectile.c:53: if ((sys_time & 1) == 0) { // Flicker every other frame
+	ld	a, (#_sys_time)
+	ldhl	sp,	#4
+	ld	(hl), a
+	ld	a, (#_sys_time + 1)
+	ldhl	sp,	#5
+	ld	(hl), a
+;src/utils/projectile.c:49: if (projectiles[i].active) {
+	ld	l, c
+	ld	h, b
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl
+	add	hl, bc
+;src/utils/projectile.c:54: move_sprite(projectiles[i].sprite_id, sx, sy);
+	ld	a, l
+	add	a, #<(_projectiles)
 	ld	e, a
+	ld	a, h
+	adc	a, #>(_projectiles)
+	ld	d, a
+	ld	hl, #0x0007
+	add	hl, de
+	push	hl
+	ld	a, l
+	ldhl	sp,	#8
+	ld	(hl), a
+	pop	hl
+	ld	a, h
+	ldhl	sp,	#7
+	ld	(hl-), a
+	ld	a, (hl+)
+	ld	e, a
+	ld	d, (hl)
+	ld	a, (de)
+;src/utils/projectile.c:53: if ((sys_time & 1) == 0) { // Flicker every other frame
+	push	hl
+	ldhl	sp,	#6
+	bit	0, (hl)
+	pop	hl
+	jr	NZ, 00102$
+;src/utils/projectile.c:54: move_sprite(projectiles[i].sprite_id, sx, sy);
+	ldhl	sp,	#2
+	ld	e, (hl)
+	dec	hl
+	push	af
+	ld	a, (hl)
+	ldhl	sp,	#7
+	ld	(hl), a
+	pop	af
+	ld	d, a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	ld	l, (hl)
-	ld	h, #0x00
+	xor	a, a
+	ld	l, d
+	ld	h, a
 	add	hl, hl
 	add	hl, hl
 	push	de
@@ -593,167 +615,104 @@ _projectile_render_all::
 	add	hl, de
 	pop	de
 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-	ld	a, c
+	ld	a, e
 	ld	(hl+), a
-	ld	(hl), e
-;src/utils/projectile.c:54: set_sprite_tile(projectiles[i].sprite_id, 40);
-	ldhl	sp,#3
+	ld	e, l
+	ld	d, h
+	ldhl	sp,	#5
+;src/utils/projectile.c:55: set_sprite_tile(projectiles[i].sprite_id, 40);
+	ld	a, (hl+)
+	ld	(de), a
 	ld	a, (hl+)
 	ld	e, a
-;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
-	ld	a, (hl+)
-	ld	d, a
+	ld	d, (hl)
 	ld	a, (de)
-	ld	(hl+), a
-	ld	(hl), #0x00
-	ld	a, #0x02
-00166$:
-	ldhl	sp,	#5
-	sla	(hl)
+	ld	(hl), a
+;./gbdk/include/gb/gb.h:1887: shadow_OAM[nb].tile=tile;
+	ld	e, (hl)
+	xor	a, a
+	ld	l, e
+	ld	h, a
+	add	hl, hl
+	add	hl, hl
+	ld	de, #_shadow_OAM
+	add	hl, de
 	inc	hl
-	rl	(hl)
-	dec	a
-	jr	NZ, 00166$
-	dec	hl
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
-	ld	hl, #_shadow_OAM
-	add	hl, de
-	push	hl
-	ld	a, l
-	ldhl	sp,	#5
-	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#4
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	e, a
-	ld	d, (hl)
-	ld	hl, #0x0002
-	add	hl, de
-	push	hl
-	ld	a, l
-	ldhl	sp,	#7
-	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#6
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	h, (hl)
-	ld	l, a
+	inc	hl
 	ld	(hl), #0x28
-;src/utils/projectile.c:54: set_sprite_tile(projectiles[i].sprite_id, 40);
-	jr	00115$
+;src/utils/projectile.c:55: set_sprite_tile(projectiles[i].sprite_id, 40);
+	jr	00119$
 00102$:
-;src/utils/projectile.c:56: move_sprite(projectiles[i].sprite_id, 0, 0);
-	ldhl	sp,	#5
+;src/utils/projectile.c:57: move_sprite(projectiles[i].sprite_id, 0, 0);
+	ld	e, a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	ld	a, (hl)
-	ld	(hl+), a
 	xor	a, a
-	ld	(hl-), a
-	ld	a, (hl-)
-	dec	hl
+	ld	l, e
+	ld	h, a
+	add	hl, hl
+	add	hl, hl
+	ld	de, #_shadow_OAM
+	add	hl, de
+;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	xor	a, a
 	ld	(hl+), a
-	ld	(hl), #0x00
-	ld	a, #0x02
-00167$:
-	ldhl	sp,	#3
-	sla	(hl)
-	inc	hl
-	rl	(hl)
-	dec	a
-	jr	NZ, 00167$
-	dec	hl
+	ld	(hl), a
+;src/utils/projectile.c:57: move_sprite(projectiles[i].sprite_id, 0, 0);
+	jr	00119$
+00105$:
+;src/utils/projectile.c:60: move_sprite(projectiles[i].sprite_id, 0, 0);
+	ldhl	sp,#6
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
-	ld	hl, #_shadow_OAM
-	add	hl, de
-	push	hl
-	ld	a, l
-	ldhl	sp,	#7
-	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#6
-;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	h, (hl)
-	ld	l, a
-	ld	(hl), #0x00
-	ldhl	sp,	#5
-	ld	a, (hl+)
-	ld	c, a
-	ld	b, (hl)
-	inc	bc
-	xor	a, a
-	ld	(bc), a
-;src/utils/projectile.c:56: move_sprite(projectiles[i].sprite_id, 0, 0);
-	jr	00115$
-00106$:
-;src/utils/projectile.c:59: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
-	ldhl	sp,	#5
-	ld	a, (hl+)
+	ld	a, (de)
 	ld	(hl), a
 ;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
-	ld	a, (hl-)
+	ld	e, (hl)
+	xor	a, a
+	ld	l, e
+	ld	h, a
+	add	hl, hl
+	add	hl, hl
+	ld	de, #_shadow_OAM
+	add	hl, de
+;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
+	xor	a, a
 	ld	(hl+), a
-	ld	(hl), #0x00
-	ld	a, #0x02
-00168$:
-	ldhl	sp,	#5
-	sla	(hl)
-	inc	hl
-	rl	(hl)
-	dec	a
-	jr	NZ, 00168$
-	dec	hl
+	ld	(hl), a
+;src/utils/projectile.c:60: move_sprite(projectiles[i].sprite_id, 0, 0);
+	jr	00119$
+00109$:
+;src/utils/projectile.c:63: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
+	ldhl	sp,#6
 	ld	a, (hl+)
 	ld	e, a
 	ld	d, (hl)
-	ld	hl, #_shadow_OAM
-	add	hl, de
-	push	hl
-	ld	a, l
-	ldhl	sp,	#5
+	ld	a, (de)
 	ld	(hl), a
-	pop	hl
-	ld	a, h
-	ldhl	sp,	#4
-	ld	(hl-), a
-	ld	a, (hl+)
-	inc	hl
-	ld	(hl-), a
-	ld	a, (hl+)
-	inc	hl
+;./gbdk/include/gb/gb.h:1973: OAM_item_t * itm = &shadow_OAM[nb];
+	ld	e, (hl)
+	xor	a, a
+	ld	l, e
+	ld	h, a
+	add	hl, hl
+	add	hl, hl
+	ld	de, #_shadow_OAM
+	add	hl, de
 ;./gbdk/include/gb/gb.h:1974: itm->y=y, itm->x=x;
-	ld	(hl-), a
-	ld	a, (hl+)
-	ld	h, (hl)
-	ld	l, a
-	ld	(hl), #0x00
-	ldhl	sp,	#5
-	ld	a, (hl+)
-	ld	h, (hl)
-	ld	l, a
-	inc	hl
-	ld	(hl), #0x00
-;src/utils/projectile.c:59: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
-00115$:
+	xor	a, a
+	ld	(hl+), a
+	ld	(hl), a
+;src/utils/projectile.c:63: move_sprite(projectiles[i].sprite_id, 0, 0); // Hide
+00119$:
 ;src/utils/projectile.c:48: for (int i = 0; i < MAX_PROJECTILES; i++) {
-	ldhl	sp,	#11
-	inc	(hl)
-	jp	00114$
-00116$:
-;src/utils/projectile.c:62: }
-	add	sp, #13
+	inc	bc
+	jp	00118$
+00120$:
+;src/utils/projectile.c:66: }
+	add	sp, #12
 	ret
-;src/utils/projectile.c:64: uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
+;src/utils/projectile.c:68: uint8_t projectile_check_collision(uint16_t px, uint16_t py) {
 ;	---------------------------------
 ; Function projectile_check_collision
 ; ---------------------------------
@@ -767,7 +726,7 @@ _projectile_check_collision::
 	ld	a, c
 	ld	(hl+), a
 	ld	(hl), b
-;src/utils/projectile.c:65: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:69: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	xor	a, a
 	ldhl	sp,	#0
 	ld	(hl+), a
@@ -783,7 +742,7 @@ _projectile_check_collision::
 	ld	a, (hl)
 	sbc	a, #0x00
 	jp	NC, 00111$
-;src/utils/projectile.c:66: if (projectiles[i].active && projectiles[i].source == 0) {
+;src/utils/projectile.c:70: if (projectiles[i].active && projectiles[i].source == 0) {
 	dec	hl
 	ld	a, (hl+)
 	ld	c, a
@@ -810,7 +769,7 @@ _projectile_check_collision::
 	ld	a, (hl)
 	or	a, a
 	jp	NZ, 00114$
-;src/utils/projectile.c:67: int16_t dx = (int16_t)px - (int16_t)projectiles[i].x;
+;src/utils/projectile.c:71: int16_t dx = (int16_t)px - (int16_t)projectiles[i].x;
 	ldhl	sp,	#6
 	ld	a, (hl)
 	ldhl	sp,	#2
@@ -843,7 +802,7 @@ _projectile_check_collision::
 	ldhl	sp,	#11
 	ld	(hl-), a
 	ld	(hl), e
-;src/utils/projectile.c:68: int16_t dy = (int16_t)py - (int16_t)projectiles[i].y;
+;src/utils/projectile.c:72: int16_t dy = (int16_t)py - (int16_t)projectiles[i].y;
 	ldhl	sp,	#4
 	ld	a, (hl-)
 	dec	hl
@@ -870,14 +829,14 @@ _projectile_check_collision::
 	sbc	a, b
 	ldhl	sp,	#13
 	ld	(hl-), a
-;src/utils/projectile.c:69: if (dx < 0)
+;src/utils/projectile.c:73: if (dx < 0)
 	ld	a, e
 	ld	(hl-), a
 	dec	hl
 	ld	a, (hl+)
 	bit	7, (hl)
 	jr	Z, 00102$
-;src/utils/projectile.c:70: dx = -dx;
+;src/utils/projectile.c:74: dx = -dx;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -891,12 +850,12 @@ _projectile_check_collision::
 	ld	(hl-), a
 	ld	(hl), e
 00102$:
-;src/utils/projectile.c:71: if (dy < 0)
+;src/utils/projectile.c:75: if (dy < 0)
 	ldhl	sp,	#12
 	ld	a, (hl+)
 	bit	7, (hl)
 	jr	Z, 00104$
-;src/utils/projectile.c:72: dy = -dy;
+;src/utils/projectile.c:76: dy = -dy;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -910,7 +869,7 @@ _projectile_check_collision::
 	ld	(hl-), a
 	ld	(hl), e
 00104$:
-;src/utils/projectile.c:74: if (dx < 8 && dy < 8) {
+;src/utils/projectile.c:78: if (dx < 8 && dy < 8) {
 	ldhl	sp,	#10
 	ld	a, (hl+)
 	ld	c, a
@@ -935,7 +894,7 @@ _projectile_check_collision::
 	rra
 	sbc	a, #0x80
 	jr	NC, 00114$
-;src/utils/projectile.c:75: projectiles[i].active = 0; // Deactivate on hit
+;src/utils/projectile.c:79: projectiles[i].active = 0; // Deactivate on hit
 	pop	bc
 	push	bc
 	ld	l, c
@@ -949,11 +908,11 @@ _projectile_check_collision::
 	ld	bc, #0x0006
 	add	hl, bc
 	ld	(hl), #0x00
-;src/utils/projectile.c:76: return 1;
+;src/utils/projectile.c:80: return 1;
 	ld	a, #0x01
 	jr	00115$
 00114$:
-;src/utils/projectile.c:65: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:69: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	ldhl	sp,	#8
 	inc	(hl)
 	ldhl	sp,	#8
@@ -963,13 +922,13 @@ _projectile_check_collision::
 	ld	(hl), #0x00
 	jp	00113$
 00111$:
-;src/utils/projectile.c:80: return 0;
+;src/utils/projectile.c:84: return 0;
 	xor	a, a
 00115$:
-;src/utils/projectile.c:81: }
+;src/utils/projectile.c:85: }
 	add	sp, #14
 	ret
-;src/utils/projectile.c:82: uint8_t projectile_check_enemy_collision(entity_t *entities, uint8_t count) {
+;src/utils/projectile.c:86: uint8_t projectile_check_enemy_collision(entity_t *entities, uint8_t count) {
 ;	---------------------------------
 ; Function projectile_check_enemy_collision
 ; ---------------------------------
@@ -982,7 +941,7 @@ _projectile_check_enemy_collision::
 	dec	hl
 	dec	hl
 	ld	(hl), a
-;src/utils/projectile.c:83: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:87: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	xor	a, a
 	ldhl	sp,	#13
 	ld	(hl+), a
@@ -994,7 +953,7 @@ _projectile_check_enemy_collision::
 	ld	a, (hl)
 	sbc	a, #0x00
 	jp	NC, 00120$
-;src/utils/projectile.c:84: if (projectiles[i].active && projectiles[i].source == 1) { // Player shot
+;src/utils/projectile.c:88: if (projectiles[i].active && projectiles[i].source == 1) { // Player shot
 	dec	hl
 	ld	a, (hl+)
 	ld	c, a
@@ -1037,7 +996,7 @@ _projectile_check_enemy_collision::
 	ld	a, (bc)
 	dec	a
 	jp	NZ, 00126$
-;src/utils/projectile.c:85: for (uint8_t j = 0; j < count; j++) {
+;src/utils/projectile.c:89: for (uint8_t j = 0; j < count; j++) {
 	ldhl	sp,	#15
 	ld	(hl), #0x00
 00122$:
@@ -1046,7 +1005,7 @@ _projectile_check_enemy_collision::
 	ldhl	sp,	#10
 	sub	a, (hl)
 	jp	NC, 00126$
-;src/utils/projectile.c:86: entity_t *e = &entities[j];
+;src/utils/projectile.c:90: entity_t *e = &entities[j];
 	ldhl	sp,	#15
 	ld	c, (hl)
 	ld	b, #0x00
@@ -1072,7 +1031,7 @@ _projectile_check_enemy_collision::
 	pop	hl
 	ld	a, h
 	ldhl	sp,	#5
-;src/utils/projectile.c:87: if (e->active && e->type == ENT_ENEMY && e->death_timer == 0) {
+;src/utils/projectile.c:91: if (e->active && e->type == ENT_ENEMY && e->death_timer == 0) {
 	ld	(hl-), a
 	ld	a, (hl+)
 	ld	e, a
@@ -1115,7 +1074,7 @@ _projectile_check_enemy_collision::
 	ld	a, (de)
 	or	a, a
 	jp	NZ, 00123$
-;src/utils/projectile.c:88: int16_t dx = (int16_t)(projectiles[i].x + 4) - (int16_t)(e->x + 8);
+;src/utils/projectile.c:92: int16_t dx = (int16_t)(projectiles[i].x + 4) - (int16_t)(e->x + 8);
 	pop	de
 	push	de
 	ld	a, (de)
@@ -1157,7 +1116,7 @@ _projectile_check_enemy_collision::
 	sbc	a, b
 	ld	(hl-), a
 	ld	(hl), e
-;src/utils/projectile.c:89: int16_t dy = (int16_t)(projectiles[i].y + 4) - (int16_t)(e->y + 8);
+;src/utils/projectile.c:93: int16_t dy = (int16_t)(projectiles[i].y + 4) - (int16_t)(e->y + 8);
 	pop	hl
 	push	hl
 	inc	hl
@@ -1195,14 +1154,14 @@ _projectile_check_enemy_collision::
 	sbc	a, d
 	ldhl	sp,	#19
 	ld	(hl-), a
-;src/utils/projectile.c:90: if (dx < 0)
+;src/utils/projectile.c:94: if (dx < 0)
 	ld	a, e
 	ld	(hl-), a
 	dec	hl
 	ld	a, (hl+)
 	bit	7, (hl)
 	jr	Z, 00102$
-;src/utils/projectile.c:91: dx = -dx;
+;src/utils/projectile.c:95: dx = -dx;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -1216,12 +1175,12 @@ _projectile_check_enemy_collision::
 	ld	(hl-), a
 	ld	(hl), e
 00102$:
-;src/utils/projectile.c:92: if (dy < 0)
+;src/utils/projectile.c:96: if (dy < 0)
 	ldhl	sp,	#18
 	ld	a, (hl+)
 	bit	7, (hl)
 	jr	Z, 00104$
-;src/utils/projectile.c:93: dy = -dy;
+;src/utils/projectile.c:97: dy = -dy;
 	ld	de, #0x0000
 	ld	a, (hl-)
 	ld	l, (hl)
@@ -1235,7 +1194,7 @@ _projectile_check_enemy_collision::
 	ld	(hl-), a
 	ld	(hl), e
 00104$:
-;src/utils/projectile.c:95: if (dx < 12 && dy < 12) {
+;src/utils/projectile.c:99: if (dx < 12 && dy < 12) {
 	ldhl	sp,	#16
 	ld	a, (hl+)
 	ld	c, a
@@ -1260,13 +1219,13 @@ _projectile_check_enemy_collision::
 	rra
 	sbc	a, #0x80
 	jr	NC, 00123$
-;src/utils/projectile.c:96: projectiles[i].active = 0; // Destroy projectile
+;src/utils/projectile.c:100: projectiles[i].active = 0; // Destroy projectile
 	ldhl	sp,	#2
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x00
-;src/utils/projectile.c:97: if (e->health > 0) {
+;src/utils/projectile.c:101: if (e->health > 0) {
 	ldhl	sp,#4
 	ld	a, (hl+)
 	ld	e, a
@@ -1276,12 +1235,12 @@ _projectile_check_enemy_collision::
 	ld	e, l
 	ld	d, h
 	ld	a, (de)
-;src/utils/projectile.c:98: e->health--;
+;src/utils/projectile.c:102: e->health--;
 	or	a,a
 	jr	Z, 00108$
 	dec	a
 	ld	(de), a
-;src/utils/projectile.c:99: e->hit_timer = 20;
+;src/utils/projectile.c:103: e->hit_timer = 20;
 	push	de
 	ldhl	sp,#6
 	ld	a, (hl+)
@@ -1291,35 +1250,35 @@ _projectile_check_enemy_collision::
 	add	hl, de
 	pop	de
 	ld	(hl), #0x14
-;src/utils/projectile.c:100: if (e->health == 0) {
+;src/utils/projectile.c:104: if (e->health == 0) {
 	ld	a, (de)
 	or	a, a
 	jr	NZ, 00108$
-;src/utils/projectile.c:101: e->death_timer = 35; // Duration of explosion
+;src/utils/projectile.c:105: e->death_timer = 35; // Duration of explosion
 	ldhl	sp,	#6
 	ld	a, (hl+)
 	ld	h, (hl)
 	ld	l, a
 	ld	(hl), #0x23
 00108$:
-;src/utils/projectile.c:104: return 1;
+;src/utils/projectile.c:108: return 1;
 	ld	a, #0x01
 	jr	00127$
 00123$:
-;src/utils/projectile.c:85: for (uint8_t j = 0; j < count; j++) {
+;src/utils/projectile.c:89: for (uint8_t j = 0; j < count; j++) {
 	ldhl	sp,	#15
 	inc	(hl)
 	jp	00122$
 00126$:
-;src/utils/projectile.c:83: for (int i = 0; i < MAX_PROJECTILES; i++) {
+;src/utils/projectile.c:87: for (int i = 0; i < MAX_PROJECTILES; i++) {
 	ldhl	sp,	#13
 	inc	(hl)
 	jp	00125$
 00120$:
-;src/utils/projectile.c:110: return 0;
+;src/utils/projectile.c:114: return 0;
 	xor	a, a
 00127$:
-;src/utils/projectile.c:111: }
+;src/utils/projectile.c:115: }
 	add	sp, #20
 	ret
 	.area _CODE

@@ -50,8 +50,12 @@ void projectile_render_all(uint16_t camera_x, uint16_t camera_y) {
       uint16_t sx = projectiles[i].x - camera_x + 8;
       uint16_t sy = projectiles[i].y - camera_y + 16;
       if (!use_clipping || sy < 140) {
-        move_sprite(projectiles[i].sprite_id, sx, sy);
-        set_sprite_tile(projectiles[i].sprite_id, 40);
+        if ((sys_time & 1) == 0) { // Flicker every other frame
+          move_sprite(projectiles[i].sprite_id, sx, sy);
+          set_sprite_tile(projectiles[i].sprite_id, 40);
+        } else {
+          move_sprite(projectiles[i].sprite_id, 0, 0);
+        }
       } else {
         move_sprite(projectiles[i].sprite_id, 0, 0);
       }
